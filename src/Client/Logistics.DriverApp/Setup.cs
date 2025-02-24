@@ -1,4 +1,4 @@
-﻿using IdentityModel.OidcClient;
+﻿using Duende.IdentityModel.OidcClient;
 using Logistics.DriverApp.Extensions;
 using Logistics.DriverApp.Services;
 using Logistics.DriverApp.Services.Authentication;
@@ -22,8 +22,8 @@ public static class Setup
         var configuration = builder.BuildConfiguration();
         SyncfusionLicenseProvider.RegisterLicense(configuration.GetValue<string>("SyncfusionKey"));
         
-        var oidcOptions = configuration.GetSection("OidcClient").Get<OidcClientOptions>() 
-                          ?? throw new NullReferenceException("Could not get OidcClient form the appsettings.json file");
+        var oidcOptions = configuration.GetSection("Oidc").Get<OidcClientOptions>() 
+                          ?? throw new NullReferenceException("Could not get Oidc form the appsettings.json file");
         
         services.AddSingleton(oidcOptions);
         services.AddApiHttpClient(configuration);
@@ -39,9 +39,8 @@ public static class Setup
         services.AddScoped<StatsPageViewModel>();
         services.AddScoped<LoadPageViewModel>();
         services.AddScoped<PastLoadsPageViewModel>();
-        services.AddScoped<ChangeOrganizationPageViewModel>();
         
-        services.AddScoped<IdentityModel.OidcClient.Browser.IBrowser, WebBrowserAuthenticator>();
+        services.AddScoped<Duende.IdentityModel.OidcClient.Browser.IBrowser, WebBrowserAuthenticator>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ILoadProximityUpdater, LoadProximityUpdater>();
         services.AddScoped<ILocationTracker, LocationTracker>();
