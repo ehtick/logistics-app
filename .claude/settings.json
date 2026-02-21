@@ -49,7 +49,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/format-file.ps1\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/format-file.sh\""
           }
         ]
       }

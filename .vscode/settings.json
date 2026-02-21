@@ -7,7 +7,12 @@
     "**/node_modules": true,
     "**/.angular": true,
     "**/bin": true,
-    "**/obj": true
+    "**/obj": true,
+    "**/.gradle": true,
+    "**/.idea": true,
+    "**/.kotlin": true,
+    "**/build": true,
+    "**/.vs": true,
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
