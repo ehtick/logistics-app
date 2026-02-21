@@ -12,6 +12,12 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
+# Keep all @Serializable classes and their serializers
+-keepclassmembers @kotlinx.serialization.Serializable class ** {
+    *** Companion;
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
 # Ktor
 -keep class io.ktor.** { *; }
 -keep class kotlinx.coroutines.** { *; }
@@ -20,9 +26,17 @@
 -dontwarn com.typesafe.**
 -dontwarn org.slf4j.**
 
-# Keep shared module models (now using kotlinx.serialization)
--keep class com.jfleets.driver.domain.model.** { *; }
--keep class com.jfleets.driver.data.dto.** { *; }
+# OpenAPI generated API models
+-keep class com.jfleets.driver.api.models.** { *; }
 
-# Keep Android-specific models
--keep class com.jfleets.driver.data.model.** { *; }
+# App models
+-keep class com.jfleets.driver.model.** { *; }
+
+# Service models
+-keep class com.jfleets.driver.service.realtime.TruckGeolocation { *; }
+-keep class com.jfleets.driver.service.auth.TokenResponse { *; }
+-keep class com.jfleets.driver.service.auth.TokenErrorResponse { *; }
+
+# SignalR client
+-keep class com.microsoft.signalr.** { *; }
+-dontwarn com.microsoft.signalr.**

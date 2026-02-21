@@ -12,7 +12,10 @@ plugins {
 // OpenAPI Generator Configuration
 openApiGenerate {
     generatorName.set("kotlin")
-    remoteInputSpec.set("http://localhost:7000/swagger/v1/swagger.json")
+    remoteInputSpec.set(
+        providers.gradleProperty("openApiSpecUrl")
+            .getOrElse("http://localhost:7000/swagger/v1/swagger.json")
+    )
     outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
     packageName.set("com.jfleets.driver")
     apiPackage.set("com.jfleets.driver.api")
@@ -58,14 +61,14 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // Compose Multiplatform (using compose accessor - deprecated but functional)
+            // Compose Multiplatform
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.ui.tooling.preview)
 
             // JetBrains Compose Multiplatform (Lifecycle, ViewModel, Navigation)
             implementation(libs.bundles.jetbrains.compose.multiplatform)

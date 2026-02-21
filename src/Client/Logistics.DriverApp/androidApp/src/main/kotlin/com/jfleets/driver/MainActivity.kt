@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.jfleets.driver.permission.AppPermission
 import com.jfleets.driver.permission.RequestStartupPermissions
 import com.jfleets.driver.permission.isPermissionGranted
+import com.jfleets.driver.config.AppConfig
 import com.jfleets.driver.service.LocationTracker
 import com.jfleets.driver.service.auth.AuthService
 import com.jfleets.driver.ui.DriverApp
@@ -23,6 +24,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        AppConfig.initialize(
+            apiBaseUrl = BuildConfig.API_BASE_URL,
+            identityServerUrl = BuildConfig.IDENTITY_SERVER_URL,
+            clientSecret = BuildConfig.CLIENT_SECRET,
+            isProduction = !BuildConfig.DEBUG
+        )
         initKoin(this)
         enableEdgeToEdge()
 

@@ -1,6 +1,11 @@
 package com.jfleets.driver
 
+import com.jfleets.driver.config.AppConfig
+import com.jfleets.driver.config.messagingHubUrl
+import com.jfleets.driver.config.signalRHubUrl
 import com.jfleets.driver.service.LocationService
+import com.jfleets.driver.service.IosNetworkMonitor
+import com.jfleets.driver.service.NetworkMonitor
 import com.jfleets.driver.service.auth.AuthService
 import com.jfleets.driver.service.createIosDataStore
 import com.jfleets.driver.service.messaging.MessagingService
@@ -8,11 +13,6 @@ import com.jfleets.driver.service.realtime.SignalRService
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-
-const val API_BASE_URL = "http://localhost:7000/"
-const val IDENTITY_SERVER_URL = "http://localhost:7001/"
-const val SIGNALR_HUB_URL = "http://localhost:7000/hubs/tracking"
-const val MESSAGING_HUB_URL = "http://localhost:7000/hubs/chat"
 
 private var koinInitialized = false
 
@@ -24,7 +24,7 @@ fun initKoin() {
     startKoin {
         modules(
             iosModule,
-            commonModule(baseUrl = API_BASE_URL)
+            commonModule()
         )
     }
     koinInitialized = true
@@ -35,8 +35,9 @@ fun initKoin() {
  */
 val iosModule = module {
     single { createIosDataStore() }
-    single { AuthService(IDENTITY_SERVER_URL, get()) }
-    single<SignalRService> { SignalRService(SIGNALR_HUB_URL, get()) }
-    single { MessagingService(MESSAGING_HUB_URL, get()) }
+    single { AuthService(AppConfig.identityServerUrl, get()) }
+    single<SignalRService> { SignalRService(AppConfig.signalRHubUrl, get()) }
+    single { MessagingService(AppConfig.messagingHubUrl, get()) }
     singleOf(::LocationService)
+    single<NetworkMonitor> { IosNetworkMonitor() }
 }

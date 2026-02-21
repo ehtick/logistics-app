@@ -1,0 +1,7 @@
+#include "Config.xcconfig"
+
+// Staging environment
+API_BASE_URL = https:/$()/staging-api.jfleets.com/
+IDENTITY_SERVER_URL = https:/$()/staging-identity.jfleets.com/
+CLIENT_SECRET = Super secret key 2
+IS_PRODUCTION = NO

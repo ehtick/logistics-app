@@ -31,6 +31,7 @@ androidx-core = "1.17.0"
 
 # Firebase
 firebase-bom = "34.9.0"
+firebase-crashlytics-plugin = "3.0.3"
 google-services = "4.4.4"
 
 # Google Play Services
@@ -64,6 +65,10 @@ ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kto
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
+
+# Compose Preview (version catalog managed)
+compose-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-uiToolingPreview", version.ref = "compose-plugin" }
 
 # Koin
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
@@ -87,6 +92,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 # Google Play Services
@@ -114,6 +120,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "google-services" }
 openApiGenerator = { id = "org.openapi.generator", version.ref = "openapi-generator" }
 
@@ -122,7 +129,8 @@ ktor-common = [
     "ktor-client-core",
     "ktor-client-content-negotiation",
     "ktor-serialization-json",
-    "ktor-client-logging"
+    "ktor-client-logging",
+    "ktor-client-websockets"
 ]
 
 jetbrains-compose-multiplatform = [

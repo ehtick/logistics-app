@@ -2,6 +2,7 @@ package com.jfleets.driver
 
 import com.jfleets.driver.api.ApiFactory
 import com.jfleets.driver.api.CustomerApi
+import com.jfleets.driver.config.AppConfig
 import com.jfleets.driver.api.DocumentApi
 import com.jfleets.driver.api.DriverApi
 import com.jfleets.driver.api.DvirApi
@@ -35,15 +36,14 @@ import com.jfleets.driver.viewmodel.TripDetailViewModel
 import com.jfleets.driver.viewmodel.TripsViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-fun commonModule(baseUrl: String) = module {
+fun commonModule() = module {
     singleOf(::PreferencesManager)
 
     // Register ApiFactory as a singleton
-    single { ApiFactory(baseUrl, get()) }
+    single { ApiFactory(AppConfig.apiBaseUrl, get()) }
 
     // HttpClient for file upload operations
     single<HttpClient> { get<ApiFactory>().httpClient }

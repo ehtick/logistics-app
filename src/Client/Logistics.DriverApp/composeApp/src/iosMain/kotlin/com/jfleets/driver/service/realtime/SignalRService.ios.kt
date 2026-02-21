@@ -1,130 +1,116 @@
+@file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+
 package com.jfleets.driver.service.realtime
 
 import com.jfleets.driver.service.PreferencesManager
 import com.jfleets.driver.util.Logger
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 
 /**
- * iOS implementation of SignalRService using Microsoft's official SignalR Swift client.
- *
- * SETUP REQUIRED:
- * 1. Add SignalR Swift package to Xcode project:
- *    File > Add Packages > https://github.com/Azure/SignalR-Client-Swift
- * 2. The SignalRBridge.swift file provides the Objective-C compatible wrapper
- * 3. Once cinterop is configured, uncomment the bridge usage below
+ * iOS implementation of SignalRService using the shared SignalRWebSocketClient
+ * (Ktor WebSocket + SignalR JSON Hub Protocol).
  */
 actual class SignalRService(
     private val hubUrl: String,
     private val preferencesManager: PreferencesManager
 ) {
+    private var client: SignalRWebSocketClient? = null
     private val _connectionState = MutableStateFlow(SignalRConnectionState.DISCONNECTED)
+
     actual val connectionState: StateFlow<SignalRConnectionState> = _connectionState.asStateFlow()
 
-    // TODO: Uncomment when cinterop is configured:
-    // private var bridge: SignalRBridge? = null
+    actual suspend fun connect() {
+        if (_connectionState.value == SignalRConnectionState.CONNECTED) {
+            Logger.d("SignalR iOS: Already connected")
+            return
+        }
 
-    actual suspend fun connect() = withContext(Dispatchers.Main) {
+        _connectionState.value = SignalRConnectionState.CONNECTING
+
         try {
-            _connectionState.value = SignalRConnectionState.CONNECTING
-
-            @Suppress("UNUSED_VARIABLE")
             val token = preferencesManager.getAccessToken() ?: ""
-
-            @Suppress("UNUSED_VARIABLE")
             val tenantId = preferencesManager.getTenantId() ?: ""
 
-            // TODO: When cinterop is configured, use:
-            // bridge = SignalRBridge(hubUrl)
-            // bridge?.setAuthToken(token)
-            // bridge?.setTenantId(tenantId)
-            // suspendCancellableCoroutine { cont ->
-            //     bridge?.connect { error ->
-            //         if (error != null) {
-            //             cont.resumeWithException(Exception(error.localizedDescription))
-            //         } else {
-            //             cont.resume(Unit)
-            //         }
-            //     }
-            // }
+            val wsClient = SignalRWebSocketClient(
+                hubUrl = hubUrl,
+                accessToken = token,
+                tenantId = tenantId
+            )
+            client = wsClient
 
-            // Placeholder until cinterop is set up
-            Logger.w("SignalR iOS: Swift SignalRBridge is available but cinterop not yet configured")
-            Logger.d("SignalR iOS: Would connect to $hubUrl with token and tenant $tenantId")
-
+            wsClient.connect()
             _connectionState.value = SignalRConnectionState.CONNECTED
-            Logger.d("SignalR iOS connection state set to CONNECTED (pending full implementation)")
+            Logger.d("SignalR iOS: Connected successfully")
         } catch (e: Exception) {
             _connectionState.value = SignalRConnectionState.DISCONNECTED
-            Logger.e("SignalR iOS connection failed: ${e.message}")
+            Logger.e("SignalR iOS: Connection failed: ${e.message}")
             throw e
         }
     }
 
-    actual suspend fun disconnect() = withContext(Dispatchers.Main) {
+    actual suspend fun disconnect() {
         try {
-            // TODO: When cinterop is configured:
-            // suspendCancellableCoroutine { cont ->
-            //     bridge?.disconnect { _ ->
-            //         cont.resume(Unit)
-            //     }
-            // }
-            // bridge = null
-
+            client?.disconnect()
+            client = null
             _connectionState.value = SignalRConnectionState.DISCONNECTED
-            Logger.d("SignalR iOS disconnected")
+            Logger.d("SignalR iOS: Disconnected")
         } catch (e: Exception) {
-            Logger.e("SignalR iOS disconnect error: ${e.message}")
+            Logger.e("SignalR iOS: Disconnect error: ${e.message}")
         }
     }
 
-    actual suspend fun sendLocationUpdate(location: LocationUpdate) =
-        withContext(Dispatchers.Main) {
-            if (_connectionState.value != SignalRConnectionState.CONNECTED) {
-                Logger.w("SignalR iOS: Cannot send location - not connected")
-                return@withContext
-            }
-
-            try {
-                @Suppress("UNUSED_VARIABLE")
-                val tenantId = preferencesManager.getTenantId() ?: ""
-
-                @Suppress("UNUSED_VARIABLE")
-                val truckId = preferencesManager.getTruckId() ?: ""
-
-                // TODO: When cinterop is configured:
-                // suspendCancellableCoroutine { cont ->
-                //     bridge?.sendLocationUpdate(
-                //         truckId = truckId,
-                //         tenantId = tenantId,
-                //         latitude = location.latitude,
-                //         longitude = location.longitude,
-                //         truckNumber = location.truckNumber,
-                //         driversName = location.driverName,
-                //         addressLine1 = location.addressLine1,
-                //         city = location.city,
-                //         state = location.state
-                //     ) { error ->
-                //         if (error != null) {
-                //             cont.resumeWithException(Exception(error.localizedDescription))
-                //         } else {
-                //             cont.resume(Unit)
-                //         }
-                //     }
-                // }
-
-                Logger.d("SignalR iOS: Location update prepared: ${location.latitude}, ${location.longitude}")
-            } catch (e: Exception) {
-                Logger.e("SignalR iOS: Failed to send location: ${e.message}")
-            }
+    actual suspend fun sendLocationUpdate(location: TruckGeolocation) {
+        if (_connectionState.value != SignalRConnectionState.CONNECTED) {
+            Logger.w("SignalR iOS: Cannot send location - not connected")
+            return
         }
+
+        try {
+            val currentLocation = JsonObject(mapOf(
+                "latitude" to JsonPrimitive(location.currentLocation.latitude),
+                "longitude" to JsonPrimitive(location.currentLocation.longitude)
+            ))
+
+            val address: JsonElement = if (location.currentAddress != null) {
+                val addr = location.currentAddress
+                JsonObject(mapOf(
+                    "line1" to stringOrNull(addr.line1),
+                    "line2" to stringOrNull(addr.line2),
+                    "city" to stringOrNull(addr.city),
+                    "state" to stringOrNull(addr.state),
+                    "zipCode" to stringOrNull(addr.zipCode),
+                    "country" to stringOrNull(addr.country)
+                ))
+            } else {
+                JsonPrimitive(null as String?)
+            }
+
+            val locationJson = JsonObject(mapOf(
+                "truckId" to JsonPrimitive(location.truckId),
+                "tenantId" to JsonPrimitive(location.tenantId),
+                "currentLocation" to currentLocation,
+                "currentAddress" to address,
+                "truckNumber" to stringOrNull(location.truckNumber),
+                "driversName" to stringOrNull(location.driversName)
+            ))
+
+            client?.send("SendGeolocationData", locationJson)
+            Logger.d("SignalR iOS: Location sent: ${location.currentLocation.latitude}, ${location.currentLocation.longitude}")
+        } catch (e: Exception) {
+            Logger.e("SignalR iOS: Failed to send location: ${e.message}")
+        }
+    }
 
     actual fun isConnected(): Boolean {
-        // TODO: When cinterop is configured:
-        // return bridge?.isConnectedValue ?: false
-        return _connectionState.value == SignalRConnectionState.CONNECTED
+        return client?.isConnected == true
     }
+
+    private fun stringOrNull(value: String?): JsonElement =
+        if (value != null) JsonPrimitive(value) else JsonPrimitive(null as String?)
 }

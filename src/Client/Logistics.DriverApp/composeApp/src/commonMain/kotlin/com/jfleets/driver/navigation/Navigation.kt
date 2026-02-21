@@ -4,9 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import com.jfleets.driver.api.DriverApi
-import com.jfleets.driver.api.LoadApi
-import com.jfleets.driver.api.TripApi
 import com.jfleets.driver.api.models.InspectionType
 import com.jfleets.driver.ui.screens.AboutScreen
 import com.jfleets.driver.ui.screens.AccountScreen
@@ -27,7 +24,8 @@ import com.jfleets.driver.ui.screens.TripsScreen
 import com.jfleets.driver.viewmodel.DocumentCaptureType
 import com.jfleets.driver.viewmodel.LoadDetailViewModel
 import com.jfleets.driver.viewmodel.TripDetailViewModel
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 /**
  * Creates the entry provider that maps routes to screen composables.
@@ -89,8 +87,7 @@ fun createEntryProvider(
 
     // Trip Detail Screen
     entry<TripDetailRoute> { key ->
-        val tripApi: TripApi = koinInject()
-        val viewModel = TripDetailViewModel(tripApi, key.tripId)
+        val viewModel: TripDetailViewModel = koinViewModel { parametersOf(key.tripId) }
 
         TripDetailScreen(
             onNavigateBack = { navigator.goBack() },
@@ -107,9 +104,7 @@ fun createEntryProvider(
 
     // Load Detail Screen
     entry<LoadDetailRoute> { key ->
-        val loadApi: LoadApi = koinInject()
-        val driverApi: DriverApi = koinInject()
-        val viewModel = LoadDetailViewModel(loadApi, driverApi, key.loadId)
+        val viewModel: LoadDetailViewModel = koinViewModel { parametersOf(key.loadId) }
 
         LoadDetailScreen(
             onNavigateBack = { navigator.goBack() },

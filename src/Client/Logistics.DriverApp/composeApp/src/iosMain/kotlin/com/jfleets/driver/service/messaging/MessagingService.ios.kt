@@ -1,30 +1,41 @@
+@file:OptIn(kotlin.time.ExperimentalTime::class)
+
 package com.jfleets.driver.service.messaging
 
 import com.jfleets.driver.api.models.MessageDto
 import com.jfleets.driver.service.PreferencesManager
+import com.jfleets.driver.service.realtime.SignalRWebSocketClient
 import com.jfleets.driver.util.Logger
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlin.time.Instant
 
 /**
- * iOS implementation of MessagingService using Microsoft's official SignalR Swift client.
- *
- * SETUP REQUIRED:
- * 1. Add SignalR Swift package to Xcode project:
- *    File > Add Packages > https://github.com/Azure/SignalR-Client-Swift
- * 2. Create a MessagingBridge.swift file similar to SignalRBridge.swift
- * 3. Once cinterop is configured, uncomment the bridge usage below
+ * iOS implementation of MessagingService using the shared SignalRWebSocketClient
+ * (Ktor WebSocket + SignalR JSON Hub Protocol).
  */
 actual class MessagingService(
     private val hubUrl: String,
     private val preferencesManager: PreferencesManager
 ) {
+    private var client: SignalRWebSocketClient? = null
+    private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+
     private val _connectionState = MutableStateFlow(MessagingConnectionState.DISCONNECTED)
     private val _newMessages = MutableSharedFlow<MessageDto>()
     private val _typingIndicators = MutableSharedFlow<TypingIndicator>()
@@ -36,82 +47,119 @@ actual class MessagingService(
     actual val messageReadNotifications: SharedFlow<MessageReadNotification> =
         _messageReadNotifications.asSharedFlow()
 
-    // TODO: Uncomment when cinterop is configured:
-    // private var bridge: MessagingBridge? = null
+    actual suspend fun connect() {
+        if (_connectionState.value == MessagingConnectionState.CONNECTED) {
+            return
+        }
 
-    actual suspend fun connect() = withContext(Dispatchers.Main) {
+        _connectionState.value = MessagingConnectionState.CONNECTING
+
         try {
-            _connectionState.value = MessagingConnectionState.CONNECTING
-
-            @Suppress("UNUSED_VARIABLE")
             val token = preferencesManager.getAccessToken() ?: ""
-
-            @Suppress("UNUSED_VARIABLE")
             val tenantId = preferencesManager.getTenantId() ?: ""
-
-            @Suppress("UNUSED_VARIABLE")
             val userId = preferencesManager.getUserId() ?: ""
 
-            // TODO: When cinterop is configured, use:
-            // bridge = MessagingBridge(hubUrl)
-            // bridge?.setAuthToken(token)
-            // bridge?.setTenantId(tenantId)
-            //
-            // // Set up message handlers
-            // bridge?.onReceiveMessage { messageJson ->
-            //     val message = Json.decodeFromString<MessageDto>(messageJson)
-            //     _newMessages.tryEmit(message)
-            // }
-            //
-            // bridge?.onTypingIndicator { conversationId, userId, isTyping ->
-            //     _typingIndicators.tryEmit(TypingIndicator(conversationId, userId, isTyping))
-            // }
-            //
-            // bridge?.onMessageRead { messageId, readById ->
-            //     _messageReadNotifications.tryEmit(MessageReadNotification(messageId, readById))
-            // }
-            //
-            // suspendCancellableCoroutine { cont ->
-            //     bridge?.connect { error ->
-            //         if (error != null) {
-            //             cont.resumeWithException(Exception(error.localizedDescription))
-            //         } else {
-            //             cont.resume(Unit)
-            //         }
-            //     }
-            // }
-            //
-            // // Register tenant and user
-            // bridge?.registerTenant(tenantId)
-            // bridge?.registerUser(userId)
+            val wsClient = SignalRWebSocketClient(
+                hubUrl = hubUrl,
+                accessToken = token,
+                tenantId = tenantId
+            )
 
-            // Placeholder until cinterop is set up
-            Logger.w("MessagingService iOS: Swift bridge not yet configured")
-            Logger.d("MessagingService iOS: Would connect to $hubUrl with tenant $tenantId")
+            setupMessageHandlers(wsClient)
+
+            client = wsClient
+            wsClient.connect()
+
+            // Register tenant and user before marking as connected
+            if (tenantId.isNotEmpty()) {
+                wsClient.send("RegisterTenant", JsonPrimitive(tenantId))
+            }
+            if (userId.isNotEmpty()) {
+                wsClient.send("RegisterUser", JsonPrimitive(userId))
+            }
 
             _connectionState.value = MessagingConnectionState.CONNECTED
-            Logger.d("MessagingService iOS: Connection state set to CONNECTED (pending full implementation)")
+            Logger.d("MessagingService iOS: Connected successfully")
         } catch (e: Exception) {
             _connectionState.value = MessagingConnectionState.DISCONNECTED
-            Logger.e("MessagingService iOS: Connection failed - ${e.message}")
+            Logger.e("MessagingService iOS: Connection failed: ${e.message}")
             throw e
         }
     }
 
-    actual suspend fun disconnect() = withContext(Dispatchers.Main) {
-        try {
-            // TODO: When cinterop is configured:
-            // suspendCancellableCoroutine { cont ->
-            //     bridge?.disconnect { _ ->
-            //         cont.resume(Unit)
-            //     }
-            // }
-            // bridge = null
+    private fun setupMessageHandlers(wsClient: SignalRWebSocketClient) {
+        wsClient.on("ReceiveMessage") { msg ->
+            try {
+                val args = msg["arguments"]?.jsonArray ?: return@on
+                if (args.isEmpty()) return@on
+                val data = args[0].jsonObject
 
+                val message = MessageDto(
+                    id = data["id"]?.jsonPrimitive?.content,
+                    conversationId = data["conversationId"]?.jsonPrimitive?.content,
+                    senderId = data["senderId"]?.jsonPrimitive?.content,
+                    senderName = data["senderName"]?.jsonPrimitive?.content,
+                    content = data["content"]?.jsonPrimitive?.content,
+                    sentAt = data["sentAt"]?.jsonPrimitive?.content?.let { str ->
+                        try {
+                            Instant.parse(str)
+                        } catch (_: Exception) {
+                            null
+                        }
+                    },
+                    isRead = data["isRead"]?.jsonPrimitive?.booleanOrNull,
+                    isDeleted = data["isDeleted"]?.jsonPrimitive?.booleanOrNull
+                )
+                scope.launch { _newMessages.emit(message) }
+            } catch (e: Exception) {
+                Logger.e("MessagingService iOS: Error parsing message: ${e.message}")
+            }
+        }
+
+        wsClient.on("TypingIndicator") { msg ->
+            try {
+                val args = msg["arguments"]?.jsonArray ?: return@on
+                if (args.isEmpty()) return@on
+                val data = args[0].jsonObject
+
+                val indicator = TypingIndicator(
+                    conversationId = data["conversationId"]?.jsonPrimitive?.content ?: "",
+                    userId = data["userId"]?.jsonPrimitive?.content ?: "",
+                    isTyping = data["isTyping"]?.jsonPrimitive?.boolean ?: false
+                )
+                scope.launch { _typingIndicators.emit(indicator) }
+            } catch (e: Exception) {
+                Logger.e("MessagingService iOS: Error parsing typing indicator: ${e.message}")
+            }
+        }
+
+        wsClient.on("MessageRead") { msg ->
+            try {
+                val args = msg["arguments"]?.jsonArray ?: return@on
+                if (args.size < 2) return@on
+
+                val messageId = args[0].jsonPrimitive.content
+                val readById = args[1].jsonPrimitive.content
+
+                scope.launch {
+                    _messageReadNotifications.emit(
+                        MessageReadNotification(messageId = messageId, readById = readById)
+                    )
+                }
+            } catch (e: Exception) {
+                Logger.e("MessagingService iOS: Error parsing message read: ${e.message}")
+            }
+        }
+    }
+
+    actual suspend fun disconnect() {
+        try {
+            client?.disconnect()
+            client = null
             _connectionState.value = MessagingConnectionState.DISCONNECTED
             Logger.d("MessagingService iOS: Disconnected")
         } catch (e: Exception) {
-            Logger.e("MessagingService iOS: Disconnect error - ${e.message}")
+            Logger.e("MessagingService iOS: Disconnect error: ${e.message}")
         }
     }
 
@@ -122,11 +170,11 @@ actual class MessagingService(
         }
 
         try {
-            // TODO: When cinterop is configured:
-            // bridge?.joinConversation(conversationId)
-            Logger.d("MessagingService iOS: Would join conversation $conversationId")
+            scope.launch {
+                client?.send("JoinConversation", JsonPrimitive(conversationId))
+            }
         } catch (e: Exception) {
-            Logger.e("MessagingService iOS: Failed to join conversation - ${e.message}")
+            Logger.e("MessagingService iOS: Failed to join conversation: ${e.message}")
         }
     }
 
@@ -136,11 +184,11 @@ actual class MessagingService(
         }
 
         try {
-            // TODO: When cinterop is configured:
-            // bridge?.leaveConversation(conversationId)
-            Logger.d("MessagingService iOS: Would leave conversation $conversationId")
+            scope.launch {
+                client?.send("LeaveConversation", JsonPrimitive(conversationId))
+            }
         } catch (e: Exception) {
-            Logger.e("MessagingService iOS: Failed to leave conversation - ${e.message}")
+            Logger.e("MessagingService iOS: Failed to leave conversation: ${e.message}")
         }
     }
 
@@ -150,11 +198,15 @@ actual class MessagingService(
         }
 
         try {
-            // TODO: When cinterop is configured:
-            // bridge?.sendTypingIndicator(conversationId, isTyping)
-            Logger.d("MessagingService iOS: Would send typing indicator")
+            scope.launch {
+                client?.send(
+                    "SendTypingIndicator",
+                    JsonPrimitive(conversationId),
+                    JsonPrimitive(isTyping)
+                )
+            }
         } catch (e: Exception) {
-            Logger.e("MessagingService iOS: Failed to send typing indicator - ${e.message}")
+            Logger.e("MessagingService iOS: Failed to send typing indicator: ${e.message}")
         }
     }
 
@@ -164,19 +216,19 @@ actual class MessagingService(
         }
 
         try {
-            @Suppress("UNUSED_VARIABLE")
             val userId = preferencesManager.getUserId() ?: return
-            // TODO: When cinterop is configured:
-            // bridge?.markAsRead(conversationId, messageId, userId)
-            Logger.d("MessagingService iOS: Would mark message $messageId as read")
+            client?.send(
+                "MarkAsRead",
+                JsonPrimitive(conversationId),
+                JsonPrimitive(messageId),
+                JsonPrimitive(userId)
+            )
         } catch (e: Exception) {
-            Logger.e("MessagingService iOS: Failed to mark message as read - ${e.message}")
+            Logger.e("MessagingService iOS: Failed to mark message as read: ${e.message}")
         }
     }
 
     actual fun isConnected(): Boolean {
-        // TODO: When cinterop is configured:
-        // return bridge?.isConnectedValue ?: false
-        return _connectionState.value == MessagingConnectionState.CONNECTED
+        return client?.isConnected == true
     }
 }
