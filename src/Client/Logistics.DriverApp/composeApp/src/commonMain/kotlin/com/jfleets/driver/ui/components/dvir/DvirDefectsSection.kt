@@ -1,4 +1,4 @@
-package com.jfleets.driver.ui.screens.dvir
+package com.jfleets.driver.ui.components.dvir
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

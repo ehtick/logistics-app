@@ -35,10 +35,10 @@ import com.jfleets.driver.ui.components.SignaturePad
 import com.jfleets.driver.ui.components.capture.NotesTextField
 import com.jfleets.driver.ui.components.capture.PhotoCaptureSection
 import com.jfleets.driver.ui.components.capture.SubmitButton
-import com.jfleets.driver.ui.screens.dvir.DvirAddDefectDialog
-import com.jfleets.driver.ui.screens.dvir.DvirDefectsSection
-import com.jfleets.driver.ui.screens.dvir.DvirInspectionTypeSelector
-import com.jfleets.driver.ui.screens.dvir.DvirTruckSelector
+import com.jfleets.driver.ui.components.dvir.DvirAddDefectDialog
+import com.jfleets.driver.ui.components.dvir.DvirDefectsSection
+import com.jfleets.driver.ui.components.dvir.DvirInspectionTypeSelector
+import com.jfleets.driver.ui.components.dvir.DvirTruckSelector
 import com.jfleets.driver.util.CameraLauncher
 import com.jfleets.driver.util.SignatureConverter
 import com.jfleets.driver.viewmodel.CapturedPhoto
