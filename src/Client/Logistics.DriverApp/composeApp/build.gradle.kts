@@ -68,7 +68,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(libs.compose.ui.tooling.preview)
+            implementation(compose.components.uiToolingPreview)
 
             // JetBrains Compose Multiplatform (Lifecycle, ViewModel, Navigation)
             implementation(libs.bundles.jetbrains.compose.multiplatform)

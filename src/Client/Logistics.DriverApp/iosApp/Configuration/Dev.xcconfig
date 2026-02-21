@@ -3,5 +3,4 @@
 // Dev environment (iOS Simulator - localhost)
 API_BASE_URL = http:/$()/localhost:7000/
 IDENTITY_SERVER_URL = http:/$()/localhost:7001/
-CLIENT_SECRET = Super secret key 2
 IS_PRODUCTION = NO

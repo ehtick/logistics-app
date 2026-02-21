@@ -6,8 +6,6 @@
 	<string>$(API_BASE_URL)</string>
 	<key>IDENTITY_SERVER_URL</key>
 	<string>$(IDENTITY_SERVER_URL)</string>
-	<key>CLIENT_SECRET</key>
-	<string>$(CLIENT_SECRET)</string>
 	<key>IS_PRODUCTION</key>
 	<string>$(IS_PRODUCTION)</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

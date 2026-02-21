@@ -11,15 +11,10 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.forms.submitForm
-import io.ktor.client.request.header
 import io.ktor.http.Parameters
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.charsets.Charsets
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.serialization.json.Json
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.time.Clock
 
 
@@ -27,7 +22,6 @@ class AuthService(
     private val authorityUrl: String,
     private val preferencesManager: PreferencesManager
 ) {
-    private val allowSelfSigned = authorityUrl.contains("10.0.2.2")
     private val tokenEndpoint = "${authorityUrl.trimEnd('/')}/connect/token"
 
     private val httpClient: HttpClient by lazy { createHttpClient() }
@@ -54,27 +48,18 @@ class AuthService(
         }
     }
 
-    @OptIn(ExperimentalEncodingApi::class)
-    private fun createBasicAuthHeader(): String {
-        val credentials = "${AuthConfig.CLIENT_ID}:${AuthConfig.CLIENT_SECRET}"
-        val encoded = Base64.encode(credentials.toByteArray(Charsets.UTF_8))
-        return "Basic $encoded"
-    }
-
     suspend fun login(username: String, password: String): Result<Unit> {
-
         return try {
             val response = httpClient.submitForm(
                 url = tokenEndpoint,
                 formParameters = Parameters.build {
                     append("grant_type", "password")
+                    append("client_id", AuthConfig.CLIENT_ID)
                     append("username", username)
                     append("password", password)
                     append("scope", AuthConfig.SCOPE)
                 }
-            ) {
-                header("Authorization", createBasicAuthHeader())
-            }
+            )
 
             if (response.status.isSuccess()) {
                 val tokenResponse = response.body<TokenResponse>()
@@ -126,12 +111,11 @@ class AuthService(
                 url = tokenEndpoint,
                 formParameters = Parameters.build {
                     append("grant_type", "refresh_token")
+                    append("client_id", AuthConfig.CLIENT_ID)
                     append("refresh_token", refreshToken)
                     append("scope", AuthConfig.SCOPE)
                 }
-            ) {
-                header("Authorization", createBasicAuthHeader())
-            }
+            )
 
             if (response.status.isSuccess()) {
                 val tokenResponse = response.body<TokenResponse>()

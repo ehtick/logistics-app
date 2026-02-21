@@ -9,8 +9,6 @@ expect object AppConfig {
         private set
     var identityServerUrl: String
         private set
-    var clientSecret: String
-        private set
     var isProduction: Boolean
         private set
 }

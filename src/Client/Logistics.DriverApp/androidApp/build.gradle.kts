@@ -29,23 +29,20 @@ android {
             versionNameSuffix = "-dev"
             buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:7000/\"")
             buildConfigField("String", "IDENTITY_SERVER_URL", "\"http://10.0.2.2:7001/\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"Super secret key 2\"")
             manifestPlaceholders["allowCleartext"] = "true"
         }
         create("staging") {
             dimension = "environment"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
-            buildConfigField("String", "API_BASE_URL", "\"https://staging-api.jfleets.com/\"")
-            buildConfigField("String", "IDENTITY_SERVER_URL", "\"https://staging-identity.jfleets.com/\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"Super secret key 2\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://api.suxrobgm.net/\"")
+            buildConfigField("String", "IDENTITY_SERVER_URL", "\"https://id.suxrobgm.net/\"")
             manifestPlaceholders["allowCleartext"] = "false"
         }
         create("prod") {
             dimension = "environment"
-            buildConfigField("String", "API_BASE_URL", "\"https://api.jfleets.com/\"")
-            buildConfigField("String", "IDENTITY_SERVER_URL", "\"https://identity.jfleets.com/\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"Super secret key 2\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://api.suxrobgm.net/\"")
+            buildConfigField("String", "IDENTITY_SERVER_URL", "\"https://id.suxrobgm.net/\"")
             manifestPlaceholders["allowCleartext"] = "false"
         }
     }

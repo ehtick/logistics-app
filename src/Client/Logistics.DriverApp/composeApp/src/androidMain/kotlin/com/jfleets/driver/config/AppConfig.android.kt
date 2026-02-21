@@ -9,20 +9,16 @@ actual object AppConfig {
         private set
     actual var identityServerUrl: String = ""
         private set
-    actual var clientSecret: String = ""
-        private set
     actual var isProduction: Boolean = false
         private set
 
     fun initialize(
         apiBaseUrl: String,
         identityServerUrl: String,
-        clientSecret: String,
         isProduction: Boolean
     ) {
         this.apiBaseUrl = apiBaseUrl
         this.identityServerUrl = identityServerUrl
-        this.clientSecret = clientSecret
         this.isProduction = isProduction
     }
 }

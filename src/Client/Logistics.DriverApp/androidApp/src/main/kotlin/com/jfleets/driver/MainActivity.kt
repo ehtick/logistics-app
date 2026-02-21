@@ -27,7 +27,6 @@ class MainActivity : ComponentActivity() {
         AppConfig.initialize(
             apiBaseUrl = BuildConfig.API_BASE_URL,
             identityServerUrl = BuildConfig.IDENTITY_SERVER_URL,
-            clientSecret = BuildConfig.CLIENT_SECRET,
             isProduction = !BuildConfig.DEBUG
         )
         initKoin(this)
