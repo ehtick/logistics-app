@@ -24,6 +24,7 @@ import com.jfleets.driver.MainActivity
 import com.jfleets.driver.R
 import com.jfleets.driver.api.DriverApi
 import com.jfleets.driver.api.LoadApi
+import com.jfleets.driver.api.models.LoadDto
 import com.jfleets.driver.api.models.UpdateLoadProximityCommand
 import com.jfleets.driver.model.location.toAddressDto
 import com.jfleets.driver.model.location.toGeoPoint
@@ -53,12 +54,17 @@ class LocationTrackingService : Service() {
     private lateinit var locationCallback: LocationCallback
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    // Cached active loads to avoid fetching from API on every location update
+    private var cachedLoads: List<LoadDto> = emptyList()
+    private var lastLoadFetchTime: Long = 0
+
     companion object {
         private const val NOTIFICATION_ID = 1001
         private const val CHANNEL_ID = "location_tracking_channel"
         private const val UPDATE_INTERVAL = 30000L // 30 seconds
         private const val FASTEST_INTERVAL = 15000L // 15 seconds
         private const val PROXIMITY_THRESHOLD = 500f // 500 meters (0.5 km)
+        private const val LOAD_CACHE_DURATION_MS = 5 * 60 * 1000L // 5 minutes
     }
 
     override fun onCreate() {
@@ -181,15 +187,19 @@ class LocationTrackingService : Service() {
         }
     }
 
+    private suspend fun getActiveLoads(): List<LoadDto> {
+        val now = System.currentTimeMillis()
+        if (now - lastLoadFetchTime > LOAD_CACHE_DURATION_MS || cachedLoads.isEmpty()) {
+            val result = loadApi.getLoads(onlyActiveLoads = true).body()
+            cachedLoads = result.items ?: emptyList()
+            lastLoadFetchTime = now
+        }
+        return cachedLoads
+    }
+
     private suspend fun checkLoadProximity(location: Location) {
         try {
-            // Get active loads
-            val result = loadApi.getLoads(onlyActiveLoads = true).body()
-            val loads = result.items
-            if (loads == null) {
-                Logger.e("Error getting active loads")
-                return
-            }
+            val loads = getActiveLoads()
 
             loads.forEach { load ->
                 val originLat = load.originLocation.latitude

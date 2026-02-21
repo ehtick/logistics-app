@@ -50,8 +50,8 @@ import com.jfleets.driver.ui.components.TripStopItem
 import com.jfleets.driver.util.formatCurrency
 import com.jfleets.driver.util.formatDistance
 import com.jfleets.driver.util.formatShort
-import com.jfleets.driver.viewmodel.TripDetailUiState
 import com.jfleets.driver.viewmodel.TripDetailViewModel
+import com.jfleets.driver.viewmodel.base.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,10 +78,11 @@ fun TripDetailScreen(
         }
     ) { paddingValues ->
         when (val state = uiState) {
-            is TripDetailUiState.Loading -> LoadingIndicator()
+            is UiState.Loading -> LoadingIndicator()
 
-            is TripDetailUiState.Success -> {
-                val trip = state.trip
+            is UiState.Success<*> -> {
+                @Suppress("UNCHECKED_CAST")
+                val trip = (state as UiState.Success<TripDto>).data
                 val stops = trip.stops?.sortedBy { it.order } ?: emptyList()
 
                 Column(
@@ -140,7 +141,7 @@ fun TripDetailScreen(
                 }
             }
 
-            is TripDetailUiState.Error -> {
+            is UiState.Error -> {
                 ErrorView(
                     message = state.message,
                     onRetry = { viewModel.refresh() }

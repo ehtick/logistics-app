@@ -1,37 +1,30 @@
 package com.jfleets.driver.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.jfleets.driver.api.TripApi
+import com.jfleets.driver.api.bodyOrThrow
 import com.jfleets.driver.api.models.TripDto
 import com.jfleets.driver.api.models.TripStopDto
+import com.jfleets.driver.viewmodel.base.BaseViewModel
+import com.jfleets.driver.viewmodel.base.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 class TripDetailViewModel(
     private val tripApi: TripApi,
     private val tripId: String
-) : ViewModel() {
+) : BaseViewModel() {
 
-    private val _uiState = MutableStateFlow<TripDetailUiState>(TripDetailUiState.Loading)
-    val uiState: StateFlow<TripDetailUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<UiState<TripDto>>(UiState.Loading)
+    val uiState: StateFlow<UiState<TripDto>> = _uiState.asStateFlow()
 
     init {
         loadTripDetails()
     }
 
     private fun loadTripDetails() {
-        viewModelScope.launch {
-            _uiState.value = TripDetailUiState.Loading
-
-            try {
-                val trip = tripApi.getTripById(tripId).body()
-                _uiState.value = TripDetailUiState.Success(trip)
-            } catch (e: Exception) {
-                _uiState.value = TripDetailUiState.Error(e.message ?: "Failed to load trip details")
-            }
+        launchWithState(_uiState) {
+            tripApi.getTripById(tripId).bodyOrThrow()
         }
     }
 
@@ -44,7 +37,6 @@ class TripDetailViewModel(
         val destination = trip.destinationAddress
         val stops = trip.stops?.sortedBy { it.order } ?: emptyList()
 
-        // Build URL with origin, destination, and waypoints
         val originStr = "${origin.line1 ?: ""}, ${origin.city ?: ""}, ${origin.state ?: ""}"
         val destinationStr = "${destination.line1 ?: ""}, ${destination.city ?: ""}, ${destination.state ?: ""}"
 
@@ -53,7 +45,6 @@ class TripDetailViewModel(
                 "&destination=${destinationStr.encodeUrl()}" +
                 "&travelmode=driving"
 
-        // Add intermediate stops as waypoints (excluding first and last)
         if (stops.size > 2) {
             val waypoints = stops.drop(1).dropLast(1).joinToString("|") { stop ->
                 val addr = stop.address
@@ -75,10 +66,4 @@ class TripDetailViewModel(
             .replace(",", "%2C")
             .replace("|", "%7C")
     }
-}
-
-sealed class TripDetailUiState {
-    object Loading : TripDetailUiState()
-    data class Success(val trip: TripDto) : TripDetailUiState()
-    data class Error(val message: String) : TripDetailUiState()
 }

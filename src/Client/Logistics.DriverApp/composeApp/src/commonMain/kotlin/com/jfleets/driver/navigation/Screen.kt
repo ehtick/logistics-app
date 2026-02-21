@@ -1,6 +1,8 @@
 package com.jfleets.driver.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.jfleets.driver.api.models.InspectionType
+import com.jfleets.driver.viewmodel.DocumentCaptureType
 import kotlinx.serialization.Serializable
 
 /**
@@ -41,14 +43,14 @@ data object EmployeeSelectRoute : NavKey
 @Serializable
 data class PodCaptureRoute(
     val loadId: String,
-    val captureType: String,
+    val captureType: DocumentCaptureType,
     val tripStopId: String? = null
 ) : NavKey
 
 @Serializable
 data class ConditionReportRoute(
     val loadId: String,
-    val inspectionType: String
+    val inspectionType: InspectionType
 ) : NavKey
 
 @Serializable

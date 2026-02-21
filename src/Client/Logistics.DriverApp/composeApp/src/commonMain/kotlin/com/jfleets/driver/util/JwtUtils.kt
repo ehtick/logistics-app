@@ -1,6 +1,11 @@
 package com.jfleets.driver.util
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
 import kotlin.io.encoding.ExperimentalEncodingApi
+
+private val jsonParser = Json { ignoreUnknownKeys = true }
 
 /**
  * Decodes a JWT token and extracts the payload claims as a map.
@@ -32,22 +37,14 @@ private fun decodeBase64Url(input: String): String {
     return decoded.decodeToString()
 }
 
-private fun parseJsonClaims(json: String): Map<String, String> {
-    val result = mutableMapOf<String, String>()
-    // Simple JSON parsing for string values
-    val cleanJson = json.trim().removeSurrounding("{", "}")
-    val pairs = cleanJson.split(",")
-
-    for (pair in pairs) {
-        val keyValue = pair.split(":", limit = 2)
-        if (keyValue.size == 2) {
-            val key = keyValue[0].trim().removeSurrounding("\"")
-            val value = keyValue[1].trim().removeSurrounding("\"")
-            // Only store string values (not arrays or objects)
-            if (!value.startsWith("[") && !value.startsWith("{")) {
-                result[key] = value
-            }
-        }
+private fun parseJsonClaims(jsonString: String): Map<String, String> {
+    return try {
+        val element = jsonParser.parseToJsonElement(jsonString)
+        element.jsonObject
+            .filterValues { it is JsonPrimitive }
+            .mapValues { (_, value) -> (value as JsonPrimitive).content }
+    } catch (e: Exception) {
+        Logger.e("JwtUtils: Failed to parse JWT payload: ${e.message}")
+        emptyMap()
     }
-    return result
 }

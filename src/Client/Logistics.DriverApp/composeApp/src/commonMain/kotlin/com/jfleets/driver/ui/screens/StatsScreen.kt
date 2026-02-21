@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.jfleets.driver.api.models.DriverStatsDto
 import com.jfleets.driver.model.ChartData
 import com.jfleets.driver.model.LocalUserSettings
 import com.jfleets.driver.model.toChartData
@@ -44,8 +45,8 @@ import com.jfleets.driver.ui.components.charts.line.LineChart
 import com.jfleets.driver.util.formatCurrency
 import com.jfleets.driver.util.formatDistance
 import com.jfleets.driver.viewmodel.ChartUiState
-import com.jfleets.driver.viewmodel.StatsUiState
 import com.jfleets.driver.viewmodel.StatsViewModel
+import com.jfleets.driver.viewmodel.base.UiState
 import org.koin.compose.viewmodel.koinViewModel
 
 enum class ChartType(val label: String) {
@@ -62,7 +63,7 @@ fun StatsScreen(
     val statsState by viewModel.statsState.collectAsState()
     val chartState by viewModel.chartState.collectAsState()
     val selectedRange by viewModel.selectedRange.collectAsState()
-    val dateRanges = remember { viewModel.getDateRanges() }
+    val dateRanges = remember { viewModel.dateRanges }
     var showRangePicker by remember { mutableStateOf(false) }
     var selectedChartType by remember { mutableStateOf(ChartType.BAR) }
 
@@ -79,12 +80,13 @@ fun StatsScreen(
         }
     ) { paddingValues ->
         when (val state = statsState) {
-            is StatsUiState.Loading -> {
+            is UiState.Loading -> {
                 LoadingIndicator()
             }
 
-            is StatsUiState.Success -> {
-                val stats = state.stats
+            is UiState.Success<*> -> {
+                @Suppress("UNCHECKED_CAST")
+                val stats = (state as UiState.Success<DriverStatsDto>).data
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -285,7 +287,7 @@ fun StatsScreen(
                 }
             }
 
-            is StatsUiState.Error -> {
+            is UiState.Error -> {
                 ErrorView(
                     message = state.message,
                     onRetry = { viewModel.refresh() }

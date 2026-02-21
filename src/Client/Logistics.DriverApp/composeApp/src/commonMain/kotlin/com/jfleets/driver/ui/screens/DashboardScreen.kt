@@ -42,8 +42,9 @@ import com.jfleets.driver.ui.components.ErrorView
 import com.jfleets.driver.ui.components.LoadCard
 import com.jfleets.driver.ui.components.LoadingIndicator
 import com.jfleets.driver.ui.components.TripCard
-import com.jfleets.driver.viewmodel.DashboardUiState
+import com.jfleets.driver.viewmodel.DashboardData
 import com.jfleets.driver.viewmodel.DashboardViewModel
+import com.jfleets.driver.viewmodel.base.UiState
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +57,7 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val isRefreshing = uiState is DashboardUiState.Loading
+    val isRefreshing = uiState is UiState.Loading
 
     // Request background location permission (only if foreground location already granted)
     RequestBackgroundLocationIfNeeded()
@@ -85,12 +86,15 @@ fun DashboardScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
             when (val state = uiState) {
-                is DashboardUiState.Loading -> {
+                is UiState.Loading -> {
                     LoadingIndicator()
                 }
 
-                is DashboardUiState.Success -> {
-                    val truck = state.truck
+                is UiState.Success<*> -> {
+                    @Suppress("UNCHECKED_CAST")
+                    val dashboardData = (state as UiState.Success<DashboardData>).data
+                    val truck = dashboardData.truck
+                    val trips = dashboardData.trips
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
@@ -174,7 +178,7 @@ fun DashboardScreen(
                             )
                         }
 
-                        if (state.trips.isEmpty()) {
+                        if (trips.isEmpty()) {
                             item {
                                 CardContainer {
                                     Box(
@@ -191,7 +195,7 @@ fun DashboardScreen(
                                 }
                             }
                         } else {
-                            items(state.trips) { trip: TripDto ->
+                            items(trips) { trip: TripDto ->
                                 TripCard(
                                     trip = trip,
                                     onClick = { onTripClick(trip.id!!) }
@@ -201,7 +205,7 @@ fun DashboardScreen(
                     }
                 }
 
-                is DashboardUiState.Error -> {
+                is UiState.Error -> {
                     ErrorView(
                         message = state.message,
                         onRetry = { viewModel.refresh() }

@@ -23,6 +23,13 @@ tasks.named("openApiGenerate") {
                 modified = true
             }
 
+            // Fix 3: Remove HashMap inheritance (final class in Kotlin, generated for additionalProperties)
+            val hashMapPattern = Regex("""\)\s*:\s*kotlin\.collections\.HashMap<[^>]+>\(\)\s*\{""")
+            if (hashMapPattern.containsMatchIn(content)) {
+                content = hashMapPattern.replace(content, ") {")
+                modified = true
+            }
+
             if (modified) {
                 file.writeText(content)
                 logger.lifecycle("openapi-fix: patched ${file.name}")

@@ -43,7 +43,7 @@ fun commonModule() = module {
     singleOf(::PreferencesManager)
 
     // Register ApiFactory as a singleton
-    single { ApiFactory(AppConfig.apiBaseUrl, get()) }
+    single { ApiFactory(AppConfig.apiBaseUrl, get(), get()) }
 
     // HttpClient for file upload operations
     single<HttpClient> { get<ApiFactory>().httpClient }
@@ -64,7 +64,7 @@ fun commonModule() = module {
     single<UserApi> { get<ApiFactory>().userApi }
 
     // ConversationStateManager service for shared messaging state
-    single { ConversationStateManager(get(), get()) }
+    single { ConversationStateManager(get()) }
 
     viewModelOf(::DashboardViewModel)
     viewModelOf(::AccountViewModel)

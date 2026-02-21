@@ -2,22 +2,16 @@ package com.jfleets.driver.api
 
 import com.jfleets.driver.service.PreferencesManager
 import com.jfleets.driver.service.auth.AuthEventBus
+import com.jfleets.driver.service.auth.AuthService
+import com.jfleets.driver.util.Logger
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.HttpResponseValidator
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.logging.DEFAULT
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.plugin
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
 
 /**
  * Factory for API clients generated from OpenAPI spec.
@@ -30,7 +24,8 @@ import kotlinx.serialization.json.Json
  */
 class ApiFactory(
     private val baseUrl: String,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val authService: AuthService
 ) {
 
     val httpClient: HttpClient by lazy { createHttpClient() }
@@ -51,46 +46,44 @@ class ApiFactory(
     val userApi: UserApi by lazy { UserApi(baseUrl, httpClient) }
 
     private fun createHttpClient(): HttpClient {
-        return HttpClient {
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
-            }
-
-            install(Logging) {
-                logger = Logger.DEFAULT
-                level = LogLevel.INFO
-            }
-
-            install(HttpTimeout) {
-                requestTimeoutMillis = 30000
-                connectTimeoutMillis = 30000
-            }
-
-            HttpResponseValidator {
-                validateResponse { response ->
-                    if (response.status == HttpStatusCode.Unauthorized) {
-                        AuthEventBus.emitUnauthorized()
-                    }
-                }
-            }
-
+        val client = HttpClientFactory.create {
             defaultRequest {
                 url(baseUrl)
                 contentType(ContentType.Application.Json)
-
-                runBlocking {
-                    preferencesManager.getAccessToken()?.let { token ->
-                        header("Authorization", "Bearer $token")
-                    }
-                    preferencesManager.getTenantId()?.let { tenantId ->
-                        header("X-Tenant", tenantId)
-                    }
-                }
             }
         }
+
+        // Intercept requests to inject auth headers and handle token refresh
+        client.plugin(HttpSend).intercept { request ->
+            preferencesManager.getAccessToken()?.let { token ->
+                request.header("Authorization", "Bearer $token")
+            }
+            preferencesManager.getTenantId()?.let { tenantId ->
+                request.header("X-Tenant", tenantId)
+            }
+
+            val originalCall = execute(request)
+
+            // On 401, attempt token refresh and retry once
+            if (originalCall.response.status == HttpStatusCode.Unauthorized) {
+                val refreshResult = authService.refreshToken()
+                if (refreshResult.isSuccess) {
+                    Logger.d("ApiFactory: Token refreshed, retrying request")
+                    // Retry with new token
+                    val newToken = preferencesManager.getAccessToken()
+                    request.headers.remove("Authorization")
+                    newToken?.let { request.header("Authorization", "Bearer $it") }
+                    execute(request)
+                } else {
+                    Logger.e("ApiFactory: Token refresh failed, emitting unauthorized")
+                    AuthEventBus.emitUnauthorized()
+                    originalCall
+                }
+            } else {
+                originalCall
+            }
+        }
+
+        return client
     }
 }

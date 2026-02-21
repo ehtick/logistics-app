@@ -42,9 +42,9 @@ import com.jfleets.driver.ui.components.CardContainer
 import com.jfleets.driver.ui.components.ErrorView
 import com.jfleets.driver.ui.components.LoadingIndicator
 import com.jfleets.driver.ui.components.phone.PhoneNumberInput
-import com.jfleets.driver.viewmodel.AccountUiState
 import com.jfleets.driver.viewmodel.AccountViewModel
-import com.jfleets.driver.viewmodel.SaveState
+import com.jfleets.driver.viewmodel.base.ActionState
+import com.jfleets.driver.viewmodel.base.UiState
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -65,8 +65,9 @@ fun AccountScreen(
     var userId by remember { mutableStateOf("") }
 
     LaunchedEffect(uiState) {
-        if (uiState is AccountUiState.Success) {
-            val user = (uiState as AccountUiState.Success).user
+        if (uiState is UiState.Success<*>) {
+            @Suppress("UNCHECKED_CAST")
+            val user = (uiState as UiState.Success<UserDto>).data
             firstName = user.firstName ?: ""
             lastName = user.lastName ?: ""
             phoneNumber = user.phoneNumber ?: ""
@@ -76,7 +77,7 @@ fun AccountScreen(
     }
 
     LaunchedEffect(saveState) {
-        if (saveState is SaveState.Success) {
+        if (saveState is ActionState.Success<*>) {
             // Show success message and reset after a delay
             delay(2000)
             viewModel.resetSaveState()
@@ -88,7 +89,7 @@ fun AccountScreen(
             AppTopBar(
                 title = "Account",
                 actions = {
-                    if (uiState is AccountUiState.Success) {
+                    if (uiState is UiState.Success<*>) {
                         IconButton(
                             onClick = {
                                 viewModel.updateUser(
@@ -101,7 +102,7 @@ fun AccountScreen(
                                     )
                                 )
                             },
-                            enabled = saveState !is SaveState.Saving
+                            enabled = saveState !is ActionState.Loading
                         ) {
                             Icon(Icons.Default.Save, "Save")
                         }
@@ -111,11 +112,11 @@ fun AccountScreen(
         }
     ) { paddingValues ->
         when (uiState) {
-            is AccountUiState.Loading -> {
+            is UiState.Loading -> {
                 LoadingIndicator()
             }
 
-            is AccountUiState.Success -> {
+            is UiState.Success<*> -> {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -157,11 +158,11 @@ fun AccountScreen(
                     }
 
                     when (saveState) {
-                        is SaveState.Saving -> {
+                        is ActionState.Loading -> {
                             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                         }
 
-                        is SaveState.Success -> {
+                        is ActionState.Success<*> -> {
                             Text(
                                 text = "Account updated successfully!",
                                 color = MaterialTheme.colorScheme.primary,
@@ -169,9 +170,9 @@ fun AccountScreen(
                             )
                         }
 
-                        is SaveState.Error -> {
+                        is ActionState.Error -> {
                             Text(
-                                text = "Error: ${(saveState as SaveState.Error).message}",
+                                text = "Error: ${(saveState as ActionState.Error).message}",
                                 color = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
@@ -198,8 +199,8 @@ fun AccountScreen(
                 }
             }
 
-            is AccountUiState.Error -> {
-                ErrorView(message = (uiState as AccountUiState.Error).message)
+            is UiState.Error -> {
+                ErrorView(message = (uiState as UiState.Error).message)
             }
         }
     }

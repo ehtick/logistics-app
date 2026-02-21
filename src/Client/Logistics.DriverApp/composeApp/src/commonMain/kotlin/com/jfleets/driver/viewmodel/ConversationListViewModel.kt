@@ -1,18 +1,19 @@
 package com.jfleets.driver.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.jfleets.driver.api.DriverApi
 import com.jfleets.driver.api.MessageApi
 import com.jfleets.driver.api.TruckApi
+import com.jfleets.driver.api.bodyOrThrow
 import com.jfleets.driver.api.models.ConversationDto
 import com.jfleets.driver.api.models.CreateConversationRequest
 import com.jfleets.driver.service.PreferencesManager
 import com.jfleets.driver.service.messaging.ConversationStateManager
+import com.jfleets.driver.viewmodel.base.ActionState
+import com.jfleets.driver.viewmodel.base.BaseViewModel
+import com.jfleets.driver.viewmodel.base.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 data class DispatcherInfo(
     val id: String,
@@ -25,19 +26,19 @@ class ConversationListViewModel(
     private val truckApi: TruckApi,
     private val preferencesManager: PreferencesManager,
     private val conversationStateManager: ConversationStateManager
-) : ViewModel() {
+) : BaseViewModel() {
 
-    private val _uiState = MutableStateFlow<ConversationListUiState>(ConversationListUiState.Loading)
-    val uiState: StateFlow<ConversationListUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<UiState<List<ConversationDto>>>(UiState.Loading)
+    val uiState: StateFlow<UiState<List<ConversationDto>>> = _uiState.asStateFlow()
 
     private val _dispatcherInfo = MutableStateFlow<DispatcherInfo?>(null)
     val dispatcherInfo: StateFlow<DispatcherInfo?> = _dispatcherInfo.asStateFlow()
 
-    private val _createState = MutableStateFlow<CreateConversationState>(CreateConversationState.Idle)
-    val createState: StateFlow<CreateConversationState> = _createState.asStateFlow()
+    private val _createState = MutableStateFlow<ActionState<String>>(ActionState.Idle)
+    val createState: StateFlow<ActionState<String>> = _createState.asStateFlow()
 
-    private val _teamChatState = MutableStateFlow<TeamChatState>(TeamChatState.Idle)
-    val teamChatState: StateFlow<TeamChatState> = _teamChatState.asStateFlow()
+    private val _teamChatState = MutableStateFlow<ActionState<String>>(ActionState.Idle)
+    val teamChatState: StateFlow<ActionState<String>> = _teamChatState.asStateFlow()
 
     val unreadCount: StateFlow<Int> = conversationStateManager.unreadCount
 
@@ -50,32 +51,24 @@ class ConversationListViewModel(
     }
 
     private fun observeConversationUpdates() {
-        viewModelScope.launch {
-            conversationStateManager.conversationUpdated.collect { conversationId ->
-                // Refresh conversations when a new message arrives
+        launchSafely {
+            conversationStateManager.conversationUpdated.collect {
                 loadConversations(silent = true)
             }
         }
     }
 
     fun loadConversations(silent: Boolean = false) {
-        viewModelScope.launch {
+        launchSafely(onError = { e ->
+            _uiState.value = UiState.Error(e.message ?: "Failed to load conversations")
+        }) {
             if (!silent) {
-                _uiState.value = ConversationListUiState.Loading
+                _uiState.value = UiState.Loading
             }
 
             currentUserId = preferencesManager.getUserId()
-            val response = messageApi.getConversations(participantId = currentUserId)
-
-            if (!response.success) {
-                _uiState.value = ConversationListUiState.Error(
-                    "Failed to load conversations (${response.status})"
-                )
-                return@launch
-            }
-
-            val conversations = response.body()
-            _uiState.value = ConversationListUiState.Success(conversations)
+            val conversations = messageApi.getConversations(participantId = currentUserId).bodyOrThrow()
+            _uiState.value = UiState.Success(conversations)
 
             val totalUnread = conversations.sumOf { it.unreadCount ?: 0 }
             conversationStateManager.updateUnreadCount(totalUnread)
@@ -87,23 +80,18 @@ class ConversationListViewModel(
     }
 
     private fun loadDispatcherInfo() {
-        viewModelScope.launch {
-            val userId = preferencesManager.getUserId() ?: return@launch
+        launchSafely {
+            val userId = preferencesManager.getUserId() ?: return@launchSafely
 
-            val driverResponse = driverApi.getDriverByUserId(userId)
-            if (!driverResponse.success) return@launch
+            val driver = driverApi.getDriverByUserId(userId).bodyOrThrow()
+            val driverId = driver.id ?: return@launchSafely
 
-            val driver = driverResponse.body()
-            val driverId = driver.id ?: return@launch
-
-            val truckResponse = truckApi.getTruckById(
+            val truck = truckApi.getTruckById(
                 driverId,
                 includeLoads = true,
                 onlyActiveLoads = true
-            )
-            if (!truckResponse.success) return@launch
+            ).bodyOrThrow()
 
-            val truck = truckResponse.body()
             val loadWithDispatcher = truck.loads?.firstOrNull {
                 !it.assignedDispatcherId.isNullOrEmpty()
             }
@@ -125,81 +113,55 @@ class ConversationListViewModel(
         val dispatcher = _dispatcherInfo.value ?: return
         val userId = currentUserId ?: return
 
-        val existingConversation = (_uiState.value as? ConversationListUiState.Success)
-            ?.conversations
+        val existingConversation = (_uiState.value as? UiState.Success)
+            ?.data
             ?.find { conversation ->
                 conversation.participants?.any { it.employeeId == dispatcher.id } == true
             }
 
         if (existingConversation != null) {
-            _createState.value = CreateConversationState.Success(existingConversation.id!!)
+            _createState.value = ActionState.Success(existingConversation.id!!)
             return
         }
 
-        viewModelScope.launch {
-            _createState.value = CreateConversationState.Creating
+        launchSafely(onError = { e ->
+            _createState.value = ActionState.Error(e.message ?: "Failed to create conversation")
+        }) {
+            _createState.value = ActionState.Loading
 
-            val response = messageApi.createConversation(
+            val conversation = messageApi.createConversation(
                 CreateConversationRequest(
                     participantIds = listOf(userId, dispatcher.id),
                     name = "Chat with ${dispatcher.name}"
                 )
-            )
+            ).bodyOrThrow()
 
-            if (!response.success) {
-                _createState.value = CreateConversationState.Error(
-                    "Failed to create conversation (${response.status})"
-                )
-                return@launch
-            }
-
-            val conversation = response.body()
             conversation.id?.let { conversationId ->
                 loadConversations()
-                _createState.value = CreateConversationState.Success(conversationId)
+                _createState.value = ActionState.Success(conversationId)
             }
         }
     }
 
     fun openTeamChat() {
-        viewModelScope.launch {
-            _teamChatState.value = TeamChatState.Loading
+        launchSafely(onError = { e ->
+            _teamChatState.value = ActionState.Error(e.message ?: "Failed to load team chat")
+        }) {
+            _teamChatState.value = ActionState.Loading
 
-            val response = messageApi.getTenantChat()
-
-            if (!response.success) {
-                _teamChatState.value = TeamChatState.Error(
-                    "Failed to load team chat (${response.status})"
-                )
-                return@launch
-            }
-
-            val tenantChat = response.body()
+            val tenantChat = messageApi.getTenantChat().bodyOrThrow()
             tenantChat.id?.let { conversationId ->
                 loadConversations()
-                _teamChatState.value = TeamChatState.Success(conversationId)
+                _teamChatState.value = ActionState.Success(conversationId)
             }
         }
     }
 
     fun resetCreateState() {
-        _createState.value = CreateConversationState.Idle
+        _createState.value = ActionState.Idle
     }
 
     fun resetTeamChatState() {
-        _teamChatState.value = TeamChatState.Idle
+        _teamChatState.value = ActionState.Idle
     }
-}
-
-sealed class ConversationListUiState {
-    data object Loading : ConversationListUiState()
-    data class Success(val conversations: List<ConversationDto>) : ConversationListUiState()
-    data class Error(val message: String) : ConversationListUiState()
-}
-
-sealed class TeamChatState {
-    data object Idle : TeamChatState()
-    data object Loading : TeamChatState()
-    data class Success(val conversationId: String) : TeamChatState()
-    data class Error(val message: String) : TeamChatState()
 }

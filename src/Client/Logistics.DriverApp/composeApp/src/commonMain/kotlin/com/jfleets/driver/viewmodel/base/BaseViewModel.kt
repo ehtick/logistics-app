@@ -2,13 +2,13 @@ package com.jfleets.driver.viewmodel.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jfleets.driver.util.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * Base ViewModel providing a consistent async loading pattern.
- * Subclasses can use [launchWithState] to run suspend blocks
- * with automatic Loading → Success/Error state transitions.
+ * Base ViewModel providing consistent async patterns.
+ * All ViewModels should extend this instead of ViewModel() directly.
  */
 abstract class BaseViewModel : ViewModel() {
 
@@ -26,7 +26,27 @@ abstract class BaseViewModel : ViewModel() {
                 val result = block()
                 stateFlow.value = UiState.Success(result)
             } catch (e: Exception) {
+                Logger.e("${this@BaseViewModel::class.simpleName}: ${e.message}", e)
                 stateFlow.value = UiState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    /**
+     * Launch a fire-and-forget coroutine with error logging.
+     * Use for operations where failure shouldn't affect UI state
+     * (e.g., sending device tokens, analytics, non-critical updates).
+     */
+    protected fun launchSafely(
+        onError: ((Exception) -> Unit)? = null,
+        block: suspend () -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                block()
+            } catch (e: Exception) {
+                Logger.e("${this@BaseViewModel::class.simpleName}: ${e.message}", e)
+                onError?.invoke(e)
             }
         }
     }

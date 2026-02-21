@@ -40,13 +40,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jfleets.driver.api.models.MessageDto
 import com.jfleets.driver.ui.components.AppTopBar
 import com.jfleets.driver.ui.components.EmptyStateView
 import com.jfleets.driver.ui.components.ErrorView
 import com.jfleets.driver.ui.components.LoadingIndicator
 import com.jfleets.driver.ui.components.MessageBubble
-import com.jfleets.driver.viewmodel.ChatUiState
+import com.jfleets.driver.viewmodel.ChatData
 import com.jfleets.driver.viewmodel.ChatViewModel
+import com.jfleets.driver.viewmodel.base.UiState
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -62,8 +64,9 @@ fun ConversationScreen(
 
     // Scroll to bottom when new messages arrive
     LaunchedEffect(uiState) {
-        if (uiState is ChatUiState.Success) {
-            val messages = (uiState as ChatUiState.Success).messages
+        if (uiState is UiState.Success<*>) {
+            @Suppress("UNCHECKED_CAST")
+            val messages = (uiState as UiState.Success<ChatData>).data.messages
             if (messages.isNotEmpty()) {
                 listState.animateScrollToItem(messages.size - 1)
             }
@@ -96,14 +99,15 @@ fun ConversationScreen(
                     .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
             ) {
                 when (val state = uiState) {
-                    is ChatUiState.Initial -> {}
-
-                    is ChatUiState.Loading -> {
+                    is UiState.Loading -> {
                         LoadingIndicator()
                     }
 
-                    is ChatUiState.Success -> {
-                        if (state.messages.isEmpty()) {
+                    is UiState.Success<*> -> {
+                        @Suppress("UNCHECKED_CAST")
+                        val chatData = (state as UiState.Success<ChatData>).data
+
+                        if (chatData.messages.isEmpty()) {
                             EmptyStateView(
                                 icon = Icons.Default.ChatBubbleOutline,
                                 title = "No messages yet",
@@ -116,7 +120,7 @@ fun ConversationScreen(
                                 contentPadding = PaddingValues(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                if (state.hasMore) {
+                                if (chatData.hasMore) {
                                     item {
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),
@@ -129,7 +133,7 @@ fun ConversationScreen(
                                     }
                                 }
 
-                                items(state.messages) { message ->
+                                items(chatData.messages) { message: MessageDto ->
                                     MessageBubble(
                                         message = message,
                                         isOwnMessage = viewModel.isOwnMessage(message),
@@ -144,7 +148,7 @@ fun ConversationScreen(
                         }
                     }
 
-                    is ChatUiState.Error -> {
+                    is UiState.Error -> {
                         ErrorView(
                             message = state.message,
                             onRetry = { viewModel.loadMessages() }
@@ -214,22 +218,24 @@ private fun MessageInput(
 }
 
 /**
- * Extension function to get conversation title from ChatUiState.
+ * Extension function to get conversation title from UiState<ChatData>.
  */
-private fun ChatUiState.getConversationTitle(): String {
+private fun UiState<ChatData>.getConversationTitle(): String {
     return when (this) {
-        is ChatUiState.Success -> {
+        is UiState.Success<*> -> {
+            @Suppress("UNCHECKED_CAST")
+            val chatData = (this as UiState.Success<ChatData>).data
             // Try conversation name first
-            conversation?.name?.takeIf { it.isNotBlank() }
+            chatData.conversation?.name?.takeIf { it.isNotBlank() }
             // Then try participant names
-                ?: conversation?.participants
+                ?: chatData.conversation?.participants
                     ?.mapNotNull { it.employeeName }
                     ?.filter { it.isNotBlank() }
                     ?.takeIf { it.isNotEmpty() }
                     ?.joinToString(", ")
                 // Fallback to unique sender names from messages (excluding current user)
-                ?: messages
-                    .filter { it.senderId != currentUserId }
+                ?: chatData.messages
+                    .filter { it.senderId != chatData.currentUserId }
                     .mapNotNull { it.senderName }
                     .filter { it.isNotBlank() }
                     .distinct()

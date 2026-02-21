@@ -1,20 +1,13 @@
 package com.jfleets.driver.service.auth
 
+import com.jfleets.driver.api.HttpClientFactory
 import com.jfleets.driver.service.PreferencesManager
 import com.jfleets.driver.util.decodeJwtPayload
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.forms.submitForm
 import io.ktor.http.Parameters
 import io.ktor.http.isSuccess
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import kotlin.time.Clock
 
 
@@ -24,29 +17,8 @@ class AuthService(
 ) {
     private val tokenEndpoint = "${authorityUrl.trimEnd('/')}/connect/token"
 
-    private val httpClient: HttpClient by lazy { createHttpClient() }
-
-    private fun createHttpClient(): HttpClient {
-        return HttpClient {
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
-            }
-
-            install(Logging) {
-                logger = Logger.DEFAULT
-                level = LogLevel.INFO
-            }
-
-            install(HttpTimeout) {
-                requestTimeoutMillis = 30000
-                connectTimeoutMillis = 30000
-            }
-        }
-    }
+    private val lazyHttpClient = lazy { HttpClientFactory.create() }
+    private val httpClient: HttpClient by lazyHttpClient
 
     suspend fun login(username: String, password: String): Result<Unit> {
         return try {
@@ -144,6 +116,16 @@ class AuthService(
 
     suspend fun logout() {
         preferencesManager.clearAll()
+        close()
+    }
+
+    /**
+     * Closes the underlying HttpClient to release resources.
+     */
+    fun close() {
+        if (lazyHttpClient.isInitialized()) {
+            httpClient.close()
+        }
     }
 
     private suspend fun saveTokens(tokenResponse: TokenResponse) {

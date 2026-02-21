@@ -19,7 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.jfleets.driver.ui.theme.LocalExtendedColors
+import com.jfleets.driver.ui.theme.Radius
 import com.jfleets.driver.viewmodel.DamageMarker
 
 @Composable
@@ -28,19 +32,27 @@ fun VehicleDiagram(
     onTap: (x: Double, y: Double) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val extendedColors = LocalExtendedColors.current
+    val markerDescription = if (damageMarkers.isEmpty()) {
+        "Vehicle damage diagram. Tap to mark damage location."
+    } else {
+        "Vehicle damage diagram with ${damageMarkers.size} damage markers. Tap to add more."
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(0.7f) // Taller aspect ratio for better car proportions
+            .aspectRatio(0.7f)
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(Radius.md)
             )
             .background(
-                color = Color(0xFFF5F5F5),
-                shape = RoundedCornerShape(8.dp)
+                color = extendedColors.diagramBackground,
+                shape = RoundedCornerShape(Radius.md)
             )
+            .semantics { contentDescription = markerDescription }
     ) {
         Canvas(
             modifier = Modifier
@@ -55,7 +67,6 @@ fun VehicleDiagram(
         ) {
             val width = size.width
             val height = size.height
-            val padding = width * 0.15f
 
             // Car dimensions - centered in canvas
             val carWidth = width * 0.5f
@@ -72,72 +83,47 @@ fun VehicleDiagram(
 
             // Draw car body - clean sedan shape
             val bodyPath = Path().apply {
-                // Start at front left after hood taper
                 moveTo(carLeft + hoodTaper, carTop + hoodCorner)
-
-                // Front left corner (hood - narrower)
                 quadraticTo(
                     carLeft + hoodTaper, carTop,
                     carLeft + hoodTaper + hoodCorner, carTop
                 )
-
-                // Front edge (hood)
                 lineTo(carRight - hoodTaper - hoodCorner, carTop)
-
-                // Front right corner (hood)
                 quadraticTo(
                     carRight - hoodTaper, carTop,
                     carRight - hoodTaper, carTop + hoodCorner
                 )
-
-                // Transition from hood to body (right side)
                 lineTo(carRight - hoodTaper, carTop + carHeight * 0.12f)
                 quadraticTo(
                     carRight, carTop + carHeight * 0.14f,
                     carRight, carTop + carHeight * 0.18f
                 )
-
-                // Right side (straight)
                 lineTo(carRight, carBottom - carHeight * 0.12f)
-
-                // Rear right corner
                 quadraticTo(
                     carRight, carBottom,
                     carRight - bodyCorner, carBottom
                 )
-
-                // Rear edge
                 lineTo(carLeft + bodyCorner, carBottom)
-
-                // Rear left corner
                 quadraticTo(
                     carLeft, carBottom,
                     carLeft, carBottom - carHeight * 0.12f
                 )
-
-                // Left side (straight)
                 lineTo(carLeft, carTop + carHeight * 0.18f)
-
-                // Transition from body to hood (left side)
                 quadraticTo(
                     carLeft, carTop + carHeight * 0.14f,
                     carLeft + hoodTaper, carTop + carHeight * 0.12f
                 )
-
                 close()
             }
 
-            // Car body fill
-            drawPath(path = bodyPath, color = Color(0xFFDDDDDD))
-
-            // Car body outline
+            drawPath(path = bodyPath, color = extendedColors.diagramBodyFill)
             drawPath(
                 path = bodyPath,
-                color = Color(0xFF555555),
+                color = extendedColors.diagramBodyOutline,
                 style = Stroke(width = 2.5f.dp.toPx())
             )
 
-            // Cabin area (darker to show roof)
+            // Cabin area
             val cabinPath = Path().apply {
                 val cabinTop = carTop + carHeight * 0.22f
                 val cabinBottom = carBottom - carHeight * 0.18f
@@ -156,7 +142,7 @@ fun VehicleDiagram(
                 quadraticTo(cabinLeft, cabinTop, cabinLeft + cabinCorner, cabinTop)
                 close()
             }
-            drawPath(path = cabinPath, color = Color(0xFFCCCCCC))
+            drawPath(path = cabinPath, color = extendedColors.diagramCabin)
 
             // Front windshield
             val windshieldPath = Path().apply {
@@ -170,10 +156,10 @@ fun VehicleDiagram(
                 lineTo(carLeft + wsInset, wsBottom)
                 close()
             }
-            drawPath(path = windshieldPath, color = Color(0xFFADD8E6))
+            drawPath(path = windshieldPath, color = extendedColors.diagramGlass)
             drawPath(
                 path = windshieldPath,
-                color = Color(0xFF777777),
+                color = extendedColors.diagramGlassOutline,
                 style = Stroke(width = 1.dp.toPx())
             )
 
@@ -189,46 +175,38 @@ fun VehicleDiagram(
                 lineTo(carLeft + rwInset + carWidth * 0.02f, rwBottom)
                 close()
             }
-            drawPath(path = rearWindowPath, color = Color(0xFFADD8E6))
+            drawPath(path = rearWindowPath, color = extendedColors.diagramGlass)
             drawPath(
                 path = rearWindowPath,
-                color = Color(0xFF777777),
+                color = extendedColors.diagramGlassOutline,
                 style = Stroke(width = 1.dp.toPx())
             )
 
-            // Wheels - dark with rounded corners
+            // Wheels
             val wheelWidth = carWidth * 0.22f
             val wheelHeight = carHeight * 0.10f
-            val wheelColor = Color(0xFF2D2D2D)
             val wheelCorner = CornerRadius(4.dp.toPx())
 
-            // Front left wheel
             drawRoundRect(
-                color = wheelColor,
+                color = extendedColors.diagramWheel,
                 topLeft = Offset(carLeft - wheelWidth * 0.35f, carTop + carHeight * 0.08f),
                 size = Size(wheelWidth, wheelHeight),
                 cornerRadius = wheelCorner
             )
-
-            // Front right wheel
             drawRoundRect(
-                color = wheelColor,
+                color = extendedColors.diagramWheel,
                 topLeft = Offset(carRight - wheelWidth * 0.65f, carTop + carHeight * 0.08f),
                 size = Size(wheelWidth, wheelHeight),
                 cornerRadius = wheelCorner
             )
-
-            // Rear left wheel
             drawRoundRect(
-                color = wheelColor,
+                color = extendedColors.diagramWheel,
                 topLeft = Offset(carLeft - wheelWidth * 0.35f, carBottom - carHeight * 0.08f - wheelHeight),
                 size = Size(wheelWidth, wheelHeight),
                 cornerRadius = wheelCorner
             )
-
-            // Rear right wheel
             drawRoundRect(
-                color = wheelColor,
+                color = extendedColors.diagramWheel,
                 topLeft = Offset(carRight - wheelWidth * 0.65f, carBottom - carHeight * 0.08f - wheelHeight),
                 size = Size(wheelWidth, wheelHeight),
                 cornerRadius = wheelCorner
@@ -240,13 +218,13 @@ fun VehicleDiagram(
             val lightCorner = CornerRadius(2.dp.toPx())
 
             drawRoundRect(
-                color = Color(0xFFFFEB3B),
+                color = extendedColors.diagramHeadlight,
                 topLeft = Offset(carLeft + hoodTaper + carWidth * 0.05f, carTop + carHeight * 0.015f),
                 size = Size(lightWidth, lightHeight),
                 cornerRadius = lightCorner
             )
             drawRoundRect(
-                color = Color(0xFFFFEB3B),
+                color = extendedColors.diagramHeadlight,
                 topLeft = Offset(carRight - hoodTaper - carWidth * 0.05f - lightWidth, carTop + carHeight * 0.015f),
                 size = Size(lightWidth, lightHeight),
                 cornerRadius = lightCorner
@@ -254,13 +232,13 @@ fun VehicleDiagram(
 
             // Taillights
             drawRoundRect(
-                color = Color(0xFFE53935),
+                color = extendedColors.diagramTaillight,
                 topLeft = Offset(carLeft + carWidth * 0.08f, carBottom - carHeight * 0.035f),
                 size = Size(lightWidth, lightHeight),
                 cornerRadius = lightCorner
             )
             drawRoundRect(
-                color = Color(0xFFE53935),
+                color = extendedColors.diagramTaillight,
                 topLeft = Offset(carRight - carWidth * 0.08f - lightWidth, carBottom - carHeight * 0.035f),
                 size = Size(lightWidth, lightHeight),
                 cornerRadius = lightCorner
@@ -271,13 +249,13 @@ fun VehicleDiagram(
             val mirrorHeight = carHeight * 0.018f
 
             drawRoundRect(
-                color = Color(0xFF555555),
+                color = extendedColors.diagramMirror,
                 topLeft = Offset(carLeft - mirrorWidth + carWidth * 0.02f, carTop + carHeight * 0.20f),
                 size = Size(mirrorWidth, mirrorHeight),
                 cornerRadius = CornerRadius(2.dp.toPx())
             )
             drawRoundRect(
-                color = Color(0xFF555555),
+                color = extendedColors.diagramMirror,
                 topLeft = Offset(carRight - carWidth * 0.02f, carTop + carHeight * 0.20f),
                 size = Size(mirrorWidth, mirrorHeight),
                 cornerRadius = CornerRadius(2.dp.toPx())
@@ -290,9 +268,9 @@ fun VehicleDiagram(
                 val markerRadius = 12.dp.toPx()
 
                 val markerColor = when (marker.severity?.lowercase()) {
-                    "severe" -> Color(0xFFD32F2F)
-                    "moderate" -> Color(0xFFFF9800)
-                    else -> Color(0xFFFFC107)
+                    "severe" -> extendedColors.damageSevere
+                    "moderate" -> extendedColors.damageModerate
+                    else -> extendedColors.damageMinor
                 }
 
                 // Shadow

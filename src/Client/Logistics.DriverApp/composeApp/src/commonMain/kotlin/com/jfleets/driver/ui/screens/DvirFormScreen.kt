@@ -32,24 +32,21 @@ import androidx.compose.ui.unit.dp
 import com.jfleets.driver.api.models.DvirType
 import com.jfleets.driver.ui.components.SectionCard
 import com.jfleets.driver.ui.components.SignaturePad
+import com.jfleets.driver.ui.components.capture.HandleSideEffects
 import com.jfleets.driver.ui.components.capture.NotesTextField
 import com.jfleets.driver.ui.components.capture.PhotoCaptureSection
 import com.jfleets.driver.ui.components.capture.SubmitButton
+import com.jfleets.driver.ui.components.capture.rememberCameraCapture
 import com.jfleets.driver.ui.components.dvir.DvirAddDefectDialog
 import com.jfleets.driver.ui.components.dvir.DvirDefectsSection
 import com.jfleets.driver.ui.components.dvir.DvirInspectionTypeSelector
 import com.jfleets.driver.ui.components.dvir.DvirTruckSelector
-import com.jfleets.driver.util.CameraLauncher
 import com.jfleets.driver.util.SignatureConverter
-import com.jfleets.driver.viewmodel.CapturedPhoto
 import com.jfleets.driver.viewmodel.DvirFormViewModel
-import org.koin.compose.getKoin
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DvirFormScreen(
     truckId: String?,
@@ -57,7 +54,7 @@ fun DvirFormScreen(
     onNavigateBack: () -> Unit,
     viewModel: DvirFormViewModel = koinViewModel { parametersOf(truckId, tripId) }
 ) {
-    val cameraLauncher: CameraLauncher? = getKoin().getOrNull()
+    val onCapturePhoto = rememberCameraCapture(onPhotoCaptured = viewModel::addPhoto)
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var showAddDefectDialog by remember { mutableStateOf(false) }
@@ -142,20 +139,7 @@ fun DvirFormScreen(
                 SectionCard(title = "Photos") {
                     PhotoCaptureSection(
                         photos = uiState.photos,
-                        onAddPhoto = {
-                            cameraLauncher?.launchCamera { result ->
-                                result?.let {
-                                    viewModel.addPhoto(
-                                        CapturedPhoto(
-                                            id = Uuid.random().toString(),
-                                            bytes = it.bytes,
-                                            fileName = it.fileName,
-                                            contentType = it.contentType
-                                        )
-                                    )
-                                }
-                            }
-                        },
+                        onAddPhoto = onCapturePhoto ?: {},
                         onRemovePhoto = viewModel::removePhoto,
                         showTitle = false
                     )
@@ -204,27 +188,5 @@ fun DvirFormScreen(
                 showAddDefectDialog = false
             }
         )
-    }
-}
-
-@Composable
-private fun HandleSideEffects(
-    error: String?,
-    isSuccess: Boolean,
-    snackbarHostState: SnackbarHostState,
-    onClearError: () -> Unit,
-    onNavigateBack: () -> Unit
-) {
-    LaunchedEffect(error) {
-        error?.let {
-            snackbarHostState.showSnackbar(it)
-            onClearError()
-        }
-    }
-
-    LaunchedEffect(isSuccess) {
-        if (isSuccess) {
-            onNavigateBack()
-        }
     }
 }

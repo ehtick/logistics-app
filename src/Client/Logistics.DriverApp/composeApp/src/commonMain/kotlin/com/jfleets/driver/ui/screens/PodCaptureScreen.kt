@@ -29,21 +29,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jfleets.driver.ui.components.SignaturePad
 import com.jfleets.driver.ui.components.capture.LocationDisplay
+import com.jfleets.driver.ui.components.capture.HandleSideEffects
 import com.jfleets.driver.ui.components.capture.NotesTextField
 import com.jfleets.driver.ui.components.capture.PhotoCaptureSection
 import com.jfleets.driver.ui.components.capture.SubmitButton
-import com.jfleets.driver.util.CameraLauncher
+import com.jfleets.driver.ui.components.capture.rememberCameraCapture
 import com.jfleets.driver.util.SignatureConverter
-import com.jfleets.driver.viewmodel.CapturedPhoto
 import com.jfleets.driver.viewmodel.DocumentCaptureType
 import com.jfleets.driver.viewmodel.PodCaptureViewModel
-import org.koin.compose.getKoin
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PodCaptureScreen(
     loadId: String,
@@ -52,7 +49,7 @@ fun PodCaptureScreen(
     onNavigateBack: () -> Unit,
     viewModel: PodCaptureViewModel = koinViewModel { parametersOf(loadId, tripStopId, captureType) }
 ) {
-    val cameraLauncher: CameraLauncher? = getKoin().getOrNull()
+    val onCapturePhoto = rememberCameraCapture(onPhotoCaptured = viewModel::addPhoto)
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -91,20 +88,7 @@ fun PodCaptureScreen(
         ) {
             PhotoCaptureSection(
                 photos = uiState.photos,
-                onAddPhoto = {
-                    cameraLauncher?.launchCamera { result ->
-                        result?.let {
-                            viewModel.addPhoto(
-                                CapturedPhoto(
-                                    id = Uuid.random().toString(),
-                                    bytes = it.bytes,
-                                    fileName = it.fileName,
-                                    contentType = it.contentType
-                                )
-                            )
-                        }
-                    }
-                },
+                onAddPhoto = onCapturePhoto ?: {},
                 onRemovePhoto = viewModel::removePhoto,
                 emptyMessage = "No photos added yet"
             )
@@ -169,28 +153,6 @@ fun PodCaptureScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-        }
-    }
-}
-
-@Composable
-private fun HandleSideEffects(
-    error: String?,
-    isSuccess: Boolean,
-    snackbarHostState: SnackbarHostState,
-    onClearError: () -> Unit,
-    onNavigateBack: () -> Unit
-) {
-    LaunchedEffect(error) {
-        error?.let {
-            snackbarHostState.showSnackbar(it)
-            onClearError()
-        }
-    }
-
-    LaunchedEffect(isSuccess) {
-        if (isSuccess) {
-            onNavigateBack()
         }
     }
 }

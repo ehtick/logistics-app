@@ -1,18 +1,19 @@
 package com.jfleets.driver.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.jfleets.driver.api.DocumentApi
 import com.jfleets.driver.model.FileUploadData
 import com.jfleets.driver.model.toFormParts
 import com.jfleets.driver.service.LocationService
 import com.jfleets.driver.ui.components.PathData
+import com.jfleets.driver.viewmodel.base.CaptureFormViewModel
+import com.jfleets.driver.viewmodel.base.CaptureFormState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class DocumentCaptureType {
     POD,  // Proof of Delivery
     BOL   // Bill of Lading
@@ -22,18 +23,18 @@ data class PodCaptureUiState(
     val loadId: String = "",
     val tripStopId: String? = null,
     val captureType: DocumentCaptureType = DocumentCaptureType.POD,
-    val photos: List<CapturedPhoto> = emptyList(),
-    val signaturePaths: List<PathData>? = null,
-    val signatureBase64: String? = null,
     val recipientName: String = "",
-    val notes: String = "",
-    val latitude: Double? = null,
-    val longitude: Double? = null,
     val isLoading: Boolean = false,
-    val isSubmitting: Boolean = false,
-    val error: String? = null,
-    val isSuccess: Boolean = false
-)
+    override val photos: List<CapturedPhoto> = emptyList(),
+    override val signaturePaths: List<PathData>? = null,
+    override val signatureBase64: String? = null,
+    override val notes: String = "",
+    override val latitude: Double? = null,
+    override val longitude: Double? = null,
+    override val isSubmitting: Boolean = false,
+    override val error: String? = null,
+    override val isSuccess: Boolean = false
+) : CaptureFormState
 
 data class CapturedPhoto(
     val id: String,
@@ -44,141 +45,89 @@ data class CapturedPhoto(
 
 class PodCaptureViewModel(
     private val documentApi: DocumentApi,
-    private val locationService: LocationService,
+    locationService: LocationService,
     private val loadId: String,
     private val tripStopId: String?,
     private val captureType: DocumentCaptureType
-) : ViewModel() {
+) : CaptureFormViewModel<PodCaptureUiState>(locationService) {
 
-    private val _uiState = MutableStateFlow(
+    override val _formState = MutableStateFlow(
         PodCaptureUiState(
             loadId = loadId,
             tripStopId = tripStopId,
             captureType = captureType
         )
     )
-    val uiState: StateFlow<PodCaptureUiState> = _uiState.asStateFlow()
+    override val formState: StateFlow<PodCaptureUiState> = _formState.asStateFlow()
+
+    val uiState: StateFlow<PodCaptureUiState> get() = formState
 
     init {
         fetchCurrentLocation()
     }
 
-    private fun fetchCurrentLocation() {
-        viewModelScope.launch {
-            try {
-                val location = locationService.getCurrentLocation()
-                if (location != null) {
-                    _uiState.update {
-                        it.copy(
-                            latitude = location.latitude,
-                            longitude = location.longitude
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                // Location fetch failed, continue without location
-            }
-        }
+    override fun updateState(transform: PodCaptureUiState.() -> PodCaptureUiState) {
+        _formState.update { it.transform() }
     }
 
-    fun addPhoto(photo: CapturedPhoto) {
-        _uiState.update { state ->
-            state.copy(photos = state.photos + photo)
-        }
-    }
-
-    fun removePhoto(photoId: String) {
-        _uiState.update { state ->
-            state.copy(photos = state.photos.filter { it.id != photoId })
-        }
-    }
-
-    fun setSignature(paths: List<PathData>, base64: String) {
-        _uiState.update { state ->
-            state.copy(signaturePaths = paths, signatureBase64 = base64)
-        }
-    }
-
-    fun clearSignature() {
-        _uiState.update { state ->
-            state.copy(signaturePaths = null, signatureBase64 = null)
-        }
-    }
+    override fun PodCaptureUiState.copyWithLocation(lat: Double, lng: Double) =
+        copy(latitude = lat, longitude = lng)
+    override fun PodCaptureUiState.copyWithPhotos(photos: List<CapturedPhoto>) =
+        copy(photos = photos)
+    override fun PodCaptureUiState.copyWithSignature(paths: List<PathData>?, base64: String?) =
+        copy(signaturePaths = paths, signatureBase64 = base64)
+    override fun PodCaptureUiState.copyWithNotes(notes: String) =
+        copy(notes = notes)
+    override fun PodCaptureUiState.copyWithError(error: String?) =
+        copy(error = error)
+    override fun PodCaptureUiState.copyWithSubmitting(isSubmitting: Boolean, error: String?, isSuccess: Boolean) =
+        copy(isSubmitting = isSubmitting, error = error, isSuccess = isSuccess)
 
     fun setRecipientName(name: String) {
-        _uiState.update { state ->
-            state.copy(recipientName = name)
-        }
+        _formState.update { it.copy(recipientName = name) }
     }
 
-    fun setNotes(notes: String) {
-        _uiState.update { state ->
-            state.copy(notes = notes)
-        }
-    }
-
-    fun clearError() {
-        _uiState.update { it.copy(error = null) }
-    }
-
-    fun canSubmit(): Boolean {
-        val state = _uiState.value
+    override fun canSubmit(): Boolean {
+        val state = _formState.value
         return !state.isSubmitting &&
                 (state.photos.isNotEmpty() || state.signatureBase64 != null || state.recipientName.isNotBlank())
     }
 
-    fun submit() {
-        if (!canSubmit()) return
+    override suspend fun performSubmit() {
+        val state = _formState.value
+        val photoFormParts = state.photos.map { photo ->
+            FileUploadData(
+                bytes = photo.bytes,
+                fileName = photo.fileName,
+                contentType = photo.contentType
+            )
+        }.toFormParts()
 
-        viewModelScope.launch {
-            _uiState.update { it.copy(isSubmitting = true, error = null) }
+        when (state.captureType) {
+            DocumentCaptureType.POD -> {
+                documentApi.captureProofOfDelivery(
+                    loadId = state.loadId,
+                    tripStopId = state.tripStopId,
+                    photos = photoFormParts,
+                    signatureBase64 = state.signatureBase64,
+                    recipientName = state.recipientName.takeIf { it.isNotBlank() },
+                    latitude = state.latitude,
+                    longitude = state.longitude,
+                    notes = state.notes.takeIf { it.isNotBlank() }
+                )
+            }
 
-            try {
-                val state = _uiState.value
-                val photoFormParts = state.photos.map { photo ->
-                    FileUploadData(
-                        bytes = photo.bytes,
-                        fileName = photo.fileName,
-                        contentType = photo.contentType
-                    )
-                }.toFormParts()
-
-                when (state.captureType) {
-                    DocumentCaptureType.POD -> {
-                        documentApi.captureProofOfDelivery(
-                            loadId = state.loadId,
-                            tripStopId = state.tripStopId,
-                            photos = photoFormParts,
-                            signatureBase64 = state.signatureBase64,
-                            recipientName = state.recipientName.takeIf { it.isNotBlank() },
-                            latitude = state.latitude,
-                            longitude = state.longitude,
-                            notes = state.notes.takeIf { it.isNotBlank() }
-                        )
-                    }
-
-                    DocumentCaptureType.BOL -> {
-                        documentApi.captureBillOfLading(
-                            loadId = state.loadId,
-                            tripStopId = state.tripStopId,
-                            photos = photoFormParts,
-                            signatureBase64 = state.signatureBase64,
-                            recipientName = state.recipientName.takeIf { it.isNotBlank() },
-                            latitude = state.latitude,
-                            longitude = state.longitude,
-                            notes = state.notes.takeIf { it.isNotBlank() }
-                        )
-                    }
-                }
-
-                _uiState.update { it.copy(isSubmitting = false, isSuccess = true) }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isSubmitting = false,
-                        error = e.message ?: "Failed to submit document"
-                    )
-                }
+            DocumentCaptureType.BOL -> {
+                documentApi.captureBillOfLading(
+                    loadId = state.loadId,
+                    tripStopId = state.tripStopId,
+                    photos = photoFormParts,
+                    signatureBase64 = state.signatureBase64,
+                    recipientName = state.recipientName.takeIf { it.isNotBlank() },
+                    latitude = state.latitude,
+                    longitude = state.longitude,
+                    notes = state.notes.takeIf { it.isNotBlank() }
+                )
             }
         }
     }

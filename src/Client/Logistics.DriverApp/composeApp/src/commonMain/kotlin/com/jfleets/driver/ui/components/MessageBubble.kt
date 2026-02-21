@@ -23,14 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jfleets.driver.api.models.MessageDto
+import com.jfleets.driver.ui.theme.LocalExtendedColors
+import com.jfleets.driver.ui.theme.Spacing
 import com.jfleets.driver.util.formatTime
-
-// WhatsApp-style blue color for read messages
-private val ReadCheckColor = Color(0xFF53BDEB)
 
 /**
  * A chat message bubble that displays message content with sender info and timestamp.
@@ -58,7 +56,7 @@ fun MessageBubble(
                 textColor = MaterialTheme.colorScheme.onSecondary,
                 textStyle = MaterialTheme.typography.bodySmall
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Spacing.sm))
         }
 
         Card(
@@ -89,7 +87,9 @@ private fun MessageContent(
     message: MessageDto,
     isOwnMessage: Boolean
 ) {
-    Column(modifier = Modifier.padding(12.dp)) {
+    val extendedColors = LocalExtendedColors.current
+
+    Column(modifier = Modifier.padding(Spacing.md)) {
         if (!isOwnMessage && message.senderName != null) {
             Text(
                 text = message.senderName,
@@ -97,7 +97,7 @@ private fun MessageContent(
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
         }
 
         Text(
@@ -109,7 +109,7 @@ private fun MessageContent(
                 MaterialTheme.colorScheme.onSurface
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(Spacing.xs))
 
         // Timestamp and read status row
         Row(
@@ -129,13 +129,13 @@ private fun MessageContent(
 
             // Read status indicator (only for own messages)
             if (isOwnMessage) {
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(Spacing.xs))
                 Icon(
                     imageVector = if (message.isRead == true) Icons.Default.DoneAll else Icons.Default.Check,
                     contentDescription = if (message.isRead == true) "Read" else "Sent",
                     modifier = Modifier.size(14.dp),
                     tint = if (message.isRead == true)
-                        ReadCheckColor
+                        extendedColors.messageReadCheck
                     else
                         MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                 )

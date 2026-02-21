@@ -28,3 +28,40 @@ val PrimaryBlueDark = Color(0xFF90CAF9)
 val BackgroundDark = Color(0xFF121212)
 val SurfaceDark = Color(0xFF1E1E1E)
 val CardBackgroundDark = Color(0xFF2C2C2C)
+
+// Vehicle Diagram Colors
+val DiagramBackground = Color(0xFFF5F5F5)
+val DiagramBodyFill = Color(0xFFDDDDDD)
+val DiagramBodyOutline = Color(0xFF555555)
+val DiagramCabin = Color(0xFFCCCCCC)
+val DiagramGlass = Color(0xFFADD8E6)
+val DiagramGlassOutline = Color(0xFF777777)
+val DiagramWheel = Color(0xFF2D2D2D)
+val DiagramHeadlight = Color(0xFFFFEB3B)
+val DiagramTaillight = Color(0xFFE53935)
+val DiagramMirror = Color(0xFF555555)
+
+// Damage Severity Colors
+val DamageSevere = Color(0xFFD32F2F)
+val DamageModerate = Color(0xFFFF9800)
+val DamageMinor = Color(0xFFFFC107)
+
+// Messaging Colors
+val MessageReadCheck = Color(0xFF53BDEB)
+
+// Signature Pad Colors
+val SignatureStroke = Color.Black
+val SignatureBackground = Color.White
+val SignaturePlaceholder = Color.Gray
+
+// Dark variants for diagram/signature
+val DiagramBackgroundDark = Color(0xFF2C2C2C)
+val DiagramBodyFillDark = Color(0xFF444444)
+val DiagramBodyOutlineDark = Color(0xFFAAAAAA)
+val DiagramCabinDark = Color(0xFF3A3A3A)
+val DiagramGlassDark = Color(0xFF4A6A7A)
+val DiagramGlassOutlineDark = Color(0xFF888888)
+val DiagramWheelDark = Color(0xFF1A1A1A)
+val SignatureStrokeDark = Color.White
+val SignatureBackgroundDark = Color(0xFF2C2C2C)
+val SignaturePlaceholderDark = Color(0xFF888888)

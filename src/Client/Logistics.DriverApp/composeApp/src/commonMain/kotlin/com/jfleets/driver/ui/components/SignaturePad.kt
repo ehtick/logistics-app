@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -29,13 +28,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.jfleets.driver.ui.theme.LocalExtendedColors
+import com.jfleets.driver.ui.theme.Radius
+import com.jfleets.driver.ui.theme.Spacing
 
 data class PathData(
     val points: List<Offset> = emptyList()
@@ -47,15 +50,22 @@ fun SignaturePad(
     onSignatureComplete: (List<PathData>) -> Unit,
     onClear: () -> Unit = {}
 ) {
+    val extendedColors = LocalExtendedColors.current
     val paths = remember { mutableStateListOf<PathData>() }
     var currentPath by remember { mutableStateOf<PathData?>(null) }
     var isEmpty by remember { mutableStateOf(true) }
+
+    val padDescription = if (isEmpty) {
+        "Signature pad. Draw your signature here."
+    } else {
+        "Signature pad with signature drawn. Use Clear to reset or Confirm to save."
+    }
 
     Column(modifier = modifier) {
         Text(
             text = "Signature",
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = Spacing.sm)
         )
 
         Box(
@@ -65,13 +75,14 @@ fun SignaturePad(
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outline,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(Radius.md)
                 )
                 .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(8.dp)
+                    color = extendedColors.signatureBackground,
+                    shape = RoundedCornerShape(Radius.md)
                 )
                 .clipToBounds()
+                .semantics { contentDescription = padDescription }
                 .pointerInput(Unit) {
                     detectDragGestures(
                         onDragStart = { offset ->
@@ -108,7 +119,7 @@ fun SignaturePad(
                         }
                         drawPath(
                             path = path,
-                            color = Color.Black,
+                            color = extendedColors.signatureStroke,
                             style = Stroke(
                                 width = strokeWidth,
                                 cap = StrokeCap.Round,
@@ -129,7 +140,7 @@ fun SignaturePad(
                         }
                         drawPath(
                             path = path,
-                            color = Color.Black,
+                            color = extendedColors.signatureStroke,
                             style = Stroke(
                                 width = strokeWidth,
                                 cap = StrokeCap.Round,
@@ -143,13 +154,13 @@ fun SignaturePad(
             if (isEmpty) {
                 Text(
                     text = "Sign here",
-                    color = Color.Gray,
+                    color = extendedColors.signaturePlaceholder,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -166,7 +177,7 @@ fun SignaturePad(
                 Text("Clear")
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Spacing.sm))
 
             Button(
                 onClick = {

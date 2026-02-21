@@ -37,13 +37,15 @@ import com.jfleets.driver.model.LocalUserSettings
 import com.jfleets.driver.model.toDisplayString
 import com.jfleets.driver.ui.components.AppTopBar
 import com.jfleets.driver.ui.components.CardContainer
+import com.jfleets.driver.ui.components.DetailRow
 import com.jfleets.driver.ui.components.ErrorView
 import com.jfleets.driver.ui.components.LoadingIndicator
 import com.jfleets.driver.util.formatCurrency
 import com.jfleets.driver.util.formatDistance
 import com.jfleets.driver.util.formatShort
-import com.jfleets.driver.viewmodel.LoadDetailUiState
+import com.jfleets.driver.api.models.LoadDto
 import com.jfleets.driver.viewmodel.LoadDetailViewModel
+import com.jfleets.driver.viewmodel.base.UiState
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,12 +75,13 @@ fun LoadDetailScreen(
         }
     ) { paddingValues ->
         when (val state = uiState) {
-            is LoadDetailUiState.Loading -> {
+            is UiState.Loading -> {
                 LoadingIndicator()
             }
 
-            is LoadDetailUiState.Success -> {
-                val load = state.load
+            is UiState.Success<*> -> {
+                @Suppress("UNCHECKED_CAST")
+                val load = (state as UiState.Success<LoadDto>).data
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -249,28 +252,12 @@ fun LoadDetailScreen(
                 }
             }
 
-            is LoadDetailUiState.Error -> {
+            is UiState.Error -> {
                 ErrorView(
                     message = state.message,
                     onRetry = { viewModel.refresh() }
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun DetailRow(label: String, value: String) {
-    Column {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium
-        )
     }
 }

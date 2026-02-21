@@ -1,11 +1,11 @@
 package com.jfleets.driver.service.messaging
 
 import com.jfleets.driver.api.models.MessageDto
-import com.jfleets.driver.service.PreferencesManager
 import com.jfleets.driver.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,10 +19,10 @@ import kotlinx.coroutines.launch
  * Handles real-time message observation and unread count tracking.
  */
 class ConversationStateManager(
-    private val messagingService: MessagingService,
-    private val preferencesManager: PreferencesManager
+    private val messagingService: MessagingService
 ) {
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(job + Dispatchers.Main)
 
     private val _unreadCount = MutableStateFlow(0)
     val unreadCount: StateFlow<Int> = _unreadCount.asStateFlow()
@@ -71,7 +71,11 @@ class ConversationStateManager(
         _unreadCount.value++
     }
 
-    suspend fun getCurrentUserId(): String? {
-        return preferencesManager.getUserId()
+    /**
+     * Cancels the internal coroutine scope to prevent memory leaks.
+     * Call this during logout or when the manager is no longer needed.
+     */
+    fun destroy() {
+        scope.cancel()
     }
 }

@@ -36,16 +36,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jfleets.driver.api.models.ConversationDto
 import com.jfleets.driver.ui.components.AppTopBar
 import com.jfleets.driver.ui.components.ConversationListItem
 import com.jfleets.driver.ui.components.EmptyStateView
 import com.jfleets.driver.ui.components.ErrorView
 import com.jfleets.driver.ui.components.LoadingIndicator
-import com.jfleets.driver.viewmodel.ConversationListUiState
 import com.jfleets.driver.viewmodel.ConversationListViewModel
-import com.jfleets.driver.viewmodel.CreateConversationState
 import com.jfleets.driver.viewmodel.DispatcherInfo
-import com.jfleets.driver.viewmodel.TeamChatState
+import com.jfleets.driver.viewmodel.base.ActionState
+import com.jfleets.driver.viewmodel.base.UiState
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,13 +60,14 @@ fun MessagesScreen(
     val dispatcherInfo by viewModel.dispatcherInfo.collectAsState()
     val createState by viewModel.createState.collectAsState()
     val teamChatState by viewModel.teamChatState.collectAsState()
-    val isRefreshing = uiState is ConversationListUiState.Loading
-    val isCreating = createState is CreateConversationState.Creating
+    val isRefreshing = uiState is UiState.Loading
+    val isCreating = createState is ActionState.Loading
 
     // Handle successful conversation creation - navigate to the new conversation
     LaunchedEffect(createState) {
-        if (createState is CreateConversationState.Success) {
-            val conversationId = (createState as CreateConversationState.Success).conversationId
+        if (createState is ActionState.Success<*>) {
+            @Suppress("UNCHECKED_CAST")
+            val conversationId = (createState as ActionState.Success<String>).data
             viewModel.resetCreateState()
             onConversationClick(conversationId)
         }
@@ -74,8 +75,9 @@ fun MessagesScreen(
 
     // Handle successful team chat open - navigate to the team chat conversation
     LaunchedEffect(teamChatState) {
-        if (teamChatState is TeamChatState.Success) {
-            val conversationId = (teamChatState as TeamChatState.Success).conversationId
+        if (teamChatState is ActionState.Success<*>) {
+            @Suppress("UNCHECKED_CAST")
+            val conversationId = (teamChatState as ActionState.Success<String>).data
             viewModel.resetTeamChatState()
             onConversationClick(conversationId)
         }
@@ -99,24 +101,26 @@ fun MessagesScreen(
         },
         floatingActionButton = {
             // Show FAB to message dispatcher if dispatcher info is available and has conversations
-            if (dispatcherInfo != null && uiState is ConversationListUiState.Success &&
-                (uiState as ConversationListUiState.Success).conversations.isNotEmpty()
-            ) {
-                FloatingActionButton(
-                    onClick = { viewModel.startConversationWithDispatcher() },
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    if (isCreating) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        Icon(
-                            Icons.AutoMirrored.Filled.Chat,
-                            contentDescription = "Message Dispatcher"
-                        )
+            if (dispatcherInfo != null && uiState is UiState.Success<*>) {
+                @Suppress("UNCHECKED_CAST")
+                val conversations = (uiState as UiState.Success<List<ConversationDto>>).data
+                if (conversations.isNotEmpty()) {
+                    FloatingActionButton(
+                        onClick = { viewModel.startConversationWithDispatcher() },
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ) {
+                        if (isCreating) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Icon(
+                                Icons.AutoMirrored.Filled.Chat,
+                                contentDescription = "Message Dispatcher"
+                            )
+                        }
                     }
                 }
             }
@@ -128,12 +132,14 @@ fun MessagesScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
             when (val state = uiState) {
-                is ConversationListUiState.Loading -> {
+                is UiState.Loading -> {
                     LoadingIndicator()
                 }
 
-                is ConversationListUiState.Success -> {
-                    val isLoadingTeamChat = teamChatState is TeamChatState.Loading
+                is UiState.Success<*> -> {
+                    @Suppress("UNCHECKED_CAST")
+                    val conversations = (state as UiState.Success<List<ConversationDto>>).data
+                    val isLoadingTeamChat = teamChatState is ActionState.Loading
 
                     Column(modifier = Modifier.fillMaxSize()) {
                         // Action buttons row
@@ -176,7 +182,7 @@ fun MessagesScreen(
                             )
                         }
 
-                        if (state.conversations.isEmpty()) {
+                        if (conversations.isEmpty()) {
                             EmptyMessagesView(
                                 dispatcherInfo = dispatcherInfo,
                                 isCreating = isCreating,
@@ -188,7 +194,7 @@ fun MessagesScreen(
                                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                items(state.conversations) { conversation ->
+                                items(conversations) { conversation ->
                                     ConversationListItem(
                                         conversation = conversation,
                                         onClick = { conversation.id?.let { onConversationClick(it) } }
@@ -199,7 +205,7 @@ fun MessagesScreen(
                     }
                 }
 
-                is ConversationListUiState.Error -> {
+                is UiState.Error -> {
                     ErrorView(
                         message = state.message,
                         onRetry = { viewModel.refresh() }

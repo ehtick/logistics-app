@@ -110,16 +110,16 @@ fun createEntryProvider(
             onNavigateBack = { navigator.goBack() },
             onOpenMaps = onOpenUrl,
             onCapturePod = { id ->
-                navigator.navigate(PodCaptureRoute(id, "POD"))
+                navigator.navigate(PodCaptureRoute(id, DocumentCaptureType.POD))
             },
             onCaptureBol = { id ->
-                navigator.navigate(PodCaptureRoute(id, "BOL"))
+                navigator.navigate(PodCaptureRoute(id, DocumentCaptureType.BOL))
             },
             onPickupInspection = { id ->
-                navigator.navigate(ConditionReportRoute(id, "Pickup"))
+                navigator.navigate(ConditionReportRoute(id, InspectionType.PICKUP))
             },
             onDeliveryInspection = { id ->
-                navigator.navigate(ConditionReportRoute(id, "Delivery"))
+                navigator.navigate(ConditionReportRoute(id, InspectionType.DELIVERY))
             },
             viewModel = viewModel
         )
@@ -159,29 +159,19 @@ fun createEntryProvider(
 
     // POD Capture Screen
     entry<PodCaptureRoute> { key ->
-        val captureType = when (key.captureType) {
-            "BOL" -> DocumentCaptureType.BOL
-            else -> DocumentCaptureType.POD
-        }
-
         PodCaptureScreen(
             loadId = key.loadId,
             tripStopId = key.tripStopId ?: "",
-            captureType = captureType,
+            captureType = key.captureType,
             onNavigateBack = { navigator.goBack() }
         )
     }
 
     // Condition Report Screen
     entry<ConditionReportRoute> { key ->
-        val inspectionType = when (key.inspectionType) {
-            "Delivery" -> InspectionType.DELIVERY
-            else -> InspectionType.PICKUP
-        }
-
         ConditionReportScreen(
             loadId = key.loadId,
-            inspectionType = inspectionType,
+            inspectionType = key.inspectionType,
             onNavigateBack = { navigator.goBack() }
         )
     }

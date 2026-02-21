@@ -28,25 +28,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jfleets.driver.api.models.InspectionType
 import com.jfleets.driver.ui.components.SignaturePad
+import com.jfleets.driver.ui.components.capture.HandleSideEffects
 import com.jfleets.driver.ui.components.capture.NotesTextField
 import com.jfleets.driver.ui.components.capture.PhotoCaptureSection
 import com.jfleets.driver.ui.components.capture.SubmitButton
+import com.jfleets.driver.ui.components.capture.rememberCameraCapture
 import com.jfleets.driver.ui.components.inspection.DamageMarkerDialog
 import com.jfleets.driver.ui.components.inspection.DamageMarkersSection
 import com.jfleets.driver.ui.components.inspection.VehicleInfoCard
 import com.jfleets.driver.ui.components.inspection.VinInputSection
 import com.jfleets.driver.util.BarcodeScannerLauncher
-import com.jfleets.driver.util.CameraLauncher
 import com.jfleets.driver.util.SignatureConverter
-import com.jfleets.driver.viewmodel.CapturedPhoto
 import com.jfleets.driver.viewmodel.ConditionReportViewModel
 import org.koin.compose.getKoin
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConditionReportScreen(
     loadId: String,
@@ -54,7 +52,7 @@ fun ConditionReportScreen(
     onNavigateBack: () -> Unit,
     viewModel: ConditionReportViewModel = koinViewModel { parametersOf(loadId, inspectionType) }
 ) {
-    val cameraLauncher: CameraLauncher? = getKoin().getOrNull()
+    val onCapturePhoto = rememberCameraCapture(onPhotoCaptured = viewModel::addPhoto)
     val barcodeScannerLauncher: BarcodeScannerLauncher? = getKoin().getOrNull()
 
     val uiState by viewModel.uiState.collectAsState()
@@ -131,20 +129,7 @@ fun ConditionReportScreen(
             item {
                 PhotoCaptureSection(
                     photos = uiState.photos,
-                    onAddPhoto = {
-                        cameraLauncher?.launchCamera { result ->
-                            result?.let {
-                                viewModel.addPhoto(
-                                    CapturedPhoto(
-                                        id = Uuid.random().toString(),
-                                        bytes = it.bytes,
-                                        fileName = it.fileName,
-                                        contentType = it.contentType
-                                    )
-                                )
-                            }
-                        }
-                    },
+                    onAddPhoto = onCapturePhoto ?: {},
                     onRemovePhoto = viewModel::removePhoto
                 )
             }
@@ -188,27 +173,5 @@ fun ConditionReportScreen(
                 showDamageDialog = false
             }
         )
-    }
-}
-
-@Composable
-private fun HandleSideEffects(
-    error: String?,
-    isSuccess: Boolean,
-    snackbarHostState: SnackbarHostState,
-    onClearError: () -> Unit,
-    onNavigateBack: () -> Unit
-) {
-    LaunchedEffect(error) {
-        error?.let {
-            snackbarHostState.showSnackbar(it)
-            onClearError()
-        }
-    }
-
-    LaunchedEffect(isSuccess) {
-        if (isSuccess) {
-            onNavigateBack()
-        }
     }
 }

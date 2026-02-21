@@ -11,26 +11,26 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.websocket.Frame
+import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.int
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
@@ -49,18 +49,19 @@ class SignalRWebSocketClient(
     companion object {
         private const val RECORD_SEPARATOR = '\u001E'
         private const val HANDSHAKE_REQUEST = """{"protocol":"json","version":1}"""
-        private const val MAX_RECONNECT_DELAY = 30000L
+        private const val CONNECTION_TIMEOUT_MS = 5000L
     }
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
     private val handlers = mutableMapOf<String, (JsonObject) -> Unit>()
     private var scope: CoroutineScope? = null
-    private var sendJob: Job? = null
     private var pendingSends = mutableListOf<String>()
-    private var webSocketSession: io.ktor.websocket.WebSocketSession? = null
+    private var webSocketSession: WebSocketSession? = null
     private var invocationId = 0
-    var isConnected = false
-        private set
+
+    private val _connectionState = MutableStateFlow(false)
+    val connectionState: StateFlow<Boolean> = _connectionState.asStateFlow()
+    val isConnected: Boolean get() = _connectionState.value
 
     private val client = HttpClient {
         install(WebSockets)
@@ -77,13 +78,7 @@ class SignalRWebSocketClient(
      * Connect to the SignalR hub. Performs negotiate then WebSocket handshake.
      */
     suspend fun connect() {
-        val negotiateResult = negotiate()
-        val connectionToken = negotiateResult?.get("connectionToken")?.jsonPrimitive?.content
-            ?: throw IllegalStateException("SignalR negotiate failed: no connectionToken")
-
-        val connectionId = negotiateResult["connectionId"]?.jsonPrimitive?.content
-
-        Logger.d("SignalR WS: Negotiated connectionId=$connectionId")
+        val connectionToken = negotiateConnection()
 
         val wsScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
         scope = wsScope
@@ -96,64 +91,32 @@ class SignalRWebSocketClient(
                     header("X-Tenant", tenantId)
                 }) {
                     webSocketSession = this
-
-                    // Send handshake
-                    send(Frame.Text("$HANDSHAKE_REQUEST$RECORD_SEPARATOR"))
-
-                    // Read handshake response
-                    val handshakeFrame = incoming.receive() as? Frame.Text
-                        ?: throw IllegalStateException("SignalR WS: Invalid handshake response")
-                    val handshakeResponse = handshakeFrame.readText().trimEnd(RECORD_SEPARATOR)
-                    val handshakeJson = json.parseToJsonElement(handshakeResponse).jsonObject
-                    if (handshakeJson.containsKey("error")) {
-                        throw IllegalStateException(
-                            "SignalR handshake error: ${handshakeJson["error"]?.jsonPrimitive?.content}"
-                        )
-                    }
-
-                    isConnected = true
+                    performHandshake()
+                    _connectionState.value = true
                     Logger.d("SignalR WS: Connected and handshake complete")
-
-                    // Send any pending messages
-                    pendingSends.forEach { msg ->
-                        send(Frame.Text("$msg$RECORD_SEPARATOR"))
-                    }
-                    pendingSends.clear()
-
-                    // Message loop
-                    for (frame in incoming) {
-                        if (frame is Frame.Text) {
-                            val text = frame.readText()
-                            // SignalR messages are delimited by record separator
-                            text.split(RECORD_SEPARATOR)
-                                .filter { it.isNotBlank() }
-                                .forEach { handleMessage(it) }
-                        }
-                    }
-
-                    // Connection closed
-                    isConnected = false
+                    flushPendingSends()
+                    startMessageLoop()
+                    // Connection closed normally
+                    _connectionState.value = false
                     Logger.d("SignalR WS: Connection closed")
                 }
             } catch (e: Exception) {
-                isConnected = false
+                _connectionState.value = false
                 Logger.e("SignalR WS: Error: ${e.message}")
             }
         }
 
-        // Wait for connection to establish
-        var retries = 0
-        while (!isConnected && retries < 50) {
-            delay(100)
-            retries++
+        // Wait for connection using StateFlow instead of polling
+        val connected = withTimeoutOrNull(CONNECTION_TIMEOUT_MS) {
+            _connectionState.first { it }
         }
-        if (!isConnected) {
+        if (connected != true) {
             throw IllegalStateException("SignalR WS: Connection timeout")
         }
     }
 
     /**
-     * Invoke a hub method with arguments.
+     * Invoke a hub method with arguments (expects a response).
      */
     suspend fun invoke(method: String, vararg args: JsonElement) {
         val message = JsonObject(buildMap {
@@ -162,14 +125,7 @@ class SignalRWebSocketClient(
             put("target", JsonPrimitive(method))
             put("arguments", JsonArray(args.toList()))
         })
-
-        val text = json.encodeToString(JsonObject.serializer(), message)
-        val session = webSocketSession
-        if (session != null && isConnected) {
-            session.send(Frame.Text("$text$RECORD_SEPARATOR"))
-        } else {
-            pendingSends.add(text)
-        }
+        sendOrQueue(message)
     }
 
     /**
@@ -181,21 +137,14 @@ class SignalRWebSocketClient(
             put("target", JsonPrimitive(method))
             put("arguments", JsonArray(args.toList()))
         })
-
-        val text = json.encodeToString(JsonObject.serializer(), message)
-        val session = webSocketSession
-        if (session != null && isConnected) {
-            session.send(Frame.Text("$text$RECORD_SEPARATOR"))
-        } else {
-            pendingSends.add(text)
-        }
+        sendOrQueue(message)
     }
 
     /**
      * Disconnect from the SignalR hub.
      */
     suspend fun disconnect() {
-        isConnected = false
+        _connectionState.value = false
         try {
             webSocketSession?.close()
         } catch (_: Exception) { }
@@ -205,9 +154,11 @@ class SignalRWebSocketClient(
         Logger.d("SignalR WS: Disconnected")
     }
 
-    private suspend fun negotiate(): JsonObject? {
+    // --- Private helpers ---
+
+    private suspend fun negotiateConnection(): String {
         val negotiateUrl = hubUrl.trimEnd('/') + "/negotiate"
-        return try {
+        val result = try {
             val response = client.get(negotiateUrl) {
                 parameter("negotiateVersion", 1)
                 header("Authorization", "Bearer $accessToken")
@@ -217,7 +168,54 @@ class SignalRWebSocketClient(
             json.parseToJsonElement(body).jsonObject
         } catch (e: Exception) {
             Logger.e("SignalR WS: Negotiate failed: ${e.message}")
-            null
+            throw IllegalStateException("SignalR negotiate failed: ${e.message}", e)
+        }
+
+        val connectionToken = result["connectionToken"]?.jsonPrimitive?.content
+            ?: throw IllegalStateException("SignalR negotiate failed: no connectionToken")
+        val connectionId = result["connectionId"]?.jsonPrimitive?.content
+        Logger.d("SignalR WS: Negotiated connectionId=$connectionId")
+        return connectionToken
+    }
+
+    private suspend fun WebSocketSession.performHandshake() {
+        send(Frame.Text("$HANDSHAKE_REQUEST$RECORD_SEPARATOR"))
+        val handshakeFrame = incoming.receive() as? Frame.Text
+            ?: throw IllegalStateException("SignalR WS: Invalid handshake response")
+        val handshakeResponse = handshakeFrame.readText().trimEnd(RECORD_SEPARATOR)
+        val handshakeJson = json.parseToJsonElement(handshakeResponse).jsonObject
+        if (handshakeJson.containsKey("error")) {
+            throw IllegalStateException(
+                "SignalR handshake error: ${handshakeJson["error"]?.jsonPrimitive?.content}"
+            )
+        }
+    }
+
+    private suspend fun WebSocketSession.flushPendingSends() {
+        pendingSends.forEach { msg ->
+            send(Frame.Text("$msg$RECORD_SEPARATOR"))
+        }
+        pendingSends.clear()
+    }
+
+    private suspend fun WebSocketSession.startMessageLoop() {
+        for (frame in incoming) {
+            if (frame is Frame.Text) {
+                val text = frame.readText()
+                text.split(RECORD_SEPARATOR)
+                    .filter { it.isNotBlank() }
+                    .forEach { handleMessage(it) }
+            }
+        }
+    }
+
+    private suspend fun sendOrQueue(message: JsonObject) {
+        val text = json.encodeToString(JsonObject.serializer(), message)
+        val session = webSocketSession
+        if (session != null && isConnected) {
+            session.send(Frame.Text("$text$RECORD_SEPARATOR"))
+        } else {
+            pendingSends.add(text)
         }
     }
 
@@ -243,8 +241,7 @@ class SignalRWebSocketClient(
                         Logger.d("SignalR WS: No handler for method '$target'")
                     }
                 }
-                6 -> { // Ping
-                    // Send pong (type 6 back)
+                6 -> { // Ping — respond with pong
                     scope?.launch {
                         val pong = """{"type":6}"""
                         webSocketSession?.send(Frame.Text("$pong$RECORD_SEPARATOR"))
@@ -255,7 +252,7 @@ class SignalRWebSocketClient(
                     if (error != null) {
                         Logger.e("SignalR WS: Server closed with error: $error")
                     }
-                    isConnected = false
+                    _connectionState.value = false
                 }
                 3 -> { // Completion
                     Logger.d("SignalR WS: Invocation completed")
