@@ -60,7 +60,7 @@ val DvirInspectionCategory.displayName: String
         DvirInspectionCategory.WHEELS -> "Wheels"
         DvirInspectionCategory.WINDOWS -> "Windows"
         DvirInspectionCategory.WINDSHIELD -> "Windshield"
-        DvirInspectionCategory.WIPERS -> "Wipers"
+        DvirInspectionCategory.WINDSHIELD_WIPERS -> "Windshield Wiper"
         DvirInspectionCategory.OTHER -> "Other"
     }
 
@@ -109,7 +109,7 @@ val DvirInspectionCategory.Companion.grouped: Map<String, List<DvirInspectionCat
             DvirInspectionCategory.MIRRORS,
             DvirInspectionCategory.WINDOWS,
             DvirInspectionCategory.WINDSHIELD,
-            DvirInspectionCategory.WIPERS,
+            DvirInspectionCategory.WINDSHIELD_WIPERS,
             DvirInspectionCategory.DEFROSTER_HEATER,
             DvirInspectionCategory.SEAT_BELTS
         ),

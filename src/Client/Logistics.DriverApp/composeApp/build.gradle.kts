@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -40,7 +42,6 @@ kotlin {
     }
 
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -120,10 +121,10 @@ kotlin {
     }
 }
 
-// Apply OpenAPI generator post-processing fix
+// Apply OpenAPI generator post-processing fixes
 apply(from = "../gradle/openapi-fix.gradle.kts")
 
 // Ensure OpenAPI code is generated before Kotlin compilation
-//tasks.withType<KotlinCompile>().configureEach {
-//    dependsOn(tasks.named("openApiGenerate"))
-//}
+tasks.withType<KotlinCompile>().configureEach {
+    dependsOn(tasks.named("openApiGenerate"))
+}
