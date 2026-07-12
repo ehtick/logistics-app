@@ -6,6 +6,9 @@ import { ThemeService } from "@/core/services";
   selector: "app-theme-toggle",
   templateUrl: "./theme-toggle.html",
   styleUrl: "./theme-toggle.css",
+  host: {
+    "[class.icon-only]": "!showLabel()",
+  },
   imports: [Icon, UiTooltip],
 })
 export class ThemeToggle {

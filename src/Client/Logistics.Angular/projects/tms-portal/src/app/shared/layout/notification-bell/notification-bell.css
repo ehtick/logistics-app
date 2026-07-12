@@ -28,13 +28,13 @@
 .notification-bell:active {
   transform: scale(0.98);
 }
-.notification-bell i {
+.notification-bell-icon {
   font-size: 1.125rem;
   transition:
     transform var(--transition-fast),
     color var(--transition-fast);
 }
-.notification-bell:hover i {
+.notification-bell:hover .notification-bell-icon {
   color: var(--primary-500);
   animation: bell-ring 0.5s ease-in-out;
 }
@@ -58,10 +58,9 @@
   }
 }
 
-:host-context(.minimized) .notification-bell,
-:host(.mobile-bell) .notification-bell {
+/* Icon-only: no label to left-align against. Width stays 100% so the footer sizes both buttons. */
+:host(.icon-only) .notification-bell {
   justify-content: center;
-  width: auto;
   padding: 0.5625rem;
 }
 :host-context(header) .notification-bell {

@@ -46,10 +46,8 @@
 .theme-toggle-label {
   font-weight: 500;
 }
-:host-context(.minimized) .theme-toggle {
+/* Icon-only: same box as the notification bell beside it in the sidebar footer. */
+:host(.icon-only) .theme-toggle {
   justify-content: center;
   padding: 0.5625rem;
-}
-:host-context(.minimized) .theme-toggle-label {
-  display: none;
 }

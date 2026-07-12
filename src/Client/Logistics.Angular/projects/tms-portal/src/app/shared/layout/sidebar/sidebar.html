@@ -64,8 +64,8 @@
 
   <!-- Footer -->
   <div class="sidebar-footer" [class.sidebar-footer-collapsed]="!isOpened()">
-    <!-- Notifications + Theme row -->
-    <div class="flex items-center" [class.gap-1]="!isOpened()" [class.gap-2]="isOpened()">
+    <!-- Notifications + Theme -->
+    <div class="sidebar-footer-actions">
       <app-notification-bell [expanded]="false" />
       <app-theme-toggle [showLabel]="false" />
     </div>

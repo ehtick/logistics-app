@@ -11,7 +11,9 @@
     severity="danger"
     badgeSize="small"
   >
-    <ui-icon name="bell" />
+    <!-- `notification-bell-icon` exists because the glyph is an <svg> now: a CSS selector can no
+         longer key off the icon's own class name. Sizing and the ring animation hang off it. -->
+    <ui-icon name="bell" size="inherit" class="notification-bell-icon" />
   </ui-overlay-badge>
   @if (expanded()) {
     <span>Notifications</span>

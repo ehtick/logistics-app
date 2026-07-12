@@ -5,10 +5,12 @@
 
 :root {
   --sidebar-bg: linear-gradient(165deg, #ffffff 0%, #f1f5f9 30%, #e2e8f0 70%, #cfe2eb 100%);
+  /* Translucent on purpose: an opaque fill reads as a white card pasted onto the blue-grey rail.
+     The footer's top border and its primary hairline are what separate it. */
   --sidebar-footer-bg: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--bg-surface) 95%, transparent) 0%,
-    color-mix(in srgb, var(--primary-50) 30%, var(--bg-surface)) 100%
+    transparent 0%,
+    color-mix(in srgb, var(--primary-500) 8%, transparent) 100%
   );
   --sidebar-item-active-bg: linear-gradient(
     90deg,
@@ -24,8 +26,8 @@
   --sidebar-bg: linear-gradient(165deg, #252d40 0%, #1a2030 35%, #111720 70%, #0a0e14 100%);
   --sidebar-footer-bg: linear-gradient(
     180deg,
-    var(--bg-elevated) 0%,
-    color-mix(in srgb, var(--primary-900) 15%, var(--bg-elevated)) 100%
+    transparent 0%,
+    color-mix(in srgb, #000000 28%, transparent) 100%
   );
   --sidebar-item-active-bg: linear-gradient(
     90deg,

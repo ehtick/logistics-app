@@ -19,6 +19,9 @@ import { NotificationService, ToastService } from "@/core/services";
   selector: "app-notification-bell",
   templateUrl: "./notification-bell.html",
   styleUrl: "./notification-bell.css",
+  host: {
+    "[class.icon-only]": "!expanded()",
+  },
   imports: [
     CommonModule,
     Divider,
