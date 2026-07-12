@@ -84,6 +84,9 @@ services:
 
   website:
     image: "ghcr.io/${GITHUB_REPOSITORY:-suxrobgm/logistics-app}/website:${IMAGE_TAG:-latest}"
+    environment:
+      # Untrusted X-Forwarded-* are stripped; without this SSR sees http:// behind nginx.
+      NG_TRUST_PROXY_HEADERS: "x-forwarded-proto,x-forwarded-port"
     ports:
       - "127.0.0.1:7005:7005"
     depends_on:

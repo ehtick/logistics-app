@@ -356,6 +356,9 @@
             "outputMode": "server",
             "ssr": {
               "entry": "projects/website/src/server.ts"
+            },
+            "security": {
+              "allowedHosts": ["logisticsx.app", "www.logisticsx.app", "localhost"]
             }
           },
           "configurations": {
