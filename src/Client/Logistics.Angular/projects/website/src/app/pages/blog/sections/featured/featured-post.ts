@@ -1,8 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { ButtonModule } from "primeng/button";
-import { SkeletonModule } from "primeng/skeleton";
+import { Icon, Skeleton, UiButton } from "@logistics/shared/ui";
 import { Avatar, SectionContainer } from "@/shared/components";
 import { ScrollAnimateDirective } from "@/shared/directives";
 import { getReadTime } from "@/shared/utils";
@@ -12,13 +11,14 @@ import { BlogStore } from "../../store/blog.store";
   selector: "web-featured-post",
   templateUrl: "./featured-post.html",
   imports: [
-    SectionContainer,
-    ScrollAnimateDirective,
-    ButtonModule,
     Avatar,
-    SkeletonModule,
     DatePipe,
+    Icon,
     RouterLink,
+    ScrollAnimateDirective,
+    SectionContainer,
+    Skeleton,
+    UiButton,
   ],
 })
 export class FeaturedPost {

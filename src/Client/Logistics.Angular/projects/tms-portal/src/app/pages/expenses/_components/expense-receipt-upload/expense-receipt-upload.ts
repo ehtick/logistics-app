@@ -1,14 +1,13 @@
 import { Component, computed, inject, input, output, signal } from "@angular/core";
 import { Api, uploadExpenseReceipt } from "@logistics/shared/api";
-import { Icon, Stack } from "@logistics/shared/components";
 import { ToastService } from "@logistics/shared/services";
-import { FileUploadModule } from "primeng/fileupload";
-import { FormField } from "@/shared/components";
+import { Icon, Stack, UiFileUpload } from "@logistics/shared/ui";
+import { UiFormField } from "@/shared/components";
 
 @Component({
   selector: "app-expense-receipt-upload",
   templateUrl: "./expense-receipt-upload.html",
-  imports: [FileUploadModule, FormField, Icon, Stack],
+  imports: [UiFileUpload, UiFormField, Icon, Stack],
 })
 export class ExpenseReceiptUpload {
   private readonly api = inject(Api);
@@ -21,11 +20,13 @@ export class ExpenseReceiptUpload {
   private readonly uploadedPath = signal<string | null>(null);
   protected readonly hasReceipt = computed(() => !!(this.uploadedPath() ?? this.initialPath()));
 
-  async onSelect(event: { files: File[] }): Promise<void> {
-    if (event.files.length === 0) return;
+  /** `ui-file-upload` has already applied the `accept` guard; it never emits an empty array. */
+  async onSelect(files: File[]): Promise<void> {
+    const file = files[0];
+    if (!file) return;
 
     const result = await this.api.invoke(uploadExpenseReceipt, {
-      body: { File: event.files[0] },
+      body: { File: file },
     });
 
     if (result?.blobPath) {
@@ -35,5 +36,10 @@ export class ExpenseReceiptUpload {
     } else {
       this.toast.showError("Failed to upload receipt. Please try again.");
     }
+  }
+
+  /** A file the accept/size guards turned away; surfaces a toast so the rejection isn't silent. */
+  protected onRejected(reason: string): void {
+    this.toast.showError(reason);
   }
 }

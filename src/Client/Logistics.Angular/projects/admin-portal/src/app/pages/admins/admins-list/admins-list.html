@@ -1,6 +1,6 @@
 <ui-page-header title="Admins" subtitle="Manage platform administrators" />
 
-<p-card>
+<ui-card>
   <ui-data-container
     [loading]="store.isLoading()"
     [error]="store.error()"
@@ -13,12 +13,12 @@
     (retry)="store.retry()"
     (emptyAction)="openAddDialog()"
   >
-    <p-table
+    <ui-data-table
       [value]="store.data()"
       [lazy]="true"
       [paginator]="true"
       [showCurrentPageReport]="true"
-      (onLazyLoad)="store.onLazyLoad($event)"
+      (lazyLoad)="store.onLazyLoad($event)"
       [rows]="store.pageSize()"
       [first]="store.first()"
       [totalRecords]="store.totalRecords()"
@@ -28,15 +28,12 @@
       <ng-template #caption>
         <div class="flex items-center justify-between gap-4">
           <ui-search-field (searchChange)="search($event)" />
-          <p-button label="Add Admin" icon="pi pi-plus" (onClick)="openAddDialog()" />
+          <ui-button label="Add Admin" icon="plus" (click)="openAddDialog()" />
         </div>
       </ng-template>
       <ng-template #header>
         <tr>
-          <th pSortableColumn="Email">
-            Email
-            <p-sortIcon field="Email" />
-          </th>
+          <th uiSortHeader="Email">Email</th>
           <th>Name</th>
           <th>Role</th>
           <th class="w-16"></th>
@@ -47,27 +44,27 @@
           <td>{{ admin.email }}</td>
           <td>{{ getFullName(admin) }}</td>
           <td>
-            <p-tag [value]="admin.role ?? 'Admin'" [severity]="getRoleSeverity(admin.role)" />
+            <ui-badge [value]="admin.role ?? 'Admin'" [severity]="getRoleSeverity(admin.role)" />
           </td>
           <td>
             @if (!isSuperAdmin(admin)) {
-              <p-button
-                icon="pi pi-user-minus"
-                [text]="true"
-                severity="danger"
-                pTooltip="Revoke admin"
+              <ui-button
+                intent="danger"
+                appearance="text"
+                icon="user-minus"
+                uiTooltip="Revoke admin"
                 (click)="revoke(admin)"
-                aria-label="Revoke admin"
+                ariaLabel="Revoke admin"
               />
             }
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   </ui-data-container>
-</p-card>
+</ui-card>
 
-<p-card class="mt-6 block">
+<ui-card class="mt-6 block">
   <h2 class="mb-4 text-lg font-semibold">Pending Invitations</h2>
   <ui-data-container
     [loading]="invitationsStore.isLoading()"
@@ -79,11 +76,11 @@
     emptyMessage="Admin invitations awaiting acceptance will appear here."
     (retry)="invitationsStore.retry()"
   >
-    <p-table
+    <ui-data-table
       [value]="invitationsStore.data()"
       [lazy]="true"
       [paginator]="true"
-      (onLazyLoad)="invitationsStore.onLazyLoad($event)"
+      (lazyLoad)="invitationsStore.onLazyLoad($event)"
       [rows]="invitationsStore.pageSize()"
       [first]="invitationsStore.first()"
       [totalRecords]="invitationsStore.totalRecords()"
@@ -106,71 +103,62 @@
           <td>{{ invitation.lastSentAt ? (invitation.lastSentAt | date: "mediumDate") : "—" }}</td>
           <td>
             @if (invitation.isExpired) {
-              <p-tag value="Expired" severity="danger" />
+              <ui-badge value="Expired" severity="danger" />
             } @else {
               {{ invitation.expiresAt | date: "mediumDate" }}
             }
           </td>
           <td>
             <div class="flex gap-1">
-              <p-button
-                icon="pi pi-envelope"
-                [text]="true"
-                pTooltip="Resend"
+              <ui-button
+                appearance="text"
+                icon="mail"
+                uiTooltip="Resend"
                 (click)="resendInvitation(invitation)"
-                aria-label="Resend invitation"
+                ariaLabel="Resend invitation"
               />
-              <p-button
-                icon="pi pi-times"
-                [text]="true"
-                severity="danger"
-                pTooltip="Cancel"
+              <ui-button
+                intent="danger"
+                appearance="text"
+                icon="x"
+                uiTooltip="Cancel"
                 (click)="cancelInvitation(invitation)"
-                aria-label="Cancel invitation"
+                ariaLabel="Cancel invitation"
               />
             </div>
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   </ui-data-container>
-</p-card>
+</ui-card>
 
-<p-dialog header="Add Admin" [(visible)]="showAddDialog" [modal]="true" [style]="{ width: '460px' }">
+<ui-dialog header="Add Admin" [(open)]="showAddDialog" [modal]="true" width="460px">
   <div class="flex flex-col gap-4">
-    <p class="text-muted">
+    <p class="text-muted-foreground">
       Enter an email address. If the user already exists they'll be granted the Admin role
       immediately; otherwise we'll email them an invitation.
     </p>
     <div class="flex flex-col gap-2">
       <label for="adminEmail" class="font-medium">Email</label>
-      <input
-        pInputText
+      <ui-text-field
         id="adminEmail"
         type="email"
-        [(ngModel)]="addEmail"
-        class="w-full"
+        [(value)]="addEmail"
         placeholder="name@example.com"
       />
     </div>
     <div class="flex flex-col gap-2">
       <label for="adminMessage" class="font-medium">Message (optional)</label>
-      <input
-        pInputText
+      <ui-text-field
         id="adminMessage"
-        [(ngModel)]="addMessage"
-        class="w-full"
+        [(value)]="addMessage"
         placeholder="Add a personal note to the invitation"
       />
     </div>
   </div>
   <ng-template #footer>
-    <p-button label="Cancel" severity="secondary" (onClick)="showAddDialog.set(false)" />
-    <p-button
-      label="Add Admin"
-      icon="pi pi-plus"
-      [loading]="isAdding()"
-      (onClick)="submitAddAdmin()"
-    />
+    <ui-button intent="secondary" label="Cancel" (click)="showAddDialog.set(false)" />
+    <ui-button label="Add Admin" icon="plus" [loading]="isAdding()" (click)="submitAddAdmin()" />
   </ng-template>
-</p-dialog>
+</ui-dialog>

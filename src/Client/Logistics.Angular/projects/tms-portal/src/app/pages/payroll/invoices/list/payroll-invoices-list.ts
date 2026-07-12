@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
 import { Component, computed, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import { downloadBlobFile } from "@logistics/shared";
 import {
@@ -13,24 +12,29 @@ import {
   type SalaryType,
 } from "@logistics/shared/api";
 import { invoiceStatusOptions, salaryTypeOptions } from "@logistics/shared/api/enums";
-import { Grid, Stack, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import type { SelectItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { MultiSelectModule } from "primeng/multiselect";
-import { TableModule } from "primeng/table";
-import { TextareaModule } from "primeng/textarea";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Card,
+  Grid,
+  Stack,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiMultiSelectField,
+  UiSortHeader,
+  UiTableRowDirectives,
+  UiTextareaField,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import {
   DataContainer,
   DateRangePicker,
-  FormField,
   InvoiceStatusTag,
   PageHeader,
   SearchField,
+  UiFormField,
 } from "@/shared/components";
 import { PayrollInvoicesListStore } from "../../store/invoices-list.store";
 
@@ -39,26 +43,27 @@ import { PayrollInvoicesListStore } from "../../store/invoices-list.store";
   templateUrl: "./payroll-invoices-list.html",
   providers: [PayrollInvoicesListStore],
   imports: [
+    Card,
     CommonModule,
-    FormsModule,
-    TableModule,
-    CardModule,
-    RouterModule,
-    ButtonModule,
-    TooltipModule,
-    InvoiceStatusTag,
+    CurrencyFormatPipe,
     DataContainer,
-    MultiSelectModule,
     DateRangePicker,
-    SearchField,
-    FormField,
-    DialogModule,
-    TextareaModule,
-    PageHeader,
     Grid,
+    InvoiceStatusTag,
+    PageHeader,
+    RouterModule,
+    SearchField,
     Stack,
     Typography,
-    CurrencyFormatPipe,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiFormField,
+    UiMultiSelectField,
+    UiSortHeader,
+    UiTableRowDirectives,
+    UiTextareaField,
+    UiTooltip,
   ],
 })
 export class PayrollInvoicesList {
@@ -86,8 +91,8 @@ export class PayrollInvoicesList {
   protected readonly isExporting = signal(false);
 
   // Filter options
-  protected readonly statusOptions: SelectItem[] = invoiceStatusOptions;
-  protected readonly salaryTypeOptions: SelectItem[] = salaryTypeOptions;
+  protected readonly statusOptions = invoiceStatusOptions;
+  protected readonly salaryTypeOptions = salaryTypeOptions;
 
   // Computed: count of active filters
   protected readonly activeFilterCount = computed(() => {
@@ -170,7 +175,7 @@ export class PayrollInvoicesList {
     this.toastService.confirm({
       message: `Are you sure you want to approve ${pendingApproval.length} payroll invoice(s)?`,
       header: "Batch Approve",
-      icon: "pi pi-check-circle",
+      icon: "success",
       accept: async () => {
         this.isBatchApproving.set(true);
         try {
@@ -195,7 +200,7 @@ export class PayrollInvoicesList {
     this.toastService.confirm({
       message: `Are you sure you want to approve the payroll for ${invoice.employee?.fullName}?`,
       header: "Approve Payroll",
-      icon: "pi pi-check-circle",
+      icon: "success",
       accept: async () => {
         try {
           await this.api.invoke(approvePayrollInvoice, {

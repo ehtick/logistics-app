@@ -7,29 +7,34 @@ import {
   getBillingPortalUrl,
   type SubscriptionDto,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
-import { TagModule } from "primeng/tag";
+import {
+  Badge,
+  Card,
+  Grid,
+  Icon,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { TenantService, ToastService } from "@/core/services";
-import { Labels, type SeverityLevel } from "@/shared/utils";
+import { Labels } from "@/shared/utils";
 
 @Component({
   selector: "app-manage-subscription",
   templateUrl: "./manage-subscription.html",
   imports: [
+    Badge,
+    Card,
     CommonModule,
-    CardModule,
-    ButtonModule,
-    ConfirmDialogModule,
     Grid,
     Icon,
     RouterModule,
     Stack,
     Surface,
-    TagModule,
     Typography,
+    UiButton,
   ],
 })
 export class ManageSubscriptionComponent {
@@ -56,7 +61,7 @@ export class ManageSubscriptionComponent {
     });
   }
 
-  getSubStatusSeverity(): SeverityLevel {
+  getSubStatusSeverity(): UiBadgeIntent {
     return Labels.subscriptionStatusSeverity(this.subscription()!);
   }
 
@@ -72,13 +77,13 @@ export class ManageSubscriptionComponent {
       message:
         "Are you sure you want to cancel your subscription? Your subscription will be cancelled at the end of the billing cycle.",
       header: "Cancel Subscription",
-      icon: "pi pi-exclamation-triangle",
+      icon: "warning",
       acceptLabel: "Yes, Cancel",
       rejectLabel: "No, Keep",
-      acceptButtonStyleClass: "p-button-danger",
-      rejectButtonStyleClass: "p-button-success",
-      acceptIcon: "pi pi-check",
-      rejectIcon: "pi pi-times",
+      severity: "danger",
+      rejectSeverity: "success",
+      acceptIcon: "check",
+      rejectIcon: "close",
       closeOnEscape: true,
       dismissableMask: true,
       accept: async () => {

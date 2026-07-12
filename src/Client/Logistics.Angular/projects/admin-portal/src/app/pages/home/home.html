@@ -4,15 +4,15 @@
   @if (isLoading()) {
     @for (_ of [1, 2, 3, 4]; track $index) {
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
-        <p-skeleton height="8rem" />
+        <ui-skeleton height="8rem" />
       </ui-grid>
     }
   } @else {
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
-      <p-card>
+      <ui-card>
         <ui-stack direction="row" align="center" gap="4">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-            <ui-icon name="building" size="lg" class="text-blue-600" />
+          <div class="bg-info/15 flex h-12 w-12 items-center justify-center rounded-full">
+            <ui-icon name="building-2" size="lg" class="text-info" />
           </div>
           <div>
             <ui-typography variant="caption" color="muted">Total Tenants</ui-typography>
@@ -20,22 +20,21 @@
           </div>
         </ui-stack>
         <div class="mt-4">
-          <p-button
+          <ui-button
+            appearance="link"
             label="View All"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            [link]="true"
+            iconEnd="arrow-right"
             routerLink="/tenants"
           />
         </div>
-      </p-card>
+      </ui-card>
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
-      <p-card>
+      <ui-card>
         <ui-stack direction="row" align="center" gap="4">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-            <ui-icon name="credit-card" size="lg" class="text-green-600" />
+          <div class="bg-success/15 flex h-12 w-12 items-center justify-center rounded-full">
+            <ui-icon name="credit-card" size="lg" class="text-success" />
           </div>
           <div>
             <ui-typography variant="caption" color="muted">Active Subscriptions</ui-typography>
@@ -43,22 +42,21 @@
           </div>
         </ui-stack>
         <div class="mt-4">
-          <p-button
+          <ui-button
+            appearance="link"
             label="View All"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            [link]="true"
+            iconEnd="arrow-right"
             routerLink="/subscriptions"
           />
         </div>
-      </p-card>
+      </ui-card>
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
-      <p-card>
+      <ui-card>
         <ui-stack direction="row" align="center" gap="4">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
-            <ui-icon name="box" size="lg" class="text-purple-600" />
+          <div class="bg-pickedup/15 flex h-12 w-12 items-center justify-center rounded-full">
+            <ui-icon name="box" size="lg" class="text-pickedup" />
           </div>
           <div>
             <ui-typography variant="caption" color="muted">Subscription Plans</ui-typography>
@@ -66,22 +64,21 @@
           </div>
         </ui-stack>
         <div class="mt-4">
-          <p-button
+          <ui-button
+            appearance="link"
             label="View All"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            [link]="true"
+            iconEnd="arrow-right"
             routerLink="/subscription-plans"
           />
         </div>
-      </p-card>
+      </ui-card>
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
-      <p-card>
+      <ui-card>
         <ui-stack direction="row" align="center" gap="4">
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
-            <ui-icon name="users" size="lg" class="text-orange-600" />
+          <div class="bg-warning/15 flex h-12 w-12 items-center justify-center rounded-full">
+            <ui-icon name="users" size="lg" class="text-warning" />
           </div>
           <div>
             <ui-typography variant="caption" color="muted">Admin Users</ui-typography>
@@ -89,41 +86,35 @@
           </div>
         </ui-stack>
         <div class="mt-4">
-          <p-button
-            label="View All"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            [link]="true"
-            routerLink="/users"
-          />
+          <ui-button appearance="link" label="View All" iconEnd="arrow-right" routerLink="/users" />
         </div>
-      </p-card>
+      </ui-card>
     </ui-grid>
   }
 </ui-grid>
 
 <ui-grid container spacing="4" class="mt-8">
   <ui-grid [size]="{ xs: 12, lg: 6 }">
-    <p-card>
+    <ui-card>
       <ng-template #header>
         <ui-typography variant="h6" tag="h4" class="py-2 pl-4">Quick Actions</ui-typography>
-        <p-divider class="m-0" />
+        <ui-divider class="m-0" />
       </ng-template>
       <ui-stack direction="row" gap="3" wrap>
-        <p-button label="Add Tenant" icon="pi pi-plus" routerLink="/tenants/add" />
-        <p-button
+        <ui-button label="Add Tenant" icon="plus" routerLink="/tenants/add" />
+        <ui-button
+          intent="secondary"
           label="Add Plan"
-          icon="pi pi-plus"
-          severity="secondary"
+          icon="plus"
           routerLink="/subscription-plans/add"
         />
-        <p-button
+        <ui-button
+          intent="secondary"
           label="Add Subscription"
-          icon="pi pi-plus"
-          severity="secondary"
+          icon="plus"
           routerLink="/subscriptions/add"
         />
       </ui-stack>
-    </p-card>
+    </ui-card>
   </ui-grid>
 </ui-grid>

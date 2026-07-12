@@ -1,14 +1,14 @@
 <ui-page-header title="Default Feature Configuration">
-  <p-button icon="pi pi-save" label="Save Changes" [loading]="isSaving()" (onClick)="saveAll()" />
+  <ui-button icon="save" label="Save Changes" [loading]="isSaving()" (click)="saveAll()" />
 </ui-page-header>
 
-<p-card>
+<ui-card>
   @if (isLoading()) {
     <div class="flex justify-center py-8">
-      <p-progress-spinner />
+      <ui-spinner />
     </div>
   } @else {
-    <p class="text-muted-color mb-4">
+    <p class="text-muted-foreground mb-4">
       Configure the default feature settings for new tenants. These settings will be applied when a
       new tenant is created.
     </p>
@@ -19,14 +19,14 @@
           [name]="feature.name ?? ''"
           [description]="getFeatureDescription(feature.feature)"
         >
-          <p-toggleswitch
-            [ngModel]="feature.isEnabledByDefault"
-            (onChange)="toggleFeature(feature)"
+          <ui-toggle-field
+            [value]="feature.isEnabledByDefault ?? false"
+            (valueChange)="toggleFeature(feature)"
           />
         </ui-feature-row>
       } @empty {
-        <p class="text-muted-color py-4 text-center">No features available</p>
+        <p class="text-muted-foreground py-4 text-center">No features available</p>
       }
     </div>
   }
-</p-card>
+</ui-card>

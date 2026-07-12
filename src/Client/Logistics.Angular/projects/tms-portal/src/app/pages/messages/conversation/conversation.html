@@ -24,30 +24,30 @@
       <div class="space-y-4">
         @for (i of [1, 2, 3]; track i) {
           <div class="flex gap-3">
-            <p-skeleton shape="circle" size="2.5rem" />
+            <ui-skeleton shape="circle" size="2.5rem" />
             <div class="flex-1">
-              <p-skeleton width="40%" height="1rem" class="mb-2" />
-              <p-skeleton width="70%" height="3rem" class="rounded-xl" />
+              <ui-skeleton width="40%" height="1rem" class="mb-2" />
+              <ui-skeleton width="70%" height="3rem" class="rounded-xl" />
             </div>
           </div>
         }
       </div>
     } @else if (store.messages().length === 0) {
       <ui-empty-state
-        icon="comments"
+        icon="messages-square"
         title="No messages yet"
         message="Send a message to start the conversation!"
       />
     } @else {
       @if (store.hasMore()) {
         <ui-stack align="center" justify="center">
-          <p-button
+          <ui-button
+            appearance="text"
+            size="sm"
             label="Load earlier messages"
-            icon="pi pi-history"
-            [text]="true"
+            icon="history"
             [loading]="store.loading()"
-            size="small"
-            (onClick)="loadMore()"
+            (click)="loadMore()"
           />
         </ui-stack>
       }
@@ -67,23 +67,21 @@
   <div class="bg-surface border-t p-4">
     <div class="flex items-end gap-3">
       <div class="relative flex-1">
-        <input
-          type="text"
-          pInputText
-          class="focus:border-primary focus:ring-primary border-subtle w-full rounded-full py-3 pr-4 pl-4"
+        <ui-text-field
+          class="block w-full"
           placeholder="Type a message..."
-          [ngModel]="messageContent()"
-          (ngModelChange)="messageContent.set($event)"
+          [value]="messageContent()"
+          (valueChange)="messageContent.set($event); onInput()"
           (keydown)="onKeyDown($event)"
-          (input)="onInput()"
         />
       </div>
-      <p-button
-        icon="pi pi-send"
+      <ui-button
+        ariaLabel="Send message"
+        icon="send"
         [rounded]="true"
         [disabled]="!canSendMessage()"
         [loading]="isCreatingConversation()"
-        (onClick)="sendMessage()"
+        (click)="sendMessage()"
       />
     </div>
   </div>

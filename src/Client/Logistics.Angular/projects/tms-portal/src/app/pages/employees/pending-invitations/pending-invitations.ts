@@ -1,11 +1,16 @@
 import { DatePipe } from "@angular/common";
 import { Component, inject, signal } from "@angular/core";
 import { ToastService } from "@logistics/shared";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  Icon,
+  UiButton,
+  UiDataTable,
+  UiSortHeader,
+  UiTooltip,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { DataContainer, PageHeader, SearchField } from "@/shared/components";
 import { InviteEmployeeDialog } from "../components";
 import { PendingInvitationsStore } from "../store";
@@ -15,16 +20,18 @@ import { PendingInvitationsStore } from "../store";
   templateUrl: "./pending-invitations.html",
   providers: [PendingInvitationsStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    DatePipe,
-    TagModule,
+    Badge,
+    Card,
     DataContainer,
+    DatePipe,
+    Icon,
+    InviteEmployeeDialog,
     PageHeader,
     SearchField,
-    InviteEmployeeDialog,
+    UiButton,
+    UiDataTable,
+    UiSortHeader,
+    UiTooltip,
   ],
 })
 export class PendingInvitations {
@@ -49,7 +56,7 @@ export class PendingInvitations {
     this.toastService.confirm({
       message: "Are you sure you want to resend this invitation?",
       header: "Resend Invitation",
-      icon: "pi pi-send",
+      icon: "send",
       acceptLabel: "Resend",
       rejectLabel: "Cancel",
       accept: () => {
@@ -62,19 +69,17 @@ export class PendingInvitations {
     this.toastService.confirm({
       message: "Are you sure you want to cancel this invitation? This action cannot be undone.",
       header: "Cancel Invitation",
-      icon: "pi pi-exclamation-triangle",
+      icon: "warning",
       acceptLabel: "Cancel Invitation",
       rejectLabel: "Keep",
-      acceptButtonStyleClass: "p-button-danger",
+      severity: "danger",
       accept: () => {
         this.store.cancel(id);
       },
     });
   }
 
-  getInvitationTypeSeverity(
-    type: string,
-  ): "success" | "info" | "warn" | "danger" | "secondary" | "contrast" {
+  getInvitationTypeSeverity(type: string): UiBadgeIntent {
     return type === "Employee" ? "info" : "success";
   }
 

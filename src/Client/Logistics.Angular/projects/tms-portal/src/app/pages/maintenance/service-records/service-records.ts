@@ -3,15 +3,17 @@ import { Component, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import type { MaintenanceRecordDto, MaintenanceType } from "@logistics/shared/api";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { DataContainer, PageHeader, SearchField } from "@/shared/components";
-import type { TagSeverity } from "@/shared/types";
 import { ServiceRecordsStore } from "../store";
 
 @Component({
@@ -19,18 +21,18 @@ import { ServiceRecordsStore } from "../store";
   templateUrl: "./service-records.html",
   providers: [ServiceRecordsStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    MenuModule,
-    TagModule,
-    DatePipe,
+    Badge,
+    Card,
     CurrencyFormatPipe,
-    DecimalPipe,
     DataContainer,
+    DatePipe,
+    DecimalPipe,
     PageHeader,
     SearchField,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
   ],
 })
 export class ServiceRecordsPage {
@@ -39,20 +41,20 @@ export class ServiceRecordsPage {
 
   protected readonly selectedRow = signal<MaintenanceRecordDto | null>(null);
 
-  protected readonly actionMenuItems: MenuItem[] = [
+  protected readonly actionMenuItems: UiMenuItem[] = [
     {
       label: "View details",
-      icon: "pi pi-eye",
+      icon: "eye",
       command: () => this.viewDetails(this.selectedRow()!),
     },
     {
       label: "Edit",
-      icon: "pi pi-pencil",
+      icon: "pencil",
       command: () => this.editRecord(this.selectedRow()!),
     },
   ];
 
-  protected getTypeSeverity(type: MaintenanceType | undefined): TagSeverity {
+  protected getTypeSeverity(type: MaintenanceType | undefined): UiBadgeIntent {
     switch (type) {
       case "oil_change":
         return "info";

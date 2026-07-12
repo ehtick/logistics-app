@@ -1,31 +1,37 @@
 import { Component, input } from "@angular/core";
-import { ReactiveFormsModule, type FormGroup } from "@angular/forms";
-import { FormField } from "@logistics/shared/components";
-import { DatePickerModule } from "primeng/datepicker";
-import { InputTextModule } from "primeng/inputtext";
-import { SelectModule } from "primeng/select";
-import { TextareaModule } from "primeng/textarea";
+import { FormField, type FieldTree } from "@angular/forms/signals";
+import {
+  UiDateField,
+  UiFormField,
+  UiSelectField,
+  UiTextareaField,
+  UiTextField,
+} from "@logistics/shared/ui";
 import { AddressAutocomplete } from "@/shared/components/maps";
 import { SearchEmployee, SearchTruck } from "@/shared/components/search";
-import { ACCIDENT_SEVERITY_OPTIONS, ACCIDENT_TYPE_OPTIONS } from "../accident.constants";
+import {
+  ACCIDENT_SEVERITY_OPTIONS,
+  ACCIDENT_TYPE_OPTIONS,
+  type AccidentIncidentModel,
+} from "../accident.constants";
 
 @Component({
   selector: "app-accident-incident-form",
   templateUrl: "./accident-incident-form.html",
   imports: [
-    ReactiveFormsModule,
-    DatePickerModule,
-    InputTextModule,
-    SelectModule,
-    TextareaModule,
     FormField,
+    UiFormField,
+    UiDateField,
+    UiSelectField,
+    UiTextareaField,
+    UiTextField,
     SearchEmployee,
     SearchTruck,
     AddressAutocomplete,
   ],
 })
 export class AccidentIncidentForm {
-  public readonly form = input.required<FormGroup>();
+  public readonly field = input.required<FieldTree<AccidentIncidentModel>>();
 
   protected readonly typeOptions = ACCIDENT_TYPE_OPTIONS;
   protected readonly severityOptions = ACCIDENT_SEVERITY_OPTIONS;

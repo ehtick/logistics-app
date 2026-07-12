@@ -9,39 +9,41 @@ import {
   type ImportLoadFromPdfResponse,
   type TruckDto,
 } from "@logistics/shared/api";
-import { Grid, Icon, PdfViewer, Stack, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { FileUploadModule, type FileSelectEvent } from "primeng/fileupload";
-import { MessageModule } from "primeng/message";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { ToastModule } from "primeng/toast";
+import {
+  Alert,
+  Card,
+  Grid,
+  Icon,
+  PdfViewer,
+  Spinner,
+  Stack,
+  Typography,
+  UiButton,
+  UiFileUpload,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
-import { FormField, SearchTruck } from "@/shared/components";
+import { SearchTruck, UiFormField } from "@/shared/components";
 
 @Component({
   selector: "app-load-import",
   templateUrl: "./load-import.html",
   imports: [
-    CurrencyFormatPipe,
+    Alert,
+    Card,
     CommonModule,
-    CardModule,
-    FileUploadModule,
-    ButtonModule,
-    ProgressSpinnerModule,
-    MessageModule,
-    ToastModule,
+    CurrencyFormatPipe,
+    Grid,
+    Icon,
+    PdfViewer,
     RouterLink,
     SearchTruck,
-    FormField,
-    DividerModule,
-    PdfViewer,
-    Typography,
+    Spinner,
     Stack,
-    Icon,
-    Grid,
+    Typography,
+    UiButton,
+    UiFileUpload,
+    UiFormField,
   ],
 })
 export class LoadImportComponent {
@@ -57,17 +59,19 @@ export class LoadImportComponent {
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly canUpload = computed(() => !this.isUploading());
 
-  protected async onFileSelect(event: FileSelectEvent): Promise<void> {
-    const file = event.files[0];
+  protected async onFileSelect(files: File[]): Promise<void> {
+    const file = files[0];
     if (!file) return;
 
-    // Validate file type
+    // `ui-file-upload` already enforces `accept=".pdf"` and the 10 MB `maxFileSize` — including for
+    // drag-and-drop, which the native `accept` attribute does not cover — and reports refusals via
+    // `(rejected)`. These two checks are kept as a backstop: they are the same limits, stated once
+    // more at the point that actually consumes the file.
     if (!file.name.toLowerCase().endsWith(".pdf")) {
       this.error.set("Please select a PDF file");
       return;
     }
 
-    // Validate file size (10 MB limit)
     if (file.size > 10 * 1024 * 1024) {
       this.error.set("File size exceeds 10 MB limit");
       return;

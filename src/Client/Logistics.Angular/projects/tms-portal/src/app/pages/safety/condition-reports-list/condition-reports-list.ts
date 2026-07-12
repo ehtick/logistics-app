@@ -2,15 +2,18 @@ import { DatePipe } from "@angular/common";
 import { Component, inject, signal, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import type { ConditionReportDto } from "@logistics/shared/api";
-import { Icon } from "@logistics/shared/components";
+import {
+  Badge,
+  Card,
+  Icon,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { isContainerLoadType } from "@logistics/shared/utils";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
 import { DataContainer, PageHeader, SearchField } from "@/shared/components";
 import { ConditionReportsListStore } from "../store/condition-reports-list.store";
 
@@ -19,17 +22,17 @@ import { ConditionReportsListStore } from "../store/condition-reports-list.store
   templateUrl: "./condition-reports-list.html",
   providers: [ConditionReportsListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    MenuModule,
+    Badge,
+    Card,
     DataContainer,
     DatePipe,
+    Icon,
     PageHeader,
     SearchField,
-    TagModule,
-    Icon,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
   ],
 })
 export class ConditionReportsListPage implements OnInit {
@@ -37,19 +40,19 @@ export class ConditionReportsListPage implements OnInit {
   protected readonly store = inject(ConditionReportsListStore);
 
   protected readonly selectedRow = signal<ConditionReportDto | null>(null);
-  protected readonly actionMenuItems: MenuItem[];
+  protected readonly actionMenuItems: UiMenuItem[];
 
   constructor() {
     this.actionMenuItems = [
       {
         label: "View details",
-        icon: "pi pi-eye",
+        icon: "eye",
         command: () =>
           this.router.navigateByUrl(`/safety/condition-reports/${this.selectedRow()!.id}`),
       },
       {
         label: "View load",
-        icon: "pi pi-box",
+        icon: "box",
         command: () => this.router.navigateByUrl(`/loads/${this.selectedRow()!.loadId}`),
       },
     ];
@@ -72,7 +75,7 @@ export class ConditionReportsListPage implements OnInit {
     menu.toggle(event);
   }
 
-  protected getTypeSeverity(type: string | undefined): "success" | "info" {
+  protected getTypeSeverity(type: string | undefined): UiBadgeIntent {
     return type === "pickup" ? "info" : "success";
   }
 

@@ -1,14 +1,16 @@
-import { Component, effect, inject, input, output } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Component, inject, input, linkedSignal, output } from "@angular/core";
+import { form, FormField, FormRoot, required } from "@angular/forms/signals";
 import { RouterLink } from "@angular/router";
 import { ToastService } from "@logistics/shared";
-import { FormField, ValidatedForm } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CheckboxModule } from "primeng/checkbox";
-import { EditorModule } from "primeng/editor";
-import { InputTextModule } from "primeng/inputtext";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TextareaModule } from "primeng/textarea";
+import {
+  UiButton,
+  UiCheckboxField,
+  UiEditor,
+  UiFormField,
+  UiTextareaField,
+  UiTextField,
+  ValidatedForm,
+} from "@logistics/shared/ui";
 
 export interface BlogPostFormValue {
   title: string;
@@ -20,20 +22,30 @@ export interface BlogPostFormValue {
   isFeatured: boolean;
 }
 
+const EMPTY: BlogPostFormValue = {
+  title: "",
+  content: "",
+  excerpt: "",
+  category: "",
+  authorName: "",
+  featuredImage: "",
+  isFeatured: false,
+};
+
 @Component({
   selector: "adm-blog-post-form",
   templateUrl: "./blog-post-form.html",
   imports: [
-    ButtonModule,
-    ValidatedForm,
-    ReactiveFormsModule,
-    RouterLink,
-    ProgressSpinnerModule,
     FormField,
-    InputTextModule,
-    TextareaModule,
-    EditorModule,
-    CheckboxModule,
+    FormRoot,
+    RouterLink,
+    UiButton,
+    UiCheckboxField,
+    UiEditor,
+    UiFormField,
+    UiTextareaField,
+    UiTextField,
+    ValidatedForm,
   ],
 })
 export class BlogPostForm {
@@ -49,37 +61,35 @@ export class BlogPostForm {
   public readonly publish = output<void>();
   public readonly unpublish = output<void>();
 
-  protected readonly form = new FormGroup({
-    title: new FormControl("", { validators: Validators.required, nonNullable: true }),
-    content: new FormControl("", { validators: Validators.required, nonNullable: true }),
-    excerpt: new FormControl("", { nonNullable: true }),
-    category: new FormControl("", { nonNullable: true }),
-    authorName: new FormControl("", { validators: Validators.required, nonNullable: true }),
-    featuredImage: new FormControl("", { nonNullable: true }),
-    isFeatured: new FormControl(false, { nonNullable: true }),
-  });
+  /** Seeded from `initial()`; resets to those values whenever the input changes. */
+  protected readonly model = linkedSignal<BlogPostFormValue>(() => ({
+    ...EMPTY,
+    ...(this.initial() ?? {}),
+  }));
 
-  constructor() {
-    effect(() => {
-      if (this.initial()) {
-        this.patch(this.initial()!);
-      }
-    });
-  }
-
-  protected submit(): void {
-    if (this.form.invalid) {
-      return;
-    }
-    this.save.emit(this.form.getRawValue() as BlogPostFormValue);
-  }
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.title, { message: "Title is required." });
+      required(p.content, { message: "Content is required." });
+      required(p.authorName, { message: "Author name is required." });
+    },
+    {
+      submission: {
+        action: async () => {
+          this.save.emit(this.model());
+          return undefined;
+        },
+      },
+    },
+  );
 
   protected askRemove(): void {
     this.toastService.confirm({
       message: "Are you sure that you want to delete this blog post? This action cannot be undone.",
       header: "Confirm Delete",
-      icon: "pi pi-exclamation-triangle",
-      acceptButtonStyleClass: "p-button-danger",
+      icon: "warning",
+      severity: "danger",
       accept: () => this.remove.emit(),
     });
   }
@@ -88,7 +98,7 @@ export class BlogPostForm {
     this.toastService.confirm({
       message: "Are you sure you want to publish this blog post? It will be visible to the public.",
       header: "Confirm Publish",
-      icon: "pi pi-send",
+      icon: "send",
       accept: () => this.publish.emit(),
     });
   }
@@ -98,15 +108,9 @@ export class BlogPostForm {
       message:
         "Are you sure you want to unpublish this blog post? It will no longer be visible to the public.",
       header: "Confirm Unpublish",
-      icon: "pi pi-eye-slash",
-      acceptButtonStyleClass: "p-button-warning",
+      icon: "hide",
+      severity: "warning",
       accept: () => this.unpublish.emit(),
-    });
-  }
-
-  private patch(src: Partial<BlogPostFormValue>): void {
-    this.form.patchValue({
-      ...src,
     });
   }
 }

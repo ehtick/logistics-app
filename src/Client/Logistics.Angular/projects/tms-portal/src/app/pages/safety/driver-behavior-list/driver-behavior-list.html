@@ -1,31 +1,33 @@
 <ui-page-header title="Driver Behavior Events" />
 
-<p-card>
+<ui-card>
   <!-- Filters -->
   <ui-stack direction="row" align="center" gap="4" class="mb-4 flex-wrap">
     <div class="flex-1">
       <ui-search-field (searchChange)="onSearch($event)" placeholder="Search by driver name..." />
     </div>
 
-    <p-multiSelect
-      [(ngModel)]="selectedEventTypes"
+    <ui-multiselect-field
+      [(value)]="selectedEventTypes"
+      (selectionChange)="onFilterChange()"
       [options]="eventTypeOptions"
       optionLabel="label"
       optionValue="value"
       placeholder="Filter by event type"
       [maxSelectedLabels]="2"
+      [fluid]="false"
       class="w-64"
-      (onChange)="onFilterChange()"
     />
 
-    <p-select
-      [(ngModel)]="selectedReviewStatus"
+    <ui-select-field
+      [(value)]="selectedReviewStatus"
+      (selectionChange)="onFilterChange()"
       [options]="reviewStatusOptions"
       optionLabel="label"
       optionValue="value"
       placeholder="Review status"
+      [fluid]="false"
       class="w-40"
-      (onChange)="onFilterChange()"
     />
   </ui-stack>
 
@@ -39,12 +41,12 @@
     emptyMessage="No driver behavior events match your filters."
     (retry)="store.retry()"
   >
-    <p-table
+    <ui-data-table
       [value]="store.data()"
       [lazy]="true"
       [paginator]="true"
       [showCurrentPageReport]="true"
-      (onLazyLoad)="store.onLazyLoad($event)"
+      (lazyLoad)="store.onLazyLoad($event)"
       [rows]="store.pageSize()"
       [first]="store.first()"
       [totalRecords]="store.totalRecords()"
@@ -53,18 +55,9 @@
     >
       <ng-template #header>
         <tr>
-          <th pSortableColumn="OccurredAt">
-            Date/Time
-            <p-sortIcon field="OccurredAt" />
-          </th>
-          <th pSortableColumn="DriverName">
-            Driver
-            <p-sortIcon field="DriverName" />
-          </th>
-          <th pSortableColumn="TruckNumber">
-            Truck
-            <p-sortIcon field="TruckNumber" />
-          </th>
+          <th uiSortHeader="OccurredAt">Date/Time</th>
+          <th uiSortHeader="DriverName">Driver</th>
+          <th uiSortHeader="TruckNumber">Truck</th>
           <th>Event Type</th>
           <th>Location</th>
           <th>Speed</th>
@@ -78,7 +71,7 @@
           <td>{{ event.driverName }}</td>
           <td>{{ event.truckNumber ?? "-" }}</td>
           <td>
-            <p-tag
+            <ui-badge
               [value]="event.eventTypeDisplay"
               [severity]="getEventTypeSeverity(event.eventType)"
             />
@@ -88,35 +81,36 @@
           <td>
             @if (event.isReviewed) {
               @if (event.isDismissed) {
-                <p-tag value="Dismissed" severity="secondary" />
+                <ui-badge value="Dismissed" severity="secondary" />
               } @else {
-                <p-tag value="Reviewed" severity="success" />
+                <ui-badge value="Reviewed" severity="success" />
               }
             } @else {
-              <p-tag value="Pending" severity="warn" />
+              <ui-badge value="Pending" severity="warn" />
             }
           </td>
           <td>
-            <p-button
-              icon="pi pi-eye"
-              [text]="true"
+            <ui-button
+              appearance="text"
+              ariaLabel="Review event"
+              icon="eye"
               (click)="$event.stopPropagation(); openReviewDialog(event)"
             />
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   </ui-data-container>
-</p-card>
+</ui-card>
 
 <!-- Review Dialog -->
-<p-dialog
+<ui-dialog
   header="Review Event"
-  [(visible)]="showReviewDialog"
+  [(open)]="showReviewDialog"
   [modal]="true"
-  [style]="{ width: '600px' }"
+  width="600px"
   [closable]="true"
-  (onHide)="closeReviewDialog()"
+  (closed)="closeReviewDialog()"
 >
   @if (selectedEvent()) {
     <ui-stack gap="4">
@@ -126,7 +120,7 @@
           <ui-typography variant="body-sm" color="muted" class="mb-1 block">
             Event Type
           </ui-typography>
-          <p-tag
+          <ui-badge
             [value]="selectedEvent()!.eventTypeDisplay ?? ''"
             [severity]="
               selectedEvent()!.eventType
@@ -164,7 +158,7 @@
         <div>
           <ui-typography variant="body-sm" color="muted" class="mb-1 block">Location</ui-typography>
           <ui-stack direction="row" align="center" gap="2">
-            <ui-icon name="map-marker" color="muted" />
+            <ui-icon name="map-pin" color="muted" />
             <span>{{ selectedEvent()!.location }}</span>
           </ui-stack>
         </div>
@@ -251,34 +245,34 @@
 
           <ui-stack direction="row" align="center" justify="between" class="mb-4">
             <span>Dismiss this event (false positive)?</span>
-            <p-toggleswitch [(ngModel)]="isDismissed" />
+            <ui-toggle-field [(value)]="isDismissed" inputId="isDismissed" />
           </ui-stack>
 
           <div>
-            <label for="reviewNotes" class="text-muted mb-1 block text-sm">Review Notes</label>
-            <textarea
-              pInputTextarea
+            <label for="reviewNotes" class="text-muted-foreground mb-1 block text-sm">
+              Review Notes
+            </label>
+            <ui-textarea-field
               id="reviewNotes"
-              [(ngModel)]="reviewNotes"
-              class="w-full"
-              rows="3"
+              [(value)]="reviewNotes"
+              [rows]="3"
               placeholder="Add any notes about this event..."
-            ></textarea>
+            />
           </div>
         </div>
       }
     </ui-stack>
 
     <ng-template #footer>
-      <p-button label="Close" [outlined]="true" (click)="closeReviewDialog()" />
+      <ui-button appearance="outlined" label="Close" (click)="closeReviewDialog()" />
       @if (!selectedEvent()!.isReviewed) {
-        <p-button
+        <ui-button
           label="Submit Review"
-          icon="pi pi-check"
+          icon="check"
           [loading]="isReviewing()"
           (click)="submitReview()"
         />
       }
     </ng-template>
   }
-</p-dialog>
+</ui-dialog>

@@ -1,5 +1,4 @@
 import { Component, inject, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { ToastService } from "@logistics/shared";
 import {
   Api,
@@ -8,25 +7,20 @@ import {
   type DefaultFeatureStatusDto,
   type TenantFeature,
 } from "@logistics/shared/api";
-import { FeatureRow, PageHeader } from "@logistics/shared/components";
 import { FEATURE_DESCRIPTIONS } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { ToggleSwitchModule } from "primeng/toggleswitch";
+import {
+  Card,
+  FeatureRow,
+  PageHeader,
+  Spinner,
+  UiButton,
+  UiToggleField,
+} from "@logistics/shared/ui";
 
 @Component({
   selector: "adm-default-features",
   templateUrl: "./default-features.html",
-  imports: [
-    FormsModule,
-    CardModule,
-    ProgressSpinnerModule,
-    ButtonModule,
-    ToggleSwitchModule,
-    FeatureRow,
-    PageHeader,
-  ],
+  imports: [Card, FeatureRow, PageHeader, Spinner, UiButton, UiToggleField],
 })
 export class DefaultFeatures implements OnInit {
   private readonly api = inject(Api);

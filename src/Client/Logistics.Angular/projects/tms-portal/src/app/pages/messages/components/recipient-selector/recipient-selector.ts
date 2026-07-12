@@ -1,30 +1,22 @@
 import { Component, inject, input, output, signal } from "@angular/core";
 import { Api, getEmployees, type EmployeeDto } from "@logistics/shared/api";
-import { Icon, Stack, Typography } from "@logistics/shared/components";
 import {
-  AutoCompleteModule,
-  type AutoCompleteCompleteEvent,
-  type AutoCompleteSelectEvent,
-} from "primeng/autocomplete";
-import { AvatarModule } from "primeng/avatar";
-import { ButtonModule } from "primeng/button";
-import { TooltipModule } from "primeng/tooltip";
+  Avatar,
+  Icon,
+  Stack,
+  Typography,
+  UiAutocompleteField,
+  UiButton,
+  UiTooltip,
+  type UiAutocompleteCompleteEvent,
+} from "@logistics/shared/ui";
 import { UserAvatar } from "@/shared/components";
 import { Converters } from "@/shared/utils";
 
 @Component({
   selector: "app-recipient-selector",
   templateUrl: "./recipient-selector.html",
-  imports: [
-    AvatarModule,
-    AutoCompleteModule,
-    ButtonModule,
-    TooltipModule,
-    UserAvatar,
-    Icon,
-    Stack,
-    Typography,
-  ],
+  imports: [Avatar, Icon, Stack, Typography, UiAutocompleteField, UiButton, UiTooltip, UserAvatar],
 })
 export class RecipientSelector {
   private readonly api = inject(Api);
@@ -35,7 +27,7 @@ export class RecipientSelector {
 
   protected readonly employeeSuggestions = signal<EmployeeDto[]>([]);
 
-  protected async searchEmployees(event: AutoCompleteCompleteEvent): Promise<void> {
+  protected async searchEmployees(event: UiAutocompleteCompleteEvent): Promise<void> {
     const query = event.query;
     if (!query || query.length < 2) {
       this.employeeSuggestions.set([]);
@@ -57,8 +49,8 @@ export class RecipientSelector {
     }
   }
 
-  protected onRecipientSelect(event: AutoCompleteSelectEvent): void {
-    this.selectedChange.emit(event.value as EmployeeDto);
+  protected onRecipientSelect(employee: EmployeeDto | null): void {
+    this.selectedChange.emit(employee);
   }
 
   protected clearRecipient(): void {

@@ -2,11 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component, computed, inject, signal, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Api, searchLoadBoard, type LoadBoardListingDto } from "@logistics/shared/api";
-import { Grid, Stack } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import { Badge, Grid, Stack, UiButton, UiDataTable, UiTooltip } from "@logistics/shared/ui";
 import { DashboardCard, EmptyState, ErrorState, PageHeader, StatCard } from "@/shared/components";
 import { LoadBoardQuickActions } from "../_components";
 import { LoadBoardStore } from "../store";
@@ -15,7 +11,7 @@ import { LoadBoardStore } from "../store";
   selector: "app-loadboard-dashboard",
   templateUrl: "./loadboard-dashboard.html",
   imports: [
-    ButtonModule,
+    Badge,
     DashboardCard,
     DatePipe,
     EmptyState,
@@ -25,9 +21,9 @@ import { LoadBoardStore } from "../store";
     PageHeader,
     Stack,
     StatCard,
-    TableModule,
-    TagModule,
-    TooltipModule,
+    UiButton,
+    UiDataTable,
+    UiTooltip,
   ],
 })
 export class LoadBoardDashboardComponent implements OnInit {

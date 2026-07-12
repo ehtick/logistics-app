@@ -1,78 +1,78 @@
 <ui-page-header [title]="pageTitle()" backLink="/safety/dvir">
   <ui-stack direction="row" gap="2">
     @if (canDismiss()) {
-      <p-button
-        icon="pi pi-check"
+      <ui-button
+        intent="success"
+        appearance="outlined"
+        icon="check"
         label="Dismiss"
-        severity="success"
-        [outlined]="true"
         (click)="openDismissDialog()"
       />
     }
     @if (canReject()) {
-      <p-button
-        icon="pi pi-times"
+      <ui-button
+        intent="danger"
+        appearance="outlined"
+        icon="x"
         label="Reject"
-        severity="danger"
-        [outlined]="true"
         (click)="openRejectDialog()"
       />
     }
     @if (canReview()) {
-      <p-button icon="pi pi-check-square" label="Review" (click)="reviewReport()" />
+      <ui-button icon="check-square" label="Review" (click)="reviewReport()" />
     }
   </ui-stack>
 </ui-page-header>
 
 @if (isLoading()) {
   <ui-stack align="center" justify="center" class="py-16">
-    <p-progress-spinner />
+    <ui-spinner />
   </ui-stack>
 } @else if (report()) {
   <ui-stack gap="4" class="mx-auto max-w-4xl">
     <!-- Inspection Details -->
-    <p-card header="Inspection Details" class="w-full">
+    <ui-card header="Inspection Details" class="w-full">
       <ui-grid container spacing="4">
         <ui-grid [size]="{ xs: 6, md: 3 }">
-          <div class="text-muted mb-1 text-sm">Status</div>
-          <p-tag
+          <div class="text-muted-foreground mb-1 text-sm">Status</div>
+          <ui-badge
             [value]="getStatusLabel(report()!.status)"
             [severity]="getStatusSeverity(report()!.status)"
           />
         </ui-grid>
         <ui-grid [size]="{ xs: 6, md: 3 }">
-          <div class="text-muted mb-1 text-sm">Type</div>
-          <p-tag
+          <div class="text-muted-foreground mb-1 text-sm">Type</div>
+          <ui-badge
             [value]="getTypeLabel(report()!.type)"
             [severity]="getTypeSeverity(report()!.type)"
           />
         </ui-grid>
         <ui-grid [size]="{ xs: 6, md: 3 }">
-          <div class="text-muted mb-1 text-sm">Date</div>
+          <div class="text-muted-foreground mb-1 text-sm">Date</div>
           <div class="font-medium">{{ report()!.inspectionDate | date: "medium" }}</div>
         </ui-grid>
         <ui-grid [size]="{ xs: 6, md: 3 }">
-          <div class="text-muted mb-1 text-sm">Odometer</div>
+          <div class="text-muted-foreground mb-1 text-sm">Odometer</div>
           <div class="font-medium">{{ report()!.odometerReading | number }} mi</div>
         </ui-grid>
       </ui-grid>
 
       <ui-grid container spacing="4" class="mt-4">
         <ui-grid [size]="{ xs: 6, md: 3 }">
-          <div class="text-muted mb-1 text-sm">Truck</div>
-          <a [routerLink]="['/trucks', report()!.truckId]" class="text-primary font-medium">
+          <div class="text-muted-foreground mb-1 text-sm">Truck</div>
+          <a [routerLink]="['/trucks', report()!.truckId]" class="text-foreground font-medium">
             {{ report()!.truckNumber }}
           </a>
         </ui-grid>
         <ui-grid [size]="{ xs: 6, md: 3 }">
-          <div class="text-muted mb-1 text-sm">Driver</div>
+          <div class="text-muted-foreground mb-1 text-sm">Driver</div>
           <div class="font-medium">{{ report()!.driverName }}</div>
         </ui-grid>
       </ui-grid>
 
       @if (report()!.driverNotes) {
         <div class="mt-4">
-          <div class="text-muted mb-1 text-sm">Driver Notes</div>
+          <div class="text-muted-foreground mb-1 text-sm">Driver Notes</div>
           <p>{{ report()!.driverNotes }}</p>
         </div>
       }
@@ -80,39 +80,39 @@
       <ui-stack direction="row" align="center" gap="4" class="mt-4">
         @if (report()!.hasDriverSignature) {
           <ui-stack direction="row" align="center" gap="1" class="text-success">
-            <ui-icon name="check-circle" />
+            <ui-icon name="circle-check" />
             <span class="text-sm">Driver signed</span>
           </ui-stack>
         }
         @if (report()!.hasDefects) {
           <ui-stack direction="row" align="center" gap="1" class="text-danger">
-            <ui-icon name="exclamation-triangle" />
+            <ui-icon name="triangle-alert" />
             <span class="text-sm">{{ report()!.defects?.length ?? 0 }} defect(s) found</span>
           </ui-stack>
         } @else {
           <ui-stack direction="row" align="center" gap="1" class="text-success">
-            <ui-icon name="check-circle" />
+            <ui-icon name="circle-check" />
             <span class="text-sm">No defects</span>
           </ui-stack>
         }
       </ui-stack>
-    </p-card>
+    </ui-card>
 
     <!-- Mechanic Review - below Inspection Details -->
     @if (report()!.reviewedAt) {
-      <p-card header="Mechanic Review" class="w-full">
+      <ui-card header="Mechanic Review" class="w-full">
         <ui-grid container spacing="4">
           <ui-grid [size]="{ xs: 6, md: 3 }">
-            <div class="text-muted mb-1 text-sm">Reviewed By</div>
+            <div class="text-muted-foreground mb-1 text-sm">Reviewed By</div>
             <div class="font-medium">{{ report()!.reviewedByName }}</div>
           </ui-grid>
           <ui-grid [size]="{ xs: 6, md: 3 }">
-            <div class="text-muted mb-1 text-sm">Reviewed At</div>
+            <div class="text-muted-foreground mb-1 text-sm">Reviewed At</div>
             <div>{{ report()!.reviewedAt | date: "medium" }}</div>
           </ui-grid>
           @if (report()!.defectsCorrected !== null) {
             <ui-grid [size]="{ xs: 6, md: 3 }">
-              <div class="text-muted mb-1 text-sm">Defects Corrected</div>
+              <div class="text-muted-foreground mb-1 text-sm">Defects Corrected</div>
               @if (report()!.defectsCorrected) {
                 <span class="text-success font-medium">Yes</span>
               } @else {
@@ -122,9 +122,9 @@
           }
           @if (report()!.hasMechanicSignature) {
             <ui-grid [size]="{ xs: 6, md: 3 }">
-              <div class="text-muted mb-1 text-sm">Signature</div>
+              <div class="text-muted-foreground mb-1 text-sm">Signature</div>
               <ui-stack direction="row" align="center" gap="1" class="text-success">
-                <ui-icon name="check-circle" />
+                <ui-icon name="circle-check" />
                 <span class="text-sm">Mechanic signed</span>
               </ui-stack>
             </ui-grid>
@@ -132,23 +132,23 @@
         </ui-grid>
         @if (report()!.mechanicNotes) {
           <div class="mt-4">
-            <div class="text-muted mb-1 text-sm">Mechanic Notes</div>
+            <div class="text-muted-foreground mb-1 text-sm">Mechanic Notes</div>
             <p>{{ report()!.mechanicNotes }}</p>
           </div>
         }
-      </p-card>
+      </ui-card>
     }
 
     <!-- Defects -->
     @if (report()!.defects && report()!.defects!.length > 0) {
-      <p-card header="Defects" class="w-full">
+      <ui-card header="Defects" class="w-full">
         <app-dvir-defects-list [defects]="report()!.defects!" />
-      </p-card>
+      </ui-card>
     }
 
     <!-- Photos -->
     @if (report()!.photos && report()!.photos!.length > 0) {
-      <p-card header="Photos" class="w-full">
+      <ui-card header="Photos" class="w-full">
         <ui-grid container spacing="2">
           @for (photo of report()!.photos; track photo.id) {
             <ui-grid [size]="{ xs: 6, sm: 4, md: 3 }">
@@ -162,84 +162,72 @@
             </ui-grid>
           }
         </ui-grid>
-      </p-card>
+      </ui-card>
     }
   </ui-stack>
 }
 
 <!-- Dismiss Dialog -->
-<p-dialog
-  header="Dismiss DVIR Report"
-  [modal]="true"
-  [(visible)]="showDismissDialog"
-  [style]="{ width: '450px' }"
->
+<ui-dialog header="Dismiss DVIR Report" [modal]="true" [(open)]="showDismissDialog" width="450px">
   <div class="flex flex-col gap-4">
-    <p class="text-muted">
+    <p class="text-muted-foreground">
       Dismissing this report will mark it as cleared. This is typically used for reports with no
       defects that don't require mechanic review.
     </p>
     <div>
       <label for="dismissNotes" class="mb-2 block font-medium">Notes (Optional)</label>
-      <textarea
-        pTextarea
+      <ui-textarea-field
         id="dismissNotes"
-        [(ngModel)]="dismissNotes"
-        rows="3"
-        class="w-full"
+        [(value)]="dismissNotes"
+        [rows]="3"
+        class="block w-full"
         placeholder="Add any notes..."
-      ></textarea>
+      />
     </div>
   </div>
   <ng-template #footer>
     <ui-stack direction="row" justify="end" gap="2">
-      <p-button label="Cancel" [text]="true" (click)="showDismissDialog.set(false)" />
-      <p-button
+      <ui-button appearance="text" label="Cancel" (click)="showDismissDialog.set(false)" />
+      <ui-button
+        intent="success"
         label="Dismiss"
-        icon="pi pi-check"
-        severity="success"
+        icon="check"
         (click)="confirmDismiss()"
         [loading]="isSubmitting()"
       />
     </ui-stack>
   </ng-template>
-</p-dialog>
+</ui-dialog>
 
 <!-- Reject Dialog -->
-<p-dialog
-  header="Reject DVIR Report"
-  [modal]="true"
-  [(visible)]="showRejectDialog"
-  [style]="{ width: '450px' }"
->
+<ui-dialog header="Reject DVIR Report" [modal]="true" [(open)]="showRejectDialog" width="450px">
   <div class="flex flex-col gap-4">
-    <p class="text-muted">
+    <p class="text-muted-foreground">
       Rejecting this report will send it back to the driver for corrections. Please provide a
       reason.
     </p>
     <div>
       <label for="rejectionReason" class="mb-2 block font-medium">Rejection Reason *</label>
-      <textarea
-        pTextarea
+      <ui-textarea-field
         id="rejectionReason"
-        [(ngModel)]="rejectionReason"
-        rows="3"
-        class="w-full"
+        [(value)]="rejectionReason"
+        [rows]="3"
+        class="block w-full"
         placeholder="Explain why this report is being rejected..."
-      ></textarea>
+      />
     </div>
   </div>
   <ng-template #footer>
     <ui-stack direction="row" justify="end" gap="2">
-      <p-button label="Cancel" [text]="true" (click)="showRejectDialog.set(false)" />
-      <p-button
+      <ui-button appearance="text" label="Cancel" (click)="showRejectDialog.set(false)" />
+      <ui-button
+        intent="danger"
         label="Reject"
-        icon="pi pi-times"
-        severity="danger"
+        icon="x"
         (click)="confirmReject()"
         [loading]="isSubmitting()"
         [disabled]="!rejectionReason.trim()"
       />
     </ui-stack>
   </ng-template>
-</p-dialog>
+</ui-dialog>

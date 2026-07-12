@@ -7,16 +7,21 @@ import {
   setupEmployeePayout,
   type DocumentType,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
 import { ToastService } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TabsModule } from "primeng/tabs";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  Divider,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiTabsImports,
+} from "@logistics/shared/ui";
 import { DocumentManager, PageHeader } from "@/shared/components";
 import { EmployeeStatusTag } from "@/shared/components/tags";
 import { EmployeeAvatar } from "../components";
@@ -30,28 +35,27 @@ import { EmployeeDetailsStore } from "../store";
   templateUrl: "./employee-details.html",
   providers: [EmployeeDetailsStore, CurrencyFormatPipe],
   imports: [
+    Badge,
+    Card,
     CommonModule,
-    ButtonModule,
-    CardModule,
-    TooltipModule,
-    TabsModule,
-    TagModule,
-    DividerModule,
-    ProgressSpinnerModule,
-    RouterLink,
     DatePipe,
-    PageHeader,
-    EmployeeStatusTag,
-    EmployeeAvatar,
+    Divider,
     DocumentManager,
     DriverLicensesTab,
+    EmployeeAvatar,
     EmployeeEditDialog,
     EmployeeLoadsList,
+    EmployeeStatusTag,
     Grid,
     Icon,
+    PageHeader,
+    RouterLink,
+    Spinner,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiTabsImports,
   ],
 })
 export class EmployeeDetails implements OnInit {
@@ -124,7 +128,7 @@ export class EmployeeDetails implements OnInit {
       message: "Are you sure you want to remove this employee? This action cannot be undone.",
       acceptLabel: "Delete",
       rejectLabel: "Cancel",
-      acceptButtonStyleClass: "p-button-danger",
+      severity: "danger",
       accept: async () => {
         const success = await this.store.deleteEmployee();
         if (success) {

@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject, input, output, signal } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { form, FormField, FormRoot, min, required, submit } from "@angular/forms/signals";
 import {
   addLineItem,
   Api,
@@ -12,41 +12,46 @@ import {
 } from "@logistics/shared/api";
 import { payrollLineItemTypeOptions } from "@logistics/shared/api/enums";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { DialogModule } from "primeng/dialog";
-import { InputNumberModule } from "primeng/inputnumber";
-import { InputTextModule } from "primeng/inputtext";
-import { SelectModule } from "primeng/select";
-import { TableModule } from "primeng/table";
-import { TextareaModule } from "primeng/textarea";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Icon,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiNumberField,
+  UiSelectField,
+  UiTextareaField,
+  UiTextField,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
-import { FormField } from "@/shared/components";
+import { UiFormField } from "@/shared/components";
 
-interface LineItemForm {
-  description: FormControl<string>;
-  type: FormControl<InvoiceLineItemType>;
-  amount: FormControl<number>;
-  quantity: FormControl<number>;
-  notes: FormControl<string | null>;
-}
+const EMPTY = {
+  description: "",
+  type: "base_pay" as InvoiceLineItemType,
+  amount: 0,
+  quantity: 1,
+  notes: "",
+};
 
 @Component({
   selector: "app-payroll-line-items-table",
   templateUrl: "./line-items-table.html",
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    TableModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    InputNumberModule,
-    SelectModule,
-    TextareaModule,
-    TooltipModule,
-    FormField,
     CurrencyFormatPipe,
+    FormField,
+    FormRoot,
+    Icon,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiFormField,
+    UiNumberField,
+    UiSelectField,
+    UiTextareaField,
+    UiTextField,
+    UiTooltip,
   ],
 })
 export class PayrollLineItemsTable {
@@ -59,24 +64,17 @@ export class PayrollLineItemsTable {
 
   protected readonly showDialog = signal(false);
   protected readonly editingItem = signal<InvoiceLineItemDto | null>(null);
-  protected readonly isSaving = signal(false);
   protected readonly typeOptions = payrollLineItemTypeOptions;
 
-  protected readonly form = new FormGroup<LineItemForm>({
-    description: new FormControl("", { validators: Validators.required, nonNullable: true }),
-    type: new FormControl<InvoiceLineItemType>("base_pay", {
-      validators: Validators.required,
-      nonNullable: true,
-    }),
-    amount: new FormControl(0, {
-      validators: [Validators.required, Validators.min(0)],
-      nonNullable: true,
-    }),
-    quantity: new FormControl(1, {
-      validators: [Validators.required, Validators.min(1)],
-      nonNullable: true,
-    }),
-    notes: new FormControl<string | null>(null),
+  protected readonly model = signal({ ...EMPTY });
+
+  protected readonly form = form(this.model, (p) => {
+    required(p.description, { message: "Description is required." });
+    required(p.type, { message: "Type is required." });
+    required(p.amount, { message: "Amount is required." });
+    min(p.amount, 0, { message: "Amount must be 0 or greater." });
+    required(p.quantity, { message: "Quantity is required." });
+    min(p.quantity, 1, { message: "Quantity must be at least 1." });
   });
 
   getTypeLabel(type: InvoiceLineItemType): string {
@@ -85,24 +83,18 @@ export class PayrollLineItemsTable {
 
   openAddDialog(): void {
     this.editingItem.set(null);
-    this.form.reset({
-      description: "",
-      type: "base_pay",
-      amount: 0,
-      quantity: 1,
-      notes: null,
-    });
+    this.form().reset({ ...EMPTY });
     this.showDialog.set(true);
   }
 
   openEditDialog(item: InvoiceLineItemDto): void {
     this.editingItem.set(item);
-    this.form.patchValue({
+    this.form().reset({
       description: item.description ?? "",
-      type: item.type,
+      type: item.type ?? EMPTY.type,
       amount: item.amount?.amount ?? 0,
       quantity: item.quantity ?? 1,
-      notes: item.notes ?? null,
+      notes: item.notes ?? "",
     });
     this.showDialog.set(true);
   }
@@ -111,52 +103,55 @@ export class PayrollLineItemsTable {
     this.toastService.confirm({
       message: `Are you sure you want to delete "${item.description}"?`,
       header: "Confirm Delete",
-      icon: "pi pi-exclamation-triangle",
+      icon: "warning",
       accept: () => this.deleteItem(item),
     });
   }
 
+  /**
+   * The footer button lives in the dialog footer (outside the `<form>`), so submission is driven
+   * imperatively via `submit()` rather than `[formRoot]`.
+   */
   async saveItem(): Promise<void> {
-    if (!this.form.valid) return;
+    await submit(this.form, async () => {
+      const value = this.model();
+      const invoiceId = this.invoiceId();
 
-    this.isSaving.set(true);
-    const formValue = this.form.value;
-    const invoiceId = this.invoiceId();
+      try {
+        const editing = this.editingItem();
+        if (editing) {
+          await this.api.invoke(updateLineItem, {
+            invoiceId,
+            lineItemId: editing.id!,
+            body: {
+              description: value.description,
+              type: value.type,
+              amount: value.amount,
+              quantity: value.quantity,
+              notes: value.notes || undefined,
+            },
+          });
+          this.toastService.showSuccess("Line item updated");
+        } else {
+          const request: AddLineItemRequest = {
+            description: value.description,
+            type: value.type,
+            amount: value.amount,
+            quantity: value.quantity,
+            notes: value.notes || undefined,
+          };
+          await this.api.invoke(addLineItem, { id: invoiceId, body: request });
+          this.toastService.showSuccess("Line item added");
+        }
 
-    try {
-      const editing = this.editingItem();
-      if (editing) {
-        await this.api.invoke(updateLineItem, {
-          invoiceId,
-          lineItemId: editing.id!,
-          body: {
-            description: formValue.description,
-            type: formValue.type,
-            amount: formValue.amount,
-            quantity: formValue.quantity,
-            notes: formValue.notes ?? undefined,
-          },
-        });
-        this.toastService.showSuccess("Line item updated");
-      } else {
-        const request: AddLineItemRequest = {
-          description: formValue.description!,
-          type: formValue.type!,
-          amount: formValue.amount!,
-          quantity: formValue.quantity!,
-          notes: formValue.notes ?? undefined,
-        };
-        await this.api.invoke(addLineItem, { id: invoiceId, body: request });
-        this.toastService.showSuccess("Line item added");
+        this.showDialog.set(false);
+        this.itemsChanged.emit();
+      } catch {
+        this.toastService.showError("Failed to save line item");
       }
 
-      this.showDialog.set(false);
-      this.itemsChanged.emit();
-    } catch {
-      this.toastService.showError("Failed to save line item");
-    } finally {
-      this.isSaving.set(false);
-    }
+      return undefined;
+    });
   }
 
   private async deleteItem(item: InvoiceLineItemDto): Promise<void> {

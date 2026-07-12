@@ -9,14 +9,18 @@ import {
   type SalaryType,
 } from "@logistics/shared/api";
 import { paymentMethodTypeOptions, salaryTypeOptions } from "@logistics/shared/api/enums";
-import { Grid, Stack } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Card,
+  Divider,
+  Grid,
+  Spinner,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiSortHeader,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { DataContainer, InvoiceStatusTag, PageHeader } from "@/shared/components";
 import { EmployeePayrollListStore } from "../store/employee-list.store";
 
@@ -25,20 +29,21 @@ import { EmployeePayrollListStore } from "../store/employee-list.store";
   templateUrl: "./employee-payroll-invoices.html",
   providers: [EmployeePayrollListStore],
   imports: [
-    CurrencyFormatPipe,
+    Card,
     CommonModule,
-    CardModule,
-    TooltipModule,
-    TableModule,
-    ButtonModule,
-    RouterModule,
-    InvoiceStatusTag,
-    ProgressSpinnerModule,
+    CurrencyFormatPipe,
     DataContainer,
-    DividerModule,
-    PageHeader,
+    Divider,
     Grid,
+    InvoiceStatusTag,
+    PageHeader,
+    RouterModule,
+    Spinner,
     Stack,
+    UiButton,
+    UiDataTable,
+    UiSortHeader,
+    UiTooltip,
   ],
 })
 export class EmployeePayrollInvoices {

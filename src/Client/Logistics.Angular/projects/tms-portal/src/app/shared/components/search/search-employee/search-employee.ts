@@ -1,40 +1,47 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { Component, forwardRef, inject, input, model, output, signal } from "@angular/core";
-import { FormsModule, NG_VALUE_ACCESSOR, type ControlValueAccessor } from "@angular/forms";
-import { isEmptyGuid, type TenantRoleValue } from "@logistics/shared";
-import { Api, getEmployeeById, getEmployees, type EmployeeDto } from "@logistics/shared/api";
-import { AutoCompleteModule, type AutoCompleteSelectEvent } from "primeng/autocomplete";
+import { Component, ElementRef, inject, input, model, output, signal } from "@angular/core";
+import type { FormValueControl } from "@angular/forms/signals";
+import { focusFirstControl, type TenantRoleValue } from "@logistics/shared";
+import { Api, getEmployees, type EmployeeDto } from "@logistics/shared/api";
+import { UiAutocompleteField } from "@logistics/shared/ui";
 
 /**
  * Component for searching and selecting an employee.
  * This component uses an autocomplete input to allow users to search for employees by name.
- * It accepts an employee ID or an EmployeeDto object as input and emits the selected employee.
- * Supports filtering by role (e.g., "Driver", "Dispatcher").
+ * It emits the selected employee via its `value` model. Supports filtering by role
+ * (e.g., "Driver", "Dispatcher").
+ *
+ * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Never put `formControlName` / `[formField]` on an inner third-party element.
  */
 @Component({
   selector: "app-search-employee",
   templateUrl: "./search-employee.html",
-  imports: [AutoCompleteModule, FormsModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SearchEmployee),
-      multi: true,
-    },
-  ],
+  imports: [UiAutocompleteField],
 })
-export class SearchEmployee implements ControlValueAccessor {
+export class SearchEmployee implements FormValueControl<EmployeeDto | null> {
   private readonly api = inject(Api);
 
   protected readonly suggestedEmployees = signal<EmployeeDto[]>([]);
-  protected readonly disabled = signal<boolean>(false);
+
+  /** The selected employee. Required by `FormValueControl`. */
+  public readonly value = model<EmployeeDto | null>(null);
+
+  /** Driven by the forms bridge (Reactive Forms `.disable()`, Signal Forms `disabled()`). */
+  public readonly disabled = input<boolean>(false);
+
+  /** Raised on blur so the form can mark the field touched. */
+  public readonly touch = output<void>();
 
   /** Filter employees by role (e.g., "Driver", "Dispatcher") */
   public readonly role = input<TenantRoleValue | null>(null);
   public readonly placeholder = input<string>("Type employee name");
 
-  public readonly selectedEmployee = model<EmployeeDto | null>(null);
-  public readonly selectedEmployeeChange = output<EmployeeDto | null>();
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  /** Signal Forms calls this via `FieldState.focusBoundControl()`. */
+  public focus(options?: FocusOptions): void {
+    focusFirstControl(this.host.nativeElement, options);
+  }
 
   protected async searchEmployee(event: { query: string }): Promise<void> {
     const roleValue = this.role() as string;
@@ -46,55 +53,7 @@ export class SearchEmployee implements ControlValueAccessor {
     this.suggestedEmployees.set(result?.items ?? []);
   }
 
-  protected changeSelectedEmployee(event: AutoCompleteSelectEvent): void {
-    this.selectedEmployeeChange.emit(event.value);
-    this.onChange(event.value);
+  protected clearSelectedEmployee(): void {
+    this.value.set(null);
   }
-
-  private async fetchEmployeeById(id: string): Promise<void> {
-    if (isEmptyGuid(id)) {
-      this.selectedEmployee.set(null);
-      return;
-    }
-
-    const result = await this.api.invoke(getEmployeeById, { userId: id });
-    if (result) {
-      this.selectedEmployee.set(result);
-      this.onChange(result);
-    }
-  }
-
-  //#region Implementation Reactive forms
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private onChange(value: EmployeeDto | null): void {}
-  private onTouched(): void {}
-
-  /** Marks the control as touched so validation errors surface (on blur). */
-  protected markTouched(): void {
-    this.onTouched();
-  }
-
-  writeValue(value: EmployeeDto | string | null): void {
-    if (typeof value === "string") {
-      this.fetchEmployeeById(value);
-      return;
-    }
-
-    this.selectedEmployee.set(value);
-  }
-
-  registerOnChange(fn: () => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled.set(isDisabled);
-  }
-
-  //#endregion
 }

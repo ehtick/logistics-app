@@ -2,16 +2,19 @@ import { DatePipe } from "@angular/common";
 import { Component, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import type { DvirReportDto, DvirStatus, DvirType } from "@logistics/shared/api";
-import { Icon, Stack } from "@logistics/shared/components";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  Icon,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { DataContainer, PageHeader, SearchField } from "@/shared/components";
-import type { TagSeverity } from "@/shared/types";
 import { DvirListStore } from "../store";
 
 @Component({
@@ -19,18 +22,18 @@ import { DvirListStore } from "../store";
   templateUrl: "./dvir-list.html",
   providers: [DvirListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    MenuModule,
-    TagModule,
-    DatePipe,
+    Badge,
+    Card,
     DataContainer,
+    DatePipe,
+    Icon,
     PageHeader,
     SearchField,
-    Icon,
     Stack,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
   ],
 })
 export class DvirListPage {
@@ -39,20 +42,20 @@ export class DvirListPage {
 
   protected readonly selectedRow = signal<DvirReportDto | null>(null);
 
-  protected readonly actionMenuItems: MenuItem[] = [
+  protected readonly actionMenuItems: UiMenuItem[] = [
     {
       label: "View details",
-      icon: "pi pi-eye",
+      icon: "eye",
       command: () => this.viewDetails(this.selectedRow()!),
     },
     {
       label: "Review",
-      icon: "pi pi-check-circle",
+      icon: "circle-check",
       command: () => this.reviewDvir(this.selectedRow()!),
     },
   ];
 
-  protected getStatusSeverity(status: DvirStatus | undefined): TagSeverity {
+  protected getStatusSeverity(status: DvirStatus | undefined): UiBadgeIntent {
     switch (status) {
       case "cleared":
         return "success";
@@ -86,7 +89,7 @@ export class DvirListPage {
     }
   }
 
-  protected getTypeSeverity(type: DvirType | undefined): TagSeverity {
+  protected getTypeSeverity(type: DvirType | undefined): UiBadgeIntent {
     switch (type) {
       case "pre_trip":
         return "info";

@@ -1,35 +1,24 @@
-import { Component, inject, input, model, signal } from "@angular/core";
+import { Component, inject, input, model, output, signal } from "@angular/core";
+import { form, FormField, FormRoot, required } from "@angular/forms/signals";
+import { UiSelectField } from "@logistics/shared";
 import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
-import { Api, updateEmployee } from "@logistics/shared/api";
-import type { RoleDto, UpdateEmployeeCommand } from "@logistics/shared/api";
-import { ButtonModule } from "primeng/button";
-import { DialogModule } from "primeng/dialog";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { SelectModule } from "primeng/select";
+  Api,
+  updateEmployee,
+  type RoleDto,
+  type UpdateEmployeeCommand,
+} from "@logistics/shared/api";
+import { Spinner, UiButton, UiDialog } from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { UserService } from "../../services";
+
+const EMPTY = { role: "" };
 
 @Component({
   selector: "app-change-role-dialog",
   templateUrl: "./change-role-dialog.html",
-  imports: [
-    DialogModule,
-    ProgressSpinnerModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ButtonModule,
-    SelectModule,
-  ],
+  imports: [FormField, FormRoot, Spinner, UiButton, UiDialog, UiSelectField],
 })
 export class ChangeRoleDialog {
-  protected readonly form: FormGroup;
-
   private readonly api = inject(Api);
   private readonly userService = inject(UserService);
   private readonly toastService = inject(ToastService);
@@ -37,51 +26,56 @@ export class ChangeRoleDialog {
   public readonly userId = input.required<string>();
   public readonly currentRole = input<RoleDto | null>(null);
   public readonly visible = model<boolean>(false);
+  public readonly roleChanged = output<void>();
 
   protected readonly roles = signal<RoleDto[]>([]);
   protected readonly isLoading = signal(false);
 
+  protected readonly model = signal({ ...EMPTY });
+
+  /**
+   * An empty `role` on submit runs `onInvalid`, which shows the "select a role" toast — this dialog
+   * has no inline `ui-form-field` error slot to surface the error otherwise.
+   */
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.role, { message: "Select a role from the list" });
+    },
+    {
+      submission: {
+        action: async () => {
+          const command: UpdateEmployeeCommand = {
+            userId: this.userId(),
+            role: this.model().role,
+          };
+
+          await this.api.invoke(updateEmployee, {
+            userId: this.userId(),
+            body: command,
+          });
+          this.toastService.showSuccess(`Successfully changed employee's role`);
+          this.roleChanged.emit();
+          return undefined;
+        },
+        onInvalid: () => {
+          this.toastService.showError("Select a role from the list");
+        },
+      },
+    },
+  );
+
   constructor() {
-    this.form = new FormGroup({
-      role: new FormControl("", Validators.required),
-    });
-
     this.fetchRoles();
-  }
-
-  async submit(): Promise<void> {
-    const role = this.form.value.role;
-
-    if (role === "") {
-      this.toastService.showError("Select a role from the list");
-      return;
-    }
-
-    const command: UpdateEmployeeCommand = {
-      userId: this.userId(),
-      role: role,
-    };
-
-    this.isLoading.set(true);
-    await this.api.invoke(updateEmployee, {
-      userId: this.userId(),
-      body: command,
-    });
-    this.toastService.showSuccess(`Successfully changed employee's role`);
-
-    this.isLoading.set(false);
   }
 
   close(): void {
     this.visible.set(false);
-    //this.visibleChange.emit(false);
     this.clearSelectedRole();
   }
 
   clearSelectedRole(): void {
-    this.form.patchValue({
-      role: { name: "", displayName: " " },
-    });
+    this.model.set({ ...EMPTY });
   }
 
   async removeRole(): Promise<void> {
@@ -96,6 +90,7 @@ export class ChangeRoleDialog {
       body: command,
     });
     this.toastService.showSuccess("Removed role from the employee");
+    this.roleChanged.emit();
     this.isLoading.set(false);
   }
 

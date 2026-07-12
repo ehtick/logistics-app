@@ -1,17 +1,20 @@
 import { Component, inject, signal, viewChild } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
-import { DataContainer, PageHeader, SearchField } from "@logistics/shared/components";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { Menu, MenuModule } from "primeng/menu";
-import { PasswordModule } from "primeng/password";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  DataContainer,
+  PageHeader,
+  SearchField,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiMenu,
+  UiPasswordField,
+  UiSortHeader,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { ImpersonationService, ToastService } from "@/core/services";
 import { UsersListStore } from "../store/users-list.store";
 
@@ -20,20 +23,18 @@ import { UsersListStore } from "../store/users-list.store";
   templateUrl: "./users-list.html",
   providers: [UsersListStore],
   imports: [
-    TooltipModule,
-    RouterLink,
-    CardModule,
-    TableModule,
+    Badge,
+    Card,
     DataContainer,
     PageHeader,
+    RouterLink,
     SearchField,
-    TagModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    MenuModule,
-    PasswordModule,
-    FormsModule,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiMenu,
+    UiPasswordField,
+    UiSortHeader,
   ],
 })
 export class UsersList {
@@ -41,13 +42,13 @@ export class UsersList {
   private readonly impersonationService = inject(ImpersonationService);
   private readonly toast = inject(ToastService);
 
-  private readonly actionMenu = viewChild<Menu>("actionMenu");
+  private readonly actionMenu = viewChild<UiMenu>("actionMenu");
   private readonly selectedEmail = signal("");
 
-  protected readonly actionMenuItems: MenuItem[] = [
+  protected readonly actionMenuItems: UiMenuItem[] = [
     {
       label: "Impersonate User",
-      icon: "pi pi-user",
+      icon: "user",
       command: () => this.openImpersonateDialog(this.selectedEmail()),
     },
   ];
@@ -97,9 +98,7 @@ export class UsersList {
     }
   }
 
-  protected getRoleSeverity(
-    role?: string | null,
-  ): "success" | "secondary" | "info" | "warn" | "danger" | "contrast" {
+  protected getRoleSeverity(role?: string | null): UiBadgeIntent {
     switch (role?.toLowerCase()) {
       case "superadmin":
         return "danger";

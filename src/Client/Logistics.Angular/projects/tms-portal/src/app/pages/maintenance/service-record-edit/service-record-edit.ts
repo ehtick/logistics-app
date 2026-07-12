@@ -6,9 +6,7 @@ import {
   type MaintenanceRecordDto,
   type TruckDto,
 } from "@logistics/shared/api";
-import { Stack } from "@logistics/shared/components";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
+import { Card, Spinner, Stack } from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { PageHeader } from "@/shared/components";
 import {
@@ -19,7 +17,7 @@ import {
 @Component({
   selector: "app-service-record-edit",
   templateUrl: "./service-record-edit.html",
-  imports: [CardModule, ProgressSpinnerModule, PageHeader, MaintenanceRecordForm, Stack],
+  imports: [Card, MaintenanceRecordForm, PageHeader, Spinner, Stack],
 })
 export class ServiceRecordEditPage implements OnInit {
   private readonly router = inject(Router);
@@ -58,11 +56,11 @@ export class ServiceRecordEditPage implements OnInit {
           serviceDate: found.serviceDate ? new Date(found.serviceDate) : new Date(),
           odometerReading: found.odometerReading,
           engineHours: found.engineHours,
-          vendorName: found.vendorName,
-          invoiceNumber: found.invoiceNumber,
+          vendorName: found.vendorName ?? "",
+          invoiceNumber: found.invoiceNumber ?? "",
           laborCost: found.laborCost ?? 0,
           partsCost: found.partsCost ?? 0,
-          notes: found.notes,
+          notes: found.notes ?? "",
         };
 
         this.initialFormValue.set(formValue);

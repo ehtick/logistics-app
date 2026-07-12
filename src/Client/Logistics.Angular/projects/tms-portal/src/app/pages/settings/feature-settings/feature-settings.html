@@ -1,10 +1,10 @@
 <ui-page-header title="Feature Settings" [centered]="true" />
 
 <ui-container maxWidth="md">
-  <p-card>
+  <ui-card>
     @if (isLoading()) {
       <ui-stack align="center" justify="center" class="py-8">
-        <p-progress-spinner />
+        <ui-spinner />
       </ui-stack>
     } @else {
       <ui-typography variant="body" color="muted" class="mb-6">
@@ -20,21 +20,21 @@
             [locked]="feature.isAdminLocked ?? false"
             lockedTooltip="This feature is locked by the administrator"
           >
-            <p-toggleswitch
-              [ngModel]="feature.isEnabled"
+            <ui-toggle-field
+              [value]="feature.isEnabled ?? false"
               [disabled]="(feature.isAdminLocked ?? false) || isSaving() === feature.feature"
-              (onChange)="toggleFeature(feature)"
+              (valueChange)="toggleFeature(feature)"
             />
           </ui-feature-row>
         }
       </ui-stack>
 
       @if (features().length === 0) {
-        <ui-stack align="center" gap="2" class="text-muted py-8">
-          <ui-icon name="info-circle" size="xl" />
+        <ui-stack align="center" gap="2" class="text-muted-foreground py-8">
+          <ui-icon name="info" size="xl" />
           <p>No features available to configure.</p>
         </ui-stack>
       }
     }
-  </p-card>
+  </ui-card>
 </ui-container>

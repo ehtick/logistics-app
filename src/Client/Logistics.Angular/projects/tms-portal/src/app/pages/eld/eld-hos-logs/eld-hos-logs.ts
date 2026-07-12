@@ -1,6 +1,5 @@
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { Component, computed, inject, input, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import {
   Api,
   getDriverHosLogs,
@@ -8,39 +7,43 @@ import {
   type DutyStatus,
   type HosLogDto,
 } from "@logistics/shared/api";
-import { EmptyState, ErrorState, Grid, Stack } from "@logistics/shared/components";
 import { LocalizationService } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DatePicker } from "primeng/datepicker";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule, type TableLazyLoadEvent } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
-import { DashboardCard, FormField, PageHeader, StatCard } from "@/shared/components";
+import type { ListLazyLoadEvent } from "@logistics/shared/stores";
+import {
+  Badge,
+  Card,
+  EmptyState,
+  ErrorState,
+  Grid,
+  Spinner,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiDateField,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
+import { DashboardCard, PageHeader, StatCard, UiFormField } from "@/shared/components";
 
 @Component({
   selector: "app-eld-hos-logs",
   templateUrl: "./eld-hos-logs.html",
   imports: [
-    ButtonModule,
-    CardModule,
+    Badge,
+    Card,
     DashboardCard,
-    DatePicker,
     DatePipe,
     DecimalPipe,
     EmptyState,
     ErrorState,
-    FormsModule,
-    FormField,
     Grid,
     PageHeader,
-    ProgressSpinnerModule,
+    Spinner,
     Stack,
     StatCard,
-    TableModule,
-    TagModule,
-    TooltipModule,
+    UiButton,
+    UiDataTable,
+    UiDateField,
+    UiFormField,
   ],
 })
 export class EldHosLogsComponent implements OnInit {
@@ -57,8 +60,12 @@ export class EldHosLogsComponent implements OnInit {
   protected readonly pageSize = signal(25);
   protected readonly first = signal(0);
 
-  protected startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  protected endDate = new Date();
+  // `Date | null` because `ui-date-field` is a `FormValueControl<Date | null>` — the value type is
+  // invariant, so a non-nullable `Date` signal will not two-way bind to it.
+  protected readonly startDate = signal<Date | null>(
+    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+  );
+  protected readonly endDate = signal<Date | null>(new Date());
   protected readonly today = new Date();
 
   protected readonly headerTitle = computed(() => `HOS Logs - ${this.employeeName()}`);
@@ -83,7 +90,7 @@ export class EldHosLogsComponent implements OnInit {
     this.localization.formatHosDuration(this.totalOnDutyMinutes()),
   );
 
-  protected readonly dateFormat = computed(() => this.localization.getPrimeNgDateFormat());
+  protected readonly dateFormat = computed(() => this.localization.getPickerDateFormat());
 
   ngOnInit(): void {
     this.loadData();
@@ -100,8 +107,8 @@ export class EldHosLogsComponent implements OnInit {
         this.api.invoke(getEmployeeById, { userId: employeeId }),
         this.api.invoke(getDriverHosLogs, {
           employeeId,
-          StartDate: this.startDate.toISOString(),
-          EndDate: this.endDate.toISOString(),
+          StartDate: this.startDate()?.toISOString(),
+          EndDate: this.endDate()?.toISOString(),
           Page: Math.floor(this.first() / this.pageSize()) + 1,
           PageSize: this.pageSize(),
           OrderBy: "startTime desc",
@@ -122,7 +129,7 @@ export class EldHosLogsComponent implements OnInit {
     }
   }
 
-  protected async onLazyLoad(event: TableLazyLoadEvent): Promise<void> {
+  protected async onLazyLoad(event: ListLazyLoadEvent): Promise<void> {
     this.first.set(event.first ?? 0);
     this.pageSize.set(event.rows ?? 25);
     await this.loadData();
@@ -133,9 +140,7 @@ export class EldHosLogsComponent implements OnInit {
     await this.loadData();
   }
 
-  protected getDutyStatusSeverity(
-    status?: DutyStatus,
-  ): "success" | "info" | "warn" | "danger" | "secondary" {
+  protected getDutyStatusSeverity(status?: DutyStatus): UiBadgeIntent {
     switch (status) {
       case "off_duty":
         return "secondary";

@@ -1,15 +1,20 @@
 <ui-page-header title="Terminals" addRoute="/terminals/add" addTooltip="Add a new terminal" />
 
-<p-card>
+<ui-card>
   <ui-stack direction="row" align="end" gap="3" wrap class="mb-4">
     <div class="min-w-72 flex-1">
       <ui-search-field (searchChange)="search($event)" />
     </div>
-    <p-select
+    <ui-select-field
       [options]="typeOptions"
+      optionLabel="label"
+      optionValue="value"
+      [fluid]="false"
       [showClear]="true"
       placeholder="All types"
-      (onChange)="onTypeChange($event.value)"
+      [value]="typeFilter()"
+      (selectionChange)="onTypeChange($event)"
+      (cleared)="onTypeChange(null)"
     />
     <input
       type="text"
@@ -32,12 +37,12 @@
     (retry)="store.retry()"
     (emptyAction)="addTerminal()"
   >
-    <p-table
+    <ui-data-table
       [value]="store.data()"
       [lazy]="true"
       [paginator]="true"
       [showCurrentPageReport]="true"
-      (onLazyLoad)="store.onLazyLoad($event)"
+      (lazyLoad)="store.onLazyLoad($event)"
       [rows]="store.pageSize()"
       [first]="store.first()"
       [totalRecords]="store.totalRecords()"
@@ -46,14 +51,8 @@
     >
       <ng-template #header>
         <tr>
-          <th pSortableColumn="Code">
-            Code
-            <p-sortIcon field="Code" />
-          </th>
-          <th pSortableColumn="Name">
-            Name
-            <p-sortIcon field="Name" />
-          </th>
+          <th uiSortHeader="Code">Code</th>
+          <th uiSortHeader="Name">Name</th>
           <th>Country</th>
           <th>Type</th>
           <th>City</th>
@@ -68,15 +67,15 @@
           <td>{{ typeLabel(terminal.type) }}</td>
           <td>{{ terminal.address?.city || "-" }}</td>
           <td>
-            <p-button
-              icon="pi pi-pencil"
-              [text]="true"
-              aria-label="Edit terminal"
+            <ui-button
+              appearance="text"
+              icon="pencil"
+              ariaLabel="Edit terminal"
               (click)="$event.stopPropagation(); editTerminal(terminal)"
             />
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   </ui-data-container>
-</p-card>
+</ui-card>

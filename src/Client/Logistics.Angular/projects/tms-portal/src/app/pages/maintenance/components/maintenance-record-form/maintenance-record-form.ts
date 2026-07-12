@@ -1,5 +1,5 @@
 import { Component, effect, inject, input, output, signal } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { form, FormField, FormRoot, required } from "@angular/forms/signals";
 import { RouterLink } from "@angular/router";
 import {
   Api,
@@ -11,14 +11,17 @@ import {
   type TruckDto,
   type UpdateMaintenanceRecordCommand,
 } from "@logistics/shared/api";
-import { FormField, ValidatedForm } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { DatePickerModule } from "primeng/datepicker";
-import { InputNumberModule } from "primeng/inputnumber";
-import { InputTextModule } from "primeng/inputtext";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { SelectModule } from "primeng/select";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Spinner,
+  UiButton,
+  UiDateField,
+  UiFormField,
+  UiNumberField,
+  UiSelectField,
+  UiTextareaField,
+  UiTextField,
+  ValidatedForm,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { SearchTruck } from "@/shared/components/search";
 
@@ -29,11 +32,11 @@ export interface MaintenanceRecordFormValue {
   serviceDate: Date;
   odometerReading: number | null;
   engineHours: number | null;
-  vendorName: string | null;
-  invoiceNumber: string | null;
+  vendorName: string;
+  invoiceNumber: string;
   laborCost: number;
   partsCost: number;
-  notes: string | null;
+  notes: string;
 }
 
 const maintenanceTypeOptions = [
@@ -64,25 +67,25 @@ const maintenanceTypeOptions = [
   selector: "app-maintenance-record-form",
   templateUrl: "./maintenance-record-form.html",
   imports: [
-    ButtonModule,
-    ValidatedForm,
-    ReactiveFormsModule,
-    RouterLink,
-    ProgressSpinnerModule,
     FormField,
-    InputTextModule,
-    InputNumberModule,
-    SelectModule,
-    TextareaModule,
-    DatePickerModule,
+    FormRoot,
+    RouterLink,
     SearchTruck,
+    Spinner,
+    UiButton,
+    UiDateField,
+    UiFormField,
+    UiNumberField,
+    UiSelectField,
+    UiTextareaField,
+    UiTextField,
+    ValidatedForm,
   ],
 })
 export class MaintenanceRecordForm {
   private readonly api = inject(Api);
   private readonly toastService = inject(ToastService);
 
-  protected readonly isLoading = signal(false);
   protected readonly maintenanceTypeOptions = maintenanceTypeOptions;
 
   public readonly mode = input.required<"create" | "edit">();
@@ -91,25 +94,84 @@ export class MaintenanceRecordForm {
 
   public readonly save = output<MaintenanceRecordDto>();
 
-  protected readonly form = new FormGroup({
-    truck: new FormControl<TruckDto | null>(null, { validators: Validators.required }),
-    type: new FormControl<MaintenanceType>("oil_change", {
-      validators: Validators.required,
-      nonNullable: true,
-    }),
-    description: new FormControl("", { validators: Validators.required, nonNullable: true }),
-    serviceDate: new FormControl<Date>(new Date(), {
-      validators: Validators.required,
-      nonNullable: true,
-    }),
-    odometerReading: new FormControl<number | null>(null),
-    engineHours: new FormControl<number | null>(null),
-    vendorName: new FormControl<string | null>(null),
-    invoiceNumber: new FormControl<string | null>(null),
-    laborCost: new FormControl<number>(0, { nonNullable: true }),
-    partsCost: new FormControl<number>(0, { nonNullable: true }),
-    notes: new FormControl<string | null>(null),
+  protected readonly model = signal<MaintenanceRecordFormValue>({
+    truck: null,
+    type: "oil_change",
+    description: "",
+    serviceDate: new Date(),
+    odometerReading: null,
+    engineHours: null,
+    vendorName: "",
+    invoiceNumber: "",
+    laborCost: 0,
+    partsCost: 0,
+    notes: "",
   });
+
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.truck, { message: "Truck is required." });
+      required(p.type, { message: "Service type is required." });
+      required(p.description, { message: "Description is required." });
+      required(p.serviceDate, { message: "Service date is required." });
+    },
+    {
+      submission: {
+        action: async () => {
+          const value = this.model();
+
+          if (this.mode() === "create") {
+            const command: CreateMaintenanceRecordCommand = {
+              truckId: value.truck!.id!,
+              type: value.type,
+              description: value.description,
+              serviceDate: value.serviceDate.toISOString(),
+              odometerReading: value.odometerReading,
+              engineHours: value.engineHours,
+              vendorName: value.vendorName || null,
+              invoiceNumber: value.invoiceNumber || null,
+              laborCost: value.laborCost,
+              partsCost: value.partsCost,
+              notes: value.notes || null,
+            };
+
+            const result = await this.api.invoke(createMaintenanceRecord, { body: command });
+            if (result) {
+              this.toastService.showSuccess("Maintenance record created successfully");
+              this.save.emit(result);
+            }
+          } else {
+            const command: UpdateMaintenanceRecordCommand = {
+              id: this.id()!,
+              truckId: value.truck!.id!,
+              type: value.type,
+              description: value.description,
+              serviceDate: value.serviceDate.toISOString(),
+              odometerReading: value.odometerReading,
+              engineHours: value.engineHours,
+              vendorName: value.vendorName || null,
+              invoiceNumber: value.invoiceNumber || null,
+              laborCost: value.laborCost,
+              partsCost: value.partsCost,
+              notes: value.notes || null,
+            };
+
+            const result = await this.api.invoke(updateMaintenanceRecord, {
+              id: this.id()!,
+              body: command,
+            });
+            if (result) {
+              this.toastService.showSuccess("Maintenance record updated successfully");
+              this.save.emit(result);
+            }
+          }
+
+          return undefined;
+        },
+      },
+    },
+  );
 
   constructor() {
     effect(() => {
@@ -119,70 +181,11 @@ export class MaintenanceRecordForm {
     });
   }
 
-  protected async submit(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.isLoading.set(true);
-    const formValue = this.form.getRawValue();
-
-    try {
-      if (this.mode() === "create") {
-        const command: CreateMaintenanceRecordCommand = {
-          truckId: formValue.truck!.id!,
-          type: formValue.type,
-          description: formValue.description,
-          serviceDate: formValue.serviceDate.toISOString(),
-          odometerReading: formValue.odometerReading,
-          engineHours: formValue.engineHours,
-          vendorName: formValue.vendorName,
-          invoiceNumber: formValue.invoiceNumber,
-          laborCost: formValue.laborCost,
-          partsCost: formValue.partsCost,
-          notes: formValue.notes,
-        };
-
-        const result = await this.api.invoke(createMaintenanceRecord, { body: command });
-        if (result) {
-          this.toastService.showSuccess("Maintenance record created successfully");
-          this.save.emit(result);
-        }
-      } else {
-        const command: UpdateMaintenanceRecordCommand = {
-          id: this.id()!,
-          truckId: formValue.truck!.id!,
-          type: formValue.type,
-          description: formValue.description,
-          serviceDate: formValue.serviceDate.toISOString(),
-          odometerReading: formValue.odometerReading,
-          engineHours: formValue.engineHours,
-          vendorName: formValue.vendorName,
-          invoiceNumber: formValue.invoiceNumber,
-          laborCost: formValue.laborCost,
-          partsCost: formValue.partsCost,
-          notes: formValue.notes,
-        };
-
-        const result = await this.api.invoke(updateMaintenanceRecord, {
-          id: this.id()!,
-          body: command,
-        });
-        if (result) {
-          this.toastService.showSuccess("Maintenance record updated successfully");
-          this.save.emit(result);
-        }
-      }
-    } finally {
-      this.isLoading.set(false);
-    }
-  }
-
   private patch(src: Partial<MaintenanceRecordFormValue>): void {
-    this.form.patchValue({
+    this.model.update((v) => ({
+      ...v,
       ...src,
       serviceDate: src.serviceDate ? new Date(src.serviceDate) : new Date(),
-    });
+    }));
   }
 }

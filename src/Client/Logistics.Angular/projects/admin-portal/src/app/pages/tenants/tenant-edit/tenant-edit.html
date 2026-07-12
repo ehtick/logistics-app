@@ -2,13 +2,13 @@
 
 <div class="flex flex-col justify-center gap-6 md:flex-row">
   <div class="flex w-full flex-col gap-6 lg:w-2/3">
-    <p-card>
+    <ui-card>
       @if (isFetching()) {
         <div class="space-y-4">
-          <p-skeleton height="3rem" />
-          <p-skeleton height="3rem" />
-          <p-skeleton height="3rem" />
-          <p-skeleton height="3rem" />
+          <ui-skeleton height="3rem" />
+          <ui-skeleton height="3rem" />
+          <ui-skeleton height="3rem" />
+          <ui-skeleton height="3rem" />
         </div>
       } @else {
         <adm-tenant-form
@@ -19,29 +19,29 @@
           (remove)="onRemove()"
         />
       }
-    </p-card>
+    </ui-card>
 
     <!-- Feature Configuration Card -->
     @if (tenant()) {
-      <p-card header="Feature Configuration">
+      <ui-card header="Feature Configuration">
         <ui-typography variant="body-sm" color="muted" class="mb-4">
           Configure which features are enabled for this tenant and lock features to prevent owner
           changes.
         </ui-typography>
-        <p-button
-          icon="pi pi-cog"
+        <ui-button
+          icon="settings"
           label="Configure Features"
           [routerLink]="['/features/tenant', tenant()!.id]"
         />
-      </p-card>
+      </ui-card>
     }
 
     <!-- AI Dispatch Settings Card -->
     @if (tenant()) {
-      <p-card header="AI Dispatch Settings">
+      <ui-card header="AI Dispatch Settings">
         <ui-typography variant="body-sm" color="muted" class="mb-4">
-          Enable or disable the AI dispatch agent for this tenant. The model and other AI options are
-          managed globally in AI Settings.
+          Enable or disable the AI dispatch agent for this tenant. The model and other AI options
+          are managed globally in AI Settings.
         </ui-typography>
         <ui-stack gap="4">
           <ui-stack direction="row" align="center" gap="3">
@@ -57,14 +57,14 @@
             </ui-typography>
           </ui-stack>
 
-          <p-button
-            icon="pi pi-save"
+          <ui-button
+            icon="save"
             label="Save LLM Settings"
             [loading]="isSavingLlmSettings()"
-            (onClick)="saveLlmSettings()"
+            (click)="saveLlmSettings()"
           />
         </ui-stack>
-      </p-card>
+      </ui-card>
     }
   </div>
 </div>

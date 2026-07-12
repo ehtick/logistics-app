@@ -3,7 +3,6 @@ import { Component, computed, effect, inject, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ToastService } from "@logistics/shared";
 import type { TripStopDto, TripStopType } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
 import {
   AddressPipe,
   CurrencyFormatPipe,
@@ -11,13 +10,20 @@ import {
   DistanceUnitPipe,
 } from "@logistics/shared/pipes";
 import { LocalizationService } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressBarModule } from "primeng/progressbar";
-import { SkeletonModule } from "primeng/skeleton";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { ToastModule } from "primeng/toast";
+import {
+  Card,
+  Grid,
+  Icon,
+  Progress,
+  Skeleton,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiSortHeader,
+  UiTableRowDirectives,
+} from "@logistics/shared/ui";
 import {
   DirectionMap,
   LoadStatusTag,
@@ -35,30 +41,30 @@ import { TripDetailsStore } from "../store/trip-details.store";
   templateUrl: "./trip-details.html",
   providers: [TripDetailsStore],
   imports: [
+    AddressPipe,
+    Card,
     CommonModule,
-    RouterLink,
-    CardModule,
-    TagModule,
-    TableModule,
-    ButtonModule,
+    CurrencyFormatPipe,
+    DateFormatPipe,
     DirectionMap,
     DistanceUnitPipe,
-    DateFormatPipe,
-    CurrencyFormatPipe,
-    LoadStatusTag,
-    AddressPipe,
-    SkeletonModule,
-    TripStatusTag,
-    ProgressBarModule,
-    ToastModule,
-    TripTimeline,
-    TripActions,
     Grid,
     Icon,
+    LoadStatusTag,
+    PageHeader,
+    Progress,
+    RouterLink,
+    Skeleton,
     Stack,
     Surface,
+    TripActions,
+    TripStatusTag,
+    TripTimeline,
     Typography,
-    PageHeader,
+    UiButton,
+    UiDataTable,
+    UiSortHeader,
+    UiTableRowDirectives,
   ],
 })
 export class TripDetailsPage {

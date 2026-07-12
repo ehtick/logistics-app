@@ -12,15 +12,20 @@ import {
   type TruckDto,
 } from "@logistics/shared/api";
 import type { TruckGeolocationDto } from "@logistics/shared/api/models";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
 import { AddressPipe, CurrencyFormatPipe, DistanceUnitPipe } from "@logistics/shared/pipes";
 import { LocalizationService } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TabsModule } from "primeng/tabs";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Card,
+  Divider,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiTabsImports,
+} from "@logistics/shared/ui";
 import {
   DocumentManager,
   GeolocationMap,
@@ -42,31 +47,30 @@ import {
   templateUrl: "./truck-details.html",
   styleUrl: "./truck-details.css",
   imports: [
-    CommonModule,
-    ButtonModule,
-    CardModule,
-    TooltipModule,
-    TabsModule,
-    DividerModule,
-    ProgressSpinnerModule,
-    RouterLink,
-    CurrencyFormatPipe,
     AddressPipe,
+    Card,
+    CommonModule,
+    CurrencyFormatPipe,
     DistanceUnitPipe,
-    GeolocationMap,
-    TruckGrossLinechart,
-    GrossBarchart,
-    PageHeader,
-    TruckStatusTag,
-    TruckTypeTag,
+    Divider,
     DocumentManager,
-    TruckLoadsList,
     DocumentStatusOverview,
+    GeolocationMap,
     Grid,
+    GrossBarchart,
     Icon,
+    PageHeader,
+    RouterLink,
+    Spinner,
     Stack,
     Surface,
+    TruckGrossLinechart,
+    TruckLoadsList,
+    TruckStatusTag,
+    TruckTypeTag,
     Typography,
+    UiButton,
+    UiTabsImports,
   ],
 })
 export class TruckDetailsComponent implements OnInit {

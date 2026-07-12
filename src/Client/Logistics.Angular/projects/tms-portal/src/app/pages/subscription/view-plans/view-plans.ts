@@ -9,13 +9,20 @@ import {
   type SubscriptionPlanDto,
   type TenantFeature,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { TagModule } from "primeng/tag";
+import {
+  Badge,
+  Card,
+  Grid,
+  Icon,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { TenantService, ToastService } from "@/core/services";
 import { PageHeader } from "@/shared/components";
-import { Labels, type SeverityLevel } from "@/shared/utils";
+import { Labels } from "@/shared/utils";
 
 /** Display name mapping for tenant features */
 const featureLabels: Record<TenantFeature, string> = {
@@ -75,16 +82,16 @@ const allFeatures: TenantFeature[] = [
   selector: "app-view-plans",
   templateUrl: "./view-plans.html",
   imports: [
-    CardModule,
+    Badge,
+    Card,
     CurrencyPipe,
-    ButtonModule,
     Grid,
     Icon,
+    PageHeader,
     Stack,
     Surface,
-    TagModule,
     Typography,
-    PageHeader,
+    UiButton,
   ],
 })
 export class ViewPlansComponent implements OnInit {
@@ -123,7 +130,7 @@ export class ViewPlansComponent implements OnInit {
     return plan.features?.includes(feature) ?? false;
   }
 
-  protected getTierSeverity(plan: SubscriptionPlanDto): SeverityLevel {
+  protected getTierSeverity(plan: SubscriptionPlanDto): UiBadgeIntent {
     return plan.tier ? Labels.planTierSeverity(plan.tier) : "info";
   }
 
@@ -153,7 +160,7 @@ export class ViewPlansComponent implements OnInit {
     this.toastService.confirm({
       message,
       header: hasSubscription ? "Change Plan" : "Subscribe to Plan",
-      icon: "pi pi-credit-card",
+      icon: "payment",
       acceptLabel: hasSubscription ? "Yes, Switch" : "Yes, Subscribe",
       rejectLabel: "Cancel",
       accept: async () => {

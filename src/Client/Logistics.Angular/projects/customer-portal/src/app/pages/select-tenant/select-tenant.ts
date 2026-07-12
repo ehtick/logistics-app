@@ -2,27 +2,14 @@ import { DatePipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import type { UserTenantAccessDto } from "@logistics/shared";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
+import { Grid, Icon, Spinner, Stack, Surface, Typography, UiButton } from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import { TenantContextService } from "@/core/services";
 
 @Component({
   selector: "cp-select-tenant",
   templateUrl: "./select-tenant.html",
-  imports: [
-    DatePipe,
-    ButtonModule,
-    CardModule,
-    ProgressSpinnerModule,
-    Grid,
-    Icon,
-    Stack,
-    Surface,
-    Typography,
-  ],
+  imports: [DatePipe, Grid, Icon, Spinner, Stack, Surface, Typography, UiButton],
 })
 export class SelectTenant {
   private readonly router = inject(Router);

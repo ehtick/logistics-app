@@ -1,13 +1,11 @@
 import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { Grid, Icon, Stack, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
+import { Card, Grid, Icon, Stack, Typography, type IconName } from "@logistics/shared/ui";
 
 interface QuickAction {
   label: string;
   description: string;
-  icon: string;
+  icon: IconName;
   route: string;
   iconColor: "info" | "success" | "warning";
 }
@@ -15,7 +13,7 @@ interface QuickAction {
 @Component({
   selector: "app-loadboard-quick-actions",
   templateUrl: "./loadboard-quick-actions.html",
-  imports: [ButtonModule, CardModule, Grid, Icon, Stack, Typography],
+  imports: [Card, Grid, Icon, Stack, Typography],
 })
 export class LoadBoardQuickActions {
   protected readonly actions: readonly QuickAction[] = [
@@ -36,7 +34,7 @@ export class LoadBoardQuickActions {
     {
       label: "Configure Providers",
       description: "Connect to DAT, Truckstop, 123Loadboard",
-      icon: "cog",
+      icon: "settings",
       route: "/loadboard/providers",
       iconColor: "warning",
     },

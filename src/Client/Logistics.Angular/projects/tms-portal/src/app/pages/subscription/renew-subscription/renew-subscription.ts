@@ -1,19 +1,15 @@
 import { CommonModule } from "@angular/common";
 import { Component, computed, effect, inject, signal } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
-import { Api, renewSubscription } from "@logistics/shared/api";
-import type { SubscriptionDto } from "@logistics/shared/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
-import { TagModule } from "primeng/tag";
+import { Api, renewSubscription, type SubscriptionDto } from "@logistics/shared/api";
+import { Badge, Card, Icon, UiButton, type UiBadgeIntent } from "@logistics/shared/ui";
 import { TenantService, ToastService } from "@/core/services";
-import { Labels, type SeverityLevel } from "@/shared/utils";
+import { Labels } from "@/shared/utils";
 
 @Component({
   selector: "app-renew-subscription",
   templateUrl: "./renew-subscription.html",
-  imports: [CommonModule, CardModule, ButtonModule, TagModule, ConfirmDialogModule, RouterModule],
+  imports: [Badge, Card, CommonModule, Icon, RouterModule, UiButton],
 })
 export class RenewSubscriptionComponent {
   private readonly tenantService = inject(TenantService);
@@ -36,7 +32,7 @@ export class RenewSubscriptionComponent {
     });
   }
 
-  getSubStatusSeverity(): SeverityLevel {
+  getSubStatusSeverity(): UiBadgeIntent {
     if (!this.subscription()) return "info";
     return Labels.subscriptionStatusSeverity(this.subscription()!);
   }
@@ -56,7 +52,7 @@ export class RenewSubscriptionComponent {
     this.toastService.confirm({
       message: `Resume your ${this.planName()} subscription? Your billing will restart and you'll regain full access.`,
       header: "Resume Subscription",
-      icon: "pi pi-refresh",
+      icon: "refresh",
       acceptLabel: "Yes, Resume",
       rejectLabel: "Cancel",
       accept: () => this.renewSubscription(),

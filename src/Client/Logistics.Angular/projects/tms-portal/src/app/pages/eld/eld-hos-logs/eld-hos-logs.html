@@ -1,49 +1,47 @@
-<ui-page-header
-  [title]="headerTitle()"
-  subtitle="View driver duty status history"
-  backLink="/eld"
->
-  <p-button
+<ui-page-header [title]="headerTitle()" subtitle="View driver duty status history" backLink="/eld">
+  <ui-button
+    appearance="outlined"
     label="Refresh"
-    icon="pi pi-refresh"
-    [outlined]="true"
+    icon="refresh-cw"
     [loading]="loading()"
-    (onClick)="loadData()"
+    (click)="loadData()"
   />
 </ui-page-header>
 
 <!-- Date Range Filter -->
-<p-card class="mb-6 block">
+<ui-card class="mb-6 block">
   <ui-stack direction="row" align="end" gap="4" wrap>
     <ui-form-field label="Start Date" for="startDate">
-      <p-datepicker
+      <ui-date-field
         id="startDate"
-        [(ngModel)]="startDate"
+        [(value)]="startDate"
         [showIcon]="true"
-        [maxDate]="endDate"
+        [maxDate]="endDate() ?? undefined"
         [dateFormat]="dateFormat()"
-        (onSelect)="onDateRangeChange()"
+        (dateSelected)="onDateRangeChange()"
+        [fluid]="false"
       />
     </ui-form-field>
     <ui-form-field label="End Date" for="endDate">
-      <p-datepicker
+      <ui-date-field
         id="endDate"
-        [(ngModel)]="endDate"
+        [(value)]="endDate"
         [showIcon]="true"
-        [minDate]="startDate"
+        [minDate]="startDate() ?? undefined"
         [maxDate]="today"
         [dateFormat]="dateFormat()"
-        (onSelect)="onDateRangeChange()"
+        (dateSelected)="onDateRangeChange()"
+        [fluid]="false"
       />
     </ui-form-field>
   </ui-stack>
-</p-card>
+</ui-card>
 
 <!-- Summary Cards -->
 <ui-grid container spacing="4" class="mb-6">
   <ui-grid [size]="{ xs: 12, md: 6 }">
     <app-stat-card
-      icon="pi-car"
+      icon="car"
       label="Total Driving Time"
       [value]="totalDrivingDisplay()"
       color="green"
@@ -51,7 +49,7 @@
   </ui-grid>
   <ui-grid [size]="{ xs: 12, md: 6 }">
     <app-stat-card
-      icon="pi-clock"
+      icon="clock"
       label="Total On-Duty Time"
       [value]="totalOnDutyDisplay()"
       color="blue"
@@ -60,10 +58,10 @@
 </ui-grid>
 
 <!-- Logs Table -->
-<ui-dashboard-card title="Duty Status Logs" icon="pi-history" iconColor="blue">
+<ui-dashboard-card title="Duty Status Logs" icon="history" iconColor="blue">
   @if (loading()) {
     <ui-stack align="center" justify="center" class="p-5">
-      <p-progressSpinner />
+      <ui-spinner />
     </ui-stack>
   } @else if (error()) {
     <ui-error-state [message]="error()!" (retry)="loadData()" />
@@ -74,7 +72,7 @@
       icon="inbox"
     />
   } @else {
-    <p-table
+    <ui-data-table
       [value]="logs()"
       [lazy]="true"
       [paginator]="true"
@@ -84,7 +82,7 @@
       [rowsPerPageOptions]="[10, 25, 50]"
       [showCurrentPageReport]="true"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} logs"
-      (onLazyLoad)="onLazyLoad($event)"
+      (lazyLoad)="onLazyLoad($event)"
     >
       <ng-template #header>
         <tr>
@@ -105,11 +103,11 @@
             @if (log.endTime) {
               {{ log.endTime | date: "shortTime" }}
             } @else {
-              <span class="text-muted">Ongoing</span>
+              <span class="text-muted-foreground">Ongoing</span>
             }
           </td>
           <td>
-            <p-tag
+            <ui-badge
               [value]="log.dutyStatusDisplay"
               [severity]="getDutyStatusSeverity(log.dutyStatus)"
             />
@@ -119,22 +117,22 @@
             @if (log.location) {
               <span class="text-sm">{{ log.location }}</span>
             } @else if (log.latitude && log.longitude) {
-              <span class="text-muted text-sm">
+              <span class="text-muted-foreground text-sm">
                 {{ log.latitude | number: "1.4-4" }}, {{ log.longitude | number: "1.4-4" }}
               </span>
             } @else {
-              <span class="text-muted">-</span>
+              <span class="text-muted-foreground">-</span>
             }
           </td>
           <td>
             @if (log.remark) {
               <span class="text-sm">{{ log.remark }}</span>
             } @else {
-              <span class="text-muted">-</span>
+              <span class="text-muted-foreground">-</span>
             }
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   }
 </ui-dashboard-card>

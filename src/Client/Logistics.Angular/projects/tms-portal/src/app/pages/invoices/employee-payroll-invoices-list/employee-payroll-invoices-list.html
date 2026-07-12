@@ -6,14 +6,14 @@
 
 @if (isLoadingEmployee() || !employee()) {
   <ui-stack direction="row" align="center">
-    <p-progress-spinner />
+    <ui-spinner />
     <div class="ml-2">Loading employee data</div>
   </ui-stack>
 } @else {
-  <p-card class="mb-4">
+  <ui-card class="mb-4">
     <ng-template #header>
       <h4 class="py-2 pl-4">Payroll details</h4>
-      <p-divider />
+      <ui-divider />
     </ng-template>
 
     <ui-grid container spacing="4">
@@ -56,10 +56,10 @@
         </ui-grid>
       </ui-grid>
     </ui-grid>
-  </p-card>
+  </ui-card>
 }
 
-<p-card>
+<ui-card>
   <ui-data-container
     [loading]="store.isLoading()"
     [error]="store.error()"
@@ -72,12 +72,12 @@
     (retry)="store.retry()"
     (emptyAction)="addInvoice()"
   >
-    <p-table
+    <ui-data-table
       [value]="store.data()"
       [lazy]="true"
       [paginator]="true"
       [showCurrentPageReport]="true"
-      (onLazyLoad)="store.onLazyLoad($event)"
+      (lazyLoad)="store.onLazyLoad($event)"
       [rows]="store.pageSize()"
       [first]="store.first()"
       [totalRecords]="store.totalRecords()"
@@ -87,14 +87,8 @@
       <ng-template #header>
         <tr>
           <th>Period</th>
-          <th pSortableColumn="PaymentAmount">
-            Invoice Amount
-            <p-sortIcon field="PaymentAmount" />
-          </th>
-          <th pSortableColumn="PaymentStatus">
-            Invoice Status
-            <p-sortIcon field="PaymentStatus" />
-          </th>
+          <th uiSortHeader="PaymentAmount">Invoice Amount</th>
+          <th uiSortHeader="PaymentStatus">Invoice Status</th>
           <th>Action</th>
         </tr>
       </ng-template>
@@ -109,28 +103,30 @@
             @if (invoice.status) {
               <app-invoice-status-tag [status]="invoice.status" />
             } @else {
-              <span class="text-muted-color">-</span>
+              <span class="text-muted-foreground">-</span>
             }
           </td>
           <td class="overflow-visible">
-            <p-button
+            <ui-button
+              ariaLabel="Edit payroll"
               class="ml-2"
-              icon="pi pi-pen-to-square"
-              pTooltip="Edit payroll"
-              tooltipPosition="bottom"
+              icon="square-pen"
+              uiTooltip="Edit payroll"
+              uiTooltipPosition="bottom"
               [routerLink]="['/invoices/payroll', invoice.id, 'edit']"
             />
-            <p-button
+            <ui-button
+              appearance="outlined"
+              ariaLabel="View payroll"
               class="ml-2"
-              icon="pi pi-eye"
-              pTooltip="View payroll"
-              tooltipPosition="bottom"
+              icon="eye"
+              uiTooltip="View payroll"
+              uiTooltipPosition="bottom"
               [routerLink]="['/invoices/payroll', invoice.id]"
-              [outlined]="true"
             />
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   </ui-data-container>
-</p-card>
+</ui-card>

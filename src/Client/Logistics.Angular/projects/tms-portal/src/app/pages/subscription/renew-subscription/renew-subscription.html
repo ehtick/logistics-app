@@ -2,7 +2,7 @@
   <!-- Warning Banner -->
   <div class="mb-6 rounded-xl border border-orange-200 bg-orange-50 p-5">
     <div class="flex items-start gap-3">
-      <i class="pi pi-exclamation-triangle mt-0.5 text-xl text-orange-500"></i>
+      <ui-icon name="triangle-alert" size="inherit" class="mt-0.5 text-xl text-orange-500" />
       <div>
         <h3 class="m-0 text-lg font-semibold text-orange-800">Subscription Pending Cancellation</h3>
         <p class="mt-1 mb-0 text-sm text-orange-700">
@@ -14,13 +14,13 @@
   </div>
 
   <!-- Plan Summary -->
-  <p-card>
+  <ui-card>
     <ng-template #header>
       <div class="p-4 pb-0">
         <div class="flex items-center justify-between">
           <h3 class="m-0 text-lg font-semibold">Resume {{ planName() }} Plan</h3>
           @if (subscription()?.plan?.tier) {
-            <p-tag
+            <ui-badge
               [severity]="Labels.planTierSeverity(subscription()!.plan!.tier!)"
               [value]="Labels.planTierLabel(subscription()!.plan!.tier!)"
             />
@@ -31,17 +31,17 @@
 
     <div class="space-y-3">
       <div class="flex items-center justify-between">
-        <span class="text-muted">Base monthly fee</span>
+        <span class="text-muted-foreground">Base monthly fee</span>
         <span class="font-medium">{{ subscription()?.plan?.price | currency }}</span>
       </div>
       <div class="flex items-center justify-between">
-        <span class="text-muted">Per truck fee</span>
+        <span class="text-muted-foreground">Per truck fee</span>
         <span class="font-medium">
           {{ subscription()?.plan?.perTruckPrice | currency }} / truck
         </span>
       </div>
       <div class="flex items-center justify-between">
-        <span class="text-muted">Active trucks</span>
+        <span class="text-muted-foreground">Active trucks</span>
         <span class="font-medium">{{ truckCount() }}</span>
       </div>
       <div class="border-default border-t pt-3">
@@ -54,21 +54,21 @@
 
     <ng-template #footer>
       <div class="flex gap-2">
-        <p-button
+        <ui-button
+          intent="success"
           label="Resume Subscription"
-          icon="pi pi-refresh"
-          severity="success"
+          icon="refresh-cw"
           [loading]="isLoading()"
           [disabled]="isLoading()"
           (click)="confirmRenewSubscription()"
         />
-        <p-button
+        <ui-button
+          intent="secondary"
           label="Back"
-          icon="pi pi-arrow-left"
-          severity="secondary"
+          icon="arrow-left"
           [routerLink]="'/subscription/manage'"
         />
       </div>
     </ng-template>
-  </p-card>
+  </ui-card>
 </div>

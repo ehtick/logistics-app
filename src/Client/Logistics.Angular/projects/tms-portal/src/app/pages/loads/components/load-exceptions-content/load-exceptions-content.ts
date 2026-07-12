@@ -1,28 +1,31 @@
 import { CommonModule, DatePipe } from "@angular/common";
-import { Component, type OnInit, inject, input, output, signal } from "@angular/core";
-import { Api, getLoadExceptions } from "@logistics/shared/api";
-import type { LoadExceptionDto } from "@logistics/shared/api";
-import { BadgeModule } from "primeng/badge";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import { Component, inject, input, output, signal, type OnInit } from "@angular/core";
+import { Api, getLoadExceptions, type LoadExceptionDto } from "@logistics/shared/api";
+import {
+  Card,
+  CountBadge,
+  Icon,
+  Spinner,
+  UiButton,
+  UiDataTable,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { ExceptionTypeTag } from "@/shared/components/tags";
 
 @Component({
   selector: "app-load-exceptions-content",
   templateUrl: "./load-exceptions-content.html",
   imports: [
+    Card,
     CommonModule,
-    CardModule,
-    TableModule,
+    CountBadge,
     DatePipe,
-    ButtonModule,
-    TooltipModule,
-    ProgressSpinnerModule,
     ExceptionTypeTag,
-    BadgeModule,
+    Icon,
+    Spinner,
+    UiButton,
+    UiDataTable,
+    UiTooltip,
   ],
 })
 export class LoadExceptionsContent implements OnInit {

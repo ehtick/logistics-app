@@ -6,11 +6,8 @@ import {
   getExpenseById,
   type ExpenseDto,
 } from "@logistics/shared/api";
-import { Container, Grid, Typography } from "@logistics/shared/components";
+import { Card, Container, Grid, Icon, Spinner, Typography, UiButton } from "@logistics/shared/ui";
 import { downloadBlobFile } from "@logistics/shared/utils";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { PageHeader } from "@/shared/components";
 import {
   ExpenseDetailAuditCard,
@@ -25,18 +22,19 @@ import { ExpenseActionsService } from "../services/expense-actions.service";
   templateUrl: "./expense-detail.html",
   providers: [ExpenseActionsService],
   imports: [
-    RouterModule,
-    CardModule,
-    ButtonModule,
-    ProgressSpinnerModule,
-    PageHeader,
-    Grid,
-    Typography,
-    ExpenseDetailInfoCard,
-    ExpenseDetailExtraCard,
-    ExpenseDetailAuditCard,
-    RejectExpenseDialog,
+    Card,
     Container,
+    ExpenseDetailAuditCard,
+    ExpenseDetailExtraCard,
+    ExpenseDetailInfoCard,
+    Grid,
+    Icon,
+    PageHeader,
+    RejectExpenseDialog,
+    RouterModule,
+    Spinner,
+    Typography,
+    UiButton,
   ],
 })
 export class ExpenseDetailPage implements OnInit {

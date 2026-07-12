@@ -1,4 +1,4 @@
-<p-card>
+<ui-card>
   <ng-template #header>
     <div class="p-4 pb-0">
       <ui-typography variant="h4">Additional Details</ui-typography>
@@ -10,7 +10,7 @@
       <app-expense-detail-row label="Truck">
         <a
           [routerLink]="['/trucks', expense().truckId, 'edit']"
-          class="text-primary font-medium hover:underline"
+          class="text-foreground font-medium hover:underline"
         >
           {{ expense().truck?.number }}
         </a>
@@ -62,28 +62,28 @@
     }
 
     @if (expense().notes) {
-      <p-divider />
+      <ui-divider />
       <app-expense-detail-row label="Notes" [stacked]="true">
         {{ expense().notes }}
       </app-expense-detail-row>
     }
 
-    <p-divider />
+    <ui-divider />
 
     @if (expense().receiptBlobPath) {
       <app-expense-detail-row label="Receipt">
-        <p-button
-          icon="pi pi-file"
+        <ui-button
+          appearance="outlined"
+          size="sm"
+          icon="file"
           label="View Receipt"
-          [outlined]="true"
-          size="small"
           (click)="viewReceipt.emit()"
         />
       </app-expense-detail-row>
     } @else {
       <app-expense-detail-row label="Receipt">
-        <span class="text-muted">No receipt attached</span>
+        <span class="text-muted-foreground">No receipt attached</span>
       </app-expense-detail-row>
     }
   </div>
-</p-card>
+</ui-card>

@@ -4,45 +4,46 @@ import { Router, RouterLink } from "@angular/router";
 import { Permission, PermissionGuard } from "@logistics/shared";
 import type { EmployeeDto, SalaryType } from "@logistics/shared/api";
 import { salaryTypeOptions } from "@logistics/shared/api/enums";
-import { Stack } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { DataContainer, PageHeader, SearchField } from "@/shared/components";
 import { EmployeeStatusTag } from "@/shared/components/tags";
 import { EmployeeAvatar, InviteEmployeeDialog } from "../components";
 import { EmployeesListStore } from "../store";
-
-type SeverityType = "success" | "secondary" | "info" | "warn" | "danger" | "contrast";
 
 @Component({
   selector: "app-employees-list",
   templateUrl: "./employees-list.html",
   providers: [EmployeesListStore],
   imports: [
+    Badge,
+    Card,
     CurrencyFormatPipe,
-    ButtonModule,
-    TooltipModule,
-    RouterLink,
-    CardModule,
-    TableModule,
-    MenuModule,
-    TagModule,
-    DatePipe,
-    PercentPipe,
     DataContainer,
-    PageHeader,
-    SearchField,
-    InviteEmployeeDialog,
-    PermissionGuard,
+    DatePipe,
     EmployeeAvatar,
     EmployeeStatusTag,
+    InviteEmployeeDialog,
+    PageHeader,
+    PercentPipe,
+    PermissionGuard,
+    RouterLink,
+    SearchField,
     Stack,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
   ],
 })
 export class EmployeeList {
@@ -53,25 +54,25 @@ export class EmployeeList {
   protected readonly inviteDialogVisible = signal(false);
   protected readonly selectedRow = signal<EmployeeDto | null>(null);
 
-  protected readonly actionMenuItems: MenuItem[] = [
+  protected readonly actionMenuItems: UiMenuItem[] = [
     {
       label: "View details",
-      icon: "pi pi-eye",
+      icon: "eye",
       command: () => this.router.navigateByUrl(`/employees/${this.selectedRow()!.id}`),
     },
     {
       label: "View payrolls",
-      icon: "pi pi-file-o",
+      icon: "file",
       command: () => this.router.navigateByUrl(`/payroll/employee/${this.selectedRow()!.id}`),
     },
     {
       label: "View timesheets",
-      icon: "pi pi-clock",
+      icon: "clock",
       command: () => this.router.navigateByUrl(`/timesheets/employee/${this.selectedRow()!.id}`),
     },
   ];
 
-  protected getRoleSeverity(roleName: string | undefined): SeverityType {
+  protected getRoleSeverity(roleName: string | undefined): UiBadgeIntent {
     switch (roleName?.toLowerCase()) {
       case "owner":
         return "warn";

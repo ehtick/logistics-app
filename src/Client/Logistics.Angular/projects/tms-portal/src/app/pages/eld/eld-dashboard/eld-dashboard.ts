@@ -7,12 +7,20 @@ import {
   syncAllDriversHos,
   type DriverHosStatusDto,
 } from "@logistics/shared/api";
-import { EmptyState, ErrorState, Grid, Stack } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  EmptyState,
+  ErrorState,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiSortHeader,
+  UiTooltip,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { EldRulesService } from "@/core/services";
 import { DashboardCard, PageHeader, StatCard } from "@/shared/components";
 
@@ -25,19 +33,21 @@ const ON_DUTY_WARN_PCT = 0.15;
   selector: "app-eld-dashboard",
   templateUrl: "./eld-dashboard.html",
   imports: [
-    ButtonModule,
+    Badge,
     DashboardCard,
     DatePipe,
     EmptyState,
     ErrorState,
     Grid,
+    Icon,
     PageHeader,
-    ProgressSpinnerModule,
+    Spinner,
     Stack,
     StatCard,
-    TableModule,
-    TagModule,
-    TooltipModule,
+    UiButton,
+    UiDataTable,
+    UiSortHeader,
+    UiTooltip,
   ],
 })
 export class EldDashboardComponent implements OnInit {
@@ -100,9 +110,7 @@ export class EldDashboardComponent implements OnInit {
     }
   }
 
-  protected getDutyStatusSeverity(
-    status: number,
-  ): "success" | "info" | "warn" | "danger" | "secondary" {
+  protected getDutyStatusSeverity(status: number): UiBadgeIntent {
     switch (status) {
       case 0: // OffDuty
         return "secondary";

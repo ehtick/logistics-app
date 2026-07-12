@@ -1,16 +1,13 @@
 import { Component, inject, input, signal, type OnInit } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { Api, getTruckById, type DocumentType, type TruckDto } from "@logistics/shared/api";
-import { Stack, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ToastModule } from "primeng/toast";
+import { Stack, Typography, UiButton } from "@logistics/shared/ui";
 import { DocumentManager } from "@/shared/components";
 
 @Component({
   selector: "app-truck-documents",
   templateUrl: "./truck-documents.html",
-  imports: [CardModule, ToastModule, RouterLink, DocumentManager, ButtonModule, Stack, Typography],
+  imports: [DocumentManager, RouterLink, Stack, Typography, UiButton],
 })
 export class TruckDocumentsPage implements OnInit {
   private readonly api = inject(Api);

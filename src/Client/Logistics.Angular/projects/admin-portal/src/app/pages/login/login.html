@@ -1,22 +1,18 @@
-<div class="flex min-h-screen items-center justify-center bg-gray-100">
-  <p-card class="w-full max-w-md shadow-lg">
+<div class="bg-background flex min-h-screen items-center justify-center">
+  <ui-card class="w-full max-w-md shadow-lg">
     <div class="text-center">
-      <h1 class="mb-2 text-3xl font-bold text-primary-600">Admin Portal</h1>
-      <p class="mb-8 text-gray-600">LogisticsX Administration</p>
+      <h1 class="text-primary mb-2 text-3xl font-bold">Admin Portal</h1>
+      <p class="text-muted-foreground mb-8">LogisticsX Administration</p>
 
       <div class="mb-8">
-        <i class="pi pi-shield text-6xl text-primary-400"></i>
+        <ui-icon name="shield" size="inherit" class="text-primary text-6xl" />
       </div>
 
-      <p class="mb-6 text-gray-600">Sign in with your administrator credentials to continue.</p>
+      <p class="text-muted-foreground mb-6">
+        Sign in with your administrator credentials to continue.
+      </p>
 
-      <p-button
-        label="Sign In"
-        icon="pi pi-sign-in"
-        styleClass="w-full"
-        size="large"
-        (onClick)="login()"
-      />
+      <ui-button size="lg" block label="Sign In" icon="log-in" (click)="login()" />
     </div>
-  </p-card>
+  </ui-card>
 </div>

@@ -4,12 +4,17 @@ import type { AppError } from "@logistics/shared";
 import type { LoadDto, LoadStatus } from "@logistics/shared/api";
 import { CurrencyFormatPipe, DateFormatPipe, DistanceUnitPipe } from "@logistics/shared/pipes";
 import { LocalizationService } from "@logistics/shared/services";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MenuModule } from "primeng/menu";
-import { type TableLazyLoadEvent, TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import type { ListLazyLoadEvent } from "@logistics/shared/stores";
+import {
+  Card,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  UiTableRowDirectives,
+  UiTooltip,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { DataContainer, LoadStatusTag, LoadTypeTag, RouteBadge } from "@/shared/components";
 
@@ -17,19 +22,21 @@ import { DataContainer, LoadStatusTag, LoadTypeTag, RouteBadge } from "@/shared/
   selector: "app-loads-table",
   templateUrl: "./loads-table.html",
   imports: [
-    CardModule,
-    TableModule,
-    ButtonModule,
-    TooltipModule,
-    MenuModule,
-    RouterLink,
-    DistanceUnitPipe,
+    Card,
     CurrencyFormatPipe,
+    DataContainer,
     DateFormatPipe,
+    DistanceUnitPipe,
     LoadStatusTag,
     LoadTypeTag,
     RouteBadge,
-    DataContainer,
+    RouterLink,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
+    UiTableRowDirectives,
+    UiTooltip,
   ],
 })
 export class LoadsTable {
@@ -38,7 +45,9 @@ export class LoadsTable {
   private readonly localizationService = inject(LocalizationService);
 
   // Localization
-  protected readonly distanceUnitLabel = computed(() => this.localizationService.getDistanceUnitLabel());
+  protected readonly distanceUnitLabel = computed(() =>
+    this.localizationService.getDistanceUnitLabel(),
+  );
 
   // Data inputs
   public readonly data = input.required<LoadDto[]>();
@@ -53,7 +62,7 @@ export class LoadsTable {
   public readonly selectedLoads = model<LoadDto[]>([]);
 
   // Outputs
-  public readonly lazyLoad = output<TableLazyLoadEvent>();
+  public readonly lazyLoad = output<ListLazyLoadEvent>();
   public readonly retry = output<void>();
   public readonly addLoad = output<void>();
   public readonly assignLoad = output<LoadDto>();
@@ -62,52 +71,52 @@ export class LoadsTable {
   // Internal state
   protected readonly selectedRow = signal<LoadDto | null>(null);
 
-  protected readonly actionMenuItems = computed<MenuItem[]>(() => {
+  protected readonly actionMenuItems = computed<UiMenuItem[]>(() => {
     const row = this.selectedRow();
     const isEditable = row?.status !== "delivered" && row?.status !== "cancelled";
 
     return [
       {
         label: "View details",
-        icon: "pi pi-eye",
+        icon: "eye",
         command: () => this.router.navigateByUrl(`/loads/${row!.id}`),
       },
       {
         label: "Edit load details",
-        icon: "pi pi-pen-to-square",
+        icon: "square-pen",
         command: () => this.router.navigateByUrl(`/loads/${row!.id}/edit`),
         visible: isEditable,
       },
       { separator: true },
       {
         label: "Assign to Truck",
-        icon: "pi pi-truck",
+        icon: "truck",
         command: () => this.assignLoad.emit(row!),
         visible: isEditable,
       },
       {
         label: "Dispatch",
-        icon: "pi pi-send",
+        icon: "send",
         command: () => this.onDispatchLoad(row!),
         visible: row?.status === "draft",
       },
       { separator: true },
       {
         label: "View truck details",
-        icon: "pi pi-directions",
+        icon: "navigation",
         command: () => this.router.navigateByUrl(`/trucks/${row!.assignedTruckId}`),
         visible: !!row?.assignedTruckId,
       },
       {
         label: "View invoice",
-        icon: "pi pi-book",
+        icon: "book",
         command: () => this.router.navigateByUrl(`/invoices/loads/${row!.id}/${row!.invoice?.id}`),
         visible: !!row?.invoice?.id,
       },
     ];
   });
 
-  protected onLazyLoad(event: TableLazyLoadEvent): void {
+  protected onLazyLoad(event: ListLazyLoadEvent): void {
     this.lazyLoad.emit(event);
   }
 

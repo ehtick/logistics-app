@@ -7,34 +7,39 @@ import {
   type InvoiceDashboardDto,
   type InvoiceDto,
 } from "@logistics/shared/api";
-import { Grid, Stack, Surface, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe, DateFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { SkeletonModule } from "primeng/skeleton";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Card,
+  Grid,
+  Skeleton,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { InvoiceStatusTag, PageHeader } from "@/shared/components";
 
 @Component({
   selector: "app-invoice-dashboard",
   templateUrl: "./invoice-dashboard.html",
   imports: [
+    Card,
     CommonModule,
-    RouterModule,
-    CardModule,
-    ButtonModule,
-    TableModule,
-    SkeletonModule,
-    TooltipModule,
     CurrencyFormatPipe,
     DateFormatPipe,
+    Grid,
     InvoiceStatusTag,
     PageHeader,
-    Grid,
+    RouterModule,
+    Skeleton,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiTooltip,
   ],
 })
 export class InvoiceDashboard {

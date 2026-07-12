@@ -10,25 +10,22 @@ import {
   type TenantDto,
   type UpdateTenantCommand,
 } from "@logistics/shared/api";
-import { PageHeader, Stack, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { SkeletonModule } from "primeng/skeleton";
+import { Card, PageHeader, Skeleton, Stack, Typography, UiButton } from "@logistics/shared/ui";
 import { TenantForm, type TenantFormValue } from "@/shared/components";
 
 @Component({
   selector: "adm-tenant-edit",
   templateUrl: "./tenant-edit.html",
   imports: [
-    CardModule,
-    ButtonModule,
-    RouterModule,
+    Card,
     FormField,
-    TenantForm,
-    SkeletonModule,
-    Stack,
-    Typography,
     PageHeader,
+    RouterModule,
+    Skeleton,
+    Stack,
+    TenantForm,
+    Typography,
+    UiButton,
   ],
 })
 export class TenantEdit implements OnInit {

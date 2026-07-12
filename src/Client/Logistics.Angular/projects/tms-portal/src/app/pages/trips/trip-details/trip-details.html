@@ -15,14 +15,14 @@
 </ui-page-header>
 
 <ui-stack gap="4">
-  <p-card>
+  <ui-card>
     <ui-grid container spacing="8">
       @if (store.isLoading() || !store.trip()) {
         <ui-grid [size]="{ xs: 12, lg: 6 }">
-          <p-skeleton class="h-96!" />
+          <ui-skeleton class="h-96!" />
         </ui-grid>
         <ui-grid [size]="{ xs: 12, lg: 6 }">
-          <p-skeleton class="h-96!" />
+          <ui-skeleton class="h-96!" />
         </ui-grid>
       } @else {
         @let tripDetails = store.trip()!;
@@ -52,20 +52,16 @@
             <ui-surface variant="subtle" [border]="true" padding="md">
               <ui-stack direction="row" align="center" justify="between" class="mb-2">
                 <span class="font-medium">Trip Progress</span>
-                <span class="text-primary font-semibold">{{ store.progressPercentage() }}%</span>
+                <span class="text-foreground font-semibold">{{ store.progressPercentage() }}%</span>
               </ui-stack>
-              <p-progressBar
-                [value]="store.progressPercentage()"
-                [showValue]="false"
-                class="h-2!"
-              />
+              <ui-progress [value]="store.progressPercentage()" [showValue]="false" class="h-2!" />
               <ui-stack
                 direction="row"
                 align="center"
                 gap="1"
-                class="text-muted-color mt-2 text-sm"
+                class="text-muted-foreground mt-2 text-sm"
               >
-                <ui-icon name="map-marker" />
+                <ui-icon name="map-pin" />
                 <span>
                   {{ store.completedStops().length }} of {{ store.sortedStops().length }} stops
                   completed
@@ -82,7 +78,7 @@
                     direction="row"
                     align="center"
                     gap="2"
-                    class="text-muted-color mb-1 text-sm"
+                    class="text-muted-foreground mb-1 text-sm"
                   >
                     <ui-icon name="map" />
                     <span>Total Distance</span>
@@ -100,7 +96,7 @@
                     direction="row"
                     align="center"
                     gap="2"
-                    class="text-muted-color mb-1 text-sm"
+                    class="text-muted-foreground mb-1 text-sm"
                   >
                     <ui-icon name="box" />
                     <span>Loads</span>
@@ -116,7 +112,7 @@
                     direction="row"
                     align="center"
                     gap="2"
-                    class="text-muted-color mb-1 text-sm"
+                    class="text-muted-foreground mb-1 text-sm"
                   >
                     <ui-icon name="truck" />
                     <span>Truck</span>
@@ -134,7 +130,7 @@
                     direction="row"
                     align="center"
                     gap="2"
-                    class="text-muted-color mb-1 text-sm"
+                    class="text-muted-foreground mb-1 text-sm"
                   >
                     <ui-icon name="flag" />
                     <span>Stops</span>
@@ -149,14 +145,14 @@
               @if (tripDetails.dispatchedAt) {
                 <ui-stack direction="row" align="center" gap="2" class="text-sm">
                   <ui-icon name="send" color="info" />
-                  <span class="text-muted-color">Dispatched:</span>
+                  <span class="text-muted-foreground">Dispatched:</span>
                   <span>{{ tripDetails.dispatchedAt | dateFormat: "medium" }}</span>
                 </ui-stack>
               }
               @if (tripDetails.completedAt) {
                 <ui-stack direction="row" align="center" gap="2" class="text-sm">
-                  <ui-icon name="check-circle" color="success" />
-                  <span class="text-muted-color">Completed:</span>
+                  <ui-icon name="circle-check" color="success" />
+                  <span class="text-muted-foreground">Completed:</span>
                   <span>{{ tripDetails.completedAt | dateFormat: "medium" }}</span>
                 </ui-stack>
               }
@@ -168,15 +164,10 @@
 
     <ng-template #footer>
       <div class="flex flex-row gap-2">
-        <p-button
-          type="button"
-          icon="pi pi-arrow-left"
-          label="Back to list"
-          [routerLink]="['/trips']"
-        />
+        <ui-button type="button" icon="arrow-left" label="Back to list" [routerLink]="['/trips']" />
       </div>
     </ng-template>
-  </p-card>
+  </ui-card>
 
   @if (store.trip()) {
     <ui-grid container spacing="4">
@@ -184,25 +175,24 @@
       <ui-grid [size]="{ xs: 12, lg: 8 }">
         <ui-stack gap="4">
           <!-- Trip Stops table -->
-          <p-card>
+          <ui-card>
             <ng-template #header>
               <ui-stack direction="row" align="center" gap="2" class="p-3 pb-0">
-                <ui-icon name="map-marker" color="primary" />
+                <ui-icon name="map-pin" color="primary" />
                 <ui-typography variant="h6" tag="h5">Stops</ui-typography>
               </ui-stack>
             </ng-template>
 
-            <p-table
+            <ui-data-table
               [value]="store.sortedStops()"
               dataKey="id"
               sortField="order"
-              sortMode="single"
               selectionMode="single"
               [paginator]="false"
             >
               <ng-template #header>
                 <tr>
-                  <th pSortableColumn="order">#<p-sortIcon field="order" /></th>
+                  <th uiSortHeader="order">#</th>
                   <th>Type</th>
                   <th>Address</th>
                   <th>Arrived</th>
@@ -212,7 +202,7 @@
                 </tr>
               </ng-template>
               <ng-template #body let-tripStop>
-                <tr [pSelectableRow]="tripStop">
+                <tr [uiSelectableRow]="tripStop">
                   <td>{{ tripStop.order }}</td>
                   <td>{{ stopLabel(tripStop.type) }}</td>
                   <td>{{ tripStop.address | address }}</td>
@@ -220,33 +210,33 @@
                     @if (tripStop.arrivedAt) {
                       {{ tripStop.arrivedAt | dateFormat: "short" }}
                     } @else {
-                      <span class="text-muted-color">Pending</span>
+                      <span class="text-muted-foreground">Pending</span>
                     }
                   </td>
                   @if (store.isActive()) {
                     <td>
                       @if (!tripStop.arrivedAt) {
-                        <p-button
-                          icon="pi pi-check"
+                        <ui-button
+                          intent="success"
+                          appearance="text"
+                          size="sm"
+                          icon="check"
                           label="Mark Arrived"
-                          severity="success"
-                          [text]="true"
-                          size="small"
                           [loading]="store.isProcessing()"
-                          (onClick)="onMarkStopArrived(tripStop)"
+                          (click)="onMarkStopArrived(tripStop)"
                         />
                       } @else {
-                        <i class="pi pi-check-circle text-green-500"></i>
+                        <ui-icon name="circle-check" class="text-green-500" />
                       }
                     </td>
                   }
                 </tr>
               </ng-template>
-            </p-table>
-          </p-card>
+            </ui-data-table>
+          </ui-card>
 
           <!-- Loads table -->
-          <p-card>
+          <ui-card>
             <ng-template #header>
               <ui-stack direction="row" align="center" gap="2" class="p-3 pb-0">
                 <ui-icon name="box" color="primary" />
@@ -254,22 +244,16 @@
               </ui-stack>
             </ng-template>
 
-            <p-table [value]="store.trip()!.loads ?? []" [dataKey]="'id'">
+            <ui-data-table [value]="store.trip()!.loads ?? []" [dataKey]="'id'">
               <ng-template #header>
                 <tr>
-                  <th pSortableColumn="number">Load # <p-sortIcon field="number" /></th>
-                  <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
-                  <th pSortableColumn="customer.name">
-                    Customer <p-sortIcon field="customer.name" />
-                  </th>
-                  <th pSortableColumn="originAddress.line1">
-                    Origin <p-sortIcon field="originAddress.line1" />
-                  </th>
-                  <th pSortableColumn="destinationAddress.line1">
-                    Dest <p-sortIcon field="destinationAddress.line1" />
-                  </th>
-                  <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
-                  <th pSortableColumn="deliveryCost">Cost <p-sortIcon field="deliveryCost" /></th>
+                  <th uiSortHeader="number">Load #</th>
+                  <th uiSortHeader="name">Name</th>
+                  <th uiSortHeader="customer.name">Customer</th>
+                  <th uiSortHeader="originAddress.line1">Origin</th>
+                  <th uiSortHeader="destinationAddress.line1">Dest</th>
+                  <th uiSortHeader="status">Status</th>
+                  <th uiSortHeader="deliveryCost">Cost</th>
                 </tr>
               </ng-template>
               <ng-template #body let-load>
@@ -283,14 +267,14 @@
                   <td>{{ load.deliveryCost | currencyFormat }}</td>
                 </tr>
               </ng-template>
-            </p-table>
-          </p-card>
+            </ui-data-table>
+          </ui-card>
         </ui-stack>
       </ui-grid>
 
       <!-- Right side: Timeline -->
       <ui-grid [size]="{ xs: 12, lg: 4 }">
-        <p-card class="h-full">
+        <ui-card class="h-full">
           <ng-template #header>
             <ui-stack direction="row" align="center" gap="2" class="p-3 pb-0">
               <ui-icon name="history" color="primary" />
@@ -301,12 +285,12 @@
           @if (store.timelineEvents().length > 0) {
             <app-trip-timeline [events]="store.timelineEvents()" />
           } @else {
-            <ui-stack align="center" gap="2" class="text-muted-color py-8">
+            <ui-stack align="center" gap="2" class="text-muted-foreground py-8">
               <ui-icon name="clock" size="xl" color="muted" class="opacity-50" />
               <p class="m-0">No timeline events yet.</p>
             </ui-stack>
           }
-        </p-card>
+        </ui-card>
       </ui-grid>
     </ui-grid>
   }

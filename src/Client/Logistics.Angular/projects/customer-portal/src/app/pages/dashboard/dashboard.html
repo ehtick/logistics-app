@@ -13,8 +13,8 @@
     @for (_ of [1, 2, 3]; track $index) {
       <ui-grid [size]="{ xs: 12, md: 4 }">
         <ui-surface variant="elevated">
-          <p-skeleton height="1.5rem" width="60%" styleClass="mb-2" />
-          <p-skeleton height="2.5rem" width="40%" />
+          <ui-skeleton height="1.5rem" width="60%" class="mb-2" />
+          <ui-skeleton height="2.5rem" width="40%" />
         </ui-surface>
       </ui-grid>
     }
@@ -32,8 +32,8 @@
               </ui-typography>
               <ui-typography variant="stat" class="mt-1">{{ activeLoadCount() }}</ui-typography>
             </div>
-            <div class="rounded-full bg-blue-100 p-3">
-              <ui-icon name="truck" size="lg" class="text-blue-600" />
+            <div class="bg-info/15 rounded-full p-3">
+              <ui-icon name="truck" size="lg" class="text-info" />
             </div>
           </ui-stack>
         </ui-surface>
@@ -50,8 +50,8 @@
               </ui-typography>
               <ui-typography variant="stat" class="mt-1">{{ pendingInvoiceCount() }}</ui-typography>
             </div>
-            <div class="rounded-full bg-orange-100 p-3">
-              <ui-icon name="receipt" size="lg" class="text-orange-600" />
+            <div class="bg-warning/15 rounded-full p-3">
+              <ui-icon name="receipt" size="lg" class="text-warning" />
             </div>
           </ui-stack>
         </ui-surface>
@@ -70,8 +70,8 @@
                 <ui-icon name="folder-open" />
               </ui-typography>
             </div>
-            <div class="rounded-full bg-green-100 p-3">
-              <ui-icon name="file" size="lg" class="text-green-600" />
+            <div class="bg-success/15 rounded-full p-3">
+              <ui-icon name="file" size="lg" class="text-success" />
             </div>
           </ui-stack>
         </ui-surface>
@@ -83,13 +83,13 @@
   <ui-surface variant="elevated">
     <ui-stack direction="row" align="center" justify="between" class="mb-4">
       <ui-typography variant="h5" tag="h2">Recent Shipments</ui-typography>
-      <a routerLink="/shipments" class="text-primary text-sm font-medium hover:underline">
+      <a routerLink="/shipments" class="text-foreground text-sm font-medium hover:underline">
         View All
       </a>
     </ui-stack>
 
     @if (recentLoads().length > 0) {
-      <p-table [value]="recentLoads()">
+      <ui-data-table [value]="recentLoads()">
         <ng-template #header>
           <tr>
             <th>Load #</th>
@@ -110,14 +110,14 @@
             <td class="text-right">
               <a
                 [routerLink]="['/shipments', load.id]"
-                class="text-primary text-sm font-medium hover:underline"
+                class="text-foreground text-sm font-medium hover:underline"
               >
                 Details
               </a>
             </td>
           </tr>
         </ng-template>
-      </p-table>
+      </ui-data-table>
     } @else {
       <ui-stack align="center" gap="2" class="py-8">
         <ui-icon name="inbox" size="xl" color="muted" />

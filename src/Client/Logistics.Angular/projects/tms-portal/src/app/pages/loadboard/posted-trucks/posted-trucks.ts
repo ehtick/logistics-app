@@ -1,9 +1,7 @@
 import { Component, inject, signal, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { type PostTruckToLoadBoardCommand } from "@logistics/shared/api";
-import { Alert, Stack, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
+import { Alert, Spinner, Stack, Typography, UiButton } from "@logistics/shared/ui";
 import { DashboardCard, EmptyState, ErrorState, PageHeader } from "@/shared/components";
 import { PostedTrucksTable, PostTruckDialog } from "../_components";
 import { LoadBoardStore } from "../store";
@@ -13,16 +11,16 @@ import { LoadBoardStore } from "../store";
   templateUrl: "./posted-trucks.html",
   imports: [
     Alert,
-    ButtonModule,
     DashboardCard,
     EmptyState,
     ErrorState,
     PageHeader,
-    PostTruckDialog,
     PostedTrucksTable,
-    ProgressSpinnerModule,
+    PostTruckDialog,
+    Spinner,
     Stack,
     Typography,
+    UiButton,
   ],
 })
 export class PostedTrucksComponent implements OnInit {

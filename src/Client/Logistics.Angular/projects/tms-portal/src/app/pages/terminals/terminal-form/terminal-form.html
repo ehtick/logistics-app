@@ -1,6 +1,5 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
+<form [formRoot]="form">
   <ui-stack gap="4">
-
     <ui-stack tag="section" gap="3">
       <ui-stack direction="row" gap="2" align="center">
         <ui-icon name="tag" color="secondary" />
@@ -14,28 +13,27 @@
               for="code"
               [required]="true"
               hint="5-character UN/LOCODE (e.g., USNYC, BEANR)"
-              [control]="form.controls.code"
             >
-              <input pInputText id="code" formControlName="code" maxlength="5" />
+              <ui-text-field id="code" [formField]="form.code" [maxlength]="5" />
             </ui-form-field>
           </ui-grid>
 
           <ui-grid [size]="{ xs: 12, md: 6 }">
             <ui-form-field label="Name" for="name" [required]="true">
-              <input pInputText id="name" formControlName="name" />
+              <ui-text-field id="name" [formField]="form.name" />
             </ui-form-field>
           </ui-grid>
 
           <ui-grid [size]="{ xs: 12, md: 6 }">
             <ui-form-field label="Type" for="type" [required]="true">
-              <p-select formControlName="type" [options]="typeOptions" />
+              <ui-select-field [formField]="form.type" [options]="typeOptions" />
             </ui-form-field>
           </ui-grid>
 
           <ui-grid [size]="{ xs: 12, md: 6 }">
             <ui-form-field label="Country" for="countryCode" [required]="true">
-              <p-select
-                formControlName="countryCode"
+              <ui-select-field
+                [formField]="form.countryCode"
                 [options]="countryOptions()"
                 [filter]="true"
                 placeholder="Select country"
@@ -48,39 +46,39 @@
 
     <ui-stack tag="section" gap="3">
       <ui-stack direction="row" gap="2" align="center">
-        <ui-icon name="map-marker" color="secondary" />
+        <ui-icon name="map-pin" color="secondary" />
         <ui-typography variant="overline" color="secondary">Address</ui-typography>
       </ui-stack>
       <ui-surface variant="elevated" [border]="true">
-        <ui-address-form formControlName="address" [allowedCountries]="allowedCountries()" />
+        <ui-address-form [formField]="form.address" [allowedCountries]="allowedCountries()" />
       </ui-surface>
     </ui-stack>
 
     <ui-stack tag="section" gap="3">
       <ui-stack direction="row" gap="2" align="center">
-        <ui-icon name="comment" color="secondary" />
+        <ui-icon name="message-square" color="secondary" />
         <ui-typography variant="overline" color="secondary">Notes</ui-typography>
       </ui-stack>
       <ui-surface variant="elevated" [border]="true">
         <ui-form-field label="Notes" for="notes" class="mb-0">
-          <textarea pTextarea id="notes" formControlName="notes" rows="3"></textarea>
+          <ui-textarea-field id="notes" [formField]="form.notes" [rows]="3" />
         </ui-form-field>
       </ui-surface>
     </ui-stack>
 
     <ui-stack direction="row" gap="2">
-      <p-button
+      <ui-button
         type="submit"
-        icon="pi pi-check"
+        icon="check"
         [label]="mode() === 'create' ? 'Create' : 'Update'"
         [disabled]="isLoading()"
       />
-      <p-button
+      <ui-button
+        appearance="outlined"
         type="button"
-        icon="pi pi-arrow-left"
+        icon="arrow-left"
         label="Back to list"
         [routerLink]="['/terminals']"
-        [outlined]="true"
       />
     </ui-stack>
   </ui-stack>

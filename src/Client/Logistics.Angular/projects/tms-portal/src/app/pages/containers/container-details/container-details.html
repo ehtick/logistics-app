@@ -3,19 +3,19 @@
 <ui-page-header [title]="title()" backLink="/containers">
   @if (c) {
     <ui-stack direction="row" gap="2">
-      <p-button
+      <ui-button
+        appearance="outlined"
         type="button"
-        icon="pi pi-pencil"
+        icon="pencil"
         label="Edit"
-        [outlined]="true"
         [routerLink]="['/containers', id(), 'edit']"
       />
-      <p-button
+      <ui-button
+        intent="danger"
+        appearance="outlined"
         type="button"
-        icon="pi pi-trash"
+        icon="trash"
         label="Delete"
-        severity="danger"
-        [outlined]="true"
         [loading]="isDeleting()"
         (click)="onDelete()"
       />
@@ -25,20 +25,20 @@
 
 <div class="mx-auto max-w-5xl">
   @if (isLoading() && !c) {
-    <p-card>
+    <ui-card>
       <ui-stack align="center" justify="center" class="py-10">
-        <p-progress-spinner ariaLabel="Loading container" />
+        <ui-spinner ariaLabel="Loading container" />
       </ui-stack>
-    </p-card>
+    </ui-card>
   } @else if (!c) {
-    <p-card>
+    <ui-card>
       <ui-stack align="center" gap="3" class="py-10">
-        <ui-icon name="alert-circle" color="muted" />
+        <ui-icon name="circle-alert" color="muted" />
         <ui-typography variant="body" color="secondary">Container not found.</ui-typography>
       </ui-stack>
-    </p-card>
+    </ui-card>
   } @else {
-    <p-card>
+    <ui-card>
       <ui-stack
         direction="row"
         align="center"
@@ -149,7 +149,7 @@
         @if (c.notes) {
           <ui-stack tag="section" gap="3">
             <ui-stack direction="row" gap="2" align="center">
-              <ui-icon name="comment" color="secondary" />
+              <ui-icon name="message-square" color="secondary" />
               <ui-typography variant="overline" color="secondary">Notes</ui-typography>
             </ui-stack>
             <ui-surface variant="elevated" [border]="true">
@@ -158,6 +158,6 @@
           </ui-stack>
         }
       </ui-stack>
-    </p-card>
+    </ui-card>
   }
 </div>

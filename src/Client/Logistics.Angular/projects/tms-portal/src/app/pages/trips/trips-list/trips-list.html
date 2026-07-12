@@ -1,12 +1,12 @@
-<div class="animate-fadein">
+<div class="animate-in fade-in">
   <ui-page-header title="Trips" addRoute="/trips/add" addTooltip="Add a new trip">
-    <p-button
-      icon="pi pi-download"
-      size="large"
+    <ui-button
+      appearance="text"
+      size="lg"
+      icon="download"
       [rounded]="true"
-      [text]="true"
-      pTooltip="Export to CSV"
-      aria-label="Export to CSV"
+      uiTooltip="Export to CSV"
+      ariaLabel="Export to CSV"
       (click)="exportToCsv()"
       [disabled]="store.isEmpty()"
     />
@@ -20,7 +20,7 @@
   />
 
   <!-- Filter Panel -->
-  <p-card class="mb-4">
+  <ui-card class="mb-4">
     <ui-stack direction="row" align="center" justify="between" class="mb-4">
       <ui-typography variant="h6" color="primary" weight="semibold">Filters</ui-typography>
       <ui-stack direction="row" align="center" gap="2">
@@ -29,11 +29,11 @@
             {{ activeFilterCount() }} active
           </ui-typography>
         }
-        <p-button
+        <ui-button
+          appearance="text"
+          size="sm"
           label="Clear All"
-          icon="pi pi-times"
-          size="small"
-          [text]="true"
+          icon="x"
           (click)="clearFilters()"
           [disabled]="activeFilterCount() === 0"
         />
@@ -49,13 +49,14 @@
 
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
         <ui-form-field label="Status">
-          <p-multiselect
+          <ui-multiselect-field
             [options]="statusOptions"
-            [ngModel]="selectedStatuses()"
-            (ngModelChange)="selectedStatuses.set($event); applyFilters()"
+            optionLabel="label"
+            optionValue="value"
+            [value]="selectedStatuses()"
+            (selectionChange)="selectedStatuses.set($event); applyFilters()"
             placeholder="Select status"
             [showClear]="true"
-            class="w-full"
           />
         </ui-form-field>
       </ui-grid>
@@ -63,8 +64,8 @@
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
         <ui-form-field label="Truck">
           <app-search-truck
-            [selectedTruck]="selectedTruck()"
-            (selectedTruckChange)="selectedTruck.set($event); applyFilters()"
+            [value]="selectedTruck()"
+            (valueChange)="selectedTruck.set($event); applyFilters()"
           />
         </ui-form-field>
       </ui-grid>
@@ -77,19 +78,18 @@
     </ui-grid>
 
     <ui-stack direction="row" align="center" gap="2" wrap class="mt-4">
-      <p-checkbox
-        [ngModel]="onlyActiveTrips()"
-        (ngModelChange)="onlyActiveTrips.set($event); applyFilters()"
-        [binary]="true"
+      <ui-checkbox-field
+        [value]="onlyActiveTrips()"
+        (valueChange)="onlyActiveTrips.set($event); applyFilters()"
         inputId="activeTripsOnly"
       />
-      <label for="activeTripsOnly" class="text-secondary cursor-pointer text-sm"
-        >Active trips only</label
-      >
+      <label for="activeTripsOnly" class="text-subtle-foreground cursor-pointer text-sm">
+        Active trips only
+      </label>
     </ui-stack>
-  </p-card>
+  </ui-card>
 
-  <p-card>
+  <ui-card>
     <ui-data-container
       [loading]="store.isLoading()"
       [error]="store.error()"
@@ -102,14 +102,14 @@
       (retry)="store.retry()"
       (emptyAction)="addTrip()"
     >
-      <p-table
+      <ui-data-table
         [value]="store.data()"
         [dataKey]="'id'"
         [scrollable]="true"
         [lazy]="true"
         [paginator]="true"
         [showCurrentPageReport]="true"
-        (onLazyLoad)="store.onLazyLoad($event)"
+        (lazyLoad)="store.onLazyLoad($event)"
         [rows]="store.pageSize()"
         [first]="store.first()"
         [totalRecords]="store.totalRecords()"
@@ -119,32 +119,14 @@
         <ng-template #header>
           <tr>
             <th></th>
-            <th pSortableColumn="Number">
-              Number
-              <p-sortIcon field="Number" />
-            </th>
-            <th pSortableColumn="Name">
-              Name
-              <p-sortIcon field="Name" />
-            </th>
-            <th pSortableColumn="Truck.Number">
-              Truck
-              <p-sortIcon field="Truck.Number" />
-            </th>
+            <th uiSortHeader="Number">Number</th>
+            <th uiSortHeader="Name">Name</th>
+            <th uiSortHeader="Truck.Number">Truck</th>
             <th>Loads</th>
             <th>Total Revenue</th>
-            <th pSortableColumn="OriginAddress.City">
-              Route
-              <p-sortIcon field="OriginAddress.City" />
-            </th>
-            <th pSortableColumn="TotalDistance">
-              Distance ({{ distanceUnitLabel() }})
-              <p-sortIcon field="TotalDistance" />
-            </th>
-            <th pSortableColumn="Status">
-              Status
-              <p-sortIcon field="Status" />
-            </th>
+            <th uiSortHeader="OriginAddress.City">Route</th>
+            <th uiSortHeader="TotalDistance">Distance ({{ distanceUnitLabel() }})</th>
+            <th uiSortHeader="Status">Status</th>
             <th>Progress</th>
             <th>Action</th>
           </tr>
@@ -155,21 +137,23 @@
             (click)="navigateToTrip(trip)"
           >
             <td (click)="$event.stopPropagation()">
-              <p-button
-                [pRowToggler]="trip"
+              <!-- The toggler sits on the host so the click lands on the button itself, not a
+                   wrapper. `expanded` comes from the #body context above and drives the chevron. -->
+              <ui-button
+                [uiRowToggler]="trip"
                 class="mr-2 text-sm no-underline"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-                variant="text"
-                aria-label="Toggle trip details"
+                [icon]="expanded ? 'chevron-down' : 'chevron-right'"
+                appearance="text"
+                ariaLabel="Toggle trip details"
               />
             </td>
             <td class="text-center font-medium">{{ trip.number }}</td>
             <td>
               <span
                 class="block max-w-32 truncate"
-                [pTooltip]="getRouteTooltip(trip)"
-                [showDelay]="500"
-                tooltipPosition="bottom"
+                [uiTooltip]="getRouteTooltip(trip)"
+                [uiTooltipDelay]="500"
+                uiTooltipPosition="bottom"
               >
                 {{ trip.name }}
               </span>
@@ -186,7 +170,7 @@
             <td class="text-center">{{ trip.totalDistance | distanceUnit }}</td>
             <td>
               <app-trip-status-tag [status]="trip.status" />
-              <div class="text-muted text-xs italic">
+              <div class="text-muted-foreground text-xs italic">
                 @switch (trip.status) {
                   @case ("dispatched") {
                     {{ trip.dispatchedAt | dateFormat: "mediumDate" }}
@@ -202,23 +186,23 @@
                 @let progress = getProgressPercentage(trip);
                 <div style="min-width: 110px">
                   <div class="mb-1 flex items-center justify-between text-xs">
-                    <span class="text-muted">{{ progress }}%</span>
-                    <span class="text-muted">
+                    <span class="text-muted-foreground">{{ progress }}%</span>
+                    <span class="text-muted-foreground">
                       {{ getCompletedStops(trip) }}/{{ trip.stops?.length ?? 0 }} stops
                     </span>
                   </div>
-                  <p-progressBar [value]="progress" [showValue]="false" class="h-2!" />
+                  <ui-progress [value]="progress" [showValue]="false" class="h-2!" />
                 </div>
               } @else {
-                <span class="text-muted-color text-sm">&mdash;</span>
+                <span class="text-muted-foreground text-sm">&mdash;</span>
               }
             </td>
             <td (click)="$event.stopPropagation()">
-              <p-button
-                icon="pi pi-ellipsis-v"
-                [text]="true"
+              <ui-button
+                appearance="text"
+                icon="ellipsis-vertical"
                 (click)="selectedRow.set(trip); menu.toggle($event)"
-                aria-label="Show actions menu"
+                ariaLabel="Show actions menu"
               />
             </td>
           </tr>
@@ -228,25 +212,17 @@
             <td colspan="11">
               <div class="p-4">
                 <h5 class="mb-4">Loads in this trip</h5>
-                <p-table [value]="trip.loads" [dataKey]="'id'">
+                <ui-data-table [value]="trip.loads" [dataKey]="'id'">
                   <ng-template #header>
                     <tr>
-                      <th pSortableColumn="number">Load Number <p-sortIcon field="number" /></th>
-                      <th pSortableColumn="name">Load Name <p-sortIcon field="name" /></th>
-                      <th pSortableColumn="type">Load Type <p-sortIcon field="type" /></th>
-                      <th pSortableColumn="customer.name">
-                        Customer <p-sortIcon field="customer.name" />
-                      </th>
-                      <th pSortableColumn="originAddress.line1">
-                        Route <p-sortIcon field="originAddress.line1" />
-                      </th>
-                      <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
-                      <th pSortableColumn="distance">
-                        Distance ({{ distanceUnitLabel() }}) <p-sortIcon field="distance" />
-                      </th>
-                      <th pSortableColumn="deliveryCost">
-                        Revenue <p-sortIcon field="deliveryCost" />
-                      </th>
+                      <th uiSortHeader="number">Load Number</th>
+                      <th uiSortHeader="name">Load Name</th>
+                      <th uiSortHeader="type">Load Type</th>
+                      <th uiSortHeader="customer.name">Customer</th>
+                      <th uiSortHeader="originAddress.line1">Route</th>
+                      <th uiSortHeader="status">Status</th>
+                      <th uiSortHeader="distance">Distance ({{ distanceUnitLabel() }})</th>
+                      <th uiSortHeader="deliveryCost">Revenue</th>
                     </tr>
                   </ng-template>
                   <ng-template #body let-load>
@@ -255,9 +231,9 @@
                       <td>
                         <span
                           class="block max-w-32 truncate"
-                          [pTooltip]="load.name"
-                          [showDelay]="500"
-                          tooltipPosition="bottom"
+                          [uiTooltip]="load.name"
+                          [uiTooltipDelay]="500"
+                          uiTooltipPosition="bottom"
                         >
                           {{ load.name }}
                         </span>
@@ -266,9 +242,9 @@
                       <td>
                         <span
                           class="block max-w-28 truncate"
-                          [pTooltip]="load.customer.name"
-                          [showDelay]="500"
-                          tooltipPosition="bottom"
+                          [uiTooltip]="load.customer.name"
+                          [uiTooltipDelay]="500"
+                          uiTooltipPosition="bottom"
                         >
                           {{ load.customer.name }}
                         </span>
@@ -293,15 +269,15 @@
                       </td>
                     </tr>
                   </ng-template>
-                </p-table>
+                </ui-data-table>
               </div>
             </td>
           </tr>
         </ng-template>
-      </p-table>
+      </ui-data-table>
     </ui-data-container>
-  </p-card>
+  </ui-card>
 
   <!-- Reusable context menu for the actions button -->
-  <p-menu #menu [model]="actionMenuItems()" [popup]="true" />
+  <ui-menu #menu [items]="actionMenuItems()" />
 </div>

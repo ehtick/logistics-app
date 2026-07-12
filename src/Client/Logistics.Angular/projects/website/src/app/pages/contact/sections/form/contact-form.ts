@@ -1,34 +1,48 @@
 import { Component, inject, signal } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { email, form, FormField, FormRoot, required } from "@angular/forms/signals";
 import { Api, createContactSubmission, type ContactSubject } from "@logistics/shared/api";
-import { FormField, ValidatedForm } from "@logistics/shared/components";
 import type { SelectOption } from "@logistics/shared/models";
-import { ButtonModule } from "primeng/button";
-import { InputTextModule } from "primeng/inputtext";
-import { SelectModule } from "primeng/select";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Icon,
+  UiButton,
+  UiFormField,
+  UiSelectField,
+  UiTextareaField,
+  UiTextField,
+  ValidatedForm,
+} from "@logistics/shared/ui";
 import { SectionContainer } from "@/shared/components";
 import { ScrollAnimateDirective } from "@/shared/directives";
+
+const EMPTY = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  subject: "",
+  message: "",
+};
 
 @Component({
   selector: "web-contact-form",
   templateUrl: "./contact-form.html",
   imports: [
-    ValidatedForm,
-    SectionContainer,
-    ScrollAnimateDirective,
-    ReactiveFormsModule,
-    InputTextModule,
-    ButtonModule,
-    SelectModule,
-    TextareaModule,
     FormField,
+    FormRoot,
+    Icon,
+    ScrollAnimateDirective,
+    SectionContainer,
+    UiButton,
+    UiFormField,
+    UiSelectField,
+    UiTextareaField,
+    UiTextField,
+    ValidatedForm,
   ],
 })
 export class ContactForm {
   private readonly api = inject(Api);
 
-  protected readonly isLoading = signal(false);
   protected readonly isSubmitted = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -40,49 +54,49 @@ export class ContactForm {
     { label: "Press & Media", value: "press" },
   ];
 
-  protected readonly form = new FormGroup({
-    firstName: new FormControl("", { validators: [Validators.required], nonNullable: true }),
-    lastName: new FormControl("", { validators: [Validators.required], nonNullable: true }),
-    email: new FormControl("", {
-      validators: [Validators.required, Validators.email],
-      nonNullable: true,
-    }),
-    phone: new FormControl("", { nonNullable: true }),
-    subject: new FormControl("", { validators: [Validators.required], nonNullable: true }),
-    message: new FormControl("", { validators: [Validators.required], nonNullable: true }),
-  });
+  protected readonly model = signal({ ...EMPTY });
 
-  protected async onSubmit(): Promise<void> {
-    if (this.form.invalid || this.isLoading()) {
-      return;
-    }
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.firstName, { message: "First name is required." });
+      required(p.lastName, { message: "Last name is required." });
+      required(p.email, { message: "Email is required." });
+      email(p.email, { message: "Enter a valid email address." });
+      required(p.subject, { message: "Subject is required." });
+      required(p.message, { message: "Message is required." });
+    },
+    {
+      submission: {
+        action: async () => {
+          this.errorMessage.set(null);
 
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
+          try {
+            const value = this.model();
 
-    try {
-      const formValue = this.form.getRawValue();
+            await this.api.invoke(createContactSubmission, {
+              body: {
+                firstName: value.firstName,
+                lastName: value.lastName,
+                email: value.email,
+                phone: value.phone,
+                subject: value.subject as ContactSubject,
+                message: value.message,
+              },
+            });
 
-      await this.api.invoke(createContactSubmission, {
-        body: {
-          firstName: formValue.firstName,
-          lastName: formValue.lastName,
-          email: formValue.email,
-          phone: formValue.phone,
-          subject: formValue.subject as ContactSubject,
-          message: formValue.message,
+            this.isSubmitted.set(true);
+            this.form().reset({ ...EMPTY });
+          } catch (error) {
+            console.error("Error submitting contact form:", error);
+            this.errorMessage.set("Failed to send your message. Please try again.");
+          }
+
+          return undefined;
         },
-      });
-
-      this.isSubmitted.set(true);
-      this.form.reset();
-    } catch (error) {
-      console.error("Error submitting contact form:", error);
-      this.errorMessage.set("Failed to send your message. Please try again.");
-    } finally {
-      this.isLoading.set(false);
-    }
-  }
+      },
+    },
+  );
 
   protected resetForm(): void {
     this.isSubmitted.set(false);

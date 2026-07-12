@@ -1,14 +1,18 @@
 import { Component, inject, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Api, getAiSettings, updateAiSettings, type PlanQuotaDto } from "@logistics/shared/api";
-import { Grid, PageHeader, Stack, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { CheckboxModule } from "primeng/checkbox";
-import { InputNumberModule } from "primeng/inputnumber";
-import { MessageModule } from "primeng/message";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { SelectModule } from "primeng/select";
+import {
+  Alert,
+  Card,
+  Grid,
+  PageHeader,
+  Spinner,
+  Stack,
+  Typography,
+  UiButton,
+  UiCheckboxField,
+  UiNumberField,
+  UiSelectField,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { TenantQuotas } from "../tenant-quotas/tenant-quotas";
 
@@ -21,19 +25,18 @@ interface ModelOption {
   selector: "adm-ai-settings",
   templateUrl: "./ai-settings.html",
   imports: [
-    FormsModule,
-    ButtonModule,
-    CardModule,
-    CheckboxModule,
-    InputNumberModule,
-    MessageModule,
-    ProgressSpinnerModule,
-    SelectModule,
+    Alert,
+    Card,
     Grid,
     PageHeader,
+    Spinner,
     Stack,
-    Typography,
     TenantQuotas,
+    Typography,
+    UiButton,
+    UiCheckboxField,
+    UiNumberField,
+    UiSelectField,
   ],
 })
 export class AiSettings implements OnInit {

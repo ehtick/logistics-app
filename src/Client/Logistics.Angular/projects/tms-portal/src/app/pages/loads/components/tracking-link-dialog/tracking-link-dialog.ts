@@ -5,14 +5,17 @@ import {
   createTrackingLink,
   getTrackingLinksForLoad,
   revokeTrackingLink,
+  type TrackingLinkDto,
 } from "@logistics/shared/api";
-import type { TrackingLinkDto } from "@logistics/shared/api";
-import { ButtonModule } from "primeng/button";
-import { DialogModule } from "primeng/dialog";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Icon,
+  Spinner,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { SendTrackingLinkDialog } from "../send-tracking-link-dialog/send-tracking-link-dialog";
 
@@ -20,14 +23,15 @@ import { SendTrackingLinkDialog } from "../send-tracking-link-dialog/send-tracki
   selector: "app-tracking-link-dialog",
   templateUrl: "./tracking-link-dialog.html",
   imports: [
-    DialogModule,
-    ProgressSpinnerModule,
-    ButtonModule,
-    TableModule,
-    TooltipModule,
-    TagModule,
+    Badge,
     DatePipe,
+    Icon,
     SendTrackingLinkDialog,
+    Spinner,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiTooltip,
   ],
 })
 export class TrackingLinkDialog {

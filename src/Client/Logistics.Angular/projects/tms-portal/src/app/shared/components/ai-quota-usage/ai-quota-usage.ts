@@ -1,13 +1,12 @@
 import { DatePipe } from "@angular/common";
 import { Component, computed, input } from "@angular/core";
 import type { AiQuotaStatusDto } from "@logistics/shared/api";
-import { ProgressBar } from "primeng/progressbar";
-import { TagModule } from "primeng/tag";
+import { Badge, Icon, Progress } from "@logistics/shared/ui";
 
 @Component({
   selector: "app-ai-quota-usage",
   templateUrl: "./ai-quota-usage.html",
-  imports: [ProgressBar, TagModule, DatePipe],
+  imports: [Badge, DatePipe, Icon, Progress],
 })
 export class AiQuotaUsage {
   readonly quota = input.required<AiQuotaStatusDto>();
@@ -16,8 +15,8 @@ export class AiQuotaUsage {
 
   protected readonly progressBarColor = computed(() => {
     const pct = (this.quota().usagePercent ?? 0) * 100;
-    if (pct >= 90) return "var(--red-500)";
-    if (pct >= 70) return "var(--yellow-500)";
+    if (pct >= 90) return "var(--danger)";
+    if (pct >= 70) return "var(--warning)";
     return "";
   });
 }

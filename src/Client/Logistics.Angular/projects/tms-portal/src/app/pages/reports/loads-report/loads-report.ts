@@ -9,12 +9,17 @@ import {
   type StatusDto,
   type TypeDto,
 } from "@logistics/shared/api";
-import { Grid, Stack, StatusBadge, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ChartModule } from "primeng/chart";
-import { SkeletonModule } from "primeng/skeleton";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
+import {
+  Badge,
+  Grid,
+  Skeleton,
+  Stack,
+  StatusBadge,
+  Typography,
+  UiChart,
+  UiDataTable,
+} from "@logistics/shared/ui";
 import {
   BaseReportComponent,
   DashboardCard,
@@ -35,20 +40,20 @@ import {
   selector: "app-loads-report",
   templateUrl: "./loads-report.html",
   imports: [
+    Badge,
     CurrencyFormatPipe,
-    ChartModule,
-    TableModule,
+    DashboardCard,
     DateRangePicker,
     DecimalPipe,
-    SkeletonModule,
-    TagModule,
-    PageHeader,
-    StatCard,
-    DashboardCard,
     Grid,
+    PageHeader,
+    Skeleton,
     Stack,
+    StatCard,
     StatusBadge,
     Typography,
+    UiChart,
+    UiDataTable,
   ],
 })
 export class LoadsReportComponent extends BaseReportComponent<LoadsReportDto> implements OnInit {

@@ -18,12 +18,17 @@ import {
   type TruckDto,
 } from "@logistics/shared/api";
 import type { TruckGeolocationDto } from "@logistics/shared/api/models";
-import { Icon, Stack, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
-import { TableModule, type TableLazyLoadEvent } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import type { ListLazyLoadEvent } from "@logistics/shared/stores";
+import {
+  Badge,
+  Icon,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import {
   AiDispatchHubService,
   DispatchBadgeService,
@@ -45,22 +50,21 @@ import { stripMarkdown } from "../utils/markdown";
   selector: "app-sessions-list",
   templateUrl: "./sessions-list.html",
   imports: [
-    ButtonModule,
-    TableModule,
-    TagModule,
-    TooltipModule,
-    ConfirmDialogModule,
-    DatePipe,
-    PageHeader,
     AiQuotaUsage,
-    GeolocationMap,
+    Badge,
+    DatePipe,
     DecisionCard,
-    ModeBadge,
-    RunAgentDialog,
+    GeolocationMap,
     Icon,
+    ModeBadge,
+    PageHeader,
+    RunAgentDialog,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiTooltip,
   ],
 })
 export class SessionsListPage implements OnInit, OnDestroy {
@@ -166,7 +170,7 @@ export class SessionsListPage implements OnInit, OnDestroy {
     }
   }
 
-  protected onPageChange(event: TableLazyLoadEvent): void {
+  protected onPageChange(event: ListLazyLoadEvent): void {
     const first = event.first ?? 0;
     const rows = event.rows ?? this.pageSize();
     this.page.set(Math.floor(first / rows) + 1);
@@ -199,8 +203,8 @@ export class SessionsListPage implements OnInit, OnDestroy {
     this.toastService.confirm({
       message: `Are you sure you want to approve and execute this decision?\n\n${buildDecisionDetail(decision)}`,
       header: "Approve Decision",
-      icon: "pi pi-check-circle",
-      acceptButtonStyleClass: "p-button-success",
+      icon: "success",
+      severity: "success",
       accept: async () => {
         try {
           await this.api.invoke(approveAiDispatchDecision, { decisionId: decision.id! });
@@ -217,8 +221,8 @@ export class SessionsListPage implements OnInit, OnDestroy {
     this.toastService.confirm({
       message: `Are you sure you want to reject this decision?\n\n${buildDecisionDetail(decision)}`,
       header: "Reject Decision",
-      icon: "pi pi-exclamation-triangle",
-      acceptButtonStyleClass: "p-button-danger",
+      icon: "warning",
+      severity: "danger",
       accept: async () => {
         try {
           await this.api.invoke(rejectAiDispatchDecision, { decisionId: decision.id!, body: {} });

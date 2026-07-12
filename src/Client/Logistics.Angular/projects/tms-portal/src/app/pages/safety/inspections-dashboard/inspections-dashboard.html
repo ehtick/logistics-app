@@ -2,105 +2,101 @@
 
 @if (isLoading()) {
   <div class="flex justify-center py-16">
-    <p-progress-spinner />
+    <ui-spinner />
   </div>
 } @else {
   <!-- Stats Cards -->
   <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-    <p-card
+    <ui-card
       class="cursor-pointer transition-shadow hover:shadow-lg"
       (click)="navigateTo('/safety/dvir')"
     >
       <div class="flex items-center gap-4">
         <div class="bg-warning/10 flex h-12 w-12 items-center justify-center rounded-lg">
-          <i class="pi pi-clipboard text-warning text-2xl"></i>
+          <ui-icon name="clipboard" size="inherit" class="text-warning text-2xl" />
         </div>
         <div>
-          <div class="text-muted text-sm">Pending DVIR Reviews</div>
+          <div class="text-muted-foreground text-sm">Pending DVIR Reviews</div>
           <div class="text-2xl font-bold">{{ pendingDvirCount() }}</div>
         </div>
       </div>
-    </p-card>
+    </ui-card>
 
-    <p-card
+    <ui-card
       class="cursor-pointer transition-shadow hover:shadow-lg"
       (click)="navigateTo('/safety/accidents')"
     >
       <div class="flex items-center gap-4">
         <div class="bg-danger/10 flex h-12 w-12 items-center justify-center rounded-lg">
-          <i class="pi pi-exclamation-triangle text-danger text-2xl"></i>
+          <ui-icon name="triangle-alert" size="inherit" class="text-danger text-2xl" />
         </div>
         <div>
-          <div class="text-muted text-sm">Open Accidents</div>
+          <div class="text-muted-foreground text-sm">Open Accidents</div>
           <div class="text-2xl font-bold">{{ openAccidentsCount() }}</div>
         </div>
       </div>
-    </p-card>
+    </ui-card>
 
-    <p-card
+    <ui-card
       class="cursor-pointer transition-shadow hover:shadow-lg"
       (click)="navigateTo('/safety/condition-reports')"
     >
       <div class="flex items-center gap-4">
         <div class="bg-info/10 flex h-12 w-12 items-center justify-center rounded-lg">
-          <i class="pi pi-file-edit text-info text-2xl"></i>
+          <ui-icon name="file-pen" size="inherit" class="text-info text-2xl" />
         </div>
         <div>
-          <div class="text-muted text-sm">Condition Reports</div>
+          <div class="text-muted-foreground text-sm">Condition Reports</div>
           <div class="text-2xl font-bold">{{ conditionReportsCount() }}</div>
         </div>
       </div>
-    </p-card>
+    </ui-card>
 
-    <p-card
+    <ui-card
       class="cursor-pointer transition-shadow hover:shadow-lg"
       (click)="navigateTo('/safety/driver-behavior')"
     >
       <div class="flex items-center gap-4">
         <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/10">
-          <i class="pi pi-user text-2xl text-purple-500"></i>
+          <ui-icon name="user" size="inherit" class="text-2xl text-purple-500" />
         </div>
         <div>
-          <div class="text-muted text-sm">Driver Behavior</div>
+          <div class="text-muted-foreground text-sm">Driver Behavior</div>
           <div class="text-2xl font-bold">-</div>
         </div>
       </div>
-    </p-card>
+    </ui-card>
   </div>
 
   <!-- Quick Actions -->
   <div class="mb-6 flex flex-wrap gap-2">
-    <p-button
-      label="Report Accident"
-      icon="pi pi-plus"
-      (click)="navigateTo('/safety/accidents/add')"
-    />
-    <p-button
+    <ui-button label="Report Accident" icon="plus" (click)="navigateTo('/safety/accidents/add')" />
+    <ui-button
+      appearance="outlined"
       label="View DVIRs"
-      icon="pi pi-clipboard"
-      [outlined]="true"
+      icon="clipboard"
       (click)="navigateTo('/safety/dvir')"
     />
-    <p-button
+    <ui-button
+      appearance="outlined"
       label="Condition Reports"
-      icon="pi pi-file-edit"
-      [outlined]="true"
+      icon="file-pen"
       (click)="navigateTo('/safety/condition-reports')"
     />
   </div>
 
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
     <!-- Recent DVIRs -->
-    <p-card>
+    <ui-card>
       <ng-template #header>
         <div class="flex items-center justify-between p-4 pb-0">
           <h3 class="text-lg font-semibold">Recent DVIRs</h3>
-          <p-button label="View All" [link]="true" (click)="navigateTo('/safety/dvir')" />
+          <ui-button appearance="link" label="View All" (click)="navigateTo('/safety/dvir')" />
         </div>
       </ng-template>
 
       @if (recentDvirs().length > 0) {
-        <p-table [value]="recentDvirs()" [tableStyle]="{ 'min-width': '100%' }">
+        <ui-data-table [value]="recentDvirs()" [tableStyle]="{ 'min-width': '100%' }">
           <ng-template #header>
             <tr>
               <th>Date</th>
@@ -115,33 +111,33 @@
               <td>{{ dvir.truckNumber }}</td>
               <td>{{ dvir.driverName }}</td>
               <td>
-                <p-tag
+                <ui-badge
                   [value]="dvir.statusDisplay ?? dvir.status"
                   [severity]="getDvirStatusSeverity(dvir.status)"
                 />
               </td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       } @else {
         <div class="flex flex-col items-center py-8 text-center">
-          <i class="pi pi-clipboard text-muted mb-2 text-3xl"></i>
-          <p class="text-muted">No recent DVIRs</p>
+          <ui-icon name="clipboard" size="inherit" class="text-muted-foreground mb-2 text-3xl" />
+          <p class="text-muted-foreground">No recent DVIRs</p>
         </div>
       }
-    </p-card>
+    </ui-card>
 
     <!-- Recent Accidents -->
-    <p-card>
+    <ui-card>
       <ng-template #header>
         <div class="flex items-center justify-between p-4 pb-0">
           <h3 class="text-lg font-semibold">Recent Accidents</h3>
-          <p-button label="View All" [link]="true" (click)="navigateTo('/safety/accidents')" />
+          <ui-button appearance="link" label="View All" (click)="navigateTo('/safety/accidents')" />
         </div>
       </ng-template>
 
       @if (recentAccidents().length > 0) {
-        <p-table [value]="recentAccidents()" [tableStyle]="{ 'min-width': '100%' }">
+        <ui-data-table [value]="recentAccidents()" [tableStyle]="{ 'min-width': '100%' }">
           <ng-template #header>
             <tr>
               <th>Date</th>
@@ -155,44 +151,44 @@
               <td>{{ accident.accidentDateTime | date: "shortDate" }}</td>
               <td>{{ accident.driverName }}</td>
               <td>
-                <p-tag
+                <ui-badge
                   [value]="accident.severityDisplay ?? accident.severity"
                   [severity]="getAccidentSeveritySeverity(accident.severity)"
                 />
               </td>
               <td>
-                <p-tag
+                <ui-badge
                   [value]="accident.statusDisplay ?? accident.status"
                   [severity]="getAccidentStatusSeverity(accident.status)"
                 />
               </td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       } @else {
         <div class="flex flex-col items-center py-8 text-center">
-          <i class="pi pi-check-circle text-success mb-2 text-3xl"></i>
-          <p class="text-muted">No recent accidents</p>
+          <ui-icon name="circle-check" size="inherit" class="text-success mb-2 text-3xl" />
+          <p class="text-muted-foreground">No recent accidents</p>
         </div>
       }
-    </p-card>
+    </ui-card>
   </div>
 
   <!-- Recent Condition Reports -->
   @if (recentConditionReports().length > 0) {
-    <p-card class="mt-4">
+    <ui-card class="mt-4">
       <ng-template #header>
         <div class="flex items-center justify-between p-4 pb-0">
           <h3 class="text-lg font-semibold">Recent Condition Reports</h3>
-          <p-button
+          <ui-button
+            appearance="link"
             label="View All"
-            [link]="true"
             (click)="navigateTo('/safety/condition-reports')"
           />
         </div>
       </ng-template>
 
-      <p-table [value]="recentConditionReports()" [tableStyle]="{ 'min-width': '100%' }">
+      <ui-data-table [value]="recentConditionReports()" [tableStyle]="{ 'min-width': '100%' }">
         <ng-template #header>
           <tr>
             <th>Date</th>
@@ -207,11 +203,11 @@
             <td>{{ report.loadReferenceId }}</td>
             <td>{{ report.inspectorName }}</td>
             <td>
-              <p-tag [value]="report.typeDisplay ?? report.type" />
+              <ui-badge severity="primary" [value]="report.typeDisplay ?? report.type" />
             </td>
           </tr>
         </ng-template>
-      </p-table>
-    </p-card>
+      </ui-data-table>
+    </ui-card>
   }
 }

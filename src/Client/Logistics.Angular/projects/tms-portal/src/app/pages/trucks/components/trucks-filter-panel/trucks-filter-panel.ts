@@ -1,13 +1,8 @@
 import { Component, computed, input, output, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import type { TruckStatus, TruckType } from "@logistics/shared/api";
 import { truckStatusOptions, truckTypeOptions } from "@logistics/shared/api/enums";
-import { Stack, Typography } from "@logistics/shared/components";
-import type { SelectItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MultiSelectModule } from "primeng/multiselect";
-import { FormField, SearchField } from "@/shared/components";
+import { Card, Stack, Typography, UiButton, UiMultiSelectField } from "@logistics/shared/ui";
+import { SearchField, UiFormField } from "@/shared/components";
 
 export interface TrucksFilterState {
   statuses: TruckStatus[];
@@ -17,16 +12,7 @@ export interface TrucksFilterState {
 @Component({
   selector: "app-trucks-filter-panel",
   templateUrl: "./trucks-filter-panel.html",
-  imports: [
-    CardModule,
-    ButtonModule,
-    FormsModule,
-    MultiSelectModule,
-    SearchField,
-    FormField,
-    Stack,
-    Typography,
-  ],
+  imports: [Card, SearchField, Stack, Typography, UiButton, UiFormField, UiMultiSelectField],
 })
 export class TrucksFilterPanel {
   public readonly isLoading = input(false);
@@ -38,8 +24,8 @@ export class TrucksFilterPanel {
   protected readonly selectedTypes = signal<TruckType[]>([]);
 
   // Filter options
-  protected readonly statusOptions: SelectItem[] = truckStatusOptions;
-  protected readonly typeOptions: SelectItem[] = truckTypeOptions;
+  protected readonly statusOptions = truckStatusOptions;
+  protected readonly typeOptions = truckTypeOptions;
 
   // Computed: count of active filters
   protected readonly activeFilterCount = computed(() => {

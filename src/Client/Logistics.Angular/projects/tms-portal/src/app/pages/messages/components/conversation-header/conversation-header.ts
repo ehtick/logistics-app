@@ -1,26 +1,14 @@
 import { Component, input, output } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import type { ConversationDto } from "@logistics/shared/api";
-import { Icon, Stack, Typography } from "@logistics/shared/components";
-import { AvatarModule } from "primeng/avatar";
-import { ButtonModule } from "primeng/button";
-import { TooltipModule } from "primeng/tooltip";
+import { Icon, Stack, Typography, UiButton, UiTooltip } from "@logistics/shared/ui";
 import { UserAvatar } from "@/shared/components";
 import { Converters } from "@/shared/utils";
 
 @Component({
   selector: "app-conversation-header",
   templateUrl: "./conversation-header.html",
-  imports: [
-    AvatarModule,
-    ButtonModule,
-    RouterLink,
-    TooltipModule,
-    UserAvatar,
-    Icon,
-    Stack,
-    Typography,
-  ],
+  imports: [Icon, RouterLink, Stack, Typography, UiButton, UiTooltip, UserAvatar],
 })
 export class ConversationHeader {
   readonly conversation = input<ConversationDto | null>(null);

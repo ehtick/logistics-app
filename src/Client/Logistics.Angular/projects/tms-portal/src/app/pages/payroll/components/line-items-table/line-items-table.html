@@ -1,16 +1,16 @@
 <div class="mb-3 flex items-center justify-between">
   <h3 class="text-lg font-medium">Line Items</h3>
-  <p-button
-    icon="pi pi-plus"
+  <ui-button
+    intent="secondary"
+    appearance="text"
+    icon="plus"
     label="Add Item"
-    severity="secondary"
-    [text]="true"
-    (onClick)="openAddDialog()"
+    (click)="openAddDialog()"
   />
 </div>
 
 @if (lineItems().length > 0) {
-  <p-table [value]="lineItems()" styleClass="p-datatable-sm">
+  <ui-data-table [value]="lineItems()" styleClass="p-datatable-sm">
     <ng-template #header>
       <tr>
         <th>Description</th>
@@ -45,51 +45,53 @@
           }
         </td>
         <td class="text-right">
-          <p-button
-            icon="pi pi-pencil"
-            severity="secondary"
-            [text]="true"
+          <ui-button
+            intent="secondary"
+            appearance="text"
+            size="sm"
+            ariaLabel="Edit"
+            icon="pencil"
             [rounded]="true"
-            size="small"
-            pTooltip="Edit"
-            (onClick)="openEditDialog(item)"
+            uiTooltip="Edit"
+            (click)="openEditDialog(item)"
           />
-          <p-button
-            icon="pi pi-trash"
-            severity="danger"
-            [text]="true"
+          <ui-button
+            intent="danger"
+            appearance="text"
+            size="sm"
+            ariaLabel="Delete"
+            icon="trash"
             [rounded]="true"
-            size="small"
-            pTooltip="Delete"
-            (onClick)="confirmDelete(item)"
+            uiTooltip="Delete"
+            (click)="confirmDelete(item)"
           />
         </td>
       </tr>
     </ng-template>
-  </p-table>
+  </ui-data-table>
 } @else {
-  <div class="text-muted py-8 text-center">
-    <i class="pi pi-inbox mb-2 text-4xl"></i>
+  <div class="text-muted-foreground py-8 text-center">
+    <ui-icon name="inbox" size="inherit" class="mb-2 text-4xl" />
     <p>No line items yet. Click "Add Item" to add payroll items.</p>
   </div>
 }
 
 <!-- Line Item Dialog -->
-<p-dialog
-  [visible]="showDialog()"
-  (visibleChange)="showDialog.set($event)"
+<ui-dialog
+  [open]="showDialog()"
+  (openChange)="showDialog.set($event)"
   [header]="editingItem() ? 'Edit Line Item' : 'Add Line Item'"
   [modal]="true"
-  [style]="{ width: '500px' }"
+  width="500px"
 >
-  <form [formGroup]="form" class="space-y-4">
+  <form [formRoot]="form" class="space-y-4">
     <ui-form-field label="Description" [required]="true">
-      <input pInputText formControlName="description" class="w-full" />
+      <ui-text-field [formField]="form.description" />
     </ui-form-field>
 
     <ui-form-field label="Type" [required]="true">
-      <p-select
-        formControlName="type"
+      <ui-select-field
+        [formField]="form.type"
         [options]="typeOptions"
         optionLabel="label"
         optionValue="value"
@@ -99,8 +101,8 @@
 
     <div class="grid grid-cols-2 gap-4">
       <ui-form-field label="Amount" [required]="true">
-        <p-inputnumber
-          formControlName="amount"
+        <ui-number-field
+          [formField]="form.amount"
           mode="currency"
           currency="USD"
           styleClass="w-full"
@@ -108,23 +110,27 @@
       </ui-form-field>
 
       <ui-form-field label="Quantity" [required]="true">
-        <p-inputnumber formControlName="quantity" [min]="1" styleClass="w-full" />
+        <ui-number-field [formField]="form.quantity" styleClass="w-full" />
       </ui-form-field>
     </div>
 
     <ui-form-field label="Notes">
-      <textarea pTextarea formControlName="notes" rows="2" class="w-full"></textarea>
+      <ui-textarea-field [formField]="form.notes" [rows]="2" />
     </ui-form-field>
   </form>
 
   <ng-template #footer>
-    <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="showDialog.set(false)" />
-    <p-button
+    <ui-button
+      intent="secondary"
+      appearance="text"
+      label="Cancel"
+      (click)="showDialog.set(false)"
+    />
+    <ui-button
       [label]="editingItem() ? 'Update' : 'Add'"
-      icon="pi pi-check"
-      [loading]="isSaving()"
-      [disabled]="!form.valid"
-      (onClick)="saveItem()"
+      icon="check"
+      [loading]="form().submitting()"
+      (click)="saveItem()"
     />
   </ng-template>
-</p-dialog>
+</ui-dialog>

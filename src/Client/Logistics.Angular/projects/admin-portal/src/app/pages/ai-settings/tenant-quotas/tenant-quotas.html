@@ -1,4 +1,4 @@
-<p-card header="Tenant Usage">
+<ui-card header="Tenant Usage">
   <!-- Actions bar -->
   <ui-stack direction="row" align="center" justify="between" class="mb-4">
     <ui-typography variant="body-sm" color="secondary">
@@ -6,38 +6,38 @@
       count for the current week.
     </ui-typography>
     <ui-stack direction="row" gap="2">
-      <p-button
+      <ui-button
+        intent="warn"
+        appearance="outlined"
+        size="sm"
         label="Reset Selected"
-        icon="pi pi-refresh"
-        severity="warn"
-        size="small"
-        [outlined]="true"
+        icon="refresh-cw"
         [disabled]="selectedTenantIds().size === 0"
         [loading]="isResetting()"
-        (onClick)="resetSelected()"
+        (click)="resetSelected()"
       />
-      <p-button
+      <ui-button
+        intent="danger"
+        appearance="outlined"
+        size="sm"
         label="Reset All"
-        icon="pi pi-refresh"
-        severity="danger"
-        size="small"
-        [outlined]="true"
+        icon="refresh-cw"
         [loading]="isResetting()"
-        (onClick)="resetAll()"
+        (click)="resetAll()"
       />
     </ui-stack>
   </ui-stack>
 
-  <p-table
-    [value]="data()"
+  <ui-data-table
+    [value]="store.data()"
     [lazy]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
-    (onLazyLoad)="onLazyLoad($event)"
-    [rows]="10"
-    [first]="first()"
-    [totalRecords]="totalRecords()"
-    [loading]="isLoading()"
+    (lazyLoad)="store.onLazyLoad($event)"
+    [rows]="store.pageSize()"
+    [first]="store.first()"
+    [totalRecords]="store.totalRecords()"
+    [loading]="store.isLoading()"
     [rowsPerPageOptions]="[10, 25, 50]"
     [rowHover]="true"
   >
@@ -51,23 +51,11 @@
             (change)="toggleSelectAll()"
           />
         </th>
-        <th pSortableColumn="TenantName">
-          Tenant
-          <p-sortIcon field="TenantName" />
-        </th>
-        <th pSortableColumn="PlanName">
-          Plan
-          <p-sortIcon field="PlanName" />
-        </th>
-        <th pSortableColumn="UsedThisWeek" class="text-center">
-          Used / Quota
-          <p-sortIcon field="UsedThisWeek" />
-        </th>
+        <th uiSortHeader="TenantName">Tenant</th>
+        <th uiSortHeader="PlanName">Plan</th>
+        <th uiSortHeader="UsedThisWeek" class="text-center">Used / Quota</th>
         <th class="text-center">Remaining</th>
-        <th pSortableColumn="OverageCount" class="text-center">
-          Overage
-          <p-sortIcon field="OverageCount" />
-        </th>
+        <th uiSortHeader="OverageCount" class="text-center">Overage</th>
         <th>Usage</th>
         <th class="text-right">Tokens</th>
         <th class="text-right">Est. Cost</th>
@@ -89,12 +77,12 @@
           <div>
             <span class="font-medium">{{ usage.tenantName }}</span>
             @if (usage.companyName) {
-              <span class="text-muted ml-1 text-sm">{{ usage.companyName }}</span>
+              <span class="text-muted-foreground ml-1 text-sm">{{ usage.companyName }}</span>
             }
           </div>
         </td>
         <td>
-          <p-tag [value]="usage.planName ?? 'N/A'" severity="info" />
+          <ui-badge [value]="usage.planName ?? 'N/A'" severity="info" />
         </td>
         <td class="text-center">
           <span class="font-mono font-medium" [class.text-danger]="usage.isOverQuota">
@@ -106,16 +94,16 @@
         </td>
         <td class="text-center">
           @if (usage.overageCount > 0) {
-            <p-tag [value]="'+' + usage.overageCount" severity="warn" />
+            <ui-badge [value]="'+' + usage.overageCount" severity="warn" />
           } @else {
-            <span class="text-muted">-</span>
+            <span class="text-muted-foreground">-</span>
           }
         </td>
         <td class="w-40">
-          <p-progressBar
+          <ui-progress
+            height="0.5rem"
             [value]="Math.min((usage.usedThisWeek / usage.weeklyQuota) * 100, 100)"
             [showValue]="false"
-            [style]="{ height: '0.5rem' }"
           />
         </td>
         <td class="text-right">
@@ -126,29 +114,31 @@
         </td>
         <td>
           @if (usage.lastModelUsed) {
-            <span class="text-muted text-sm">{{ usage.lastModelUsed }}</span>
+            <span class="text-muted-foreground text-sm">{{ usage.lastModelUsed }}</span>
           } @else {
-            <span class="text-muted text-sm">-</span>
+            <span class="text-muted-foreground text-sm">-</span>
           }
         </td>
         <td>
           @if (usage.quotaResetAt) {
-            <span class="text-muted text-sm">{{ usage.quotaResetAt | date: "short" }}</span>
+            <span class="text-muted-foreground text-sm">
+              {{ usage.quotaResetAt | date: "short" }}
+            </span>
           } @else {
-            <span class="text-muted text-sm">-</span>
+            <span class="text-muted-foreground text-sm">-</span>
           }
         </td>
       </tr>
     </ng-template>
-    <ng-template #emptymessage>
+    <ng-template #empty>
       <tr>
         <td colspan="11" class="py-8 text-center">
-          <ui-stack align="center" gap="2" class="text-muted">
-            <ui-icon name="chart-bar" size="xl" />
+          <ui-stack align="center" gap="2" class="text-muted-foreground">
+            <ui-icon name="chart-column" size="xl" />
             <ui-typography variant="body">No tenants with AI quota configured.</ui-typography>
           </ui-stack>
         </td>
       </tr>
     </ng-template>
-  </p-table>
-</p-card>
+  </ui-data-table>
+</ui-card>

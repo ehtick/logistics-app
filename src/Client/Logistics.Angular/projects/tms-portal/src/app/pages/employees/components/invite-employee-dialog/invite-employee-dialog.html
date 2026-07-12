@@ -1,41 +1,33 @@
-<p-dialog
+<ui-dialog
   header="Invite Employee"
-  [(visible)]="visible"
+  [(open)]="visible"
   [modal]="true"
-  [style]="{ width: '450px' }"
-  (onHide)="close()"
+  width="450px"
+  (closed)="close()"
 >
-  @if (isLoading()) {
+  @if (form().submitting()) {
     <ui-stack align="center" justify="center" class="py-4">
-      <p-progress-spinner />
+      <ui-spinner />
     </ui-stack>
   } @else {
-    <p class="text-muted-color mb-4">
+    <p class="text-muted-foreground mb-4">
       Send an email invitation to join your company as an employee.
     </p>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <ui-form-field
-        label="Email Address"
-        for="email"
-        [required]="true"
-        [control]="form.controls.email"
-      >
-        <input
-          pInputText
+    <form [formRoot]="form">
+      <ui-form-field label="Email Address" for="email" [required]="true">
+        <ui-text-field
           id="email"
-          formControlName="email"
+          [formField]="form.email"
           type="email"
           placeholder="employee@example.com"
-          class="w-full"
         />
       </ui-form-field>
 
-      <ui-form-field label="Role" for="role" [required]="true" [control]="form.controls.role">
-        <p-select
-          formControlName="role"
+      <ui-form-field label="Role" for="role" [required]="true">
+        <ui-select-field
+          [formField]="form.role"
           id="role"
-          class="w-full"
           appendTo="body"
           [options]="roles()"
           optionValue="name"
@@ -49,25 +41,18 @@
         for="personalMessage"
         hint="Optional note to include in the invitation email"
       >
-        <textarea
-          pTextarea
+        <ui-textarea-field
           id="personalMessage"
-          formControlName="personalMessage"
-          rows="3"
+          [formField]="form.personalMessage"
+          [rows]="3"
           placeholder="Add a personal note to the invitation email..."
-          class="w-full"
-        ></textarea>
+        />
       </ui-form-field>
 
       <ui-stack direction="row" justify="end" gap="2">
-        <p-button type="button" label="Cancel" [outlined]="true" (click)="close()" />
-        <p-button
-          type="submit"
-          icon="pi pi-send"
-          label="Send Invitation"
-          [disabled]="isLoading()"
-        />
+        <ui-button appearance="outlined" type="button" label="Cancel" (click)="close()" />
+        <ui-button type="submit" icon="send" label="Send Invitation" />
       </ui-stack>
     </form>
   }
-</p-dialog>
+</ui-dialog>

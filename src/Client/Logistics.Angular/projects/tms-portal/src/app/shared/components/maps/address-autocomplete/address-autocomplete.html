@@ -1,14 +1,11 @@
 <div class="relative">
-  <input
-    type="text"
+  <ui-text-field
     [id]="field()"
-    [name]="field()"
-    class="w-full"
-    pInputText
+    class="block w-full"
     [placeholder]="placeholder()"
-    (input)="handleAddressInputChange($event)"
-    (focusout)="handleInputFocusOut($event)"
-    [(ngModel)]="addressString"
+    [value]="addressString() ?? ''"
+    (valueChange)="handleAddressInputChange($event)"
+    (focusout)="handleInputFocusOut()"
   />
 
   @if (searchResults().length) {

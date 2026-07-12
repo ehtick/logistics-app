@@ -1,5 +1,5 @@
 import { Component, inject, signal, type OnInit } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { form, FormField, FormRoot, required } from "@angular/forms/signals";
 import { Router, RouterModule } from "@angular/router";
 import { ToastService } from "@logistics/shared";
 import {
@@ -12,41 +12,44 @@ import {
   type TenantDto,
 } from "@logistics/shared/api";
 import {
-  FormField,
+  Card,
   Grid,
   Icon,
   PageHeader,
+  Skeleton,
   Stack,
   Typography,
+  UiButton,
+  UiFormField,
+  UiSelectField,
   ValidatedForm,
-} from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { SelectModule } from "primeng/select";
-import { SkeletonModule } from "primeng/skeleton";
+} from "@logistics/shared/ui";
 
 interface SelectOption {
   label: string;
   value: string;
 }
 
+const EMPTY = { tenantId: "", planId: "" };
+
 @Component({
   selector: "adm-subscription-add",
   templateUrl: "./subscription-add.html",
   imports: [
-    CardModule,
-    ButtonModule,
-    RouterModule,
-    SkeletonModule,
-    SelectModule,
-    ReactiveFormsModule,
+    Card,
     FormField,
-    ValidatedForm,
+    FormRoot,
     Grid,
     Icon,
+    PageHeader,
+    RouterModule,
+    Skeleton,
     Stack,
     Typography,
-    PageHeader,
+    UiButton,
+    UiFormField,
+    UiSelectField,
+    ValidatedForm,
   ],
 })
 export class SubscriptionAdd implements OnInit {
@@ -54,15 +57,34 @@ export class SubscriptionAdd implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
 
-  protected readonly isLoading = signal<boolean>(false);
   protected readonly isFetching = signal<boolean>(true);
   protected readonly tenantOptions = signal<SelectOption[]>([]);
   protected readonly planOptions = signal<SelectOption[]>([]);
 
-  protected readonly form = new FormGroup({
-    tenantId: new FormControl("", { validators: Validators.required, nonNullable: true }),
-    planId: new FormControl("", { validators: Validators.required, nonNullable: true }),
-  });
+  protected readonly model = signal({ ...EMPTY });
+
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.tenantId, { message: "Tenant is required." });
+      required(p.planId, { message: "Subscription plan is required." });
+    },
+    {
+      submission: {
+        action: async () => {
+          const command: CreateSubscriptionCommand = {
+            tenantId: this.model().tenantId,
+            planId: this.model().planId,
+          };
+
+          await this.api.invoke(createSubscription, { body: command });
+          this.toastService.showSuccess("Subscription has been created successfully");
+          this.router.navigateByUrl("/subscriptions");
+          return undefined;
+        },
+      },
+    },
+  );
 
   ngOnInit(): void {
     this.fetchOptions();
@@ -102,22 +124,5 @@ export class SubscriptionAdd implements OnInit {
     );
 
     this.isFetching.set(false);
-  }
-
-  protected async onSubmit(): Promise<void> {
-    if (this.form.invalid) return;
-
-    this.isLoading.set(true);
-
-    const command: CreateSubscriptionCommand = {
-      tenantId: this.form.value.tenantId!,
-      planId: this.form.value.planId!,
-    };
-
-    await this.api.invoke(createSubscription, { body: command });
-    this.toastService.showSuccess("Subscription has been created successfully");
-    this.router.navigateByUrl("/subscriptions");
-
-    this.isLoading.set(false);
   }
 }

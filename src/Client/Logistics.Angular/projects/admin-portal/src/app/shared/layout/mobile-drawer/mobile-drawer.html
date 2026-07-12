@@ -1,60 +1,57 @@
-<p-drawer
+<ui-drawer
   [visible]="visible()"
   (visibleChange)="onVisibleChange($event)"
   position="left"
-  [modal]="true"
-  [closeOnEscape]="true"
-  [dismissible]="true"
-  [showCloseIcon]="true"
+  width="300px"
 >
-  <ng-template #header>
-    <div class="flex items-center gap-3">
-      <span class="text-primary text-base font-semibold">Admin Portal</span>
-    </div>
-  </ng-template>
+  <div uiDrawerHeader class="border-subtle flex items-center gap-3 border-b px-5 py-4">
+    <span class="text-foreground text-base font-semibold">Admin Portal</span>
+  </div>
 
   <div class="flex h-full flex-col">
     <!-- Navigation -->
     <div class="flex-1 overflow-y-auto px-2">
       @for (section of sections(); track section.label; let isLast = $last) {
-        <p class="text-muted-color mt-3 mb-1 px-2 text-xs font-semibold tracking-wider uppercase">
+        <p
+          class="text-muted-foreground mt-3 mb-1 px-2 text-xs font-semibold tracking-wider uppercase"
+        >
           {{ section.label }}
         </p>
         @for (item of section.items; track item.route) {
           <button
-            class="text-color hover:bg-surface-100 mb-0.5 flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-3 py-2.5 text-left text-sm font-medium transition-colors"
+            class="text-foreground hover:bg-sidebar-accent mb-0.5 flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-3 py-2.5 text-left text-sm font-medium transition-colors"
             (click)="navigateTo(item.route)"
           >
-            <i [class]="item.icon + ' text-base'"></i>
+            <ui-icon [name]="item.icon" size="inherit" class="text-base" />
             <span>{{ item.label }}</span>
           </button>
         }
         @if (!isLast) {
-          <p-divider />
+          <ui-divider />
         }
       }
     </div>
 
     <!-- User Section -->
-    <div class="border-surface border-t p-4">
+    <div class="border-border border-t p-4">
       @if (userName()) {
         <div class="mb-3 flex items-center gap-3">
-          <p-avatar [label]="userInitials()" shape="circle" />
+          <ui-avatar [label]="userInitials()" />
           <div>
-            <p class="text-color m-0 text-sm font-medium">{{ userName() }}</p>
-            <p class="text-muted-color m-0 text-xs">Super Admin</p>
+            <p class="text-foreground m-0 text-sm font-medium">{{ userName() }}</p>
+            <p class="text-muted-foreground m-0 text-xs">Super Admin</p>
           </div>
         </div>
       }
 
-      <p-button
+      <ui-button
+        intent="danger"
+        appearance="outlined"
+        block
         label="Sign Out"
-        icon="pi pi-sign-out"
-        severity="danger"
-        [outlined]="true"
-        styleClass="w-full"
-        (onClick)="logout()"
+        icon="log-out"
+        (click)="logout()"
       />
     </div>
   </div>
-</p-drawer>
+</ui-drawer>

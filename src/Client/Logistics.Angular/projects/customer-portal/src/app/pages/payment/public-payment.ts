@@ -1,6 +1,5 @@
 import { DatePipe } from "@angular/common";
 import { Component, computed, effect, inject, input, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { ErrorState, LoadingSkeleton, ToastService } from "@logistics/shared";
 import {
   Api,
@@ -8,38 +7,43 @@ import {
   getPublicInvoice,
   type PublicInvoiceDto,
 } from "@logistics/shared/api";
-import { Alert, Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { InputNumberModule } from "primeng/inputnumber";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
+import {
+  Alert,
+  Badge,
+  Divider,
+  Grid,
+  Icon,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiNumberField,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { PublicLayout } from "@/shared/layout";
 
 @Component({
   selector: "cp-public-payment",
   templateUrl: "./public-payment.html",
   imports: [
+    Alert,
+    Badge,
     CurrencyFormatPipe,
     DatePipe,
-    FormsModule,
-    ButtonModule,
-    CardModule,
-    DividerModule,
-    InputNumberModule,
-    TagModule,
-    TableModule,
+    Divider,
     ErrorState,
-    LoadingSkeleton,
-    PublicLayout,
-    Alert,
     Grid,
     Icon,
+    LoadingSkeleton,
+    PublicLayout,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiNumberField,
   ],
 })
 export class PublicPayment {
@@ -119,7 +123,7 @@ export class PublicPayment {
     }
   }
 
-  protected getStatusSeverity(): "success" | "info" | "warn" | "danger" {
+  protected getStatusSeverity(): UiBadgeIntent {
     const status = this.invoice()?.status;
     switch (status) {
       case "paid":

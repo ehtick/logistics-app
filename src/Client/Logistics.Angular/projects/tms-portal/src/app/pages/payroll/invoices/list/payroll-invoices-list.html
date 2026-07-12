@@ -1,36 +1,36 @@
-<div class="animate-fadein">
+<div class="animate-in fade-in">
   <ui-page-header
     title="Payroll Invoices"
     addRoute="/payroll/invoices/add"
     addTooltip="Add a new payroll invoice"
   >
     @if (selectedInvoices().length > 0) {
-      <p-button
-        icon="pi pi-check-circle"
+      <ui-button
+        intent="success"
+        icon="circle-check"
         label="Approve Selected ({{ selectedInvoices().length }})"
-        severity="success"
         [loading]="isBatchApproving()"
         (click)="batchApprove()"
       />
-      <p-button icon="pi pi-times" label="Clear" [text]="true" (click)="clearSelection()" />
+      <ui-button appearance="text" icon="x" label="Clear" (click)="clearSelection()" />
     }
-    <p-button
-      icon="pi pi-download"
+    <ui-button
+      appearance="outlined"
+      icon="download"
       label="Export CSV"
-      [outlined]="true"
       [loading]="isExporting()"
       (click)="exportToCsv()"
     />
-    <p-button
-      icon="pi pi-chart-bar"
+    <ui-button
+      appearance="outlined"
+      icon="chart-column"
       label="Dashboard"
-      [outlined]="true"
       [routerLink]="['/payroll']"
     />
   </ui-page-header>
 
   <!-- Filter Panel -->
-  <p-card class="mb-4">
+  <ui-card class="mb-4">
     <ui-stack direction="row" align="center" justify="between" class="mb-4">
       <ui-typography variant="body" color="primary" weight="semibold" class="text-lg">
         Filters
@@ -41,11 +41,11 @@
             {{ activeFilterCount() }} active
           </ui-typography>
         }
-        <p-button
+        <ui-button
+          appearance="text"
+          size="sm"
           label="Clear All"
-          icon="pi pi-times"
-          size="small"
-          [text]="true"
+          icon="x"
           (click)="clearFilters()"
           [disabled]="activeFilterCount() === 0"
         />
@@ -65,26 +65,28 @@
 
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
         <ui-form-field label="Status">
-          <p-multiselect
+          <ui-multiselect-field
             [options]="statusOptions"
-            [(ngModel)]="selectedStatuses"
+            optionLabel="label"
+            optionValue="value"
+            [(value)]="selectedStatuses"
+            (selectionChange)="applyFilters()"
             placeholder="Select status"
             [showClear]="true"
-            (onChange)="applyFilters()"
-            class="w-full"
           />
         </ui-form-field>
       </ui-grid>
 
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }">
         <ui-form-field label="Salary Type">
-          <p-multiselect
+          <ui-multiselect-field
             [options]="salaryTypeOptions"
-            [(ngModel)]="selectedSalaryTypes"
+            optionLabel="label"
+            optionValue="value"
+            [(value)]="selectedSalaryTypes"
+            (selectionChange)="applyFilters()"
             placeholder="Select salary type"
             [showClear]="true"
-            (onChange)="applyFilters()"
-            class="w-full"
           />
         </ui-form-field>
       </ui-grid>
@@ -95,9 +97,9 @@
         </ui-form-field>
       </ui-grid>
     </ui-grid>
-  </p-card>
+  </ui-card>
 
-  <p-card>
+  <ui-card>
     <ui-data-container
       [loading]="store.isLoading()"
       [error]="store.error()"
@@ -110,12 +112,12 @@
       (retry)="store.retry()"
       (emptyAction)="addInvoice()"
     >
-      <p-table
+      <ui-data-table
         [value]="store.data()"
         [lazy]="true"
         [paginator]="true"
         [showCurrentPageReport]="true"
-        (onLazyLoad)="store.onLazyLoad($event)"
+        (lazyLoad)="store.onLazyLoad($event)"
         [rows]="store.pageSize()"
         [first]="store.first()"
         [totalRecords]="store.totalRecords()"
@@ -129,33 +131,15 @@
           <tr>
             <th style="width: 3rem">
               @if (hasSelectableInvoices()) {
-                <p-tableHeaderCheckbox />
+                <ui-table-header-checkbox />
               }
             </th>
-            <th pSortableColumn="PeriodStart">
-              Period
-              <p-sortIcon field="PeriodStart" />
-            </th>
-            <th pSortableColumn="Employee.FirstName">
-              Employee
-              <p-sortIcon field="Employee.FirstName" />
-            </th>
-            <th pSortableColumn="Employee.SalaryType">
-              Salary Type
-              <p-sortIcon field="Employee.SalaryType" />
-            </th>
-            <th pSortableColumn="Employee.Salary">
-              Employee Salary
-              <p-sortIcon field="Employee.Salary" />
-            </th>
-            <th pSortableColumn="Total">
-              Invoice Total
-              <p-sortIcon field="Total" />
-            </th>
-            <th pSortableColumn="Status">
-              Status
-              <p-sortIcon field="Status" />
-            </th>
+            <th uiSortHeader="PeriodStart">Period</th>
+            <th uiSortHeader="Employee.FirstName">Employee</th>
+            <th uiSortHeader="Employee.SalaryType">Salary Type</th>
+            <th uiSortHeader="Employee.Salary">Employee Salary</th>
+            <th uiSortHeader="Total">Invoice Total</th>
+            <th uiSortHeader="Status">Status</th>
             <th style="width: 10rem">Actions</th>
           </tr>
         </ng-template>
@@ -164,7 +148,7 @@
           <tr>
             <td>
               @if (invoice.status === "pending_approval") {
-                <p-tableCheckbox [value]="invoice" />
+                <ui-table-checkbox [value]="invoice" />
               }
             </td>
             <td>
@@ -186,41 +170,45 @@
             </td>
             <td>
               <ui-stack direction="row" align="center" gap="1">
-                <p-button
-                  icon="pi pi-eye"
+                <ui-button
+                  appearance="text"
+                  ariaLabel="View details"
+                  icon="eye"
                   [rounded]="true"
-                  [text]="true"
-                  pTooltip="View details"
-                  tooltipPosition="bottom"
+                  uiTooltip="View details"
+                  uiTooltipPosition="bottom"
                   [routerLink]="['/payroll/invoices', invoice.id]"
                 />
                 @if (invoice.status === "pending_approval") {
-                  <p-button
-                    icon="pi pi-check"
+                  <ui-button
+                    intent="success"
+                    appearance="text"
+                    ariaLabel="Approve"
+                    icon="check"
                     [rounded]="true"
-                    [text]="true"
-                    severity="success"
-                    pTooltip="Approve"
-                    tooltipPosition="bottom"
+                    uiTooltip="Approve"
+                    uiTooltipPosition="bottom"
                     (click)="approveInvoice(invoice)"
                   />
-                  <p-button
-                    icon="pi pi-times"
+                  <ui-button
+                    intent="danger"
+                    appearance="text"
+                    ariaLabel="Reject"
+                    icon="x"
                     [rounded]="true"
-                    [text]="true"
-                    severity="danger"
-                    pTooltip="Reject"
-                    tooltipPosition="bottom"
+                    uiTooltip="Reject"
+                    uiTooltipPosition="bottom"
                     (click)="openRejectDialog(invoice)"
                   />
                 }
                 @if (invoice.status === "draft") {
-                  <p-button
-                    icon="pi pi-pen-to-square"
+                  <ui-button
+                    appearance="text"
+                    ariaLabel="Edit"
+                    icon="square-pen"
                     [rounded]="true"
-                    [text]="true"
-                    pTooltip="Edit"
-                    tooltipPosition="bottom"
+                    uiTooltip="Edit"
+                    uiTooltipPosition="bottom"
                     [routerLink]="['/payroll/invoices', invoice.id, 'edit']"
                   />
                 }
@@ -228,35 +216,29 @@
             </td>
           </tr>
         </ng-template>
-      </p-table>
+      </ui-data-table>
     </ui-data-container>
-  </p-card>
+  </ui-card>
 
   <!-- Reject Dialog -->
-  <p-dialog
-    header="Reject Payroll"
-    [(visible)]="showRejectDialog"
-    [modal]="true"
-    [style]="{ width: '400px' }"
-  >
+  <ui-dialog header="Reject Payroll" [(open)]="showRejectDialog" [modal]="true" width="400px">
     <ui-stack gap="4">
       <p>Please provide a reason for rejecting this payroll invoice.</p>
-      <textarea
-        pInputTextarea
-        [(ngModel)]="rejectionReason"
-        rows="3"
-        class="w-full"
+      <ui-textarea-field
+        [(value)]="rejectionReason"
+        [rows]="3"
+        class="block w-full"
         placeholder="Enter rejection reason..."
-      ></textarea>
+      />
     </ui-stack>
     <ng-template #footer>
-      <p-button label="Cancel" [text]="true" (click)="showRejectDialog.set(false)" />
-      <p-button
+      <ui-button appearance="text" label="Cancel" (click)="showRejectDialog.set(false)" />
+      <ui-button
+        intent="danger"
         label="Reject"
-        severity="danger"
         [loading]="isRejecting()"
         (click)="confirmReject()"
       />
     </ng-template>
-  </p-dialog>
+  </ui-dialog>
 </div>

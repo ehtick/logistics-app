@@ -1,34 +1,40 @@
 import { CommonModule } from "@angular/common";
 import { Component, input } from "@angular/core";
 import type { TripTimelineEventDto } from "@logistics/shared/api";
-import { CardModule } from "primeng/card";
-import { TagModule } from "primeng/tag";
-import { TimelineModule } from "primeng/timeline";
+import {
+  Badge,
+  Icon,
+  UiTimeline,
+  UiTimelineContent,
+  UiTimelineMarker,
+  type IconName,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 
 @Component({
   selector: "app-trip-timeline",
   templateUrl: "./trip-timeline.html",
-  imports: [CommonModule, TimelineModule, CardModule, TagModule],
+  imports: [Badge, CommonModule, Icon, UiTimeline, UiTimelineContent, UiTimelineMarker],
 })
 export class TripTimeline {
   public readonly events = input<TripTimelineEventDto[]>([]);
 
-  protected getEventIcon(eventType: string | null): string {
+  protected getEventIcon(eventType: string | null): IconName {
     switch (eventType) {
       case "created":
-        return "pi pi-plus";
+        return "plus";
       case "dispatched":
-        return "pi pi-send";
+        return "send";
       case "pickup":
-        return "pi pi-upload";
+        return "upload";
       case "delivery":
-        return "pi pi-download";
+        return "download";
       case "completed":
-        return "pi pi-check";
+        return "check";
       case "cancelled":
-        return "pi pi-times";
+        return "x";
       default:
-        return "pi pi-circle";
+        return "circle";
     }
   }
 
@@ -51,9 +57,10 @@ export class TripTimeline {
     }
   }
 
-  protected getEventSeverity(
-    eventType: string | null,
-  ): "success" | "info" | "warn" | "danger" | "secondary" | "contrast" | undefined {
+  // The `| undefined` this used to declare was dead: every branch returns, `default` included.
+  // `<p-tag [severity]>` accepted `undefined`, so nothing ever forced the annotation to be honest.
+  // `<ui-badge>` does not, which is how a vestigial widening finally surfaced.
+  protected getEventSeverity(eventType: string | null): UiBadgeIntent {
     switch (eventType) {
       case "created":
         return "info";

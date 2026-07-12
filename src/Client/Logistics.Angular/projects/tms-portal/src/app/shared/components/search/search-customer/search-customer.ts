@@ -1,38 +1,38 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { Component, forwardRef, inject, model, output, signal } from "@angular/core";
-import { FormsModule, NG_VALUE_ACCESSOR, type ControlValueAccessor } from "@angular/forms";
+import { Component, ElementRef, inject, input, model, output, signal } from "@angular/core";
+import type { FormValueControl } from "@angular/forms/signals";
+import { focusFirstControl } from "@logistics/shared";
 import { Api, getCustomers, type CustomerDto } from "@logistics/shared/api";
-import {
-  AutoComplete,
-  AutoCompleteModule,
-  type AutoCompleteSelectEvent,
-} from "primeng/autocomplete";
-import { Button } from "primeng/button";
-import { Dialog } from "primeng/dialog";
+import { UiAutocompleteField, UiButton, UiDialog } from "@logistics/shared/ui";
 import { CustomerForm } from "@/shared/components/domain-forms";
 
 @Component({
   selector: "app-search-customer",
   templateUrl: "./search-customer.html",
-  imports: [AutoCompleteModule, FormsModule, Button, Dialog, CustomerForm],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SearchCustomer),
-      multi: true,
-    },
-  ],
+  imports: [CustomerForm, UiAutocompleteField, UiButton, UiDialog],
 })
-export class SearchCustomer implements ControlValueAccessor {
+export class SearchCustomer implements FormValueControl<CustomerDto | null> {
   private readonly api = inject(Api);
 
   protected readonly suggestedCustomers = signal<CustomerDto[]>([]);
   protected readonly lastQuery = signal<string>("");
 
-  public readonly selectedCustomer = model<CustomerDto | null>(null);
-  public readonly selectedCustomerChange = output<CustomerDto | null>();
+  /** The control's value. Required by `FormValueControl`. */
+  public readonly value = model<CustomerDto | null>(null);
+
+  /** Driven by the Reactive Forms bridge / Signal Forms when disabled. */
+  public readonly disabled = input<boolean>(false);
+
+  /** Raised on blur so the form can mark the field touched. */
+  public readonly touch = output<void>();
 
   protected readonly customerDialogVisible = model<boolean>(false);
+
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  /** Signal Forms calls this via `FieldState.focusBoundControl()`. */
+  public focus(options?: FocusOptions): void {
+    focusFirstControl(this.host.nativeElement, options);
+  }
 
   protected async searchCustomer(event: { query: string }): Promise<void> {
     const q = event.query?.trim() ?? "";
@@ -52,51 +52,14 @@ export class SearchCustomer implements ControlValueAccessor {
     }
   }
 
-  protected changeSelectedCustomer(event: AutoCompleteSelectEvent): void {
-    this.selectedCustomerChange.emit(event.value);
-    this.onChange(event.value);
-  }
-
-  protected openCreateCustomer(autoComplete: AutoComplete): void {
-    // close the suggestions panel before opening dialog
-    autoComplete.hide();
+  protected openCreateCustomer(autoComplete: UiAutocompleteField<CustomerDto>): void {
+    // Close the suggestions panel before opening the dialog, or the overlay survives underneath it.
+    autoComplete.close();
     this.customerDialogVisible.set(true);
   }
 
   protected handleCustomerCreated(customer: CustomerDto): void {
     this.customerDialogVisible.set(false);
-    this.selectedCustomer.set(customer);
-    this.onChange(customer);
+    this.value.set(customer);
   }
-
-  //#region Implementation Reactive forms
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private onChange(value: CustomerDto | null): void {}
-  private onTouched(): void {}
-
-  /** Marks the control as touched so validation errors surface (on blur). */
-  protected markTouched(): void {
-    this.onTouched();
-  }
-
-  writeValue(value: CustomerDto | null): void {
-    this.selectedCustomer.set(value);
-  }
-
-  registerOnChange(fn: () => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.selectedCustomer.set(null);
-    }
-  }
-
-  //#endregion
 }

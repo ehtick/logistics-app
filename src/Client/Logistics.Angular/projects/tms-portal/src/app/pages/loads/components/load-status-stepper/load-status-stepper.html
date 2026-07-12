@@ -1,12 +1,12 @@
 @if (isCancelled()) {
   <!-- Cancelled State -->
-  <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 text-center">
+  <div class="rounded-lg bg-red-50 p-4 text-center dark:bg-red-900/20">
     <div class="mb-2 flex items-center justify-center gap-2">
-      <i class="pi pi-times-circle text-danger text-2xl"></i>
+      <ui-icon name="circle-x" size="inherit" class="text-danger text-2xl" />
       <span class="text-danger text-lg font-semibold">Load Cancelled</span>
     </div>
     @if (cancelledAt()) {
-      <span class="text-muted text-sm">{{ cancelledAt() | date: "medium" }}</span>
+      <span class="text-muted-foreground text-sm">{{ cancelledAt() | date: "medium" }}</span>
     }
   </div>
 } @else {
@@ -25,13 +25,13 @@
           [class.bg-surface]="isStepPending(i)"
         >
           @if (isStepCompleted(i)) {
-            <i class="pi pi-check text-white"></i>
+            <ui-icon name="check" class="text-white" />
           } @else {
-            <i
-              class="pi {{ step.icon }}"
+            <ui-icon
+              [name]="step.icon"
               [class.text-white]="isStepCurrent(i)"
-              [class.text-muted]="isStepPending(i)"
-            ></i>
+              [class.text-muted-foreground]="isStepPending(i)"
+            />
           }
         </div>
 
@@ -42,14 +42,14 @@
           [class.dark:text-green-400]="isStepCompleted(i)"
           [class.text-blue-600]="isStepCurrent(i)"
           [class.dark:text-blue-400]="isStepCurrent(i)"
-          [class.text-muted]="isStepPending(i)"
+          [class.text-muted-foreground]="isStepPending(i)"
         >
           {{ step.label }}
         </span>
 
         <!-- Step Date -->
         @if (getStepDate(step.status); as date) {
-          <span class="text-muted mt-1 text-xs">
+          <span class="text-muted-foreground mt-1 text-xs">
             {{ date | date: "MMM d" }}
           </span>
         }

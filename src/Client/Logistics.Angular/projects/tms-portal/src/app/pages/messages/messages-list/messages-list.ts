@@ -2,13 +2,15 @@ import { DatePipe } from "@angular/common";
 import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import type { ConversationDto } from "@logistics/shared/api";
-import { Icon, Stack, Typography } from "@logistics/shared/components";
-import { AvatarModule } from "primeng/avatar";
-import { BadgeModule } from "primeng/badge";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { SkeletonModule } from "primeng/skeleton";
+import {
+  Card,
+  CountBadge,
+  Icon,
+  Skeleton,
+  Stack,
+  Typography,
+  UiButton,
+} from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import { ChatService } from "@/core/services";
 import { UserAvatar } from "@/shared/components";
@@ -19,19 +21,7 @@ import { MessagesStore } from "../store/messages.store";
   selector: "app-messages-list",
   templateUrl: "./messages-list.html",
   providers: [MessagesStore],
-  imports: [
-    CardModule,
-    ButtonModule,
-    AvatarModule,
-    BadgeModule,
-    DividerModule,
-    SkeletonModule,
-    DatePipe,
-    UserAvatar,
-    Icon,
-    Stack,
-    Typography,
-  ],
+  imports: [Card, CountBadge, DatePipe, Icon, Skeleton, Stack, Typography, UiButton, UserAvatar],
 })
 export class MessagesListComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);

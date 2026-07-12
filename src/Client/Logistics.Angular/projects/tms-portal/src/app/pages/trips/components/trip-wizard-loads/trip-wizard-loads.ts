@@ -1,17 +1,19 @@
 import { Component, computed, inject, input, model, viewChild } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
 import type { LoadDto } from "@logistics/shared/api";
-import { Icon, Stack, Typography } from "@logistics/shared/components";
 import { AddressPipe, CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { Dialog } from "primeng/dialog";
-import { IconField } from "primeng/iconfield";
-import { InputIcon } from "primeng/inputicon";
-import { InputTextModule } from "primeng/inputtext";
-import { Table, TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Icon,
+  SearchField,
+  Stack,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiSortHeader,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { LoadForm, LoadStatusTag, type LoadFormValue } from "@/shared/components";
 import { DistanceUnitPipe } from "@/shared/pipes";
 import { TripWizardStore, type TableRow } from "../../store/trip-wizard-store";
@@ -21,31 +23,29 @@ import { AttachLoadDialog } from "../attach-load-dialog/attach-load-dialog";
   selector: "app-trip-wizard-loads",
   templateUrl: "./trip-wizard-loads.html",
   imports: [
-    FormsModule,
-    ButtonModule,
-    TableModule,
-    TagModule,
-    TooltipModule,
     AddressPipe,
-    DistanceUnitPipe,
+    AttachLoadDialog,
+    Badge,
     CurrencyFormatPipe,
+    DistanceUnitPipe,
+    Icon,
+    LoadForm,
     LoadStatusTag,
     RouterLink,
-    InputTextModule,
-    IconField,
-    InputIcon,
-    Dialog,
-    LoadForm,
-    AttachLoadDialog,
-    Icon,
+    SearchField,
     Stack,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiSortHeader,
+    UiTooltip,
   ],
 })
 export class TripFormStepLoads {
   protected readonly store = inject(TripWizardStore);
 
-  protected readonly dataTable = viewChild<Table<TableRow>>("dataTable");
+  protected readonly dataTable = viewChild<UiDataTable<TableRow>>("dataTable");
   protected readonly tripLoadDialogVisible = model(false);
   protected readonly attachLoadDialogVisible = model(false);
 
@@ -129,7 +129,7 @@ export class TripFormStepLoads {
     this.store.nextStep();
   }
 
-  protected applyFilter(event: Event): void {
-    this.dataTable()?.filterGlobal((event.target as HTMLInputElement).value, "contains");
+  protected applyFilter(value: string): void {
+    this.dataTable()?.filterGlobal(value, "contains");
   }
 }

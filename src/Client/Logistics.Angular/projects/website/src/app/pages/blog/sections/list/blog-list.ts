@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { SkeletonModule } from "primeng/skeleton";
+import { Icon, Skeleton } from "@logistics/shared/ui";
 import { Avatar, FilterTabs, SectionContainer, SectionHeader } from "@/shared/components";
 import { ScrollAnimateDirective } from "@/shared/directives";
 import { getReadTime } from "@/shared/utils";
@@ -11,14 +11,15 @@ import { BlogStore } from "../../store/blog.store";
   selector: "web-blog-list",
   templateUrl: "./blog-list.html",
   imports: [
+    Avatar,
+    DatePipe,
+    FilterTabs,
+    Icon,
+    RouterLink,
+    ScrollAnimateDirective,
     SectionContainer,
     SectionHeader,
-    ScrollAnimateDirective,
-    Avatar,
-    FilterTabs,
-    SkeletonModule,
-    DatePipe,
-    RouterLink,
+    Skeleton,
   ],
 })
 export class BlogList {

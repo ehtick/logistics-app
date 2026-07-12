@@ -2,15 +2,13 @@ import { Component, inject, signal } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
 import { ToastService } from "@logistics/shared";
 import { Api, createTenant, type CreateTenantCommand } from "@logistics/shared/api";
-import { PageHeader } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
+import { Card, PageHeader } from "@logistics/shared/ui";
 import { TenantForm, type TenantFormValue } from "@/shared/components";
 
 @Component({
   selector: "adm-tenant-add",
   templateUrl: "./tenant-add.html",
-  imports: [CardModule, ButtonModule, RouterModule, TenantForm, PageHeader],
+  imports: [Card, PageHeader, RouterModule, TenantForm],
 })
 export class TenantAdd {
   private readonly api = inject(Api);

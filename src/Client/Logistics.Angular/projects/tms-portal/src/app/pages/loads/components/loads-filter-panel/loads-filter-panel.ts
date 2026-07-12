@@ -1,19 +1,20 @@
 import { Component, computed, input, output, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import type { CustomerDto, LoadStatus, LoadType, TruckDto } from "@logistics/shared/api";
 import { loadStatusOptions, loadTypeOptions } from "@logistics/shared/api/enums";
-import { Stack, Typography } from "@logistics/shared/components";
-import type { SelectItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { CheckboxModule } from "primeng/checkbox";
-import { MultiSelectModule } from "primeng/multiselect";
+import {
+  Card,
+  Stack,
+  Typography,
+  UiButton,
+  UiCheckboxField,
+  UiMultiSelectField,
+} from "@logistics/shared/ui";
 import {
   DateRangePicker,
-  FormField,
   SearchCustomer,
   SearchField,
   SearchTruck,
+  UiFormField,
 } from "@/shared/components";
 
 export interface LoadsFilterState {
@@ -29,18 +30,17 @@ export interface LoadsFilterState {
   selector: "app-loads-filter-panel",
   templateUrl: "./loads-filter-panel.html",
   imports: [
-    CardModule,
-    ButtonModule,
-    FormsModule,
-    MultiSelectModule,
-    CheckboxModule,
+    Card,
+    DateRangePicker,
+    SearchCustomer,
     SearchField,
     SearchTruck,
-    SearchCustomer,
-    DateRangePicker,
-    FormField,
     Stack,
     Typography,
+    UiButton,
+    UiCheckboxField,
+    UiFormField,
+    UiMultiSelectField,
   ],
 })
 export class LoadsFilterPanel {
@@ -57,8 +57,8 @@ export class LoadsFilterPanel {
   protected readonly dateRange = signal<Date[] | null>(null);
 
   // Filter options
-  protected readonly statusOptions: SelectItem[] = loadStatusOptions;
-  protected readonly typeOptions: SelectItem[] = loadTypeOptions;
+  protected readonly statusOptions = loadStatusOptions;
+  protected readonly typeOptions = loadTypeOptions;
 
   // Computed: count of active filters
   protected readonly activeFilterCount = computed(() => {

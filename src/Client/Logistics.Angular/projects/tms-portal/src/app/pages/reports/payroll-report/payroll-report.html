@@ -9,7 +9,7 @@
   <ui-grid container>
     @for (item of [1, 2, 3, 4]; track item) {
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-6">
-        <p-skeleton height="120px"></p-skeleton>
+        <ui-skeleton height="120px"></ui-skeleton>
       </ui-grid>
     }
   </ui-grid>
@@ -18,7 +18,7 @@
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-money-bill"
+        icon="banknote"
         label="Total Payroll"
         [value]="(data()?.totalPayroll || 0 | currencyFormat) ?? '$0'"
         color="blue"
@@ -27,7 +27,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-check-circle"
+        icon="circle-check"
         label="Total Paid"
         [value]="(data()?.totalPaid || 0 | currencyFormat) ?? '$0'"
         color="green"
@@ -36,7 +36,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-clock"
+        icon="clock"
         label="Outstanding"
         [value]="(data()?.totalOutstanding || 0 | currencyFormat) ?? '$0'"
         color="orange"
@@ -46,7 +46,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-users"
+        icon="users"
         label="Employees"
         [value]="(data()?.uniqueEmployees || 0).toString()"
         color="blue"
@@ -58,16 +58,16 @@
   <!-- Charts Row 1 -->
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Payroll Status Distribution" icon="pi-chart-pie" iconColor="blue">
+      <ui-dashboard-card title="Payroll Status Distribution" icon="chart-pie" iconColor="blue">
         @if (hasStatusChartData()) {
-          <p-chart
+          <ui-chart
             type="doughnut"
             [data]="statusChartData()"
             [options]="statusChartOptions"
             style="height: 300px"
           />
         } @else {
-          <ui-stack align="center" justify="center" class="text-muted h-75">
+          <ui-stack align="center" justify="center" class="text-muted-foreground h-75">
             <ui-typography variant="body" color="muted">No data available</ui-typography>
           </ui-stack>
         }
@@ -75,16 +75,16 @@
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Salary Type Breakdown" icon="pi-chart-bar" iconColor="blue">
+      <ui-dashboard-card title="Salary Type Breakdown" icon="chart-column" iconColor="blue">
         @if (hasSalaryTypeChartData()) {
-          <p-chart
+          <ui-chart
             type="bar"
             [data]="salaryTypeChartData()"
             [options]="salaryTypeChartOptions"
             style="height: 300px"
           />
         } @else {
-          <ui-stack align="center" justify="center" class="text-muted h-75">
+          <ui-stack align="center" justify="center" class="text-muted-foreground h-75">
             <ui-typography variant="body" color="muted">No data available</ui-typography>
           </ui-stack>
         }
@@ -94,16 +94,16 @@
 
   <!-- Payroll Trends Chart -->
   <div class="mb-6">
-    <ui-dashboard-card title="Payroll Trends" icon="pi-chart-line" iconColor="blue">
+    <ui-dashboard-card title="Payroll Trends" icon="chart-line" iconColor="blue">
       @if (hasTrendChartData()) {
-        <p-chart
+        <ui-chart
           type="line"
           [data]="trendChartData()"
           [options]="trendChartOptions"
           style="height: 400px"
         />
       } @else {
-        <ui-stack align="center" justify="center" class="text-muted h-100">
+        <ui-stack align="center" justify="center" class="text-muted-foreground h-100">
           <ui-typography variant="body" color="muted">No trend data available</ui-typography>
         </ui-stack>
       }
@@ -113,8 +113,8 @@
   <!-- Data Tables -->
   <ui-grid container spacing="2">
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Payroll Trends by Period" icon="pi-table" iconColor="blue">
-        <p-table [value]="data()?.payrollTrends || []" [paginator]="true" [rows]="5">
+      <ui-dashboard-card title="Payroll Trends by Period" icon="table" iconColor="blue">
+        <ui-data-table [value]="data()?.payrollTrends || []" [paginator]="true" [rows]="5">
           <ng-template #header>
             <tr>
               <th>Period</th>
@@ -139,18 +139,18 @@
               </td>
             </tr>
           </ng-template>
-          <ng-template #emptymessage>
+          <ng-template #empty>
             <tr>
-              <td colspan="4" class="text-muted text-center">No trend data available</td>
+              <td colspan="4" class="text-muted-foreground text-center">No trend data available</td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       </ui-dashboard-card>
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Top Employees by Earnings" icon="pi-users" iconColor="blue">
-        <p-table [value]="data()?.topEmployees || []" [paginator]="true" [rows]="5">
+      <ui-dashboard-card title="Top Employees by Earnings" icon="users" iconColor="blue">
+        <ui-data-table [value]="data()?.topEmployees || []" [paginator]="true" [rows]="5">
           <ng-template #header>
             <tr>
               <th>Employee</th>
@@ -191,20 +191,22 @@
               </td>
             </tr>
           </ng-template>
-          <ng-template #emptymessage>
+          <ng-template #empty>
             <tr>
-              <td colspan="4" class="text-muted text-center">No employee data available</td>
+              <td colspan="4" class="text-muted-foreground text-center">
+                No employee data available
+              </td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       </ui-dashboard-card>
     </ui-grid>
   </ui-grid>
 
   <!-- Salary Type Breakdown Table -->
   <div class="mb-6">
-    <ui-dashboard-card title="Salary Type Summary" icon="pi-list" iconColor="blue">
-      <p-table [value]="data()?.salaryTypeBreakdown || []">
+    <ui-dashboard-card title="Salary Type Summary" icon="list" iconColor="blue">
+      <ui-data-table [value]="data()?.salaryTypeBreakdown || []">
         <ng-template #header>
           <tr>
             <th>Salary Type</th>
@@ -235,12 +237,14 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template #emptymessage>
+        <ng-template #empty>
           <tr>
-            <td colspan="4" class="text-muted text-center">No salary type data available</td>
+            <td colspan="4" class="text-muted-foreground text-center">
+              No salary type data available
+            </td>
           </tr>
         </ng-template>
-      </p-table>
+      </ui-data-table>
     </ui-dashboard-card>
   </div>
 }

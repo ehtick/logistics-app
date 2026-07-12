@@ -5,46 +5,46 @@
         <div
           class="bg-warning/10 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
         >
-          <i class="pi pi-credit-card text-warning text-4xl"></i>
+          <ui-icon name="credit-card" size="inherit" class="text-warning text-4xl" />
         </div>
 
-        <h1 class="text-primary mb-2">Subscription Expired</h1>
-        <p class="text-secondary mb-6">
+        <h1 class="text-foreground mb-2">Subscription Expired</h1>
+        <p class="text-subtle-foreground mb-6">
           Your subscription is not active. Please renew it to continue using the platform.
         </p>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <p-button
-            icon="pi pi-refresh"
+          <ui-button
+            icon="refresh-cw"
             label="Renew Subscription"
             routerLink="/subscription/renew"
           />
-          <p-button icon="pi pi-arrow-left" label="Go Back" [outlined]="true" (click)="goBack()" />
+          <ui-button appearance="outlined" icon="arrow-left" label="Go Back" (click)="goBack()" />
         </div>
 
         <div class="border-subtle mt-4 border-t pt-4">
-          <p-button icon="pi pi-sign-out" label="Sign Out" [text]="true" (click)="logout()" />
+          <ui-button appearance="text" icon="log-out" label="Sign Out" (click)="logout()" />
         </div>
       } @else {
         <div
           class="bg-danger/10 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
         >
-          <i class="pi pi-lock text-danger text-4xl"></i>
+          <ui-icon name="lock" size="inherit" class="text-danger text-4xl" />
         </div>
 
-        <h1 class="text-primary mb-2">Access Denied</h1>
-        <p class="text-secondary mb-6">
+        <h1 class="text-foreground mb-2">Access Denied</h1>
+        <p class="text-subtle-foreground mb-6">
           You do not have permission to access this page. Please contact your administrator if you
           believe this is an error.
         </p>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <p-button icon="pi pi-home" label="Go to Dashboard" routerLink="/home" />
-          <p-button icon="pi pi-arrow-left" label="Go Back" [outlined]="true" (click)="goBack()" />
+          <ui-button icon="home" label="Go to Dashboard" routerLink="/home" />
+          <ui-button appearance="outlined" icon="arrow-left" label="Go Back" (click)="goBack()" />
         </div>
 
         <div class="border-subtle mt-4 border-t pt-4">
-          <p-button icon="pi pi-sign-out" label="Sign Out" [text]="true" (click)="logout()" />
+          <ui-button appearance="text" icon="log-out" label="Sign Out" (click)="logout()" />
         </div>
       }
     </div>

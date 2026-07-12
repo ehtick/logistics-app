@@ -1,30 +1,31 @@
 import { Component, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { Api, getPortalLoads, type PortalLoadDto } from "@logistics/shared/api";
-import { Icon, Stack, StatusBadge, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { IconFieldModule } from "primeng/iconfield";
-import { InputIconModule } from "primeng/inputicon";
-import { InputTextModule } from "primeng/inputtext";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule, type TableLazyLoadEvent } from "primeng/table";
+import type { ListLazyLoadEvent } from "@logistics/shared/stores";
+import {
+  Icon,
+  SearchField,
+  Stack,
+  StatusBadge,
+  Surface,
+  Typography,
+  UiButton,
+  UiDataTable,
+} from "@logistics/shared/ui";
 
 @Component({
   selector: "cp-shipments-list",
   templateUrl: "./shipments-list.html",
   imports: [
-    RouterLink,
-    TableModule,
-    ButtonModule,
-    IconFieldModule,
-    InputIconModule,
-    InputTextModule,
-    ProgressSpinnerModule,
     Icon,
+    RouterLink,
+    SearchField,
     Stack,
     StatusBadge,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
   ],
 })
 export class ShipmentsList {
@@ -57,7 +58,7 @@ export class ShipmentsList {
     }
   }
 
-  protected onLazyLoad(event: TableLazyLoadEvent): void {
+  protected onLazyLoad(event: ListLazyLoadEvent): void {
     this.currentPage = Math.floor((event.first ?? 0) / (event.rows ?? 10)) + 1;
     this.pageSize = event.rows ?? 10;
     this.loadData();

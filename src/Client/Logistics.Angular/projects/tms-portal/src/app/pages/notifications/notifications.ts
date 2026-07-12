@@ -1,6 +1,5 @@
 import { DatePipe } from "@angular/common";
 import { Component, computed, inject, signal, type OnDestroy, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { SearchField } from "@logistics/shared";
 import {
   Api,
@@ -8,16 +7,20 @@ import {
   updateNotification,
   type NotificationDto,
 } from "@logistics/shared/api";
-import { Icon, Stack, Typography } from "@logistics/shared/components";
 import { RelativeTimePipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { CheckboxModule } from "primeng/checkbox";
-import { DividerModule } from "primeng/divider";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { SelectButtonModule } from "primeng/selectbutton";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  Divider,
+  Icon,
+  Spinner,
+  Stack,
+  Typography,
+  UiButton,
+  UiCheckboxField,
+  UiToggleGroup,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { NotificationService, ToastService } from "@/core/services";
 
 type FilterType = "all" | "unread" | "read";
@@ -32,21 +35,20 @@ interface FilterOption {
   templateUrl: "./notifications.html",
   styleUrl: "./notifications.css",
   imports: [
-    CardModule,
-    ButtonModule,
-    DividerModule,
-    ProgressSpinnerModule,
-    TagModule,
-    RelativeTimePipe,
+    Badge,
+    Card,
     DatePipe,
-    SelectButtonModule,
-    CheckboxModule,
-    FormsModule,
-    TooltipModule,
-    SearchField,
+    Divider,
     Icon,
+    RelativeTimePipe,
+    SearchField,
+    Spinner,
     Stack,
     Typography,
+    UiButton,
+    UiCheckboxField,
+    UiToggleGroup,
+    UiTooltip,
   ],
 })
 export class NotificationsComponent implements OnInit, OnDestroy {

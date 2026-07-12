@@ -1,33 +1,49 @@
 import { Component, inject, model, signal } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { email, form, FormField, FormRoot, required } from "@angular/forms/signals";
 import { Api, createDemoRequest } from "@logistics/shared/api";
-import { FormField, PhoneField, ValidatedForm } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { SelectModule } from "primeng/select";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Icon,
+  PhoneField,
+  UiButton,
+  UiDialog,
+  UiFormField,
+  UiSelectField,
+  UiTextareaField,
+  UiTextField,
+  ValidatedForm,
+} from "@logistics/shared/ui";
+
+const EMPTY = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  company: "",
+  phone: "",
+  fleetSize: "",
+  message: "",
+};
 
 @Component({
   selector: "web-demo-dialog",
   templateUrl: "./demo-dialog.html",
   imports: [
-    ValidatedForm,
-    DialogModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    ButtonModule,
-    SelectModule,
-    TextareaModule,
-    PhoneField,
     FormField,
+    FormRoot,
+    Icon,
+    PhoneField,
+    UiButton,
+    UiDialog,
+    UiFormField,
+    UiSelectField,
+    UiTextareaField,
+    UiTextField,
+    ValidatedForm,
   ],
 })
 export class DemoDialog {
   private readonly api = inject(Api);
 
   public readonly visible = model(false);
-  protected readonly isLoading = signal(false);
   protected readonly isSubmitted = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -39,51 +55,49 @@ export class DemoDialog {
     { label: "100+ trucks", value: "100+" },
   ];
 
-  protected readonly form = new FormGroup({
-    firstName: new FormControl("", { validators: [Validators.required], nonNullable: true }),
-    lastName: new FormControl("", { validators: [Validators.required], nonNullable: true }),
-    email: new FormControl("", {
-      validators: [Validators.required, Validators.email],
-      nonNullable: true,
-    }),
-    company: new FormControl("", { validators: [Validators.required], nonNullable: true }),
-    phone: new FormControl("", { nonNullable: true }),
-    fleetSize: new FormControl("", { nonNullable: true }),
-    message: new FormControl("", { nonNullable: true }),
-  });
+  protected readonly model = signal({ ...EMPTY });
 
-  protected async onSubmit(): Promise<void> {
-    if (this.form.invalid || this.isLoading()) {
-      return;
-    }
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.firstName, { message: "First name is required." });
+      required(p.lastName, { message: "Last name is required." });
+      required(p.email, { message: "Email is required." });
+      email(p.email, { message: "Enter a valid email address." });
+      required(p.company, { message: "Company name is required." });
+    },
+    {
+      submission: {
+        action: async () => {
+          this.errorMessage.set(null);
 
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
+          try {
+            const value = this.model();
 
-    try {
-      const formValue = this.form.getRawValue();
+            await this.api.invoke(createDemoRequest, {
+              body: {
+                firstName: value.firstName,
+                lastName: value.lastName,
+                email: value.email,
+                company: value.company,
+                phone: value.phone,
+                fleetSize: value.fleetSize,
+                message: value.message,
+              },
+            });
 
-      await this.api.invoke(createDemoRequest, {
-        body: {
-          firstName: formValue.firstName,
-          lastName: formValue.lastName,
-          email: formValue.email,
-          company: formValue.company,
-          phone: formValue.phone,
-          fleetSize: formValue.fleetSize,
-          message: formValue.message,
+            this.isSubmitted.set(true);
+            this.form().reset({ ...EMPTY });
+          } catch (error) {
+            console.error("Error submitting demo request:", error);
+            this.errorMessage.set("Failed to submit your request. Please try again.");
+          }
+
+          return undefined;
         },
-      });
-
-      this.isSubmitted.set(true);
-      this.form.reset();
-    } catch (error) {
-      console.error("Error submitting demo request:", error);
-      this.errorMessage.set("Failed to submit your request. Please try again.");
-    } finally {
-      this.isLoading.set(false);
-    }
-  }
+      },
+    },
+  );
 
   protected closeDialog(): void {
     this.visible.set(false);

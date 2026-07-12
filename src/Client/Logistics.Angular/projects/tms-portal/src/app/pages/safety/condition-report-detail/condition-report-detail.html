@@ -1,19 +1,19 @@
 <ui-page-header title="Condition Report Details" backLink="/inspections/condition-reports">
   @if (report()) {
     <ui-stack direction="row" align="center" gap="3">
-      <p-tag
+      <ui-badge
         [value]="getTypeLabel(report()!.type ?? '')"
         [severity]="getTypeSeverity(report()!.type ?? '')"
       />
       <ui-typography variant="body" color="muted" tag="span">|</ui-typography>
-      <span class="text-secondary font-mono text-sm">{{ getCargoTypeLabel() }}</span>
+      <span class="text-subtle-foreground font-mono text-sm">{{ getCargoTypeLabel() }}</span>
     </ui-stack>
   }
 </ui-page-header>
 
 @if (isLoading()) {
   <div class="flex justify-center py-16">
-    <p-progress-spinner />
+    <ui-spinner />
   </div>
 } @else if (report()) {
   <ui-grid container spacing="6">
@@ -22,7 +22,7 @@
       <ui-stack gap="6">
         <!-- Vehicle Information (only for Vehicle loads) -->
         @if (isVehicleLoad()) {
-          <p-card>
+          <ui-card>
             <ng-template #header>
               <ui-stack direction="row" align="center" gap="2" class="p-4 pb-0">
                 <ui-icon name="car" color="primary" />
@@ -52,12 +52,12 @@
                 </ui-grid>
               }
             </ui-grid>
-          </p-card>
+          </ui-card>
         }
 
         <!-- Container Information (only for container loads) -->
         @if (isContainerLoad()) {
-          <p-card>
+          <ui-card>
             <ng-template #header>
               <ui-stack direction="row" align="center" gap="2" class="p-4 pb-0">
                 <ui-icon name="package" color="primary" />
@@ -79,27 +79,30 @@
                 <p class="font-mono text-sm">{{ report()!.sealNumber || "N/A" }}</p>
               </ui-grid>
             </ui-grid>
-          </p-card>
+          </ui-card>
         }
 
         <!-- Defects -->
-        <p-card>
+        <ui-card>
           <ng-template #header>
             <ui-stack direction="row" align="center" justify="between" class="p-4 pb-0">
               <ui-stack direction="row" align="center" gap="2">
-                <ui-icon name="exclamation-triangle" color="warning" />
+                <ui-icon name="triangle-alert" color="warning" />
                 <ui-typography variant="h5" tag="h3">Damage / Defects</ui-typography>
               </ui-stack>
               @if ((report()!.defects ?? []).length > 0) {
-                <p-tag [value]="(report()!.defects ?? []).length + ' defect(s)'" severity="danger" />
+                <ui-badge
+                  [value]="(report()!.defects ?? []).length + ' defect(s)'"
+                  severity="danger"
+                />
               } @else {
-                <p-tag value="No defects" severity="success" />
+                <ui-badge value="No defects" severity="success" />
               }
             </ui-stack>
           </ng-template>
 
           <app-condition-defects-list [defects]="report()!.defects ?? []" />
-        </p-card>
+        </ui-card>
       </ui-stack>
     </ui-grid>
 
@@ -107,7 +110,7 @@
     <ui-grid [size]="{ xs: 12, lg: 6 }">
       <ui-stack gap="6">
         <!-- Inspection Information -->
-        <p-card>
+        <ui-card>
           <ng-template #header>
             <ui-stack direction="row" align="center" gap="2" class="p-4 pb-0">
               <ui-icon name="clipboard" color="primary" />
@@ -121,7 +124,7 @@
                 <ui-typography variant="caption" color="muted" weight="medium" class="mb-1 block">
                   Inspection Type
                 </ui-typography>
-                <p-tag
+                <ui-badge
                   [value]="getTypeLabel(report()!.type ?? '')"
                   [severity]="getTypeSeverity(report()!.type ?? '')"
                 />
@@ -132,7 +135,7 @@
                 </ui-typography>
                 @if (report()!.hasSignature) {
                   <ui-stack direction="row" align="center" gap="1" class="text-success">
-                    <ui-icon name="check-circle" />
+                    <ui-icon name="circle-check" />
                     Captured
                   </ui-stack>
                 } @else {
@@ -143,7 +146,7 @@
               </ui-grid>
             </ui-grid>
 
-            <p-divider />
+            <ui-divider />
 
             <ui-grid container spacing="4">
               <ui-grid [size]="{ xs: 6 }">
@@ -176,7 +179,7 @@
                   <a
                     [href]="getGoogleMapsUrl(report()!.latitude, report()!.longitude)"
                     target="_blank"
-                    class="text-primary text-sm hover:underline"
+                    class="text-foreground text-sm hover:underline"
                   >
                     <ui-icon name="external-link" size="xs" />
                     Open in Maps
@@ -191,39 +194,39 @@
               </ui-typography>
               <a
                 [routerLink]="['/loads', report()!.loadId]"
-                class="text-primary text-sm hover:underline"
+                class="text-foreground text-sm hover:underline"
               >
                 {{ report()!.loadId }}
                 <ui-icon name="external-link" size="xs" />
               </a>
             </div>
           </ui-stack>
-        </p-card>
+        </ui-card>
 
         <!-- Notes -->
         @if (report()!.notes) {
-          <p-card>
+          <ui-card>
             <ng-template #header>
               <ui-stack direction="row" align="center" gap="2" class="p-4 pb-0">
-                <ui-icon name="file-edit" color="primary" />
+                <ui-icon name="file-pen" color="primary" />
                 <ui-typography variant="h5" tag="h3">Notes</ui-typography>
               </ui-stack>
             </ng-template>
 
-            <p class="text-secondary text-sm whitespace-pre-wrap">{{ report()!.notes }}</p>
-          </p-card>
+            <p class="text-subtle-foreground text-sm whitespace-pre-wrap">{{ report()!.notes }}</p>
+          </ui-card>
         }
 
         <!-- Photos -->
         @if (report()!.photos && (report()!.photos ?? []).length > 0) {
-          <p-card>
+          <ui-card>
             <ng-template #header>
               <ui-stack direction="row" align="center" justify="between" class="p-4 pb-0">
                 <ui-stack direction="row" align="center" gap="2">
                   <ui-icon name="images" color="primary" />
                   <ui-typography variant="h5" tag="h3">Photos</ui-typography>
                 </ui-stack>
-                <p-tag [value]="(report()!.photos ?? []).length + ' photo(s)'" severity="info" />
+                <ui-badge [value]="(report()!.photos ?? []).length + ' photo(s)'" severity="info" />
               </ui-stack>
             </ng-template>
 
@@ -244,44 +247,35 @@
                   <div
                     class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
                   >
-                    <ui-icon name="search-plus" size="xl" />
+                    <ui-icon name="zoom-in" size="xl" />
                   </div>
                 </div>
               }
             </div>
-          </p-card>
+          </ui-card>
         }
       </ui-stack>
     </ui-grid>
   </ui-grid>
 } @else {
   <ui-stack align="center" gap="4" class="py-16 text-center">
-    <ui-icon name="exclamation-circle" size="xl" color="muted" />
+    <ui-icon name="circle-alert" size="xl" color="muted" />
     <ui-typography variant="body" color="muted">Condition report not found</ui-typography>
-    <p-button
+    <ui-button
+      appearance="outlined"
       label="Back to List"
       [routerLink]="['/inspections/condition-reports']"
-      [outlined]="true"
       class="mt-4"
     />
   </ui-stack>
 }
 
 <!-- Photo Gallery Dialog -->
-<p-galleria
-  [value]="photoUrls()"
-  [(visible)]="showGallery"
+<ui-lightbox
+  [images]="photoUrls()"
+  [(open)]="showGallery"
   [(activeIndex)]="activeImageIndex"
   [circular]="true"
-  [fullScreen]="true"
-  [showItemNavigators]="true"
   [showThumbnails]="true"
-  [numVisible]="5"
->
-  <ng-template #item let-item>
-    <img [src]="item.itemImageSrc" [alt]="item.alt" class="max-h-[80vh] w-auto" />
-  </ng-template>
-  <ng-template #thumbnail let-item>
-    <img [src]="item.thumbnailImageSrc" [alt]="item.alt" class="h-16 w-16 object-cover" />
-  </ng-template>
-</p-galleria>
+  [showNavigators]="true"
+/>

@@ -1,24 +1,24 @@
-<p-dialog
+<ui-dialog
   header="Tracking Links"
-  [(visible)]="visible"
+  [(open)]="visible"
   [modal]="true"
-  [style]="{ width: '650px' }"
-  (onShow)="onShow()"
-  (onHide)="close()"
+  width="650px"
+  (opened)="onShow()"
+  (closed)="close()"
 >
   @if (isLoading()) {
     <div class="flex justify-center py-4">
-      <p-progress-spinner />
+      <ui-spinner />
     </div>
   } @else {
-    <p class="text-muted-color mb-4">
+    <p class="text-muted-foreground mb-4">
       Generate tracking links to share with customers so they can track this shipment without
       creating an account.
     </p>
 
     <div class="mb-4 flex justify-end">
-      <p-button
-        icon="pi pi-plus"
+      <ui-button
+        icon="plus"
         label="Generate New Link"
         (click)="generateLink()"
         [loading]="isGenerating()"
@@ -26,7 +26,7 @@
     </div>
 
     @if (trackingLinks().length > 0) {
-      <p-table [value]="trackingLinks()" styleClass="p-datatable-sm">
+      <ui-data-table [value]="trackingLinks()" styleClass="p-datatable-sm">
         <ng-template #header>
           <tr>
             <th>Created</th>
@@ -42,54 +42,57 @@
             <td>{{ link.expiresAt | date: "short" }}</td>
             <td>{{ link.accessCount }}</td>
             <td>
-              <p-tag [value]="getLinkStatusLabel(link)" [severity]="getLinkStatus(link)" />
+              <ui-badge [value]="getLinkStatusLabel(link)" [severity]="getLinkStatus(link)" />
             </td>
             <td class="text-right">
-              <p-button
-                icon="pi pi-envelope"
-                [text]="true"
+              <ui-button
+                appearance="text"
+                ariaLabel="Send by email"
+                icon="mail"
                 [rounded]="true"
                 (click)="openEmailDialog(link)"
-                pTooltip="Send by email"
+                uiTooltip="Send by email"
                 [disabled]="!link.isActive || link.isExpired"
               />
-              <p-button
-                icon="pi pi-copy"
-                [text]="true"
+              <ui-button
+                appearance="text"
+                ariaLabel="Copy link"
+                icon="copy"
                 [rounded]="true"
                 (click)="copyToClipboard(link.url)"
-                pTooltip="Copy link"
+                uiTooltip="Copy link"
                 [disabled]="!link.isActive || link.isExpired"
               />
-              <p-button
-                icon="pi pi-trash"
-                [text]="true"
+              <ui-button
+                intent="danger"
+                appearance="text"
+                ariaLabel="Revoke"
+                icon="trash"
                 [rounded]="true"
-                severity="danger"
                 (click)="revokeLink(link.id)"
-                pTooltip="Revoke"
+                uiTooltip="Revoke"
                 [disabled]="!link.isActive"
               />
             </td>
           </tr>
         </ng-template>
-        <ng-template #emptymessage>
+        <ng-template #empty>
           <tr>
-            <td colspan="5" class="text-muted-color py-4 text-center">
+            <td colspan="5" class="text-muted-foreground py-4 text-center">
               No tracking links generated yet
             </td>
           </tr>
         </ng-template>
-      </p-table>
+      </ui-data-table>
     } @else {
-      <div class="text-muted-color py-4 text-center">
-        <i class="pi pi-link mb-2 text-4xl"></i>
+      <div class="text-muted-foreground py-4 text-center">
+        <ui-icon name="link" size="inherit" class="mb-2 text-4xl" />
         <p>No tracking links generated yet</p>
         <p class="text-sm">Click "Generate New Link" to create a shareable tracking link</p>
       </div>
     }
   }
-</p-dialog>
+</ui-dialog>
 
 @if (selectedLinkId()) {
   <app-send-tracking-link-dialog

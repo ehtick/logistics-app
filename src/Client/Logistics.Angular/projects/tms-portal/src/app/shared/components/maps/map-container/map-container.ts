@@ -1,6 +1,7 @@
 import { Component, input, output } from "@angular/core";
 import { EmptyState, ErrorState } from "@logistics/shared";
 import type { AppError } from "@logistics/shared/errors";
+import { Icon, type IconName } from "@logistics/shared/ui";
 
 /**
  * Container component that wraps map components with loading, error, and empty state handling.
@@ -9,7 +10,7 @@ import type { AppError } from "@logistics/shared/errors";
 @Component({
   selector: "app-map-container",
   templateUrl: "./map-container.html",
-  imports: [EmptyState, ErrorState],
+  imports: [EmptyState, ErrorState, Icon],
 })
 export class MapContainer {
   /** Whether data is currently loading */
@@ -31,8 +32,8 @@ export class MapContainer {
   /** Message for empty state */
   public readonly emptyMessage = input("Location data is not available.");
 
-  /** Icon for empty state (PrimeNG icon name without 'pi pi-' prefix) */
-  public readonly emptyIcon = input("map");
+  /** Icon for the empty state. A typed lucide `IconName` — an unregistered name renders blank. */
+  public readonly emptyIcon = input<IconName>("map");
 
   /** Action button label for empty state */
   public readonly emptyActionLabel = input<string | null>(null);

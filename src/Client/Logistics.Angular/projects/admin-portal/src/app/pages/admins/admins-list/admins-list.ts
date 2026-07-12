@@ -1,6 +1,5 @@
 import { DatePipe } from "@angular/common";
 import { Component, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import {
   addAdmin,
   Api,
@@ -10,14 +9,20 @@ import {
   type InvitationDto,
   type UserDto,
 } from "@logistics/shared/api";
-import { DataContainer, PageHeader, SearchField } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  DataContainer,
+  PageHeader,
+  SearchField,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiSortHeader,
+  UiTextField,
+  UiTooltip,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { AdminInvitationsListStore } from "../store/admin-invitations-list.store";
 import { AdminsListStore } from "../store/admins-list.store";
@@ -27,18 +32,18 @@ import { AdminsListStore } from "../store/admins-list.store";
   templateUrl: "./admins-list.html",
   providers: [AdminsListStore, AdminInvitationsListStore],
   imports: [
-    FormsModule,
-    DatePipe,
-    ButtonModule,
-    CardModule,
-    TableModule,
-    DialogModule,
-    InputTextModule,
-    TagModule,
-    TooltipModule,
+    Badge,
+    Card,
     DataContainer,
+    DatePipe,
     PageHeader,
     SearchField,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiSortHeader,
+    UiTextField,
+    UiTooltip,
   ],
 })
 export class AdminsList {
@@ -60,7 +65,7 @@ export class AdminsList {
     return `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || "—";
   }
 
-  protected getRoleSeverity(role?: string | null): "danger" | "info" {
+  protected getRoleSeverity(role?: string | null): UiBadgeIntent {
     return role === "Super Admin" ? "danger" : "info";
   }
 
@@ -112,8 +117,8 @@ export class AdminsList {
     this.toast.confirm({
       header: "Revoke admin access",
       message: `Are you sure you want to revoke admin access from ${admin.email}?`,
-      icon: "pi pi-exclamation-triangle",
-      acceptButtonStyleClass: "p-button-danger",
+      icon: "warning",
+      severity: "danger",
       accept: async () => {
         try {
           await this.api.invoke(revokeAdmin, { userId: admin.id! });
@@ -143,8 +148,8 @@ export class AdminsList {
     this.toast.confirm({
       header: "Cancel invitation",
       message: `Cancel the admin invitation for ${invitation.email}?`,
-      icon: "pi pi-exclamation-triangle",
-      acceptButtonStyleClass: "p-button-danger",
+      icon: "warning",
+      severity: "danger",
       accept: async () => {
         try {
           await this.api.invoke(cancelAdminInvitation, { id });

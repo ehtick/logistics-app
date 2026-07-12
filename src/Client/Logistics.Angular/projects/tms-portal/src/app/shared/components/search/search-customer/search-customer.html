@@ -1,38 +1,33 @@
-<p-autocomplete
+<ui-autocomplete-field
   #autoComplete
   class="w-full"
-  inputStyleClass="w-full"
   placeholder="Type a customer name"
-  [minLength]="2"
+  [minQueryLength]="2"
   [delay]="300"
   optionLabel="name"
   [suggestions]="suggestedCustomers()"
-  [(ngModel)]="selectedCustomer"
+  [(value)]="value"
+  [disabled]="disabled()"
   (completeMethod)="searchCustomer($event)"
-  (onSelect)="changeSelectedCustomer($event)"
-  (onBlur)="markTouched()"
+  (touch)="touch.emit()"
 >
   <ng-template #empty>
     <div class="flex items-center justify-between gap-2 p-2">
-      <span class="text-muted text-sm">
-        No customers matching <b>"{{ lastQuery() }}"</b>
+      <span class="text-muted-foreground text-sm">
+        No customers matching
+        <b>"{{ lastQuery() }}"</b>
       </span>
 
-      <p-button
+      <ui-button
+        appearance="text"
+        size="sm"
         label="Add new customer"
-        size="small"
-        variant="text"
         (click)="openCreateCustomer(autoComplete)"
       />
     </div>
   </ng-template>
-</p-autocomplete>
+</ui-autocomplete-field>
 
-<p-dialog
-  header="Create Customer"
-  [modal]="true"
-  [(visible)]="customerDialogVisible"
-  [style]="{ width: '40rem' }"
->
+<ui-dialog header="Create Customer" [modal]="true" [(open)]="customerDialogVisible" width="40rem">
   <app-customer-form [mode]="'create'" (save)="handleCustomerCreated($event)" />
-</p-dialog>
+</ui-dialog>

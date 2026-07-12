@@ -1,12 +1,12 @@
 import { Component, computed, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
-import { ButtonModule } from "primeng/button";
+import { Icon, UiButton } from "@logistics/shared/ui";
 import { DemoDialogService } from "@/shared/services";
 
 @Component({
   selector: "web-navbar",
   templateUrl: "./navbar.html",
-  imports: [ButtonModule],
+  imports: [Icon, UiButton],
   host: {
     "(window:scroll)": "onScroll()",
   },

@@ -24,10 +24,17 @@
           },
           "defaultConfiguration": "production"
         },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "setupFiles": ["projects/shared/src/test-setup.ts"]
+          }
+        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/shared/**/*.ts", "projects/shared/**/*.html"]
+            "lintFilePatterns": ["projects/shared/**/*.ts", "projects/shared/**/*.html"],
+            "eslintConfig": "projects/shared/eslint.config.js"
           }
         }
       }
@@ -67,8 +74,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "4mb"
+                  "maximumWarning": "3.6mb",
+                  "maximumError": "3.77mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -88,7 +95,12 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "styles": [
+                "projects/tms-portal/src/styles.css",
+                "mapbox-gl/dist/mapbox-gl.css",
+                "projects/shared/src/styles/quill.css"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -111,13 +123,17 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
               "projects/tms-portal/src/**/*.ts",
               "projects/tms-portal/src/**/*.html"
-            ]
+            ],
+            "eslintConfig": "projects/tms-portal/eslint.config.js"
           }
         }
       }
@@ -157,8 +173,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1mb",
-                  "maximumError": "2mb"
+                  "maximumWarning": "1.07mb",
+                  "maximumError": "1.12mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -201,13 +217,17 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
               "projects/customer-portal/src/**/*.ts",
               "projects/customer-portal/src/**/*.html"
-            ]
+            ],
+            "eslintConfig": "projects/customer-portal/eslint.config.js"
           }
         }
       }
@@ -247,8 +267,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1mb",
-                  "maximumError": "2mb"
+                  "maximumWarning": "1.28mb",
+                  "maximumError": "1.34mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -291,13 +311,17 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
               "projects/admin-portal/src/**/*.ts",
               "projects/admin-portal/src/**/*.html"
-            ]
+            ],
+            "eslintConfig": "projects/admin-portal/eslint.config.js"
           }
         }
       }
@@ -339,8 +363,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1.5MB"
+                  "maximumWarning": "1.06mb",
+                  "maximumError": "1.11mb"
                 },
                 {
                   "type": "anyComponentStyle",

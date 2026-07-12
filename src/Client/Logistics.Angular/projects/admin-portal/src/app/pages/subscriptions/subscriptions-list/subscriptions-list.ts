@@ -7,15 +7,18 @@ import {
   deleteSubscription,
   type SubscriptionDto,
 } from "@logistics/shared/api";
-import { DataContainer, PageHeader, SearchField } from "@logistics/shared/components";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
-import { Menu, MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  DataContainer,
+  PageHeader,
+  SearchField,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { SubscriptionsListStore } from "../store/subscriptions-list.store";
 
 @Component({
@@ -23,17 +26,15 @@ import { SubscriptionsListStore } from "../store/subscriptions-list.store";
   templateUrl: "./subscriptions-list.html",
   providers: [SubscriptionsListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    RouterLink,
-    CardModule,
-    TableModule,
-    ConfirmDialogModule,
+    Badge,
+    Card,
     DataContainer,
     PageHeader,
+    RouterLink,
     SearchField,
-    TagModule,
-    MenuModule,
+    UiButton,
+    UiDataTable,
+    UiMenu,
   ],
 })
 export class SubscriptionsList {
@@ -42,25 +43,25 @@ export class SubscriptionsList {
   private readonly toastService = inject(ToastService);
   protected readonly store = inject(SubscriptionsListStore);
 
-  private readonly actionMenu = viewChild<Menu>("actionMenu");
+  private readonly actionMenu = viewChild<UiMenu>("actionMenu");
   private readonly selectedRow = signal<SubscriptionDto | null>(null);
 
-  protected readonly actionMenuItems = computed<MenuItem[]>(() => {
+  protected readonly actionMenuItems = computed<UiMenuItem[]>(() => {
     const sub = this.selectedRow();
-    const items: MenuItem[] = [];
+    const items: UiMenuItem[] = [];
 
     if (sub?.status === "active" || sub?.status === "trialing") {
       items.push({
         label: "Cancel Subscription",
-        icon: "pi pi-times-circle",
+        icon: "circle-x",
         command: () => this.confirmToCancel(sub!.id!),
       });
     }
 
     items.push({
       label: "Delete",
-      icon: "pi pi-trash",
-      styleClass: "text-red-600",
+      icon: "trash",
+      variant: "destructive",
       command: () => this.confirmToDelete(sub!.id!),
     });
 
@@ -85,8 +86,8 @@ export class SubscriptionsList {
       message:
         "Are you sure you want to cancel this subscription? The subscription will be cancelled at the end of the current billing period.",
       header: "Confirm Cancel",
-      icon: "pi pi-exclamation-triangle",
-      acceptButtonStyleClass: "p-button-warning",
+      icon: "warning",
+      severity: "warning",
       accept: () => this.cancelSub(id),
     });
   }
@@ -107,9 +108,7 @@ export class SubscriptionsList {
     this.store.removeItem(id);
   }
 
-  protected getStatusSeverity(
-    status?: string,
-  ): "success" | "secondary" | "info" | "warn" | "danger" | "contrast" {
+  protected getStatusSeverity(status?: string): UiBadgeIntent {
     switch (status) {
       case "active":
         return "success";

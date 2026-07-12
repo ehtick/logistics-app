@@ -1,30 +1,24 @@
-<p-drawer
+<ui-drawer
   [visible]="visible()"
   (visibleChange)="onVisibleChange($event)"
   position="left"
-  [modal]="true"
-  [closeOnEscape]="true"
-  [dismissible]="true"
-  [showCloseIcon]="true"
-  styleClass="mobile-nav-drawer"
+  width="300px"
 >
-  <ng-template #header>
-    <div class="mobile-nav-header">
-      @if (companyLogoUrl()) {
-        <img [src]="companyLogoUrl()" class="mobile-nav-logo" alt="Company logo" />
-      } @else {
-        <img src="images/logo.svg" class="mobile-nav-logo" alt="Logo" />
-      }
-      @if (companyName()) {
-        <h4 class="mobile-nav-company">{{ companyName() }}</h4>
-      }
-    </div>
-  </ng-template>
+  <div uiDrawerHeader class="mobile-nav-header">
+    @if (companyLogoUrl()) {
+      <img [src]="companyLogoUrl()" class="mobile-nav-logo" alt="Company logo" />
+    } @else {
+      <img src="images/logo.svg" class="mobile-nav-logo" alt="Logo" />
+    }
+    @if (companyName()) {
+      <h4 class="mobile-nav-company">{{ companyName() }}</h4>
+    }
+  </div>
 
   <nav class="mobile-nav-menu flex h-full flex-col">
     <!-- Search trigger -->
     <button class="mobile-search-trigger" (click)="openSearch()" type="button">
-      <i class="pi pi-search"></i>
+      <ui-icon name="search" />
       <span>Search...</span>
     </button>
 
@@ -53,49 +47,50 @@
       <!-- User profile button -->
       @if (userFullName()) {
         <button
-          class="text-secondary hover:bg-hover hover:text-primary flex w-full cursor-pointer items-center gap-3 rounded-md border-none bg-transparent px-1 py-2 text-left text-[0.9375rem] font-medium transition-all"
+          class="text-subtle-foreground hover:bg-hover hover:text-foreground flex w-full cursor-pointer items-center gap-3 rounded-md border-none bg-transparent px-1 py-2 text-left text-[0.9375rem] font-medium transition-all"
           (click)="mobileUserPopover.toggle($event)"
           type="button"
         >
           <div
-            class="bg-accent/12 border-accent/20 flex size-9 shrink-0 items-center justify-center rounded-full border"
+            class="bg-primary/12 border-accent/20 flex size-9 shrink-0 items-center justify-center rounded-full border"
           >
-            <i class="pi pi-user text-accent text-sm"></i>
+            <ui-icon name="user" size="inherit" class="text-primary text-sm" />
           </div>
           <div class="min-w-0 flex-1">
             <span class="block truncate text-sm font-medium">{{ userFullName() }}</span>
             @if (userRole()) {
               <span
-                class="text-accent block text-[0.6875rem] font-semibold tracking-wider uppercase"
-                >{{ userRole() }}</span
+                class="text-primary block text-[0.6875rem] font-semibold tracking-wider uppercase"
               >
+                {{ userRole() }}
+              </span>
             }
           </div>
-          <i class="pi pi-ellipsis-v text-muted text-xs"></i>
+          <ui-icon name="ellipsis-vertical" size="inherit" class="text-muted-foreground text-xs" />
         </button>
       }
     </div>
   </nav>
-</p-drawer>
+</ui-drawer>
 
 <!-- User profile popover -->
-<p-popover #mobileUserPopover appendTo="body">
+<ui-popover #mobileUserPopover>
   <div class="w-52">
     @if (userFullName()) {
       <div class="border-subtle border-b px-3.5 py-2.5">
-        <div class="text-primary text-sm font-semibold">{{ userFullName() }}</div>
+        <div class="text-foreground text-sm font-semibold">{{ userFullName() }}</div>
         @if (userRole()) {
-          <div class="text-accent text-[0.6875rem] font-medium">{{ userRole() }}</div>
+          <div class="text-primary text-[0.6875rem] font-medium">{{ userRole() }}</div>
         }
       </div>
     }
     <div class="p-1">
       <button
-        class="text-secondary hover:bg-hover hover:text-primary flex w-full cursor-pointer items-center gap-2.5 rounded-md border-none bg-transparent px-3 py-2 text-left text-[0.8125rem] font-medium transition-all"
+        class="text-subtle-foreground hover:bg-hover hover:text-foreground flex w-full cursor-pointer items-center gap-2.5 rounded-md border-none bg-transparent px-3 py-2 text-left text-[0.8125rem] font-medium transition-all"
         (click)="openAccountUrl(); mobileUserPopover.hide()"
         type="button"
       >
-        <i class="pi pi-user-edit text-muted w-5 text-center"></i>
+        <ui-icon name="user-pen" class="text-muted-foreground w-5 text-center" />
         <span>Manage Profile</span>
       </button>
       <button
@@ -103,9 +98,9 @@
         (click)="logout(); mobileUserPopover.hide()"
         type="button"
       >
-        <i class="pi pi-sign-out w-5 text-center"></i>
+        <ui-icon name="log-out" class="w-5 text-center" />
         <span>Sign Out</span>
       </button>
     </div>
   </div>
-</p-popover>
+</ui-popover>

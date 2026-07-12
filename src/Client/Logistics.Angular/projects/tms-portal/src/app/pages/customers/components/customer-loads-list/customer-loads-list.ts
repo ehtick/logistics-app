@@ -3,24 +3,23 @@ import { Component, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import type { LoadDto } from "@logistics/shared/api";
 import { AddressPipe, CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import { Icon, UiButton, UiDataTable, UiTooltip } from "@logistics/shared/ui";
 import { LoadStatusTag, LoadTypeTag } from "@/shared/components";
 
 @Component({
   selector: "app-customer-loads-list",
   templateUrl: "./customer-loads-list.html",
   imports: [
-    TableModule,
-    ButtonModule,
-    TooltipModule,
-    RouterLink,
+    AddressPipe,
     CurrencyFormatPipe,
     DatePipe,
-    AddressPipe,
+    Icon,
     LoadStatusTag,
     LoadTypeTag,
+    RouterLink,
+    UiButton,
+    UiDataTable,
+    UiTooltip,
   ],
 })
 export class CustomerLoadsList {

@@ -1,12 +1,12 @@
 import { Location } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { ButtonModule } from "primeng/button";
+import { Icon, UiButton } from "@logistics/shared/ui";
 
 @Component({
   selector: "app-not-found",
   templateUrl: "./not-found.html",
-  imports: [RouterLink, ButtonModule],
+  imports: [Icon, RouterLink, UiButton],
 })
 export class NotFoundComponent {
   private readonly location = inject(Location);

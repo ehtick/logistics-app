@@ -1,24 +1,27 @@
 import { CommonModule } from "@angular/common";
 import { Component, computed, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import type { InvoiceDto, InvoiceStatus } from "@logistics/shared/api";
 import { invoiceStatusOptions } from "@logistics/shared/api/enums";
-import { Grid, Stack, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe, DateFormatPipe } from "@logistics/shared/pipes";
-import type { SelectItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MultiSelectModule } from "primeng/multiselect";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Card,
+  Grid,
+  Stack,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiMultiSelectField,
+  UiSortHeader,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import {
   DataContainer,
   DateRangePicker,
-  FormField,
   InvoiceStatusTag,
   PageHeader,
   SearchField,
+  UiFormField,
 } from "@/shared/components";
 import { LoadInvoicesListStore } from "../store/load-invoices-list.store";
 
@@ -27,25 +30,25 @@ import { LoadInvoicesListStore } from "../store/load-invoices-list.store";
   templateUrl: "./load-invoices-list.html",
   providers: [LoadInvoicesListStore],
   imports: [
+    Card,
     CommonModule,
-    FormsModule,
-    TableModule,
-    CardModule,
-    RouterModule,
-    ButtonModule,
-    TooltipModule,
-    MultiSelectModule,
-    InvoiceStatusTag,
-    DataContainer,
-    DateRangePicker,
-    SearchField,
-    FormField,
     CurrencyFormatPipe,
+    DataContainer,
     DateFormatPipe,
-    PageHeader,
+    DateRangePicker,
     Grid,
+    InvoiceStatusTag,
+    PageHeader,
+    RouterModule,
+    SearchField,
     Stack,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiFormField,
+    UiMultiSelectField,
+    UiSortHeader,
+    UiTooltip,
   ],
 })
 export class LoadInvoicesList {
@@ -56,7 +59,7 @@ export class LoadInvoicesList {
   protected readonly dateRange = signal<Date[] | null>(null);
 
   // Filter options
-  protected readonly statusOptions: SelectItem[] = invoiceStatusOptions;
+  protected readonly statusOptions = invoiceStatusOptions;
 
   protected readonly activeFilterCount = computed(() => {
     let count = 0;

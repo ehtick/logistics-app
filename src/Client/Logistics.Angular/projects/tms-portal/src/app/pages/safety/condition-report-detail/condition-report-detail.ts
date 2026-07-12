@@ -2,14 +2,21 @@ import { CommonModule } from "@angular/common";
 import { Component, computed, inject, input, signal, type OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Api, getInspection, type ConditionReportDto } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Typography } from "@logistics/shared/components";
+import {
+  Badge,
+  Card,
+  Divider,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Typography,
+  UiButton,
+  UiLightbox,
+  type UiBadgeIntent,
+  type UiLightboxImage,
+} from "@logistics/shared/ui";
 import { isContainerLoadType } from "@logistics/shared/utils";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { GalleriaModule } from "primeng/galleria";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TagModule } from "primeng/tag";
 import { PageHeader } from "@/shared/components";
 import { ConditionDefectsList } from "@/shared/components/inspections";
 
@@ -17,20 +24,20 @@ import { ConditionDefectsList } from "@/shared/components/inspections";
   selector: "app-condition-report-detail",
   templateUrl: "./condition-report-detail.html",
   imports: [
+    Badge,
+    Card,
     CommonModule,
-    CardModule,
-    ButtonModule,
-    ProgressSpinnerModule,
-    RouterModule,
-    DividerModule,
-    TagModule,
-    GalleriaModule,
-    PageHeader,
     ConditionDefectsList,
+    Divider,
     Grid,
     Icon,
+    PageHeader,
+    RouterModule,
+    Spinner,
     Stack,
     Typography,
+    UiButton,
+    UiLightbox,
   ],
 })
 export class ConditionReportDetailPage implements OnInit {
@@ -46,17 +53,16 @@ export class ConditionReportDetailPage implements OnInit {
 
   public readonly isContainerLoad = computed(() => isContainerLoadType(this.report()?.loadType));
 
-  public readonly photoUrls = computed(() => {
+  public readonly photoUrls = computed<UiLightboxImage[]>(() => {
     const r = this.report();
     if (!r?.photos) {
       return [];
     }
 
     return r.photos.map((p) => ({
-      itemImageSrc: this.getPhotoUrl(p.blobPath),
-      thumbnailImageSrc: this.getPhotoUrl(p.blobPath),
+      src: this.getPhotoUrl(p.blobPath),
+      thumbnailSrc: this.getPhotoUrl(p.blobPath),
       alt: p.originalFileName || p.fileName || "Photo",
-      title: p.originalFileName || p.fileName || "Photo",
     }));
   });
 
@@ -80,7 +86,7 @@ export class ConditionReportDetailPage implements OnInit {
     }
   }
 
-  getTypeSeverity(type: string): "info" | "success" | "warn" | "danger" | "secondary" | "contrast" {
+  getTypeSeverity(type: string): UiBadgeIntent {
     switch (type) {
       case "Pickup":
         return "info";

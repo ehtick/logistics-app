@@ -1,11 +1,11 @@
 import { Component, computed, input } from "@angular/core";
-import { TooltipModule } from "primeng/tooltip";
 import type { LoadStatus } from "@logistics/shared/api";
+import { UiTooltip } from "@logistics/shared/ui";
 
 @Component({
   selector: "app-load-progress-bar",
   templateUrl: "./load-progress-bar.html",
-  imports: [TooltipModule],
+  imports: [UiTooltip],
 })
 export class LoadProgressBarComponent {
   readonly status = input.required<LoadStatus | undefined>();

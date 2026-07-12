@@ -1,9 +1,4 @@
-<p-drawer
-  [(visible)]="visible"
-  position="right"
-  [style]="{ width: '320px' }"
-  header="Conversation Details"
->
+<ui-drawer [(visible)]="visible" position="right" width="320px" header="Conversation Details">
   @if (conversation(); as conv) {
     <ui-stack gap="6">
       <!-- Conversation Info -->
@@ -35,11 +30,11 @@
             >
               <app-user-avatar [initials]="getInitials(participant.employeeName)" />
               <div class="min-w-0 flex-1">
-                <p class="text-primary truncate font-medium">
+                <p class="text-foreground truncate font-medium">
                   {{ participant.employeeName || "Unknown" }}
                 </p>
                 @if (participant.employeeId === currentUserId()) {
-                  <p class="text-muted text-xs">You</p>
+                  <p class="text-muted-foreground text-xs">You</p>
                 }
               </div>
             </ui-stack>
@@ -60,4 +55,4 @@
       }
     </ui-stack>
   }
-</p-drawer>
+</ui-drawer>

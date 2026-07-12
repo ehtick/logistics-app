@@ -1,30 +1,42 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { Component, forwardRef, inject, model, output, signal } from "@angular/core";
-import { FormsModule, NG_VALUE_ACCESSOR, type ControlValueAccessor } from "@angular/forms";
+import { Component, ElementRef, inject, input, model, output, signal } from "@angular/core";
+import type { FormValueControl } from "@angular/forms/signals";
+import { focusFirstControl } from "@logistics/shared";
 import { Api, getTerminals, type TerminalDto } from "@logistics/shared/api";
-import { AutoCompleteModule, type AutoCompleteSelectEvent } from "primeng/autocomplete";
+import { UiAutocompleteField } from "@logistics/shared/ui";
 
+/**
+ * Terminal search autocomplete.
+ *
+ * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ */
 @Component({
   selector: "app-search-terminal",
   templateUrl: "./search-terminal.html",
-  imports: [AutoCompleteModule, FormsModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SearchTerminal),
-      multi: true,
-    },
-  ],
+  imports: [UiAutocompleteField],
 })
-export class SearchTerminal implements ControlValueAccessor {
+export class SearchTerminal implements FormValueControl<TerminalDto | null> {
   private readonly api = inject(Api);
 
   protected readonly suggestedTerminals = signal<TerminalDto[]>([]);
   protected readonly lastQuery = signal<string>("");
 
-  public readonly selectedTerminal = model<TerminalDto | null>(null);
-  public readonly selectedTerminalChange = output<TerminalDto | null>();
+  /** The control's value. Required by `FormValueControl`. */
+  public readonly value = model<TerminalDto | null>(null);
+
+  /** Driven by the Reactive Forms / Signal Forms bridge. */
+  public readonly disabled = input<boolean>(false);
+
+  /** Raised on blur so the form can mark the field touched. */
+  public readonly touch = output<void>();
+
   public readonly placeholder = model<string>("Type a terminal code or name");
+
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  /** Signal Forms calls this via `FieldState.focusBoundControl()`. */
+  public focus(options?: FocusOptions): void {
+    focusFirstControl(this.host.nativeElement, options);
+  }
 
   protected async searchTerminal(event: { query: string }): Promise<void> {
     const q = event.query?.trim() ?? "";
@@ -40,38 +52,6 @@ export class SearchTerminal implements ControlValueAccessor {
       this.suggestedTerminals.set(result.items ?? []);
     } catch {
       this.suggestedTerminals.set([]);
-    }
-  }
-
-  protected changeSelectedTerminal(event: AutoCompleteSelectEvent): void {
-    this.selectedTerminalChange.emit(event.value);
-    this.onChange(event.value);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private onChange(value: TerminalDto | null): void {}
-  private onTouched(): void {}
-
-  /** Marks the control as touched so validation errors surface (on blur). */
-  protected markTouched(): void {
-    this.onTouched();
-  }
-
-  writeValue(value: TerminalDto | null): void {
-    this.selectedTerminal.set(value);
-  }
-
-  registerOnChange(fn: () => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.selectedTerminal.set(null);
     }
   }
 }

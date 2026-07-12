@@ -1,5 +1,5 @@
 import { Component, inject, signal } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { form, FormField } from "@angular/forms/signals";
 import {
   Api,
   deleteContactSubmission,
@@ -8,26 +8,28 @@ import {
   type ContactSubmissionDto,
   type ContactSubmissionStatus,
 } from "@logistics/shared/api";
+import type { SelectOption } from "@logistics/shared/models";
 import {
+  Badge,
+  Card,
   DataContainer,
-  FormField,
   Grid,
   PageHeader,
   SearchField,
   Stack,
   Surface,
   Typography,
-} from "@logistics/shared/components";
-import type { SelectOption } from "@logistics/shared/models";
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiFormField,
+  UiSelectField,
+  UiSortHeader,
+  UiTextareaField,
+  UiTooltip,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { DateUtils } from "@logistics/shared/utils";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { SelectModule } from "primeng/select";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TextareaModule } from "primeng/textarea";
-import { TooltipModule } from "primeng/tooltip";
 import { ToastService } from "@/core/services";
 import { ContactSubmissionsListStore } from "../store/contact-submissions-list.store";
 
@@ -36,23 +38,24 @@ import { ContactSubmissionsListStore } from "../store/contact-submissions-list.s
   templateUrl: "./contact-submissions-list.html",
   providers: [ContactSubmissionsListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
+    Badge,
+    Card,
     DataContainer,
-    PageHeader,
-    SearchField,
-    TagModule,
-    DialogModule,
-    SelectModule,
-    TextareaModule,
-    ReactiveFormsModule,
     FormField,
     Grid,
+    PageHeader,
+    SearchField,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiFormField,
+    UiSelectField,
+    UiSortHeader,
+    UiTextareaField,
+    UiTooltip,
   ],
 })
 export class ContactSubmissionsList {
@@ -63,10 +66,12 @@ export class ContactSubmissionsList {
   protected viewDialogVisible = signal(false);
   protected selectedSubmission = signal<ContactSubmissionDto | null>(null);
 
-  protected readonly form = new FormGroup({
-    status: new FormControl<ContactSubmissionStatus>("new", { nonNullable: true }),
-    notes: new FormControl<string>("", { nonNullable: true }),
+  protected readonly model = signal<{ status: ContactSubmissionStatus; notes: string }>({
+    status: "new",
+    notes: "",
   });
+
+  protected readonly form = form(this.model);
 
   protected readonly statusOptions: SelectOption<ContactSubmissionStatus>[] = [
     { label: "New", value: "new" },
@@ -81,7 +86,7 @@ export class ContactSubmissionsList {
 
   protected viewSubmission(submission: ContactSubmissionDto): void {
     this.selectedSubmission.set(submission);
-    this.form.patchValue({
+    this.model.set({
       status: submission.status ?? "new",
       notes: submission.notes ?? "",
     });
@@ -92,7 +97,7 @@ export class ContactSubmissionsList {
     const submission = this.selectedSubmission();
     if (!submission?.id) return;
 
-    const formValue = this.form.getRawValue();
+    const formValue = this.model();
     await this.api.invoke(updateContactSubmission, {
       id: submission.id,
       body: {
@@ -148,9 +153,7 @@ export class ContactSubmissionsList {
     }
   }
 
-  protected getStatusSeverity(
-    status?: ContactSubmissionStatus,
-  ): "success" | "secondary" | "info" | "warn" | "danger" | "contrast" {
+  protected getStatusSeverity(status?: ContactSubmissionStatus): UiBadgeIntent {
     switch (status) {
       case "new":
         return "info";

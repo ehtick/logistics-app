@@ -1,15 +1,16 @@
 import { Component, computed, inject, model, output, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Api, getUnassignedLoads, type LoadDto } from "@logistics/shared/api";
 import { AddressPipe, CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { Dialog } from "primeng/dialog";
-import { IconField } from "primeng/iconfield";
-import { InputIcon } from "primeng/inputicon";
-import { InputTextModule } from "primeng/inputtext";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
+import {
+  Icon,
+  SearchField,
+  Spinner,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiTableRowDirectives,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { LoadTypeTag } from "@/shared/components";
 import { DistanceUnitPipe } from "@/shared/pipes";
 
@@ -17,19 +18,18 @@ import { DistanceUnitPipe } from "@/shared/pipes";
   selector: "app-attach-load-dialog",
   templateUrl: "./attach-load-dialog.html",
   imports: [
-    FormsModule,
-    ButtonModule,
-    Dialog,
-    IconField,
-    InputIcon,
-    InputTextModule,
-    TableModule,
-    TagModule,
-    ProgressSpinnerModule,
     AddressPipe,
     CurrencyFormatPipe,
-    LoadTypeTag,
     DistanceUnitPipe,
+    Icon,
+    LoadTypeTag,
+    SearchField,
+    Spinner,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiTableRowDirectives,
+    UiTooltip,
   ],
 })
 export class AttachLoadDialog {

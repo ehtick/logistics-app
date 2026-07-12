@@ -8,34 +8,27 @@ import {
   type MaintenanceRecordDto,
   type MaintenanceScheduleDto,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import { Badge, Grid, Icon, Stack, Typography, UiButton, UiDataTable } from "@logistics/shared/ui";
 import { DashboardCard, PageHeader, StatCard } from "@/shared/components";
 
 @Component({
   selector: "app-maintenance-dashboard",
   templateUrl: "./maintenance-dashboard.html",
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    TagModule,
-    DatePipe,
+    Badge,
     CurrencyFormatPipe,
-    DecimalPipe,
-    PageHeader,
-    StatCard,
     DashboardCard,
+    DatePipe,
+    DecimalPipe,
     Grid,
     Icon,
+    PageHeader,
     Stack,
+    StatCard,
     Typography,
+    UiButton,
+    UiDataTable,
   ],
 })
 export class MaintenanceDashboardPage implements OnInit {

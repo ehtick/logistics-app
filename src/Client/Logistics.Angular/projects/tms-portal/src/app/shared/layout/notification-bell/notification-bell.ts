@@ -1,23 +1,18 @@
 import { CommonModule } from "@angular/common";
 import {
   Component,
-  type OnDestroy,
-  type OnInit,
   computed,
   inject,
   input,
   signal,
   viewChild,
+  type OnDestroy,
+  type OnInit,
 } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import type { NotificationDto } from "@logistics/shared/api";
 import { RelativeTimePipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { DividerModule } from "primeng/divider";
-import { OverlayBadgeModule } from "primeng/overlaybadge";
-import { Popover, PopoverModule } from "primeng/popover";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TooltipModule } from "primeng/tooltip";
+import { Divider, Icon, OverlayBadge, Spinner, UiPopover, UiTooltip } from "@logistics/shared/ui";
 import { NotificationService, ToastService } from "@/core/services";
 
 @Component({
@@ -26,21 +21,21 @@ import { NotificationService, ToastService } from "@/core/services";
   styleUrl: "./notification-bell.css",
   imports: [
     CommonModule,
-    ButtonModule,
-    PopoverModule,
-    OverlayBadgeModule,
-    TooltipModule,
-    DividerModule,
-    ProgressSpinnerModule,
+    Divider,
+    Icon,
+    OverlayBadge,
+    UiPopover,
     RelativeTimePipe,
     RouterLink,
+    Spinner,
+    UiTooltip,
   ],
 })
 export class NotificationBell implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly popover = viewChild<Popover>("popover");
+  protected readonly popover = viewChild<UiPopover>("popover");
 
   /** Whether the sidebar is expanded (shows label) or collapsed (icon only) */
   public readonly expanded = input(true);
@@ -49,8 +44,8 @@ export class NotificationBell implements OnInit, OnDestroy {
   protected readonly isLoading = signal(false);
   protected readonly selectedNotification = signal<NotificationDto | null>(null);
 
-  protected readonly unreadCount = computed(() =>
-    this.notifications().filter((n) => !n.isRead).length,
+  protected readonly unreadCount = computed(
+    () => this.notifications().filter((n) => !n.isRead).length,
   );
 
   protected readonly displayedNotifications = computed(() => this.notifications().slice(0, 8));

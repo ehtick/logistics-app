@@ -1,4 +1,4 @@
-<p-table
+<ui-data-table
   [value]="listings()"
   [paginator]="true"
   [rows]="10"
@@ -20,7 +20,7 @@
   <ng-template #body let-listing>
     <tr>
       <td>
-        <p-tag
+        <ui-badge
           [value]="listing.providerName"
           [severity]="getProviderSeverity(listing.providerType)"
         />
@@ -30,12 +30,12 @@
           <div class="font-medium">
             {{ listing.originAddress.city }}, {{ listing.originAddress.state }}
           </div>
-          <div class="text-muted text-sm">↓</div>
+          <div class="text-muted-foreground text-sm">↓</div>
           <div class="font-medium">
             {{ listing.destinationAddress.city }}, {{ listing.destinationAddress.state }}
           </div>
           @if (listing.distance) {
-            <div class="text-muted text-xs">{{ listing.distance | distanceUnit }}</div>
+            <div class="text-muted-foreground text-xs">{{ listing.distance | distanceUnit }}</div>
           }
         </div>
       </td>
@@ -43,7 +43,7 @@
         @if (listing.pickupDateStart) {
           <div class="text-sm">{{ listing.pickupDateStart | dateFormat: "shortDate" }}</div>
         } @else {
-          <span class="text-muted">-</span>
+          <span class="text-muted-foreground">-</span>
         }
       </td>
       <td>
@@ -53,7 +53,7 @@
         @if (listing.weight) {
           <span class="text-sm">{{ listing.weight | number }} lbs</span>
         } @else {
-          <span class="text-muted">-</span>
+          <span class="text-muted-foreground">-</span>
         }
       </td>
       <td>
@@ -65,15 +65,15 @@
         <span class="text-sm">{{ (listing.ratePerMile | currencyFormat) ?? "-" }}/mi</span>
       </td>
       <td>
-        <p-button
-          icon="pi pi-check"
+        <ui-button
+          size="sm"
+          icon="check"
           label="Book"
           [rounded]="true"
-          size="small"
-          (onClick)="book.emit(listing)"
-          pTooltip="Book this load"
+          (click)="book.emit(listing)"
+          uiTooltip="Book this load"
         />
       </td>
     </tr>
   </ng-template>
-</p-table>
+</ui-data-table>

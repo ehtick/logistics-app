@@ -1,5 +1,5 @@
 import { Component, inject, signal } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { form, FormField } from "@angular/forms/signals";
 import {
   Api,
   deleteDemoRequest,
@@ -8,24 +8,26 @@ import {
   type DemoRequestStatus,
 } from "@logistics/shared/api";
 import {
+  Badge,
+  Card,
   DataContainer,
-  FormField,
   Grid,
   PageHeader,
   SearchField,
   Stack,
   Surface,
   Typography,
-} from "@logistics/shared/components";
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiFormField,
+  UiSelectField,
+  UiSortHeader,
+  UiTextareaField,
+  UiTooltip,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { DateUtils } from "@logistics/shared/utils";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { SelectModule } from "primeng/select";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TextareaModule } from "primeng/textarea";
-import { TooltipModule } from "primeng/tooltip";
 import { ToastService } from "@/core/services";
 import { DemoRequestsListStore } from "../store/demo-requests-list.store";
 
@@ -39,23 +41,24 @@ interface StatusOption {
   templateUrl: "./demo-requests-list.html",
   providers: [DemoRequestsListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
+    Badge,
+    Card,
     DataContainer,
-    PageHeader,
-    SearchField,
-    TagModule,
-    DialogModule,
-    SelectModule,
-    TextareaModule,
-    ReactiveFormsModule,
     FormField,
     Grid,
+    PageHeader,
+    SearchField,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiFormField,
+    UiSelectField,
+    UiSortHeader,
+    UiTextareaField,
+    UiTooltip,
   ],
 })
 export class DemoRequestsList {
@@ -66,10 +69,12 @@ export class DemoRequestsList {
   protected viewDialogVisible = signal(false);
   protected selectedRequest = signal<DemoRequestDto | null>(null);
 
-  protected readonly form = new FormGroup({
-    status: new FormControl<DemoRequestStatus>("new", { nonNullable: true }),
-    notes: new FormControl<string>("", { nonNullable: true }),
+  protected readonly model = signal<{ status: DemoRequestStatus; notes: string }>({
+    status: "new",
+    notes: "",
   });
+
+  protected readonly form = form(this.model);
 
   protected readonly statusOptions: StatusOption[] = [
     { label: "New", value: "new" },
@@ -84,7 +89,7 @@ export class DemoRequestsList {
 
   protected viewRequest(request: DemoRequestDto): void {
     this.selectedRequest.set(request);
-    this.form.patchValue({
+    this.model.set({
       status: request.status ?? "new",
       notes: request.notes ?? "",
     });
@@ -95,7 +100,7 @@ export class DemoRequestsList {
     const request = this.selectedRequest();
     if (!request?.id) return;
 
-    const formValue = this.form.getRawValue();
+    const formValue = this.model();
     await this.api.invoke(updateDemoRequest, {
       id: request.id,
       body: {
@@ -134,9 +139,7 @@ export class DemoRequestsList {
     }
   }
 
-  protected getStatusSeverity(
-    status?: DemoRequestStatus,
-  ): "success" | "secondary" | "info" | "warn" | "danger" | "contrast" {
+  protected getStatusSeverity(status?: DemoRequestStatus): UiBadgeIntent {
     switch (status) {
       case "new":
         return "info";

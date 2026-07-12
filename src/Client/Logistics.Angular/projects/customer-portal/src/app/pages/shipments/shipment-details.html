@@ -1,11 +1,11 @@
 <ui-stack direction="row" align="center" gap="4" class="mb-6">
-  <p-button routerLink="/shipments" icon="pi pi-arrow-left" [text]="true" label="Back" />
+  <ui-button appearance="text" routerLink="/shipments" icon="arrow-left" label="Back" />
   <ui-typography variant="h2" tag="h1">Shipment Details</ui-typography>
 </ui-stack>
 
 @if (isLoading()) {
   <ui-stack direction="row" align="center" justify="center" class="py-12">
-    <p-progress-spinner strokeWidth="4" />
+    <ui-spinner />
   </ui-stack>
 } @else if (load()) {
   <ui-grid container spacing="6">
@@ -14,7 +14,7 @@
       <ui-surface variant="elevated" padding="md">
         <ui-stack direction="row" align="center" justify="between" class="mb-4">
           <ui-typography variant="h5" tag="h2">Load #{{ load()?.number }}</ui-typography>
-          <p-tag [value]="load()?.status" [severity]="getStatusSeverity(load()?.status)" />
+          <ui-badge [value]="load()?.status" [severity]="getStatusSeverity(load()?.status)" />
         </ui-stack>
 
         @if (load()?.name) {
@@ -25,9 +25,9 @@
 
         <ui-grid container spacing="6">
           <ui-grid [size]="{ xs: 12, md: 6 }">
-            <ui-typography variant="caption" color="muted" weight="medium" class="mb-2 block"
-              >Origin</ui-typography
-            >
+            <ui-typography variant="caption" color="muted" weight="medium" class="mb-2 block">
+              Origin
+            </ui-typography>
             <ui-typography variant="body" weight="medium">
               {{ formatAddress(load()?.originAddress) }}
             </ui-typography>
@@ -59,7 +59,7 @@
         <ui-typography variant="h5" tag="h2" class="mb-4">Documents</ui-typography>
 
         @if (documents().length > 0) {
-          <p-table [value]="documents()">
+          <ui-data-table [value]="documents()">
             <ng-template #header>
               <tr>
                 <th>Document</th>
@@ -74,11 +74,11 @@
                 <td>{{ doc.documentType }}</td>
                 <td>{{ doc.createdAt | dateFormat: "short" }}</td>
                 <td class="text-right">
-                  <p-button icon="pi pi-download" [text]="true" label="Download" />
+                  <ui-button appearance="text" icon="download" label="Download" />
                 </td>
               </tr>
             </ng-template>
-          </p-table>
+          </ui-data-table>
         } @else {
           <ui-stack align="center" gap="2" class="py-8">
             <ui-icon name="file" size="xl" color="muted" />
@@ -94,8 +94,8 @@
         <ui-typography variant="h5" tag="h2" class="mb-4">Driver Information</ui-typography>
         @if (load()?.driverName) {
           <ui-stack direction="row" align="center" gap="3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
-              <ui-icon name="user" class="text-gray-600" />
+            <div class="bg-muted flex h-10 w-10 items-center justify-center rounded-full">
+              <ui-icon name="user" class="text-muted-foreground" />
             </div>
             <div>
               <ui-typography variant="body" weight="medium">{{ load()?.driverName }}</ui-typography>
@@ -132,17 +132,17 @@
           }
           <ui-stack direction="row" justify="between">
             <ui-typography variant="body" color="muted">Documents</ui-typography>
-            <ui-typography variant="body" weight="medium">{{
-              load()?.documentCount || 0
-            }}</ui-typography>
+            <ui-typography variant="body" weight="medium">
+              {{ load()?.documentCount || 0 }}
+            </ui-typography>
           </ui-stack>
           <ui-stack direction="row" justify="between">
             <ui-typography variant="body" color="muted">Bill of Lading</ui-typography>
             <span class="font-medium">
               @if (load()?.hasBillOfLading) {
-                <ui-icon name="check" class="text-green-600" />
+                <ui-icon name="check" class="text-success" />
               } @else {
-                <ui-icon name="times" color="muted" />
+                <ui-icon name="x" color="muted" />
               }
             </span>
           </ui-stack>
@@ -150,9 +150,9 @@
             <ui-typography variant="body" color="muted">Proof of Delivery</ui-typography>
             <span class="font-medium">
               @if (load()?.hasProofOfDelivery) {
-                <ui-icon name="check" class="text-green-600" />
+                <ui-icon name="check" class="text-success" />
               } @else {
-                <ui-icon name="times" color="muted" />
+                <ui-icon name="x" color="muted" />
               }
             </span>
           </ui-stack>
@@ -162,7 +162,7 @@
   </ui-grid>
 } @else {
   <ui-stack align="center" gap="2" class="py-12">
-    <ui-icon name="exclamation-triangle" size="xl" class="text-yellow-500" />
+    <ui-icon name="triangle-alert" size="xl" class="text-warning" />
     <ui-typography variant="body" color="muted">Shipment not found</ui-typography>
   </ui-stack>
 }

@@ -1,19 +1,19 @@
 <header
   class="border-default bg-surface sticky top-0 z-40 flex items-center justify-between border-b px-4 py-3 md:hidden"
 >
-  <!-- Hamburger Menu Button -->
-  <p-button
-    [icon]="mobileMenuOpen() ? 'pi pi-times' : 'pi pi-bars'"
-    [text]="true"
+  <!-- Hamburger Menu Button. size="lg": ui-button sizes its glyph from the size variant (lg = 1.25rem). -->
+  <ui-button
+    [icon]="mobileMenuOpen() ? 'x' : 'menu'"
+    appearance="text"
+    size="lg"
     (click)="toggleMenu()"
-    aria-label="Toggle navigation menu"
-    styleClass="text-xl"
+    ariaLabel="Toggle navigation menu"
   />
 
   <!-- Logo and Page Title -->
   <a routerLink="/home" class="flex items-center gap-2">
     <img src="images/logo.svg" class="h-8 w-auto" alt="Logo" />
-    <span class="text-primary max-w-37.5 truncate text-lg font-semibold">
+    <span class="text-foreground max-w-37.5 truncate text-lg font-semibold">
       {{ pageTitle() }}
     </span>
   </a>

@@ -1,55 +1,42 @@
 <ui-page-header title="Add New Payroll" [centered]="true" backLink="/payroll/invoices" />
 
 <div class="mx-auto max-w-4xl">
-  <p-card>
-    <form [formGroup]="form" (ngSubmit)="submit()">
-
+  <ui-card>
+    <form [formRoot]="form">
       <!-- Mode Toggle -->
       <ui-form-field label="Creation Mode">
-        <p-select-button
+        <ui-toggle-group
           [options]="modeOptions"
-          [ngModel]="mode()"
-          [ngModelOptions]="{ standalone: true }"
-          (onChange)="onModeChange($event.value)"
-          optionLabel="label"
-          optionValue="value"
-        >
-          <ng-template #item let-item>
-            <ui-stack direction="row" align="center" gap="2">
-              <i [class]="item.icon"></i>
-              <span>{{ item.label }}</span>
-            </ui-stack>
-          </ng-template>
-        </p-select-button>
+          [value]="mode()"
+          (valueChange)="onModeChange($event)"
+        />
       </ui-form-field>
 
       <!-- Date Range Section -->
-      <ui-form-field label="Pay Period" [control]="form.controls.dateRange">
+      <ui-form-field label="Pay Period">
         <ui-date-range-picker
-          [dates]="form.value.dateRange ?? []"
+          [dates]="model().dateRange"
           (datesChange)="onDateRangeChange($event)"
         />
       </ui-form-field>
 
       <!-- Single Mode: Employee Selection -->
       @if (mode() === "single") {
-        <ui-form-field label="Employee" [control]="form.controls.employee" [required]="true">
-          <p-autocomplete
-            formControlName="employee"
-            class="w-full"
-            inputStyleClass="w-full"
+        <ui-form-field label="Employee" [required]="true">
+          <ui-autocomplete-field
+            [formField]="form.employee"
             placeholder="Type employee's name"
             optionLabel="fullName"
-            [minLength]="2"
+            [minQueryLength]="2"
             [suggestions]="suggestedEmployees()"
             (completeMethod)="searchEmployee($event)"
-            (onSelect)="handleAutoCompleteSelectEvent($event)"
+            (optionSelected)="handleAutoCompleteSelectEvent($event)"
           />
         </ui-form-field>
 
         <!-- Single Mode Preview -->
         @if (selectedEmployee() && previewPayrollInvoice()) {
-          <p-divider />
+          <ui-divider />
           <ui-typography variant="h4" tag="h4" color="primary" weight="semibold" class="mb-4">
             Preview Payroll Invoice
           </ui-typography>
@@ -58,23 +45,23 @@
             <ui-grid container spacing="4">
               <ui-grid [size]="6">
                 <ui-typography variant="caption" color="muted">Employee</ui-typography>
-                <p class="text-primary font-medium">{{ selectedEmployee()!.fullName }}</p>
+                <p class="text-foreground font-medium">{{ selectedEmployee()!.fullName }}</p>
               </ui-grid>
               <ui-grid [size]="6">
                 <ui-typography variant="caption" color="muted">Role</ui-typography>
-                <p class="text-primary font-medium">
+                <p class="text-foreground font-medium">
                   {{ selectedEmployee()!.role?.displayName ?? "N/A" }}
                 </p>
               </ui-grid>
               <ui-grid [size]="6">
                 <ui-typography variant="caption" color="muted">Salary Type</ui-typography>
-                <p class="text-primary font-medium">
+                <p class="text-foreground font-medium">
                   {{ getSalaryTypeDesc(selectedEmployee()!.salaryType) }}
                 </p>
               </ui-grid>
               <ui-grid [size]="6">
                 <ui-typography variant="caption" color="muted">Rate</ui-typography>
-                <p class="text-primary font-medium">
+                <p class="text-foreground font-medium">
                   @if (selectedEmployee()!.salaryType === "share_of_gross") {
                     {{ selectedEmployee()!.salary | percent }}
                   } @else {
@@ -95,16 +82,16 @@
         }
 
         <ui-stack direction="row" gap="2">
-          <p-button
+          <ui-button
             type="submit"
-            icon="pi pi-plus"
+            icon="plus"
             label="Create Payroll"
-            [loading]="isLoading()"
-            [disabled]="!form.valid || previewPayrollInvoice()?.total?.amount === 0"
+            [loading]="form().submitting()"
+            [disabled]="previewPayrollInvoice()?.total?.amount === 0"
           />
-          <p-button
+          <ui-button
             type="button"
-            icon="pi pi-arrow-left"
+            icon="arrow-left"
             label="Back to list"
             [routerLink]="['/payroll/invoices']"
           />
@@ -114,24 +101,22 @@
       <!-- Bulk Mode: Multiple Employees -->
       @if (mode() === "bulk") {
         <ui-form-field label="Select Employees">
-          <p-multi-select
+          <ui-multiselect-field
             [options]="allEmployees()"
-            [ngModel]="selectedEmployees()"
-            [ngModelOptions]="{ standalone: true }"
-            (ngModelChange)="onSelectedEmployeesChange($event)"
+            [value]="selectedEmployees()"
+            (selectionChange)="onSelectedEmployeesChange($event)"
             optionLabel="fullName"
+            filterBy="fullName"
             placeholder="Select employees"
             [filter]="true"
-            filterPlaceHolder="Search employees..."
             [showClear]="true"
             display="chip"
-            class="w-full"
           />
         </ui-form-field>
 
         <!-- Bulk Preview Table -->
         @if (bulkPreviews().length > 0) {
-          <p-divider />
+          <ui-divider />
           <ui-stack direction="row" align="center" justify="between" class="mb-4">
             <ui-typography variant="h4" tag="h4" color="primary" weight="semibold">
               Preview ({{ bulkPreviews().length }} employees)
@@ -144,7 +129,7 @@
             </div>
           </ui-stack>
 
-          <p-table
+          <ui-data-table
             [value]="bulkPreviews()"
             [tableStyle]="{ 'min-width': '50rem' }"
             [scrollable]="true"
@@ -165,7 +150,7 @@
                 <td>{{ getSalaryTypeDesc(item.employee.salaryType) }}</td>
                 <td class="text-right">
                   @if (item.loading) {
-                    <i class="pi pi-spin pi-spinner"></i>
+                    <ui-icon name="loader-circle" spin />
                   } @else if (item.error) {
                     <span class="text-danger">Error</span>
                   } @else {
@@ -174,39 +159,39 @@
                 </td>
                 <td class="text-center">
                   @if (item.loading) {
-                    <i class="pi pi-spin pi-spinner text-primary"></i>
+                    <ui-icon name="loader-circle" spin class="text-foreground" />
                   } @else if (item.error) {
-                    <i class="pi pi-times-circle text-danger" [pTooltip]="item.error"></i>
+                    <ui-icon name="circle-x" class="text-danger" [uiTooltip]="item.error" />
                   } @else {
-                    <i class="pi pi-check-circle text-success"></i>
+                    <ui-icon name="circle-check" class="text-success" />
                   }
                 </td>
               </tr>
             </ng-template>
-            <ng-template #emptymessage>
+            <ng-template #empty>
               <tr>
-                <td colspan="5" class="text-muted text-center">No employees selected</td>
+                <td colspan="5" class="text-muted-foreground text-center">No employees selected</td>
               </tr>
             </ng-template>
-          </p-table>
+          </ui-data-table>
         }
 
         <ui-stack direction="row" gap="2" class="mt-6">
-          <p-button
+          <ui-button
             type="submit"
-            icon="pi pi-plus"
+            icon="plus"
             [label]="'Create ' + selectedEmployees().length + ' Payroll(s)'"
-            [loading]="isBulkCreating()"
+            [loading]="form().submitting()"
             [disabled]="isBulkCreateDisabled()"
           />
-          <p-button
+          <ui-button
             type="button"
-            icon="pi pi-arrow-left"
+            icon="arrow-left"
             label="Back to list"
             [routerLink]="['/payroll/invoices']"
           />
         </ui-stack>
       }
     </form>
-  </p-card>
+  </ui-card>
 </div>

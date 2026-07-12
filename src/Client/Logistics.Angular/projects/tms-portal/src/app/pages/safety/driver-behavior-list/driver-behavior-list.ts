@@ -1,27 +1,30 @@
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { Component, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import {
   Api,
   reviewDriverBehaviorEvent,
   type DriverBehaviorEventDto,
   type DriverBehaviorEventType,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { MenuModule } from "primeng/menu";
-import { MultiSelectModule } from "primeng/multiselect";
-import { SelectModule } from "primeng/select";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TextareaModule } from "primeng/textarea";
-import { ToggleSwitchModule } from "primeng/toggleswitch";
+import {
+  Badge,
+  Card,
+  Grid,
+  Icon,
+  Stack,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiMultiSelectField,
+  UiSelectField,
+  UiSortHeader,
+  UiTextareaField,
+  UiToggleField,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { DataContainer, PageHeader, SearchField } from "@/shared/components";
-import type { TagSeverity } from "@/shared/types";
 import { DriverBehaviorListStore } from "../store";
 
 const eventTypeOptions = [
@@ -51,27 +54,25 @@ const reviewStatusOptions = [
   templateUrl: "./driver-behavior-list.html",
   providers: [DriverBehaviorListStore],
   imports: [
-    FormsModule,
+    Badge,
+    Card,
+    DataContainer,
     DatePipe,
     DecimalPipe,
-    ButtonModule,
-    CardModule,
-    DialogModule,
-    InputTextModule,
-    MenuModule,
-    MultiSelectModule,
-    SelectModule,
-    TableModule,
-    TagModule,
-    TextareaModule,
-    ToggleSwitchModule,
-    DataContainer,
-    PageHeader,
-    SearchField,
     Grid,
     Icon,
+    PageHeader,
+    SearchField,
     Stack,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiMultiSelectField,
+    UiSelectField,
+    UiSortHeader,
+    UiTextareaField,
+    UiToggleField,
   ],
 })
 export class DriverBehaviorListPage {
@@ -82,17 +83,17 @@ export class DriverBehaviorListPage {
   // Filters
   protected readonly eventTypeOptions = eventTypeOptions;
   protected readonly reviewStatusOptions = reviewStatusOptions;
-  protected selectedEventTypes: string[] = [];
-  protected selectedReviewStatus = "all";
+  protected readonly selectedEventTypes = signal<string[]>([]);
+  protected readonly selectedReviewStatus = signal<string | null>("all");
 
   // Review dialog
   protected readonly showReviewDialog = signal(false);
   protected readonly selectedEvent = signal<DriverBehaviorEventDto | null>(null);
   protected readonly isReviewing = signal(false);
-  protected reviewNotes = "";
-  protected isDismissed = false;
+  protected readonly reviewNotes = signal("");
+  protected readonly isDismissed = signal(false);
 
-  protected getEventTypeSeverity(eventType: DriverBehaviorEventType): TagSeverity {
+  protected getEventTypeSeverity(eventType: DriverBehaviorEventType): UiBadgeIntent {
     switch (eventType) {
       case "speeding":
         return "warn";
@@ -116,12 +117,12 @@ export class DriverBehaviorListPage {
   protected onFilterChange(): void {
     const filters: Record<string, unknown> = {};
 
-    if (this.selectedEventTypes.length === 1) {
-      filters["EventType"] = this.selectedEventTypes[0];
+    if (this.selectedEventTypes().length === 1) {
+      filters["EventType"] = this.selectedEventTypes()[0];
     }
 
-    if (this.selectedReviewStatus !== "all") {
-      filters["IsReviewed"] = this.selectedReviewStatus === "reviewed";
+    if (this.selectedReviewStatus() !== "all") {
+      filters["IsReviewed"] = this.selectedReviewStatus() === "reviewed";
     }
 
     this.store.setFilters(filters);
@@ -133,16 +134,16 @@ export class DriverBehaviorListPage {
 
   protected openReviewDialog(event: DriverBehaviorEventDto): void {
     this.selectedEvent.set(event);
-    this.reviewNotes = event.reviewNotes ?? "";
-    this.isDismissed = event.isDismissed ?? false;
+    this.reviewNotes.set(event.reviewNotes ?? "");
+    this.isDismissed.set(event.isDismissed ?? false);
     this.showReviewDialog.set(true);
   }
 
   protected closeReviewDialog(): void {
     this.showReviewDialog.set(false);
     this.selectedEvent.set(null);
-    this.reviewNotes = "";
-    this.isDismissed = false;
+    this.reviewNotes.set("");
+    this.isDismissed.set(false);
   }
 
   protected async submitReview(): Promise<void> {
@@ -155,16 +156,16 @@ export class DriverBehaviorListPage {
         id: event.id,
         body: {
           id: event.id,
-          reviewNotes: this.reviewNotes || undefined,
-          isDismissed: this.isDismissed,
+          reviewNotes: this.reviewNotes() || undefined,
+          isDismissed: this.isDismissed(),
         },
       });
 
       // Optimistically update the item in the store
       this.store.updateItem(event.id, {
         isReviewed: true,
-        isDismissed: this.isDismissed,
-        reviewNotes: this.reviewNotes || undefined,
+        isDismissed: this.isDismissed(),
+        reviewNotes: this.reviewNotes() || undefined,
       });
 
       this.toastService.showSuccess("Event reviewed successfully");

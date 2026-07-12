@@ -5,24 +5,28 @@
       <ui-stack direction="row" align="center" justify="between" wrap gap="4">
         <div>
           <ui-stack direction="row" align="center" gap="3">
-            <ui-typography variant="h2" tag="h2" class="m-0">{{ subscription()!.plan?.name }} Plan</ui-typography>
+            <ui-typography variant="h2" tag="h2" class="m-0">
+              {{ subscription()!.plan?.name }} Plan
+            </ui-typography>
             @if (subscription()!.plan?.tier) {
-              <p-tag
+              <ui-badge
                 [severity]="Labels.planTierSeverity(subscription()!.plan!.tier!)"
                 [value]="Labels.planTierLabel(subscription()!.plan!.tier!)"
               />
             }
-            <p-tag [severity]="getSubStatusSeverity()">{{ getSubStatusLabel() }}</p-tag>
+            <ui-badge [severity]="getSubStatusSeverity()">{{ getSubStatusLabel() }}</ui-badge>
             @if (subscription()!.cancelAtPeriodEnd) {
-              <p-tag severity="warn">Cancels at period end</p-tag>
+              <ui-badge severity="warn">Cancels at period end</ui-badge>
             }
           </ui-stack>
-          <ui-typography variant="body-sm" color="muted" class="mt-1 mb-0">{{ subscription()!.plan?.description }}</ui-typography>
+          <ui-typography variant="body-sm" color="muted" class="mt-1 mb-0">
+            {{ subscription()!.plan?.description }}
+          </ui-typography>
         </div>
         <div class="text-right">
           <div class="text-3xl font-bold">
             {{ calcTotalSubscriptionCost() | currency }}
-            <span class="text-muted text-base font-normal">/mo</span>
+            <span class="text-muted-foreground text-base font-normal">/mo</span>
           </div>
         </div>
       </ui-stack>
@@ -31,26 +35,28 @@
     <ui-grid container spacing="6">
       <!-- Pricing Breakdown -->
       <ui-grid [size]="{ xs: 12, md: 8 }">
-        <p-card>
+        <ui-card>
           <ng-template #header>
             <div class="p-4 pb-0">
-              <ui-typography variant="h3" tag="h3" weight="semibold" class="m-0">Pricing Breakdown</ui-typography>
+              <ui-typography variant="h3" tag="h3" weight="semibold" class="m-0">
+                Pricing Breakdown
+              </ui-typography>
             </div>
           </ng-template>
 
           <ui-stack gap="3">
             <ui-stack direction="row" align="center" justify="between">
-              <span class="text-muted">Base monthly fee</span>
+              <span class="text-muted-foreground">Base monthly fee</span>
               <span class="font-medium">{{ subscription()!.plan?.price | currency }}</span>
             </ui-stack>
             <ui-stack direction="row" align="center" justify="between">
-              <span class="text-muted">Per truck fee</span>
+              <span class="text-muted-foreground">Per truck fee</span>
               <span class="font-medium">
                 {{ subscription()!.plan?.perTruckPrice | currency }} / truck
               </span>
             </ui-stack>
             <ui-stack direction="row" align="center" justify="between">
-              <span class="text-muted">Active trucks</span>
+              <span class="text-muted-foreground">Active trucks</span>
               <span class="font-medium">{{ truckCount() }}</span>
             </ui-stack>
             <div class="border-default border-t pt-3">
@@ -62,63 +68,65 @@
               </ui-stack>
             </div>
           </ui-stack>
-        </p-card>
+        </ui-card>
       </ui-grid>
 
       <!-- Quick Actions -->
       <ui-grid [size]="{ xs: 12, md: 4 }">
-        <p-card>
+        <ui-card>
           <ng-template #header>
             <div class="p-4 pb-0">
-              <ui-typography variant="h3" tag="h3" weight="semibold" class="m-0">Actions</ui-typography>
+              <ui-typography variant="h3" tag="h3" weight="semibold" class="m-0">
+                Actions
+              </ui-typography>
             </div>
           </ng-template>
 
           <ui-stack gap="2">
-            <p-button
+            <ui-button
+              appearance="outlined"
+              block
               [routerLink]="'/subscription/plans'"
               label="Change Plan"
-              icon="pi pi-sync"
-              styleClass="w-full"
-              [outlined]="true"
+              icon="refresh-cw"
             />
-            <p-button
+            <ui-button
+              intent="secondary"
+              block
               label="Manage Billing"
-              icon="pi pi-external-link"
-              styleClass="w-full"
-              severity="secondary"
+              icon="external-link"
               [disabled]="isLoading()"
               [loading]="isLoading()"
               (click)="openBillingPortal()"
             />
 
             @if (isCancelledOrPending()) {
-              <p-button
+              <ui-button
+                intent="success"
+                block
                 label="Resume Subscription"
-                icon="pi pi-refresh"
-                styleClass="w-full"
-                severity="success"
+                icon="refresh-cw"
                 [routerLink]="'/subscription/renew'"
               />
             } @else {
-              <p-button
+              <ui-button
+                intent="danger"
+                appearance="outlined"
+                block
                 label="Cancel Subscription"
-                icon="pi pi-times"
-                severity="danger"
-                styleClass="w-full"
-                [outlined]="true"
+                icon="x"
                 [disabled]="isLoading()"
                 (click)="confirmCancelSubscription()"
               />
             }
           </ui-stack>
-        </p-card>
+        </ui-card>
       </ui-grid>
     </ui-grid>
   </div>
 } @else {
   <ui-stack align="center" gap="4" class="py-8">
-    <p-card class="w-full max-w-lg text-center">
+    <ui-card class="w-full max-w-lg text-center">
       <ui-stack align="center" gap="4">
         <ui-icon name="credit-card" size="xl" color="muted" />
         <ui-typography variant="h2" tag="h2" class="m-0">No Active Subscription</ui-typography>
@@ -126,12 +134,8 @@
           Your company does not have an active subscription. Choose a plan to get started and unlock
           all features.
         </ui-typography>
-        <p-button
-          [routerLink]="'/subscription/plans'"
-          label="View Plans"
-          icon="pi pi-shopping-cart"
-        />
+        <ui-button [routerLink]="'/subscription/plans'" label="View Plans" icon="shopping-cart" />
       </ui-stack>
-    </p-card>
+    </ui-card>
   </ui-stack>
 }

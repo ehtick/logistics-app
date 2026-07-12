@@ -9,10 +9,17 @@ import {
   type TerminalType,
 } from "@logistics/shared/api";
 import { terminalTypeOptions } from "@logistics/shared/api/enums";
-import { Container, Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
+import {
+  Card,
+  Container,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { PageHeader } from "@/shared/components";
 
@@ -20,18 +27,18 @@ import { PageHeader } from "@/shared/components";
   selector: "app-terminal-details",
   templateUrl: "./terminal-details.html",
   imports: [
+    Card,
+    Container,
     DatePipe,
-    RouterLink,
-    ButtonModule,
-    CardModule,
-    ProgressSpinnerModule,
-    PageHeader,
     Grid,
     Icon,
+    PageHeader,
+    RouterLink,
+    Spinner,
     Stack,
     Surface,
     Typography,
-    Container,
+    UiButton,
   ],
 })
 export class TerminalDetails implements OnInit {
@@ -65,10 +72,10 @@ export class TerminalDetails implements OnInit {
     this.toast.confirm({
       header: "Delete Terminal",
       message: "Are you sure you want to delete this terminal? This action cannot be undone.",
-      icon: "pi pi-exclamation-triangle",
+      icon: "warning",
       acceptLabel: "Delete",
       rejectLabel: "Cancel",
-      acceptButtonStyleClass: "p-button-danger",
+      severity: "danger",
       accept: async () => {
         this.isDeleting.set(true);
         try {

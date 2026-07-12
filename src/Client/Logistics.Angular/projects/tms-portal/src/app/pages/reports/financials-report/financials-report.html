@@ -9,7 +9,7 @@
   <ui-grid container>
     @for (item of [1, 2, 3, 4]; track item) {
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-6">
-        <p-skeleton height="120px"></p-skeleton>
+        <ui-skeleton height="120px"></ui-skeleton>
       </ui-grid>
     }
   </ui-grid>
@@ -18,7 +18,7 @@
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-file-export"
+        icon="file-output"
         label="Total Invoiced"
         [value]="(data()?.totalInvoiced || 0 | currencyFormat) ?? '$0'"
         color="blue"
@@ -29,7 +29,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-check-circle"
+        icon="circle-check"
         label="Total Paid"
         [value]="(data()?.totalPaid || 0 | currencyFormat) ?? '$0'"
         color="green"
@@ -40,7 +40,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-clock"
+        icon="clock"
         label="Outstanding"
         [value]="(data()?.totalDue || 0 | currencyFormat) ?? '$0'"
         color="orange"
@@ -50,7 +50,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-percentage"
+        icon="percent"
         label="Collection Rate"
         [value]="(data()?.collectionRate || 0 | number: '1.1-1') + '%'"
         color="blue"
@@ -62,7 +62,7 @@
 
   <!-- Financial Metrics -->
   <div class="mb-6">
-    <ui-dashboard-card title="Financial Metrics" icon="pi-chart-line" iconColor="blue">
+    <ui-dashboard-card title="Financial Metrics" icon="chart-line" iconColor="blue">
       <ui-grid container spacing="1">
         @for (metric of data()?.financialMetrics || []; track metric.metric) {
           <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
@@ -70,10 +70,9 @@
               <div class="grow">
                 <ui-stack direction="row" align="center" gap="2" class="mb-1">
                   <ui-typography variant="h6" class="mb-0">{{ metric.metric }}</ui-typography>
-                  <p-tag
+                  <ui-badge
                     [value]="metric.category ?? ''"
                     [severity]="getCategorySeverity(metric.category)"
-                    class="p-tag-sm"
                   />
                 </ui-stack>
                 <ui-typography variant="h5" class="mb-0">
@@ -81,7 +80,7 @@
                 </ui-typography>
               </div>
               <div class="shrink-0">
-                <p-tag
+                <ui-badge
                   [value]="((metric.trend ?? 0) >= 0 ? '+' : '') + (metric.trend ?? 0) + '%'"
                   [severity]="getMetricSeverity(metric.trend)"
                 />
@@ -96,8 +95,8 @@
   <!-- Charts Row 1 -->
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Invoice Status Distribution" icon="pi-chart-pie" iconColor="blue">
-        <p-chart
+      <ui-dashboard-card title="Invoice Status Distribution" icon="chart-pie" iconColor="blue">
+        <ui-chart
           type="pie"
           [data]="invoiceStatusChartData()"
           [options]="invoiceStatusChartOptions"
@@ -107,8 +106,8 @@
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Financial Metrics" icon="pi-chart-bar" iconColor="blue">
-        <p-chart
+      <ui-dashboard-card title="Financial Metrics" icon="chart-column" iconColor="blue">
+        <ui-chart
           type="bar"
           [data]="financialMetricsChartData()"
           [options]="financialMetricsChartOptions"
@@ -120,8 +119,8 @@
 
   <!-- Revenue Trends Chart -->
   <div class="mb-6">
-    <ui-dashboard-card title="Revenue & Profit Trends" icon="pi-chart-line" iconColor="blue">
-      <p-chart
+    <ui-dashboard-card title="Revenue & Profit Trends" icon="chart-line" iconColor="blue">
+      <ui-chart
         type="line"
         [data]="revenueTrendChartData()"
         [options]="revenueTrendChartOptions"
@@ -133,8 +132,8 @@
   <!-- Data Tables -->
   <ui-grid container spacing="2">
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Payment Trends" icon="pi-table" iconColor="blue">
-        <p-table [value]="data()?.paymentTrends || []" [paginator]="true" [rows]="5">
+      <ui-dashboard-card title="Payment Trends" icon="table" iconColor="blue">
+        <ui-data-table [value]="data()?.paymentTrends || []" [paginator]="true" [rows]="5">
           <ng-template #header>
             <tr>
               <th>Period</th>
@@ -155,13 +154,13 @@
               </td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       </ui-dashboard-card>
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Top Customers" icon="pi-users" iconColor="blue">
-        <p-table [value]="data()?.topCustomers || []" [paginator]="true" [rows]="5">
+      <ui-dashboard-card title="Top Customers" icon="users" iconColor="blue">
+        <ui-data-table [value]="data()?.topCustomers || []" [paginator]="true" [rows]="5">
           <ng-template #header>
             <tr>
               <th>Customer</th>
@@ -189,7 +188,7 @@
               </td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       </ui-dashboard-card>
     </ui-grid>
   </ui-grid>

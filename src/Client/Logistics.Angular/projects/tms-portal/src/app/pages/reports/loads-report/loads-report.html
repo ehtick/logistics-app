@@ -10,7 +10,7 @@
   <ui-grid container>
     @for (item of [1, 2, 3, 4]; track item) {
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-6">
-        <p-skeleton height="120px"></p-skeleton>
+        <ui-skeleton height="120px"></ui-skeleton>
       </ui-grid>
     }
   </ui-grid>
@@ -19,7 +19,7 @@
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-server"
+        icon="server"
         label="Total Loads"
         [value]="(data()?.totalLoads || 0 | number) ?? '0'"
         color="blue"
@@ -28,7 +28,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-dollar"
+        icon="dollar-sign"
         label="Total Revenue"
         [value]="(data()?.totalRevenue || 0 | currencyFormat) ?? '$0'"
         color="green"
@@ -37,7 +37,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-map"
+        icon="map"
         label="Total Distance"
         [value]="(data()?.totalDistance || 0 | number: '1.0-0') + ' ' + distanceUnitLabel"
         color="blue"
@@ -46,7 +46,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-times-circle"
+        icon="circle-x"
         label="Cancellation Rate"
         [value]="(data()?.cancellationRate || 0 | number: '1.1-1') + '%'"
         color="orange"
@@ -56,7 +56,7 @@
 
   <!-- Performance Metrics -->
   <div class="mb-6">
-    <ui-dashboard-card title="Performance Metrics" icon="pi-chart-line" iconColor="blue">
+    <ui-dashboard-card title="Performance Metrics" icon="chart-line" iconColor="blue">
       <ui-grid container spacing="1">
         @for (metric of data()?.performanceMetrics || []; track metric.metric) {
           <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
@@ -68,7 +68,7 @@
                 </ui-typography>
               </div>
               <div class="shrink-0">
-                <p-tag
+                <ui-badge
                   [value]="((metric.trend ?? 0) >= 0 ? '+' : '') + (metric.trend ?? 0) + '%'"
                   [severity]="(metric.trend ?? 0) >= 0 ? 'success' : 'danger'"
                 />
@@ -83,14 +83,14 @@
   <!-- Charts Row 1 -->
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Loads by Status" icon="pi-chart-pie" iconColor="blue">
-        <p-chart type="pie" [data]="chartData()" [options]="pieOptions" style="height: 300px" />
+      <ui-dashboard-card title="Loads by Status" icon="chart-pie" iconColor="blue">
+        <ui-chart type="pie" [data]="chartData()" [options]="pieOptions" style="height: 300px" />
       </ui-dashboard-card>
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Revenue by Load Type" icon="pi-chart-bar" iconColor="blue">
-        <p-chart
+      <ui-dashboard-card title="Revenue by Load Type" icon="chart-column" iconColor="blue">
+        <ui-chart
           type="bar"
           [data]="typeChartData()"
           [options]="typeChartOptions"
@@ -102,8 +102,8 @@
 
   <!-- Trends Chart -->
   <div class="mb-6">
-    <ui-dashboard-card title="Load Trends Over Time" icon="pi-chart-line" iconColor="blue">
-      <p-chart
+    <ui-dashboard-card title="Load Trends Over Time" icon="chart-line" iconColor="blue">
+      <ui-chart
         type="line"
         [data]="trendChartData()"
         [options]="trendChartOptions"
@@ -114,8 +114,8 @@
 
   <!-- Performance Chart -->
   <div class="mb-6">
-    <ui-dashboard-card title="Performance Metrics" icon="pi-chart-bar" iconColor="blue">
-      <p-chart
+    <ui-dashboard-card title="Performance Metrics" icon="chart-column" iconColor="blue">
+      <ui-chart
         type="bar"
         [data]="performanceChartData()"
         [options]="performanceChartOptions"
@@ -127,8 +127,8 @@
   <!-- Data Tables -->
   <ui-grid container spacing="2">
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Status Breakdown" icon="pi-table" iconColor="blue">
-        <p-table [value]="data()?.statusBreakdown || []" [paginator]="true" [rows]="5">
+      <ui-dashboard-card title="Status Breakdown" icon="table" iconColor="blue">
+        <ui-data-table [value]="data()?.statusBreakdown || []" [paginator]="true" [rows]="5">
           <ng-template #header>
             <tr>
               <th>Status</th>
@@ -147,13 +147,13 @@
               <td>{{ (item.count / (data()?.totalLoads ?? 1)) * 100 | number: "1.1-1" }}%</td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       </ui-dashboard-card>
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Top Customers" icon="pi-users" iconColor="blue">
-        <p-table [value]="data()?.topCustomers || []" [paginator]="true" [rows]="5">
+      <ui-dashboard-card title="Top Customers" icon="users" iconColor="blue">
+        <ui-data-table [value]="data()?.topCustomers || []" [paginator]="true" [rows]="5">
           <ng-template #header>
             <tr>
               <th>Customer</th>
@@ -170,7 +170,7 @@
               <td>{{ customer.averageDistance | number: "1.0-0" }} {{ distanceUnitLabel }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       </ui-dashboard-card>
     </ui-grid>
   </ui-grid>

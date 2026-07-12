@@ -1,6 +1,5 @@
 import { DatePipe } from "@angular/common";
 import { Component, inject, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import {
   Api,
   createApiKey,
@@ -9,30 +8,33 @@ import {
   type ApiKeyCreatedDto,
   type ApiKeyDto,
 } from "@logistics/shared/api";
-import { ButtonModule } from "primeng/button";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { MessageModule } from "primeng/message";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Alert,
+  Icon,
+  Spinner,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiTextField,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
-import { FormField } from "@/shared/components";
+import { UiFormField } from "@/shared/components";
 
 @Component({
   selector: "app-api-keys-table",
   templateUrl: "./api-keys-table.html",
   imports: [
-    FormsModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    MessageModule,
-    TableModule,
-    TooltipModule,
-    FormField,
+    Alert,
     DatePipe,
-    ProgressSpinnerModule,
+    Icon,
+    Spinner,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiFormField,
+    UiTextField,
+    UiTooltip,
   ],
 })
 export class ApiKeysTable implements OnInit {

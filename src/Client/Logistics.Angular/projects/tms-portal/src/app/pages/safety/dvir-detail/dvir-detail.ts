@@ -1,6 +1,5 @@
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { Component, computed, inject, input, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import {
   Api,
@@ -11,38 +10,41 @@ import {
   type DvirStatus,
   type DvirType,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TagModule } from "primeng/tag";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Badge,
+  Card,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  UiButton,
+  UiDialog,
+  UiTextareaField,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import { ToastService } from "@/core/services";
 import { PageHeader } from "@/shared/components";
-import type { TagSeverity } from "@/shared/types";
 import { DvirDefectsList } from "../_components/dvir-defects-list/dvir-defects-list";
 
 @Component({
   selector: "app-dvir-detail",
   templateUrl: "./dvir-detail.html",
   imports: [
+    Badge,
+    Card,
     DatePipe,
     DecimalPipe,
-    FormsModule,
-    ButtonModule,
-    CardModule,
-    DialogModule,
-    TextareaModule,
-    ProgressSpinnerModule,
-    TagModule,
-    RouterLink,
-    PageHeader,
     DvirDefectsList,
     Grid,
     Icon,
+    PageHeader,
+    RouterLink,
+    Spinner,
     Stack,
+    UiButton,
+    UiDialog,
+    UiTextareaField,
   ],
 })
 export class DvirDetailPage implements OnInit {
@@ -107,7 +109,7 @@ export class DvirDetailPage implements OnInit {
     }
   }
 
-  protected getStatusSeverity(status: DvirStatus | undefined): TagSeverity {
+  protected getStatusSeverity(status: DvirStatus | undefined): UiBadgeIntent {
     switch (status) {
       case "cleared":
         return "success";
@@ -145,7 +147,7 @@ export class DvirDetailPage implements OnInit {
     }
   }
 
-  protected getTypeSeverity(type: DvirType | undefined): TagSeverity {
+  protected getTypeSeverity(type: DvirType | undefined): UiBadgeIntent {
     return type === "pre_trip" ? "info" : "secondary";
   }
 

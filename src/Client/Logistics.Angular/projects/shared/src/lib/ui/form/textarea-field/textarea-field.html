@@ -1,0 +1,16 @@
+<textarea
+  hlmTextarea
+  class="w-full"
+  [id]="id()"
+  [attr.name]="name() || null"
+  [rows]="rows()"
+  [value]="value()"
+  [disabled]="disabled()"
+  [readOnly]="readonly()"
+  [required]="required()"
+  [placeholder]="placeholder()"
+  [attr.maxlength]="maxlength()"
+  [attr.aria-invalid]="showInvalid() ? 'true' : null"
+  (input)="onInput($event)"
+  (blur)="touch.emit()"
+></textarea>

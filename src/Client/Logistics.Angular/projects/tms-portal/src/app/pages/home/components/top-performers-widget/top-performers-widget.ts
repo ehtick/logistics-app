@@ -2,14 +2,19 @@ import { Component, computed, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CurrencyFormatPipe } from "@logistics/shared";
 import type { TopTruckDto } from "@logistics/shared/api";
-import { Icon, Stack, Typography } from "@logistics/shared/components";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { ProgressBarModule } from "primeng/progressbar";
-import { SkeletonModule } from "primeng/skeleton";
+import {
+  Card,
+  Divider,
+  Icon,
+  Progress,
+  Skeleton,
+  Stack,
+  Typography,
+  type IconName,
+} from "@logistics/shared/ui";
 
 interface RankIcon {
-  name: string;
+  name: IconName;
   /** Inline color value to inherit through the wrapper, since these tones aren't in IconColor enum. */
   color: string;
 }
@@ -18,13 +23,13 @@ interface RankIcon {
   selector: "app-top-performers-widget",
   templateUrl: "./top-performers-widget.html",
   imports: [
-    CardModule,
-    DividerModule,
-    RouterLink,
-    SkeletonModule,
-    ProgressBarModule,
+    Card,
     CurrencyFormatPipe,
+    Divider,
     Icon,
+    Progress,
+    RouterLink,
+    Skeleton,
     Stack,
     Typography,
   ],
@@ -47,11 +52,11 @@ export class TopPerformersWidgetComponent {
   protected getRankIcon(index: number): RankIcon {
     switch (index) {
       case 0:
-        return { name: "star-fill", color: "#eab308" }; // gold
+        return { name: "star", color: "#eab308" }; // gold
       case 1:
-        return { name: "star-fill", color: "var(--text-muted)" }; // silver
+        return { name: "star", color: "var(--text-muted)" }; // silver
       case 2:
-        return { name: "star-fill", color: "#b45309" }; // bronze
+        return { name: "star", color: "#b45309" }; // bronze
       default:
         return { name: "star", color: "var(--border-default)" };
     }

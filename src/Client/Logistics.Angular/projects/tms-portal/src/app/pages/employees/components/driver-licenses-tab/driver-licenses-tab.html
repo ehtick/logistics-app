@@ -1,9 +1,9 @@
 <ui-stack direction="row" align="center" justify="between" class="mb-4">
   <ui-typography variant="h5" tag="h3" class="m-0">Driver licenses</ui-typography>
-  <p-button label="Add license" icon="pi pi-plus" size="small" (click)="openCreateDialog()" />
+  <ui-button size="sm" label="Add license" icon="plus" (click)="openCreateDialog()" />
 </ui-stack>
 
-<p-table [value]="rows()" [loading]="isLoading()" [scrollable]="true" scrollHeight="500px">
+<ui-data-table [value]="rows()" [loading]="isLoading()" [scrollable]="true" scrollHeight="500px">
   <ng-template #header>
     <tr>
       <th>Class</th>
@@ -23,40 +23,42 @@
       <td>
         {{ row.license.issuingCountry }}
         @if (row.license.issuingRegion) {
-          <span class="text-muted text-xs">/ {{ row.license.issuingRegion }}</span>
+          <span class="text-muted-foreground text-xs">/ {{ row.license.issuingRegion }}</span>
         }
       </td>
       <td>
         @if (row.endorsementLabels.length) {
           <ui-stack direction="row" gap="1" class="flex-wrap">
             @for (label of row.endorsementLabels; track label) {
-              <p-chip [label]="label" styleClass="text-xs" />
+              <ui-badge severity="secondary" rounded size="sm" [value]="label" />
             }
           </ui-stack>
         } @else {
-          <span class="text-muted text-sm">—</span>
+          <span class="text-muted-foreground text-sm">—</span>
         }
       </td>
       <td>{{ row.license.expiresAt | date: "mediumDate" }}</td>
       <td>
-        <p-tag [value]="row.expiryLabel" [severity]="row.expirySeverity" />
+        <ui-badge [value]="row.expiryLabel" [severity]="row.expirySeverity" />
       </td>
       <td>
         <ui-stack direction="row" gap="1">
-          <p-button
-            icon="pi pi-pencil"
-            severity="secondary"
-            [text]="true"
+          <ui-button
+            intent="secondary"
+            appearance="text"
+            size="sm"
+            ariaLabel="Edit license"
+            icon="pencil"
             [rounded]="true"
-            size="small"
             (click)="openEditDialog(row.license)"
           />
-          <p-button
-            icon="pi pi-trash"
-            severity="danger"
-            [text]="true"
+          <ui-button
+            intent="danger"
+            appearance="text"
+            size="sm"
+            ariaLabel="Delete license"
+            icon="trash"
             [rounded]="true"
-            size="small"
             (click)="onDelete(row.license)"
           />
         </ui-stack>
@@ -64,14 +66,14 @@
     </tr>
   </ng-template>
 
-  <ng-template #emptymessage>
+  <ng-template #empty>
     <tr>
-      <td colspan="7" class="text-muted py-12 text-center">
+      <td colspan="7" class="text-muted-foreground py-12 text-center">
         No licenses on file. Click "Add license" to record one.
       </td>
     </tr>
   </ng-template>
-</p-table>
+</ui-data-table>
 
 <app-driver-license-edit-dialog
   [(visible)]="editDialogVisible"

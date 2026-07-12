@@ -1,12 +1,21 @@
 <button
   class="theme-toggle"
   (click)="toggleTheme()"
-  [pTooltip]="isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
-  tooltipPosition="right"
+  [uiTooltip]="isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
+  uiTooltipPosition="right"
   [attr.aria-label]="isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
   type="button"
 >
-  <i [class]="isDark() ? 'pi pi-sun' : 'pi pi-moon'"></i>
+  <!-- `theme-toggle-sun` / `theme-toggle-moon` exist because the glyph is an <svg> now: a CSS
+       selector can no longer key off the icon's own class name, so these classes give the toggle
+       something to target instead. -->
+  <ui-icon
+    [name]="isDark() ? 'sun' : 'moon'"
+    size="inherit"
+    class="theme-toggle-icon"
+    [class.theme-toggle-sun]="isDark()"
+    [class.theme-toggle-moon]="!isDark()"
+  />
   @if (showLabel()) {
     <span class="theme-toggle-label">{{ isDark() ? "Light Mode" : "Dark Mode" }}</span>
   }

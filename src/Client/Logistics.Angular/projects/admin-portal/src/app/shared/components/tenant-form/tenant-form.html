@@ -1,26 +1,25 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
+<form [formRoot]="form">
   <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
     <ui-form-field label="Tenant Name" [required]="true">
-      <input pInputText formControlName="name" placeholder="Enter tenant identifier" />
+      <ui-text-field [formField]="form.name" placeholder="Enter tenant identifier" />
     </ui-form-field>
 
     <ui-form-field label="Company Name" [required]="true">
-      <input pInputText formControlName="companyName" placeholder="Enter company name" />
+      <ui-text-field [formField]="form.companyName" placeholder="Enter company name" />
     </ui-form-field>
   </div>
 
   <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
     <ui-form-field label="Billing Email" [required]="true">
-      <input
-        pInputText
-        formControlName="billingEmail"
+      <ui-text-field
+        [formField]="form.billingEmail"
         placeholder="Enter billing email"
         type="email"
       />
     </ui-form-field>
 
     <ui-form-field label="DOT Number">
-      <input pInputText formControlName="dotNumber" placeholder="Enter DOT number" />
+      <ui-text-field [formField]="form.dotNumber" placeholder="Enter DOT number" />
     </ui-form-field>
   </div>
 
@@ -30,37 +29,43 @@
       [required]="true"
       hint="Determines available countries for addresses"
     >
-      <p-select formControlName="region" [options]="regionOptions" placeholder="Select region" />
+      <ui-select-field
+        [formField]="form.region"
+        [options]="regionOptions"
+        placeholder="Select region"
+      />
     </ui-form-field>
   </div>
 
   <div class="mb-4">
-    <h4 class="mb-2 font-semibold">Company Address <span class="text-red-500">*</span></h4>
-    <ui-address-form formControlName="companyAddress" />
+    <h4 class="mb-2 font-semibold">
+      Company Address
+      <span class="text-danger">*</span>
+    </h4>
+    <ui-address-form [formField]="form.companyAddress" />
   </div>
 
   @if (mode() === "create") {
     <div class="mb-4">
       <h4 class="mb-2 font-semibold">Owner Account</h4>
-      <p class="text-surface-500 mb-4 text-sm">
+      <p class="text-muted-foreground mb-4 text-sm">
         The owner will receive login credentials via email.
       </p>
 
       <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <ui-form-field label="First Name" [required]="true">
-          <input pInputText formControlName="ownerFirstName" placeholder="Enter first name" />
+          <ui-text-field [formField]="form.ownerFirstName" placeholder="Enter first name" />
         </ui-form-field>
 
         <ui-form-field label="Last Name" [required]="true">
-          <input pInputText formControlName="ownerLastName" placeholder="Enter last name" />
+          <ui-text-field [formField]="form.ownerLastName" placeholder="Enter last name" />
         </ui-form-field>
       </div>
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <ui-form-field label="Email" [required]="true">
-          <input
-            pInputText
-            formControlName="ownerEmail"
+          <ui-text-field
+            [formField]="form.ownerEmail"
             placeholder="Enter owner email"
             type="email"
           />
@@ -69,22 +74,21 @@
     </div>
   }
 
-
   <div class="mt-6 flex gap-2">
-    <p-button
+    <ui-button
       [label]="mode() === 'create' ? 'Create' : 'Save'"
-      icon="pi pi-check"
+      icon="check"
       type="submit"
       [loading]="isLoading()"
       [disabled]="isLoading()"
     />
-    <p-button label="Cancel" icon="pi pi-times" severity="secondary" routerLink="/tenants" />
+    <ui-button intent="secondary" label="Cancel" icon="x" routerLink="/tenants" />
     @if (mode() === "edit") {
-      <p-button
+      <ui-button
+        intent="danger"
+        appearance="outlined"
         label="Delete"
-        icon="pi pi-trash"
-        severity="danger"
-        [outlined]="true"
+        icon="trash"
         (click)="askRemove()"
       />
     }

@@ -8,22 +8,26 @@ import {
   type CompanyStatsDto,
   type LoadDto,
 } from "@logistics/shared/api";
-import { Icon, Stack, StatusBadge, Typography } from "@logistics/shared/components";
 import {
   AddressPipe,
   CurrencyFormatPipe,
   DateFormatPipe,
   DistanceUnitPipe,
 } from "@logistics/shared/pipes";
+import {
+  Card,
+  Divider,
+  Icon,
+  Stack,
+  StatusBadge,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiTooltip,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { Gridster, GridsterItem, type GridsterConfig } from "angular-gridster2";
-import { SharedModule, type MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { MenuModule } from "primeng/menu";
-import { SkeletonModule } from "primeng/skeleton";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
 import { AuthService } from "@/core/auth";
 import { DashboardSettingsService, type DashboardPanelConfig } from "@/core/services";
 import { PageHeader, StatCard, TrucksMap } from "@/shared/components";
@@ -44,34 +48,32 @@ import { HomeSkeleton } from "./home-skeleton/home-skeleton";
   templateUrl: "./home.html",
   styleUrl: "./home.css",
   imports: [
-    CardModule,
-    SharedModule,
-    TableModule,
-    RouterLink,
-    TooltipModule,
-    ButtonModule,
-    SkeletonModule,
+    AttentionPanelComponent,
+    Card,
     CurrencyFormatPipe,
+    DailyGrossChartComponent,
     DateFormatPipe,
     DistanceUnitPipe,
-    TrucksMap,
-    LoadProgressBarComponent,
-    RecentActivityComponent,
-    DailyGrossChartComponent,
-    AttentionPanelComponent,
+    Divider,
     FinancialHealthWidgetComponent,
-    TopPerformersWidgetComponent,
-    DividerModule,
-    MenuModule,
-    PageHeader,
-    StatCard,
-    StatusBadge,
-    Icon,
-    Stack,
-    Typography,
     Gridster,
     GridsterItem,
     HomeSkeleton,
+    Icon,
+    LoadProgressBarComponent,
+    PageHeader,
+    RecentActivityComponent,
+    RouterLink,
+    Stack,
+    StatCard,
+    StatusBadge,
+    TopPerformersWidgetComponent,
+    TrucksMap,
+    Typography,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiTooltip,
   ],
   providers: [AddressPipe],
 })
@@ -164,12 +166,12 @@ export class Home implements OnInit {
     return `Good evening, ${name}`;
   });
 
-  protected readonly quickActions: MenuItem[] = [
-    { label: "Create Load", icon: "pi pi-plus", routerLink: "/loads/add" },
-    { label: "View All Loads", icon: "pi pi-list", routerLink: "/loads" },
+  protected readonly quickActions: UiMenuItem[] = [
+    { label: "Create Load", icon: "plus", routerLink: "/loads/add" },
+    { label: "View All Loads", icon: "list", routerLink: "/loads" },
     { separator: true },
-    { label: "View Trucks", icon: "pi pi-truck", routerLink: "/trucks" },
-    { label: "Messages", icon: "pi pi-envelope", routerLink: "/messages" },
+    { label: "View Trucks", icon: "truck", routerLink: "/trucks" },
+    { label: "Messages", icon: "mail", routerLink: "/messages" },
   ];
 
   constructor() {

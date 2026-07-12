@@ -1,6 +1,6 @@
 <ui-page-header title="Demo Requests" />
 
-<p-card>
+<ui-card>
   <ui-data-container
     [loading]="store.isLoading()"
     [error]="store.error()"
@@ -11,12 +11,12 @@
     emptyMessage="Demo requests from the website will appear here."
     (retry)="store.retry()"
   >
-    <p-table
+    <ui-data-table
       [value]="store.data()"
       [lazy]="true"
       [paginator]="true"
       [showCurrentPageReport]="true"
-      (onLazyLoad)="store.onLazyLoad($event)"
+      (lazyLoad)="store.onLazyLoad($event)"
       [rows]="store.pageSize()"
       [first]="store.first()"
       [totalRecords]="store.totalRecords()"
@@ -28,27 +28,12 @@
       </ng-template>
       <ng-template #header>
         <tr>
-          <th pSortableColumn="FirstName">
-            Name
-            <p-sortIcon field="FirstName" />
-          </th>
-          <th pSortableColumn="Email">
-            Email
-            <p-sortIcon field="Email" />
-          </th>
-          <th pSortableColumn="Company">
-            Company
-            <p-sortIcon field="Company" />
-          </th>
+          <th uiSortHeader="FirstName">Name</th>
+          <th uiSortHeader="Email">Email</th>
+          <th uiSortHeader="Company">Company</th>
           <th>Fleet Size</th>
-          <th pSortableColumn="Status">
-            Status
-            <p-sortIcon field="Status" />
-          </th>
-          <th pSortableColumn="CreatedAt">
-            Submitted
-            <p-sortIcon field="CreatedAt" />
-          </th>
+          <th uiSortHeader="Status">Status</th>
+          <th uiSortHeader="CreatedAt">Submitted</th>
           <th class="text-center">Actions</th>
         </tr>
       </ng-template>
@@ -59,39 +44,43 @@
           <td>{{ request.company }}</td>
           <td>{{ request.fleetSize ?? "-" }}</td>
           <td>
-            <p-tag
+            <ui-badge
               [value]="getStatusLabel(request.status)"
               [severity]="getStatusSeverity(request.status)"
             />
           </td>
           <td>{{ formatDate(request.createdAt) }}</td>
           <td class="text-center">
-            <p-button icon="pi pi-eye" pTooltip="View Details" (click)="viewRequest(request)" />
-            <p-button
-              styleClass="ml-2 p-button-danger"
-              icon="pi pi-trash"
-              pTooltip="Delete"
+            <ui-button
+              ariaLabel="View Details"
+              icon="eye"
+              uiTooltip="View Details"
+              (click)="viewRequest(request)"
+            />
+            <ui-button
+              intent="danger"
+              buttonClass="ml-2"
+              ariaLabel="Delete"
+              icon="trash"
+              uiTooltip="Delete"
               (click)="confirmToDelete(request.id)"
             />
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   </ui-data-container>
-</p-card>
+</ui-card>
 
-<p-dialog
-  header="Demo Request Details"
-  [(visible)]="viewDialogVisible"
-  [modal]="true"
-  [style]="{ width: '600px' }"
->
+<ui-dialog header="Demo Request Details" [(open)]="viewDialogVisible" [modal]="true" width="600px">
   @if (selectedRequest(); as request) {
     <ui-stack gap="4">
       <ui-grid container spacing="4">
         <ui-grid [size]="6">
           <ui-typography variant="caption" color="muted" class="mb-1 block">Name</ui-typography>
-          <ui-typography variant="body">{{ request.firstName }} {{ request.lastName }}</ui-typography>
+          <ui-typography variant="body">
+            {{ request.firstName }} {{ request.lastName }}
+          </ui-typography>
         </ui-grid>
         <ui-grid [size]="6">
           <ui-typography variant="caption" color="muted" class="mb-1 block">Email</ui-typography>
@@ -106,11 +95,15 @@
           <ui-typography variant="body">{{ request.phone ?? "-" }}</ui-typography>
         </ui-grid>
         <ui-grid [size]="6">
-          <ui-typography variant="caption" color="muted" class="mb-1 block">Fleet Size</ui-typography>
+          <ui-typography variant="caption" color="muted" class="mb-1 block">
+            Fleet Size
+          </ui-typography>
           <ui-typography variant="body">{{ request.fleetSize ?? "-" }}</ui-typography>
         </ui-grid>
         <ui-grid [size]="6">
-          <ui-typography variant="caption" color="muted" class="mb-1 block">Submitted</ui-typography>
+          <ui-typography variant="caption" color="muted" class="mb-1 block">
+            Submitted
+          </ui-typography>
           <ui-typography variant="body">{{ formatDate(request.createdAt) }}</ui-typography>
         </ui-grid>
       </ui-grid>
@@ -124,38 +117,35 @@
         </div>
       }
 
-      <form [formGroup]="form" class="mt-2 border-t pt-4">
+      <div class="mt-2 border-t pt-4">
         <ui-grid container spacing="4">
           <ui-grid [size]="{ xs: 12, md: 6 }">
             <ui-form-field label="Status">
-              <p-select
-                formControlName="status"
+              <ui-select-field
+                [formField]="form.status"
                 [options]="statusOptions"
                 optionLabel="label"
                 optionValue="value"
-                class="w-full"
               />
             </ui-form-field>
           </ui-grid>
 
           <ui-grid [size]="12">
             <ui-form-field label="Internal Notes">
-              <textarea
-                pInputTextarea
-                formControlName="notes"
-                rows="3"
-                class="w-full"
+              <ui-textarea-field
+                [formField]="form.notes"
+                [rows]="3"
                 placeholder="Add notes about this lead..."
-              ></textarea>
+              />
             </ui-form-field>
           </ui-grid>
         </ui-grid>
-      </form>
+      </div>
     </ui-stack>
   }
 
   <ng-template #footer>
-    <p-button label="Cancel" severity="secondary" (click)="viewDialogVisible.set(false)" />
-    <p-button label="Save Changes" icon="pi pi-check" (click)="saveRequest()" />
+    <ui-button intent="secondary" label="Cancel" (click)="viewDialogVisible.set(false)" />
+    <ui-button label="Save Changes" icon="check" (click)="saveRequest()" />
   </ng-template>
-</p-dialog>
+</ui-dialog>

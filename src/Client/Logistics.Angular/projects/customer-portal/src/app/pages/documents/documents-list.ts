@@ -7,11 +7,16 @@ import {
   getPortalLoads,
   type DocumentDto,
 } from "@logistics/shared/api";
-import { Icon, Stack, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
+import {
+  Badge,
+  Icon,
+  Spinner,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiDataTable,
+} from "@logistics/shared/ui";
 
 interface DocumentWithLoad extends DocumentDto {
   loadNumber?: number;
@@ -23,16 +28,16 @@ interface DocumentWithLoad extends DocumentDto {
   selector: "cp-documents-list",
   templateUrl: "./documents-list.html",
   imports: [
+    Badge,
     DatePipe,
-    RouterLink,
-    TableModule,
-    ButtonModule,
-    TagModule,
-    ProgressSpinnerModule,
     Icon,
+    RouterLink,
+    Spinner,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
   ],
 })
 export class DocumentsList {

@@ -1,50 +1,37 @@
-<p-dialog
+<ui-dialog
   header="Invite Customer User"
-  [(visible)]="visible"
+  [(open)]="visible"
   [modal]="true"
-  [style]="{ width: '450px' }"
-  (onShow)="onShow()"
-  (onHide)="close()"
+  width="450px"
+  (opened)="onShow()"
+  (closed)="close()"
 >
-  @if (isLoading()) {
+  @if (form().submitting()) {
     <ui-stack align="center" justify="center" class="py-4">
-      <p-progress-spinner />
+      <ui-spinner />
     </ui-stack>
   } @else {
-    <p class="text-muted-color mb-4">
+    <p class="text-muted-foreground mb-4">
       Send an email invitation to give a customer access to the customer portal.
     </p>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <ui-form-field
-        label="Email Address"
-        for="email"
-        [required]="true"
-        [control]="form.controls.email"
-      >
-        <input
-          pInputText
+    <form [formRoot]="form">
+      <ui-form-field label="Email Address" for="email" [required]="true">
+        <ui-text-field
           id="email"
-          formControlName="email"
+          [formField]="form.email"
           type="email"
           placeholder="customer@example.com"
-          class="w-full"
         />
       </ui-form-field>
 
-      <ui-form-field
-        label="Customer"
-        for="customerId"
-        [required]="true"
-        [control]="form.controls.customerId"
-      >
+      <ui-form-field label="Customer" for="customerId" [required]="true">
         @if (customerId()) {
-          <input pInputText id="customerName" [value]="customerName()" class="w-full" disabled />
+          <ui-text-field id="customerName" [value]="customerName() ?? ''" [disabled]="true" />
         } @else {
-          <p-select
-            formControlName="customerId"
+          <ui-select-field
+            [formField]="form.customerId"
             id="customerId"
-            class="w-full"
             appendTo="body"
             [options]="customers()"
             optionValue="id"
@@ -62,25 +49,23 @@
         for="personalMessage"
         hint="Optional note to include in the invitation email"
       >
-        <textarea
-          pTextarea
+        <ui-textarea-field
           id="personalMessage"
-          formControlName="personalMessage"
-          rows="3"
+          [formField]="form.personalMessage"
+          [rows]="3"
           placeholder="Add a personal note to the invitation email..."
-          class="w-full"
-        ></textarea>
+        />
       </ui-form-field>
 
       <ui-stack direction="row" justify="end" gap="2">
-        <p-button type="button" label="Cancel" [outlined]="true" (click)="close()" />
-        <p-button
+        <ui-button appearance="outlined" type="button" label="Cancel" (click)="close()" />
+        <ui-button
           type="submit"
-          icon="pi pi-send"
+          icon="send"
           label="Send Invitation"
-          [disabled]="isLoading()"
+          [disabled]="form().submitting()"
         />
       </ui-stack>
     </form>
   }
-</p-dialog>
+</ui-dialog>

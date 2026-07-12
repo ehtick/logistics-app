@@ -1,28 +1,31 @@
 import { Component, input } from "@angular/core";
-import { FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormField, type FieldTree } from "@angular/forms/signals";
 import { hazmatClassOptions } from "@logistics/shared/api/enums";
-import { FormField } from "@logistics/shared/components";
-import { CheckboxModule } from "primeng/checkbox";
-import { DatePickerModule } from "primeng/datepicker";
-import { Fieldset } from "primeng/fieldset";
-import { InputTextModule } from "primeng/inputtext";
-import { MultiSelectModule } from "primeng/multiselect";
+import {
+  UiCheckboxField,
+  UiCollapsible,
+  UiDateField,
+  UiFormField,
+  UiMultiSelectField,
+  UiTextField,
+} from "@logistics/shared/ui";
+import type { TruckFormModel } from "./truck-form";
 
 @Component({
   selector: "app-truck-hazmat-section",
   templateUrl: "./truck-hazmat-section.html",
   imports: [
-    ReactiveFormsModule,
-    CheckboxModule,
-    DatePickerModule,
-    Fieldset,
-    InputTextModule,
-    MultiSelectModule,
     FormField,
+    UiCheckboxField,
+    UiCollapsible,
+    UiDateField,
+    UiFormField,
+    UiMultiSelectField,
+    UiTextField,
   ],
 })
 export class TruckHazmatSection {
-  public readonly form = input.required<FormGroup>();
+  public readonly field = input.required<FieldTree<TruckFormModel>>();
 
   protected readonly hazmatClassOptions = hazmatClassOptions;
 }

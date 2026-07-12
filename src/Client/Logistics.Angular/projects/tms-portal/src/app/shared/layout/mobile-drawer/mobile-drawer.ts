@@ -1,8 +1,7 @@
 import { Component, computed, effect, inject, signal } from "@angular/core";
 import { UserRole } from "@logistics/shared";
 import { FeatureService } from "@logistics/shared/services";
-import { DrawerModule } from "primeng/drawer";
-import { PopoverModule } from "primeng/popover";
+import { Icon, UiDrawer, UiPopover } from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import {
   ChatService,
@@ -13,7 +12,7 @@ import {
 } from "@/core/services";
 import { LayoutService } from "@/core/services/layout.service";
 import { environment } from "@/env";
-import { type NavItem, NavMenu, type NavSection } from "../nav-menu";
+import { NavMenu, type NavItem, type NavSection } from "../nav-menu";
 import { NotificationBell } from "../notification-bell";
 import { FavoritesBar } from "../sidebar/favorites-bar/favorites-bar";
 import { sidebarSections } from "../sidebar/sidebar-items";
@@ -46,7 +45,7 @@ const ROLE_ITEM_ACCESS: Record<string, string[] | "*"> = {
   selector: "app-mobile-drawer",
   templateUrl: "./mobile-drawer.html",
   styleUrl: "./mobile-drawer.css",
-  imports: [DrawerModule, PopoverModule, NavMenu, NotificationBell, FavoritesBar, ThemeToggle],
+  imports: [UiDrawer, FavoritesBar, Icon, NavMenu, NotificationBell, UiPopover, ThemeToggle],
 })
 export class MobileDrawer {
   private readonly layoutService = inject(LayoutService);

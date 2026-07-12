@@ -1,22 +1,20 @@
 <div class="flex flex-col gap-6">
-  @if (isLoading()) {
+  @if (form().submitting()) {
     <div class="flex justify-center py-8">
-      <p-progress-spinner />
+      <ui-spinner />
     </div>
   }
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
-
+  <form [formRoot]="form">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <ui-form-field label="Truck" for="truck" [required]="true">
-        <app-search-truck formControlName="truck" />
+        <app-search-truck [formField]="form.truck" />
       </ui-form-field>
 
       <ui-form-field label="Service Type" for="type" [required]="true">
-        <p-select
-          formControlName="type"
+        <ui-select-field
+          [formField]="form.type"
           id="type"
-          class="w-full"
           [options]="maintenanceTypeOptions"
           optionLabel="label"
           optionValue="value"
@@ -26,20 +24,18 @@
     </div>
 
     <ui-form-field label="Description" for="description" [required]="true" class="mt-4">
-      <textarea
-        pInputTextarea
-        formControlName="description"
+      <ui-textarea-field
+        [formField]="form.description"
         id="description"
-        class="w-full"
-        rows="2"
+        [rows]="2"
         placeholder="Describe the maintenance performed..."
-      ></textarea>
+      />
     </ui-form-field>
 
     <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
       <ui-form-field label="Service Date" for="serviceDate" [required]="true">
-        <p-datepicker
-          formControlName="serviceDate"
+        <ui-date-field
+          [formField]="form.serviceDate"
           id="serviceDate"
           [showIcon]="true"
           [iconDisplay]="'input'"
@@ -49,20 +45,18 @@
       </ui-form-field>
 
       <ui-form-field label="Odometer Reading" for="odometerReading">
-        <p-inputnumber
-          formControlName="odometerReading"
+        <ui-number-field
+          [formField]="form.odometerReading"
           id="odometerReading"
-          class="w-full"
           [useGrouping]="true"
           suffix=" mi"
         />
       </ui-form-field>
 
       <ui-form-field label="Engine Hours" for="engineHours">
-        <p-inputnumber
-          formControlName="engineHours"
+        <ui-number-field
+          [formField]="form.engineHours"
           id="engineHours"
-          class="w-full"
           [useGrouping]="true"
           suffix=" hrs"
         />
@@ -71,21 +65,17 @@
 
     <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
       <ui-form-field label="Vendor Name" for="vendorName">
-        <input
-          pInputText
+        <ui-text-field
           id="vendorName"
-          formControlName="vendorName"
-          class="w-full"
+          [formField]="form.vendorName"
           placeholder="Service provider name"
         />
       </ui-form-field>
 
       <ui-form-field label="Invoice Number" for="invoiceNumber">
-        <input
-          pInputText
+        <ui-text-field
           id="invoiceNumber"
-          formControlName="invoiceNumber"
-          class="w-full"
+          [formField]="form.invoiceNumber"
           placeholder="INV-12345"
         />
       </ui-form-field>
@@ -93,10 +83,9 @@
 
     <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
       <ui-form-field label="Labor Cost" for="laborCost">
-        <p-inputnumber
-          formControlName="laborCost"
+        <ui-number-field
+          [formField]="form.laborCost"
           id="laborCost"
-          class="w-full"
           mode="currency"
           currency="USD"
           locale="en-US"
@@ -104,10 +93,9 @@
       </ui-form-field>
 
       <ui-form-field label="Parts Cost" for="partsCost">
-        <p-inputnumber
-          formControlName="partsCost"
+        <ui-number-field
+          [formField]="form.partsCost"
           id="partsCost"
-          class="w-full"
           mode="currency"
           currency="USD"
           locale="en-US"
@@ -116,24 +104,22 @@
     </div>
 
     <ui-form-field label="Notes" for="notes" class="mt-4">
-      <textarea
-        pInputTextarea
-        formControlName="notes"
+      <ui-textarea-field
+        [formField]="form.notes"
         id="notes"
-        class="w-full"
-        rows="3"
+        [rows]="3"
         placeholder="Additional notes about this service..."
-      ></textarea>
+      />
     </ui-form-field>
 
     <div class="mt-6 flex gap-2">
-      <p-button type="submit" icon="pi pi-check" label="Save" [disabled]="isLoading()" />
+      <ui-button type="submit" icon="check" label="Save" [loading]="form().submitting()" />
 
-      <p-button
+      <ui-button
+        appearance="outlined"
         type="button"
-        icon="pi pi-arrow-left"
+        icon="arrow-left"
         label="Back to list"
-        [outlined]="true"
         [routerLink]="['/maintenance/records']"
       />
     </div>

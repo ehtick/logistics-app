@@ -2,16 +2,21 @@ import { CommonModule } from "@angular/common";
 import { Component, computed, inject, input, signal, type OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Api, getInvoiceById, type Address, type InvoiceDto } from "@logistics/shared/api";
-import { Alert, Grid, Icon, Stack, Typography } from "@logistics/shared/components";
 import { AddressPipe, CurrencyFormatPipe, DateFormatPipe } from "@logistics/shared/pipes";
 import { LocalizationService } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Alert,
+  Badge,
+  Card,
+  Divider,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Typography,
+  UiButton,
+  UiDataTable,
+} from "@logistics/shared/ui";
 import { PdfService, TenantService, ToastService } from "@/core/services";
 import { InvoiceStatusTag, PageHeader, PaymentStatusTag } from "@/shared/components";
 import { PaymentLinkDialog, RecordPaymentDialog, SendInvoiceDialog } from "../components";
@@ -20,29 +25,28 @@ import { PaymentLinkDialog, RecordPaymentDialog, SendInvoiceDialog } from "../co
   selector: "app-load-invoice-details",
   templateUrl: "./load-invoice-details.html",
   imports: [
-    CommonModule,
-    CardModule,
-    ButtonModule,
-    ProgressSpinnerModule,
-    RouterModule,
     AddressPipe,
-    InvoiceStatusTag,
-    PaymentStatusTag,
-    DividerModule,
-    TableModule,
-    TagModule,
-    TooltipModule,
+    Alert,
+    Badge,
+    Card,
+    CommonModule,
     CurrencyFormatPipe,
     DateFormatPipe,
-    SendInvoiceDialog,
-    RecordPaymentDialog,
-    PaymentLinkDialog,
-    Alert,
-    PageHeader,
+    Divider,
     Grid,
     Icon,
+    InvoiceStatusTag,
+    PageHeader,
+    PaymentLinkDialog,
+    PaymentStatusTag,
+    RecordPaymentDialog,
+    RouterModule,
+    SendInvoiceDialog,
+    Spinner,
     Stack,
     Typography,
+    UiButton,
+    UiDataTable,
   ],
 })
 export class LoadInvoiceDetails implements OnInit {

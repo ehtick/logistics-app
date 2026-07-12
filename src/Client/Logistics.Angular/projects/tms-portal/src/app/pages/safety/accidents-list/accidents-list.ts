@@ -8,17 +8,20 @@ import {
   type AccidentReportStatus,
   type AccidentSeverity,
 } from "@logistics/shared/api";
-import { Icon, Stack } from "@logistics/shared/components";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  Icon,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { DataContainer, PageHeader, SearchField } from "@/shared/components";
-import type { TagSeverity } from "@/shared/types";
 import { AccidentsListStore } from "../store";
 
 @Component({
@@ -26,18 +29,18 @@ import { AccidentsListStore } from "../store";
   templateUrl: "./accidents-list.html",
   providers: [AccidentsListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    MenuModule,
-    TagModule,
-    DatePipe,
+    Badge,
+    Card,
     DataContainer,
+    DatePipe,
+    Icon,
     PageHeader,
     SearchField,
-    Icon,
     Stack,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
   ],
 })
 export class AccidentsListPage {
@@ -48,20 +51,20 @@ export class AccidentsListPage {
 
   protected readonly selectedRow = signal<AccidentReportDto | null>(null);
 
-  protected readonly actionMenuItems: MenuItem[] = [
+  protected readonly actionMenuItems: UiMenuItem[] = [
     {
       label: "View details",
-      icon: "pi pi-eye",
+      icon: "eye",
       command: () => this.viewDetails(this.selectedRow()!),
     },
     {
       label: "Submit report",
-      icon: "pi pi-send",
+      icon: "send",
       command: () => this.submitReport(this.selectedRow()!),
     },
   ];
 
-  protected getStatusSeverity(status: AccidentReportStatus | undefined): TagSeverity {
+  protected getStatusSeverity(status: AccidentReportStatus | undefined): UiBadgeIntent {
     switch (status) {
       case "resolved":
         return "success";
@@ -95,7 +98,7 @@ export class AccidentsListPage {
     }
   }
 
-  protected getSeveritySeverity(severity: AccidentSeverity | undefined): TagSeverity {
+  protected getSeveritySeverity(severity: AccidentSeverity | undefined): UiBadgeIntent {
     switch (severity) {
       case "minor":
         return "info";

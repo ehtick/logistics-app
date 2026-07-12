@@ -1,90 +1,92 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { Component, forwardRef, inject, model, output, signal } from "@angular/core";
-import { FormsModule, NG_VALUE_ACCESSOR, type ControlValueAccessor } from "@angular/forms";
-import { isEmptyGuid } from "@logistics/shared";
+import {
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  model,
+  output,
+  signal,
+  untracked,
+} from "@angular/core";
+import type { FormValueControl } from "@angular/forms/signals";
+import { focusFirstControl, isEmptyGuid } from "@logistics/shared";
 import { Api, getTruckById, getTrucks, type TruckDto } from "@logistics/shared/api";
-import { AutoCompleteModule, type AutoCompleteSelectEvent } from "primeng/autocomplete";
+import { UiAutocompleteField } from "@logistics/shared/ui";
 
 /**
  * Component for searching and selecting a truck.
  * This component uses an autocomplete input to allow users to search for trucks by name or number.
- * It accepts a truck ID or a TruckDto object as input and emits the selected truck.
+ * Its value is always a TruckDto; pass `[truckId]` to seed it from a bare ID.
+ *
+ * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
  */
 @Component({
   selector: "app-search-truck",
   templateUrl: "./search-truck.html",
-  imports: [AutoCompleteModule, FormsModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SearchTruck),
-      multi: true,
-    },
-  ],
+  imports: [UiAutocompleteField],
 })
-export class SearchTruck implements ControlValueAccessor {
+export class SearchTruck implements FormValueControl<TruckDto | null> {
   private readonly api = inject(Api);
 
   protected readonly suggestedTrucks = signal<TruckDto[]>([]);
-  protected readonly disabled = signal<boolean>(false);
 
-  public readonly selectedTruck = model<TruckDto | null>(null);
-  public readonly selectedTruckChange = output<TruckDto | null>();
+  /** The control's value. Required by `FormValueControl`. */
+  public readonly value = model<TruckDto | null>(null);
+
+  /**
+   * Seeds the control from a bare truck ID, which is all an edit form usually has. Resolved to the
+   * full DTO and written into `value`.
+   *
+   * This is a separate input rather than a `string` member of `value` because `[formField]` value
+   * types are invariant: widening `value` to `TruckDto | string | null` would force every consumer's
+   * model field to that same type.
+   */
+  public readonly truckId = input<string | null>(null);
+
+  /** Driven by the Reactive Forms bridge / consumers to disable the input. */
+  public readonly disabled = input<boolean>(false);
+
+  /** Raised on blur so the form can mark the field touched. */
+  public readonly touch = output<void>();
+
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  /** Signal Forms calls this via `FieldState.focusBoundControl()`. */
+  public focus(options?: FocusOptions): void {
+    focusFirstControl(this.host.nativeElement, options);
+  }
+
+  constructor() {
+    // Resolve the seeded ID to the full DTO. Reading `value` untracked keeps this from re-running
+    // when the resolved truck is written back, and the id-equality check keeps a later user
+    // selection (or a clear) from being undone.
+    effect(() => {
+      const id = this.truckId();
+      if (!id || isEmptyGuid(id)) {
+        return;
+      }
+      if (untracked(this.value)?.id === id) {
+        return;
+      }
+      this.resolveTruckById(id);
+    });
+  }
 
   protected async searchTruck(event: { query: string }): Promise<void> {
     const result = await this.api.invoke(getTrucks, { Search: event.query });
     this.suggestedTrucks.set(result.items ?? []);
   }
 
-  protected changeSelectedTruck(event: AutoCompleteSelectEvent): void {
-    this.selectedTruckChange.emit(event.value);
-    this.onChange(event.value);
-  }
-
-  private async fetchTruckById(id: string): Promise<void> {
-    if (isEmptyGuid(id)) {
-      this.selectedTruck.set(null);
-      return;
-    }
-
-    const result = await this.api.invoke(getTruckById, { truckOrDriverId: id });
-    if (result) {
-      this.selectedTruck.set(result);
-      this.onChange(result);
-    }
-  }
-
-  //#region Implementation Reactive forms
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private onChange(value: TruckDto | null): void {}
-  private onTouched(): void {}
-
   /** Marks the control as touched so validation errors surface (on blur). */
   protected markTouched(): void {
-    this.onTouched();
+    this.touch.emit();
   }
 
-  writeValue(value: TruckDto | string | null): void {
-    if (typeof value === "string") {
-      this.fetchTruckById(value);
-      return;
+  private async resolveTruckById(id: string): Promise<void> {
+    const result = await this.api.invoke(getTruckById, { truckOrDriverId: id });
+    if (result) {
+      this.value.set(result);
     }
-
-    this.selectedTruck.set(value);
   }
-
-  registerOnChange(fn: () => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled.set(isDisabled);
-  }
-
-  //#endregion
 }

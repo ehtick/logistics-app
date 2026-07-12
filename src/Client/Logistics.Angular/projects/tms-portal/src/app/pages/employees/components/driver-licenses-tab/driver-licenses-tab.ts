@@ -11,19 +11,22 @@ import {
   licenseClassOptions,
   licenseEndorsementOptions,
 } from "@logistics/shared/api/enums";
-import { Stack, Typography } from "@logistics/shared/components";
 import { ToastService } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { ChipModule } from "primeng/chip";
-import { TableModule } from "primeng/table";
-import { Tag as PrimeTag, TagModule } from "primeng/tag";
+import {
+  Badge,
+  Stack,
+  Typography,
+  UiButton,
+  UiDataTable,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { DriverLicenseEditDialog } from "../driver-license-edit-dialog/driver-license-edit-dialog";
 
 interface LicenseRowVm {
   license: DriverLicenseDto;
   classLabel: string;
   endorsementLabels: string[];
-  expirySeverity: PrimeTag["severity"];
+  expirySeverity: UiBadgeIntent;
   expiryLabel: string;
 }
 
@@ -31,15 +34,14 @@ interface LicenseRowVm {
   selector: "app-driver-licenses-tab",
   templateUrl: "./driver-licenses-tab.html",
   imports: [
+    Badge,
     CommonModule,
     DatePipe,
-    TableModule,
-    TagModule,
-    ChipModule,
-    ButtonModule,
     DriverLicenseEditDialog,
     Stack,
     Typography,
+    UiButton,
+    UiDataTable,
   ],
 })
 export class DriverLicensesTab {
@@ -110,7 +112,7 @@ export class DriverLicensesTab {
         `for dispatch eligibility.`,
       acceptLabel: "Revoke",
       rejectLabel: "Cancel",
-      acceptButtonStyleClass: "p-button-danger",
+      severity: "danger",
       accept: async () => {
         try {
           await this.api.invoke(deleteDriverLicense, {
@@ -140,7 +142,7 @@ export class DriverLicensesTab {
     const status = license.status;
     const days = license.daysUntilExpiry ?? 0;
 
-    let expirySeverity: PrimeTag["severity"];
+    let expirySeverity: UiBadgeIntent;
     let expiryLabel: string;
 
     if (status === "revoked" || status === "suspended") {

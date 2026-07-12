@@ -1,39 +1,33 @@
 import { CommonModule } from "@angular/common";
-import { Component, type OnInit, inject, input, output, signal } from "@angular/core";
+import { Component, inject, input, output, signal, type OnInit } from "@angular/core";
 import {
   Api,
   deleteDocument,
   downloadDocument,
   getDocuments,
   uploadDocument,
+  type DocumentDto,
+  type DocumentStatus,
+  type DocumentType,
 } from "@logistics/shared/api";
-import type { DocumentDto, DocumentStatus, DocumentType } from "@logistics/shared/api";
+import {
+  Badge,
+  Card,
+  Icon,
+  Spinner,
+  UiButton,
+  UiDataTable,
+  UiTooltip,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { downloadBlobFile, formatFileSize } from "@logistics/shared/utils";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { FileUploadModule } from "primeng/fileupload";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { Tag, TagModule } from "primeng/tag";
-import { ToastModule } from "primeng/toast";
-import { TooltipModule } from "primeng/tooltip";
 import { ToastService } from "@/core/services";
 import { Converters } from "@/shared/utils";
 
 @Component({
   selector: "app-document-manager",
   templateUrl: "./document-manager.html",
-  imports: [
-    CommonModule,
-    ButtonModule,
-    TableModule,
-    FileUploadModule,
-    TagModule,
-    ToastModule,
-    CardModule,
-    ProgressSpinnerModule,
-    TooltipModule,
-  ],
+  imports: [Badge, Card, CommonModule, Icon, Spinner, UiButton, UiDataTable, UiTooltip],
 })
 export class DocumentManager implements OnInit {
   private readonly api = inject(Api);
@@ -138,7 +132,7 @@ export class DocumentManager implements OnInit {
     });
   }
 
-  protected statusSeverity(status: DocumentStatus): Tag["severity"] {
+  protected statusSeverity(status: DocumentStatus): UiBadgeIntent {
     switch (status) {
       case "active":
         return "success";

@@ -1,18 +1,18 @@
-<p-dialog
+<ui-dialog
   header="Payment Links"
-  [(visible)]="visible"
+  [(open)]="visible"
   [modal]="true"
-  [style]="{ width: '650px' }"
-  (onShow)="onShow()"
-  (onHide)="close()"
+  width="650px"
+  (opened)="onShow()"
+  (closed)="close()"
 >
-  <p class="text-muted-color mb-4">
+  <p class="text-muted-foreground mb-4">
     Generate payment links to share with customers so they can pay this invoice online.
   </p>
 
   <ui-stack direction="row" justify="end" class="mb-4">
-    <p-button
-      icon="pi pi-plus"
+    <ui-button
+      icon="plus"
       label="Generate New Link"
       (click)="generateLink()"
       [loading]="isGenerating()"
@@ -20,7 +20,7 @@
   </ui-stack>
 
   @if (links().length > 0) {
-    <p-table [value]="links()">
+    <ui-data-table [value]="links()">
       <ng-template #header>
         <tr>
           <th>Created</th>
@@ -36,42 +36,44 @@
           <td>{{ link.expiresAt | date: "short" }}</td>
           <td>{{ link.accessCount }}</td>
           <td>
-            <p-tag [value]="getLinkStatusLabel(link)" [severity]="getLinkStatus(link)" />
+            <ui-badge [value]="getLinkStatusLabel(link)" [severity]="getLinkStatus(link)" />
           </td>
           <td class="text-right">
-            <p-button
-              icon="pi pi-copy"
-              [text]="true"
+            <ui-button
+              appearance="text"
+              ariaLabel="Copy link"
+              icon="copy"
               [rounded]="true"
               (click)="copyToClipboard(link.url)"
-              pTooltip="Copy link"
+              uiTooltip="Copy link"
               [disabled]="!link.isActive || !link.isValid"
             />
-            <p-button
-              icon="pi pi-trash"
-              [text]="true"
+            <ui-button
+              intent="danger"
+              appearance="text"
+              ariaLabel="Revoke"
+              icon="trash"
               [rounded]="true"
-              severity="danger"
               (click)="revokeLink(link.id)"
-              pTooltip="Revoke"
+              uiTooltip="Revoke"
               [disabled]="!link.isActive"
             />
           </td>
         </tr>
       </ng-template>
-      <ng-template #emptymessage>
+      <ng-template #empty>
         <tr>
-          <td colspan="5" class="text-muted-color py-4 text-center">
+          <td colspan="5" class="text-muted-foreground py-4 text-center">
             No payment links generated yet
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   } @else {
-    <ui-stack align="center" gap="2" class="text-muted-color py-4">
+    <ui-stack align="center" gap="2" class="text-muted-foreground py-4">
       <ui-icon name="link" size="xl" class="mb-2" />
       <p>No payment links generated yet</p>
       <p class="text-sm">Click "Generate New Link" to create a shareable payment link</p>
     </ui-stack>
   }
-</p-dialog>
+</ui-dialog>

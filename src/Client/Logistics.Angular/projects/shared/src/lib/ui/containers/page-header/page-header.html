@@ -1,0 +1,35 @@
+<div class="mb-3" [class.text-center]="centered()">
+  <div class="flex items-center" [class.justify-center]="centered()">
+    @if (backLink()) {
+      <ui-button
+        appearance="text"
+        buttonClass="mr-2"
+        ariaLabel="Go back"
+        icon="arrow-left"
+        [rounded]="true"
+        [routerLink]="[backLink()]"
+        uiTooltip="Go back"
+      />
+    }
+    <h1 class="mb-0 min-w-0 flex-1">{{ title() }}</h1>
+
+    @if (addRoute()) {
+      <ui-button
+        appearance="text"
+        size="lg"
+        buttonClass="ml-2"
+        [ariaLabel]="addTooltip()"
+        icon="circle-plus"
+        [rounded]="true"
+        [uiTooltip]="addTooltip()"
+        [routerLink]="[addRoute()]"
+      />
+    }
+    <div class="ml-auto flex flex-wrap items-center gap-2">
+      <ng-content />
+    </div>
+  </div>
+  @if (subtitle()) {
+    <p class="mb-0 text-gray-500">{{ subtitle() }}</p>
+  }
+</div>

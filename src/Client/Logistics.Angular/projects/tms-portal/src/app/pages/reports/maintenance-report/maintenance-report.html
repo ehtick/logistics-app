@@ -1,7 +1,4 @@
-<ui-page-header
-  title="Maintenance Report"
-  subtitle="Service records, costs, and schedule metrics"
->
+<ui-page-header title="Maintenance Report" subtitle="Service records, costs, and schedule metrics">
   <ui-date-range-picker (datesChange)="onDateRangeChange($event)" />
 </ui-page-header>
 
@@ -9,7 +6,7 @@
   <ui-grid container>
     @for (item of [1, 2, 3, 4]; track item) {
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-6">
-        <p-skeleton height="120px"></p-skeleton>
+        <ui-skeleton height="120px"></ui-skeleton>
       </ui-grid>
     }
   </ui-grid>
@@ -18,7 +15,7 @@
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-dollar"
+        icon="dollar-sign"
         label="Total Cost"
         [value]="(data()?.totalCost || 0 | currencyFormat) ?? '$0'"
         color="blue"
@@ -28,7 +25,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-wrench"
+        icon="wrench"
         label="Labor Cost"
         [value]="(data()?.laborCost || 0 | currencyFormat) ?? '$0'"
         color="green"
@@ -38,7 +35,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-box"
+        icon="box"
         label="Parts Cost"
         [value]="(data()?.partsCost || 0 | currencyFormat) ?? '$0'"
         color="orange"
@@ -48,7 +45,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-calendar-times"
+        icon="calendar-x"
         label="Overdue"
         [value]="(data()?.overdueCount || 0).toString()"
         color="red"
@@ -60,16 +57,16 @@
   <!-- Charts Row 1 -->
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Cost by Service Type" icon="pi-chart-bar" iconColor="blue">
+      <ui-dashboard-card title="Cost by Service Type" icon="chart-column" iconColor="blue">
         @if (hasServiceTypeData()) {
-          <p-chart
+          <ui-chart
             type="bar"
             [data]="serviceTypeChartData()"
             [options]="barChartOptions"
             style="height: 300px"
           />
         } @else {
-          <ui-stack align="center" justify="center" class="text-muted h-75">
+          <ui-stack align="center" justify="center" class="text-muted-foreground h-75">
             <ui-typography variant="body" color="muted">
               No service type data available
             </ui-typography>
@@ -79,16 +76,16 @@
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Cost by Vendor" icon="pi-chart-pie" iconColor="green">
+      <ui-dashboard-card title="Cost by Vendor" icon="chart-pie" iconColor="green">
         @if (hasVendorData()) {
-          <p-chart
+          <ui-chart
             type="doughnut"
             [data]="vendorChartData()"
             [options]="pieChartOptions"
             style="height: 300px"
           />
         } @else {
-          <ui-stack align="center" justify="center" class="text-muted h-75">
+          <ui-stack align="center" justify="center" class="text-muted-foreground h-75">
             <ui-typography variant="body" color="muted">No vendor data available</ui-typography>
           </ui-stack>
         }
@@ -98,16 +95,16 @@
 
   <!-- Cost Trends Chart -->
   <div class="mb-6">
-    <ui-dashboard-card title="Cost Trends" icon="pi-chart-line" iconColor="blue">
+    <ui-dashboard-card title="Cost Trends" icon="chart-line" iconColor="blue">
       @if (hasCostTrendData()) {
-        <p-chart
+        <ui-chart
           [type]="trendChartType()"
           [data]="costTrendChartData()"
           [options]="trendChartOptions()"
           style="height: 350px"
         />
       } @else {
-        <ui-stack align="center" justify="center" class="text-muted h-88">
+        <ui-stack align="center" justify="center" class="text-muted-foreground h-88">
           <ui-typography variant="body" color="muted">No trend data available</ui-typography>
         </ui-stack>
       }
@@ -117,8 +114,8 @@
   <!-- Data Tables -->
   <ui-grid container spacing="2">
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Service Type Summary" icon="pi-list" iconColor="blue">
-        <p-table [value]="data()?.byServiceType || []" [paginator]="true" [rows]="5">
+      <ui-dashboard-card title="Service Type Summary" icon="list" iconColor="blue">
+        <ui-data-table [value]="data()?.byServiceType || []" [paginator]="true" [rows]="5">
           <ng-template #header>
             <tr>
               <th>Service Type</th>
@@ -147,18 +144,20 @@
               </td>
             </tr>
           </ng-template>
-          <ng-template #emptymessage>
+          <ng-template #empty>
             <tr>
-              <td colspan="4" class="text-muted text-center">No service type data available</td>
+              <td colspan="4" class="text-muted-foreground text-center">
+                No service type data available
+              </td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       </ui-dashboard-card>
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 6 }" class="mb-6">
-      <ui-dashboard-card title="Top Trucks by Cost" icon="pi-truck" iconColor="orange">
-        <p-table [value]="data()?.topCostTrucks || []" [paginator]="true" [rows]="5">
+      <ui-dashboard-card title="Top Trucks by Cost" icon="truck" iconColor="orange">
+        <ui-data-table [value]="data()?.topCostTrucks || []" [paginator]="true" [rows]="5">
           <ng-template #header>
             <tr>
               <th>Truck</th>
@@ -196,25 +195,25 @@
                 @if (truck.lastServiceDate) {
                   {{ truck.lastServiceDate | date: "MMM d, yyyy" }}
                 } @else {
-                  <span class="text-muted">N/A</span>
+                  <span class="text-muted-foreground">N/A</span>
                 }
               </td>
             </tr>
           </ng-template>
-          <ng-template #emptymessage>
+          <ng-template #empty>
             <tr>
-              <td colspan="4" class="text-muted text-center">No truck data available</td>
+              <td colspan="4" class="text-muted-foreground text-center">No truck data available</td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       </ui-dashboard-card>
     </ui-grid>
   </ui-grid>
 
   <!-- Vendor Breakdown Table -->
   <div class="mb-6">
-    <ui-dashboard-card title="Vendor Summary" icon="pi-building" iconColor="green">
-      <p-table [value]="data()?.byVendor || []">
+    <ui-dashboard-card title="Vendor Summary" icon="building-2" iconColor="green">
+      <ui-data-table [value]="data()?.byVendor || []">
         <ng-template #header>
           <tr>
             <th>Vendor</th>
@@ -237,18 +236,18 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template #emptymessage>
+        <ng-template #empty>
           <tr>
-            <td colspan="3" class="text-muted text-center">No vendor data available</td>
+            <td colspan="3" class="text-muted-foreground text-center">No vendor data available</td>
           </tr>
         </ng-template>
-      </p-table>
+      </ui-data-table>
     </ui-dashboard-card>
   </div>
 
   <!-- Schedule Summary Card -->
   <div class="mb-6">
-    <ui-dashboard-card title="Schedule Summary" icon="pi-calendar" iconColor="blue">
+    <ui-dashboard-card title="Schedule Summary" icon="calendar" iconColor="blue">
       <ui-grid container spacing="4" class="p-4">
         <ui-grid [size]="{ xs: 12, md: 4 }">
           <ui-typography variant="caption" color="muted">Total Schedules</ui-typography>

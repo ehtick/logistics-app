@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, type OnInit } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { email, form, FormField, FormRoot, maxLength, required } from "@angular/forms/signals";
 import { AddressForm, PhoneField, regionAllowedCountries } from "@logistics/shared";
 import {
   Api,
@@ -10,46 +10,83 @@ import {
   type TenantSettings,
   type UpdateTenantCommand,
 } from "@logistics/shared/api";
-import { Container, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { InputTextModule } from "primeng/inputtext";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { SelectModule } from "primeng/select";
-import { ToastModule } from "primeng/toast";
+import {
+  Container,
+  Icon,
+  Spinner,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiSelectField,
+  UiTextField,
+} from "@logistics/shared/ui";
 import { TenantService, ToastService } from "@/core/services";
-import { FormField, PageHeader, ValidatedForm } from "@/shared/components";
+import { PageHeader, UiFormField, ValidatedForm } from "@/shared/components";
+
+interface CompanySettingsModel {
+  companyName: string;
+  phoneNumber: string | null;
+  billingEmail: string;
+  dotNumber: string;
+  mcNumber: string;
+  vatNumber: string;
+  eoriNumber: string;
+  companyRegistrationNumber: string;
+  taxResidencyCountry: string;
+  companyAddress: Address | null;
+  // Regional settings
+  distanceUnit: string;
+  weightUnit: string;
+  dateFormat: string;
+  timezone: string;
+}
+
+const EMPTY: CompanySettingsModel = {
+  companyName: "",
+  phoneNumber: null,
+  billingEmail: "",
+  dotNumber: "",
+  mcNumber: "",
+  vatNumber: "",
+  eoriNumber: "",
+  companyRegistrationNumber: "",
+  taxResidencyCountry: "",
+  companyAddress: null,
+  distanceUnit: "miles",
+  weightUnit: "pounds",
+  dateFormat: "us",
+  timezone: "America/New_York",
+};
 
 @Component({
   selector: "app-company-settings",
   templateUrl: "./company-settings.html",
   imports: [
-    ToastModule,
-    ProgressSpinnerModule,
-    ButtonModule,
-    ReactiveFormsModule,
-    ValidatedForm,
-    FormField,
-    PageHeader,
-    InputTextModule,
     AddressForm,
-    PhoneField,
-    SelectModule,
+    Container,
+    FormField,
+    FormRoot,
     Icon,
+    PageHeader,
+    PhoneField,
+    Spinner,
     Stack,
     Surface,
     Typography,
-    Container,
+    UiButton,
+    UiFormField,
+    UiSelectField,
+    UiTextField,
+    ValidatedForm,
   ],
 })
 export class CompanySettingsComponent implements OnInit {
-  protected readonly form: FormGroup<CompanySettingsForm>;
-
   private readonly api = inject(Api);
   private readonly tenantService = inject(TenantService);
   private readonly toastService = inject(ToastService);
 
   protected readonly isLoading = signal(false);
-  protected readonly isSaving = signal(false);
   protected readonly isUploadingLogo = signal(false);
   protected readonly logoPreviewUrl = signal<string | null>(null);
   protected readonly tenant = signal<TenantDto | null>(null);
@@ -91,82 +128,64 @@ export class CompanySettingsComponent implements OnInit {
     { label: "Australia/Sydney (Australia Eastern)", value: "Australia/Sydney" },
   ];
 
-  constructor() {
-    this.form = new FormGroup<CompanySettingsForm>({
-      companyName: new FormControl("", {
-        validators: [Validators.required, Validators.maxLength(200)],
-        nonNullable: true,
-      }),
-      phoneNumber: new FormControl<string | null>(null),
-      billingEmail: new FormControl("", {
-        validators: [Validators.required, Validators.email],
-        nonNullable: true,
-      }),
-      dotNumber: new FormControl("", { nonNullable: true }),
-      mcNumber: new FormControl("", { nonNullable: true }),
-      vatNumber: new FormControl("", { nonNullable: true }),
-      eoriNumber: new FormControl("", { nonNullable: true }),
-      companyRegistrationNumber: new FormControl("", { nonNullable: true }),
-      taxResidencyCountry: new FormControl<string | null>(null),
-      companyAddress: new FormControl<Address | null>(null, {
-        validators: Validators.required,
-      }),
-      // Regional settings
-      distanceUnit: new FormControl("miles", { nonNullable: true }),
-      weightUnit: new FormControl("pounds", { nonNullable: true }),
-      dateFormat: new FormControl("us", { nonNullable: true }),
-      timezone: new FormControl("America/New_York", { nonNullable: true }),
-    });
-  }
+  protected readonly model = signal<CompanySettingsModel>({ ...EMPTY });
+
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.companyName, { message: "Company name is required." });
+      maxLength(p.companyName, 200, {
+        message: "Company name must be 200 characters or fewer.",
+      });
+      required(p.billingEmail, { message: "Billing email is required." });
+      email(p.billingEmail, { message: "Enter a valid email address." });
+      required(p.companyAddress, { message: "Company address is required." });
+    },
+    {
+      submission: {
+        action: async () => {
+          const tenantId = this.tenantService.getTenantId();
+          if (!tenantId) {
+            this.toastService.showError("Tenant ID not found");
+            return undefined;
+          }
+
+          const value = this.model();
+          const command: UpdateTenantCommand = {
+            companyName: value.companyName,
+            phoneNumber: value.phoneNumber,
+            billingEmail: value.billingEmail,
+            dotNumber: value.dotNumber,
+            mcNumber: value.mcNumber || null,
+            vatNumber: value.vatNumber || null,
+            eoriNumber: value.eoriNumber || null,
+            companyRegistrationNumber: value.companyRegistrationNumber || null,
+            taxResidencyCountry: value.taxResidencyCountry || null,
+            companyAddress: value.companyAddress ?? undefined,
+            settings: {
+              distanceUnit: value.distanceUnit,
+              weightUnit: value.weightUnit,
+              dateFormat: value.dateFormat,
+              timezone: value.timezone,
+              currency: "usd",
+            } as TenantSettings,
+          };
+
+          try {
+            await this.api.invoke(updateTenant, { id: tenantId, body: command });
+            this.toastService.showSuccess("Company settings have been saved successfully");
+            this.tenantService.refetchTenantData();
+          } catch {
+            this.toastService.showError("An error occurred while saving company settings");
+          }
+          return undefined;
+        },
+      },
+    },
+  );
 
   ngOnInit(): void {
     this.fetchTenantData();
-  }
-
-  async save(): Promise<void> {
-    if (!this.form.valid) {
-      return;
-    }
-
-    const tenantId = this.tenantService.getTenantId();
-    if (!tenantId) {
-      this.toastService.showError("Tenant ID not found");
-      return;
-    }
-
-    const command: UpdateTenantCommand = {
-      companyName: this.form.value.companyName,
-      phoneNumber: this.form.value.phoneNumber,
-      billingEmail: this.form.value.billingEmail,
-      dotNumber: this.form.value.dotNumber,
-      mcNumber: this.form.value.mcNumber || null,
-      vatNumber: this.form.value.vatNumber || null,
-      eoriNumber: this.form.value.eoriNumber || null,
-      companyRegistrationNumber: this.form.value.companyRegistrationNumber || null,
-      taxResidencyCountry: this.form.value.taxResidencyCountry || null,
-      companyAddress: this.form.value.companyAddress ?? undefined,
-      settings: {
-        distanceUnit: this.form.value.distanceUnit,
-        weightUnit: this.form.value.weightUnit,
-        dateFormat: this.form.value.dateFormat,
-        timezone: this.form.value.timezone,
-        currency: "usd",
-      } as TenantSettings,
-    };
-
-    this.isSaving.set(true);
-    try {
-      await this.api.invoke(updateTenant, {
-        id: tenantId,
-        body: command,
-      });
-      this.toastService.showSuccess("Company settings have been saved successfully");
-      this.tenantService.refetchTenantData();
-    } catch {
-      this.toastService.showError("An error occurred while saving company settings");
-    } finally {
-      this.isSaving.set(false);
-    }
   }
 
   async onLogoSelected(event: Event): Promise<void> {
@@ -237,7 +256,7 @@ export class CompanySettingsComponent implements OnInit {
       const tenant = await this.api.invoke(getTenantById, { identifier: tenantId });
       if (tenant) {
         this.tenant.set(tenant);
-        this.form.patchValue({
+        this.model.set({
           companyName: tenant.companyName ?? "",
           phoneNumber: tenant.phoneNumber ?? null,
           billingEmail: tenant.billingEmail ?? "",
@@ -246,8 +265,8 @@ export class CompanySettingsComponent implements OnInit {
           vatNumber: tenant.vatNumber ?? "",
           eoriNumber: tenant.eoriNumber ?? "",
           companyRegistrationNumber: tenant.companyRegistrationNumber ?? "",
-          taxResidencyCountry: tenant.taxResidencyCountry ?? null,
-          companyAddress: tenant.companyAddress,
+          taxResidencyCountry: tenant.taxResidencyCountry ?? "",
+          companyAddress: tenant.companyAddress ?? null,
           // Regional settings
           distanceUnit: tenant.settings?.distanceUnit ?? "miles",
           weightUnit: tenant.settings?.weightUnit ?? "pounds",
@@ -275,22 +294,4 @@ export class CompanySettingsComponent implements OnInit {
     const tenantId = this.tenantService.getTenantId();
     return `/uploads/${tenantId}/logos/${logoPath}`;
   }
-}
-
-interface CompanySettingsForm {
-  companyName: FormControl<string>;
-  phoneNumber: FormControl<string | null>;
-  billingEmail: FormControl<string>;
-  dotNumber: FormControl<string>;
-  mcNumber: FormControl<string>;
-  vatNumber: FormControl<string>;
-  eoriNumber: FormControl<string>;
-  companyRegistrationNumber: FormControl<string>;
-  taxResidencyCountry: FormControl<string | null>;
-  companyAddress: FormControl<Address | null>;
-  // Regional settings
-  distanceUnit: FormControl<string>;
-  weightUnit: FormControl<string>;
-  dateFormat: FormControl<string>;
-  timezone: FormControl<string>;
 }

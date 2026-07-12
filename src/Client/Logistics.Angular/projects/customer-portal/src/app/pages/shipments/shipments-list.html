@@ -1,20 +1,15 @@
 <div>
   <ui-stack direction="row" align="center" justify="between" class="mb-6">
     <ui-typography variant="h2" tag="h1">My Shipments</ui-typography>
-    <p-iconfield>
-      <p-inputicon class="pi pi-search" />
-      <input
-        type="text"
-        pInputText
-        placeholder="Search shipments..."
-        class="w-64"
-        (input)="onSearch($any($event.target).value)"
-      />
-    </p-iconfield>
+    <ui-search-field
+      placeholder="Search shipments..."
+      class="w-64"
+      (searchChange)="onSearch($event)"
+    />
   </ui-stack>
 
   <ui-surface variant="elevated" padding="none">
-    <p-table
+    <ui-data-table
       [value]="loads()"
       [lazy]="true"
       [paginator]="true"
@@ -24,7 +19,7 @@
       [loading]="isLoading()"
       [rowsPerPageOptions]="[10, 25, 50]"
       [tableStyle]="{ 'min-width': '50rem' }"
-      (onLazyLoad)="onLazyLoad($event)"
+      (lazyLoad)="onLazyLoad($event)"
     >
       <ng-template #header>
         <tr>
@@ -48,16 +43,16 @@
           </td>
           <td>{{ load.driverName || "-" }}</td>
           <td class="text-right">
-            <p-button
+            <ui-button
+              appearance="text"
               [routerLink]="['/shipments', load.id]"
               label="View"
-              [text]="true"
-              icon="pi pi-eye"
+              icon="eye"
             />
           </td>
         </tr>
       </ng-template>
-      <ng-template #emptymessage>
+      <ng-template #empty>
         <tr>
           <td colspan="7" class="py-12 text-center">
             <ui-stack align="center" gap="2">
@@ -67,6 +62,6 @@
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   </ui-surface>
 </div>

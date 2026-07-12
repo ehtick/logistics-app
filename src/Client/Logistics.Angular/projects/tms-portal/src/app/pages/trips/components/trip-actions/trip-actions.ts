@@ -2,12 +2,12 @@ import { Component, inject, input, output } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ToastService } from "@logistics/shared";
 import type { TripStatus } from "@logistics/shared/api";
-import { ButtonModule } from "primeng/button";
+import { UiButton } from "@logistics/shared/ui";
 
 @Component({
   selector: "app-trip-actions",
   templateUrl: "./trip-actions.html",
-  imports: [ButtonModule, RouterLink],
+  imports: [RouterLink, UiButton],
 })
 export class TripActions {
   private readonly toastService = inject(ToastService);
@@ -45,10 +45,10 @@ export class TripActions {
     this.toastService.confirm({
       message: "Are you sure you want to dispatch this trip?",
       header: "Confirm Dispatch",
-      icon: "pi pi-send",
+      icon: "send",
       acceptLabel: "Dispatch",
       rejectLabel: "Cancel",
-      acceptButtonStyleClass: "p-button-success",
+      severity: "success",
       accept: () => {
         this.dispatch.emit();
       },
@@ -59,10 +59,10 @@ export class TripActions {
     this.toastService.confirm({
       message: "Are you sure you want to cancel this trip? This action cannot be undone.",
       header: "Confirm Cancellation",
-      icon: "pi pi-exclamation-triangle",
+      icon: "warning",
       acceptLabel: "Cancel Trip",
       rejectLabel: "Keep Trip",
-      acceptButtonStyleClass: "p-button-danger",
+      severity: "danger",
       accept: () => {
         this.cancelTrip.emit(undefined);
       },

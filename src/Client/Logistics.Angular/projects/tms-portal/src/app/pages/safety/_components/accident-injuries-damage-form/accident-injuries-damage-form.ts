@@ -1,25 +1,28 @@
 import { Component, input } from "@angular/core";
-import { ReactiveFormsModule, type FormGroup } from "@angular/forms";
-import { FormField } from "@logistics/shared/components";
-import { CardModule } from "primeng/card";
-import { InputNumberModule } from "primeng/inputnumber";
-import { InputTextModule } from "primeng/inputtext";
-import { TextareaModule } from "primeng/textarea";
-import { ToggleSwitchModule } from "primeng/toggleswitch";
+import { FormField, type FieldTree } from "@angular/forms/signals";
+import {
+  Card,
+  UiFormField,
+  UiNumberField,
+  UiTextareaField,
+  UiTextField,
+  UiToggleField,
+} from "@logistics/shared/ui";
+import { type AccidentInjuriesDamageModel } from "../accident.constants";
 
 @Component({
   selector: "app-accident-injuries-damage-form",
   templateUrl: "./accident-injuries-damage-form.html",
   imports: [
-    ReactiveFormsModule,
-    CardModule,
-    InputNumberModule,
-    InputTextModule,
-    TextareaModule,
-    ToggleSwitchModule,
+    Card,
     FormField,
+    UiFormField,
+    UiNumberField,
+    UiTextareaField,
+    UiTextField,
+    UiToggleField,
   ],
 })
 export class AccidentInjuriesDamageForm {
-  public readonly form = input.required<FormGroup>();
+  public readonly field = input.required<FieldTree<AccidentInjuriesDamageModel>>();
 }

@@ -1,9 +1,6 @@
 import { Component, computed, inject, signal } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
-import { CardModule } from "primeng/card";
-import { ConfirmDialog } from "primeng/confirmdialog";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { ToastModule } from "primeng/toast";
+import { Spinner, UiToaster } from "@logistics/shared/ui";
 import { filter } from "rxjs";
 import { AuthService } from "@/core/auth";
 import { LayoutService } from "@/core/services";
@@ -19,15 +16,13 @@ const STANDALONE_ROUTES = ["/", "/unauthorized", "/404"];
   templateUrl: "./app.html",
   styleUrl: "./app.css",
   imports: [
-    ToastModule,
+    UiToaster,
+    CommandPalette,
+    MobileDrawer,
+    MobileHeader,
     RouterOutlet,
     Sidebar,
-    ConfirmDialog,
-    MobileHeader,
-    MobileDrawer,
-    ProgressSpinnerModule,
-    CardModule,
-    CommandPalette,
+    Spinner,
     UpgradeDialog,
   ],
 })

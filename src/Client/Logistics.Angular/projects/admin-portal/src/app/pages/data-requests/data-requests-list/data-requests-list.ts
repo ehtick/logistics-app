@@ -8,31 +8,31 @@ import {
   type PendingDataRequestsDto,
 } from "@logistics/shared/api";
 import {
+  Badge,
+  Card,
   PageHeader,
+  Spinner,
   Stack,
   Surface,
   Typography,
-  type BadgeSeverity,
-} from "@logistics/shared/components";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
+  UiDataTable,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 
 @Component({
   selector: "adm-data-requests-list",
   templateUrl: "./data-requests-list.html",
   imports: [
+    Badge,
+    Card,
     CommonModule,
-    CardModule,
-    ProgressSpinnerModule,
-    TableModule,
-    TagModule,
     PageHeader,
+    Spinner,
     Stack,
     Surface,
     Typography,
+    UiDataTable,
   ],
 })
 export class DataRequestsList {
@@ -54,7 +54,7 @@ export class DataRequestsList {
     void this.refresh();
   }
 
-  protected statusSeverity(status: string | undefined): BadgeSeverity {
+  protected statusSeverity(status: string | undefined): UiBadgeIntent {
     switch (status) {
       case "ready":
       case "processed":

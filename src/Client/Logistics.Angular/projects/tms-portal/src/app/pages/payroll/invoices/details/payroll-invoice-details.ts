@@ -1,6 +1,5 @@
 import { CommonModule, DatePipe, PercentPipe } from "@angular/common";
 import { Component, inject, input, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import {
   Api,
@@ -12,17 +11,22 @@ import {
   type InvoiceDto,
 } from "@logistics/shared/api";
 import { salaryTypeOptions } from "@logistics/shared/api/enums";
-import { Grid, Icon, Stack, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { DividerModule } from "primeng/divider";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TextareaModule } from "primeng/textarea";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  Divider,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiTextareaField,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { PdfService, TenantService, ToastService } from "@/core/services";
 import { RecordPaymentDialog } from "@/pages/invoices/components";
 import { InvoiceStatusTag, PageHeader, PaymentStatusTag } from "@/shared/components";
@@ -31,29 +35,28 @@ import { InvoiceStatusTag, PageHeader, PaymentStatusTag } from "@/shared/compone
   selector: "app-payroll-invoice-details",
   templateUrl: "./payroll-invoice-details.html",
   imports: [
+    Badge,
+    Card,
     CommonModule,
-    FormsModule,
-    CardModule,
-    ButtonModule,
-    ProgressSpinnerModule,
-    RouterModule,
-    InvoiceStatusTag,
-    PaymentStatusTag,
-    DividerModule,
-    TableModule,
-    TagModule,
-    TooltipModule,
     CurrencyFormatPipe,
     DatePipe,
-    PercentPipe,
-    RecordPaymentDialog,
-    DialogModule,
-    TextareaModule,
-    PageHeader,
+    Divider,
     Grid,
     Icon,
+    InvoiceStatusTag,
+    PageHeader,
+    PaymentStatusTag,
+    PercentPipe,
+    RecordPaymentDialog,
+    RouterModule,
+    Spinner,
     Stack,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiTextareaField,
+    UiTooltip,
   ],
 })
 export class PayrollInvoiceDetails implements OnInit {
@@ -117,7 +120,7 @@ export class PayrollInvoiceDetails implements OnInit {
     this.toastService.confirm({
       message: "Are you sure you want to submit this payroll for approval?",
       header: "Submit for Approval",
-      icon: "pi pi-question-circle",
+      icon: "question",
       accept: async () => {
         this.isSubmitting.set(true);
         try {
@@ -137,7 +140,7 @@ export class PayrollInvoiceDetails implements OnInit {
     this.toastService.confirm({
       message: "Are you sure you want to approve this payroll?",
       header: "Approve Payroll",
-      icon: "pi pi-check-circle",
+      icon: "success",
       accept: async () => {
         this.isApproving.set(true);
         try {
@@ -195,7 +198,7 @@ export class PayrollInvoiceDetails implements OnInit {
     this.toastService.confirm({
       message: `Pay ${this.getOutstandingAmount().toLocaleString("en-US", { style: "currency", currency: this.tenantService.tenantCurrency() })} to ${invoice.employee?.fullName ?? "employee"} via bank transfer?`,
       header: "Confirm Payout",
-      icon: "pi pi-credit-card",
+      icon: "payment",
       acceptLabel: "Yes, Pay Now",
       rejectLabel: "Cancel",
       accept: async () => {

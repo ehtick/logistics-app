@@ -1,11 +1,18 @@
 import { DatePipe } from "@angular/common";
 import { Component, computed, inject, input, output } from "@angular/core";
 import type { TripStopDto, TripStopType } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Typography } from "@logistics/shared/components";
 import { AddressPipe, CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { TableModule } from "primeng/table";
+import {
+  Card,
+  Grid,
+  Icon,
+  Stack,
+  Typography,
+  UiButton,
+  UiDataTable,
+  UiSortHeader,
+  UiTableRowDirectives,
+} from "@logistics/shared/ui";
 import {
   DirectionMap,
   type RouteSegmentClickEvent,
@@ -19,18 +26,20 @@ import { TripWizardStore } from "../../store/trip-wizard-store";
   selector: "app-trip-wizard-review",
   templateUrl: "./trip-wizard-review.html",
   imports: [
-    CardModule,
-    DirectionMap,
-    ButtonModule,
-    DistanceUnitPipe,
-    CurrencyFormatPipe,
-    TableModule,
     AddressPipe,
+    Card,
+    CurrencyFormatPipe,
     DatePipe,
+    DirectionMap,
+    DistanceUnitPipe,
     Grid,
     Icon,
     Stack,
     Typography,
+    UiButton,
+    UiDataTable,
+    UiSortHeader,
+    UiTableRowDirectives,
   ],
 })
 export class TripWizardReview {

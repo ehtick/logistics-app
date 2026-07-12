@@ -1,6 +1,5 @@
 import { DatePipe } from "@angular/common";
 import { Component, computed, inject, input, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import {
   Api,
@@ -12,42 +11,46 @@ import {
   type AccidentReportStatus,
   type AccidentSeverity,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TabsModule } from "primeng/tabs";
-import { TagModule } from "primeng/tag";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Badge,
+  Card,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Typography,
+  UiButton,
+  UiDialog,
+  UiTabsImports,
+  UiTextareaField,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import { ToastService } from "@/core/services";
 import { PageHeader } from "@/shared/components";
-import type { TagSeverity } from "@/shared/types";
 import { AccidentQuickInfo } from "../_components";
 
 @Component({
   selector: "app-accident-detail",
   templateUrl: "./accident-detail.html",
   imports: [
-    CurrencyFormatPipe,
-    RouterLink,
-    FormsModule,
-    DatePipe,
-    ButtonModule,
-    CardModule,
-    DialogModule,
-    TextareaModule,
-    ProgressSpinnerModule,
-    TabsModule,
-    TagModule,
-    PageHeader,
     AccidentQuickInfo,
+    Badge,
+    Card,
+    CurrencyFormatPipe,
+    DatePipe,
     Grid,
     Icon,
+    PageHeader,
+    RouterLink,
+    Spinner,
     Stack,
     Typography,
+    UiButton,
+    UiDialog,
+    UiTabsImports,
+    UiTextareaField,
   ],
 })
 export class AccidentDetailPage implements OnInit {
@@ -106,7 +109,7 @@ export class AccidentDetailPage implements OnInit {
     }
   }
 
-  protected getStatusSeverity(status: AccidentReportStatus | undefined): TagSeverity {
+  protected getStatusSeverity(status: AccidentReportStatus | undefined): UiBadgeIntent {
     switch (status) {
       case "resolved":
         return "success";
@@ -123,7 +126,7 @@ export class AccidentDetailPage implements OnInit {
     }
   }
 
-  protected getSeveritySeverity(severity: AccidentSeverity | undefined): TagSeverity {
+  protected getSeveritySeverity(severity: AccidentSeverity | undefined): UiBadgeIntent {
     switch (severity) {
       case "minor":
         return "info";
@@ -147,7 +150,7 @@ export class AccidentDetailPage implements OnInit {
       message:
         "Are you sure you want to submit this accident report? Once submitted, it cannot be edited.",
       header: "Confirm Submission",
-      icon: "pi pi-exclamation-triangle",
+      icon: "warning",
       accept: () => this.doSubmitReport(),
     });
   }

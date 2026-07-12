@@ -1,7 +1,5 @@
 import { Component, computed, input } from "@angular/core";
-import { Icon, Stack, Typography } from "@logistics/shared/components";
-import { CardModule } from "primeng/card";
-import { TooltipModule } from "primeng/tooltip";
+import { Card, Icon, Stack, Typography, UiTooltip, type IconName } from "@logistics/shared/ui";
 
 type ColorVariant = "blue" | "green" | "orange" | "red" | "purple" | "gray";
 
@@ -18,13 +16,13 @@ const COLOR_VAR_MAP: Record<ColorVariant, string> = {
   selector: "app-stat-card",
   templateUrl: "./stat-card.html",
   styleUrl: "./stat-card.css",
-  imports: [CardModule, TooltipModule, Icon, Stack, Typography],
+  imports: [Card, Icon, Stack, Typography, UiTooltip],
   host: {
     "[style.--stat-card-icon-color]": "iconColorVar()",
   },
 })
 export class StatCard {
-  public readonly icon = input.required<string>();
+  public readonly icon = input.required<IconName>();
   public readonly label = input.required<string>();
   public readonly value = input.required<string | number>();
   public readonly color = input<ColorVariant>("blue");
@@ -37,10 +35,10 @@ export class StatCard {
   protected readonly trendClasses = computed(() => {
     if (this.trendDirection() === "up") return "text-success";
     if (this.trendDirection() === "down") return "text-danger";
-    return "text-muted";
+    return "text-muted-foreground";
   });
 
-  protected readonly trendIcon = computed(() => {
+  protected readonly trendIcon = computed<IconName | null>(() => {
     if (this.trendDirection() === "up") return "arrow-up";
     if (this.trendDirection() === "down") return "arrow-down";
     return null;

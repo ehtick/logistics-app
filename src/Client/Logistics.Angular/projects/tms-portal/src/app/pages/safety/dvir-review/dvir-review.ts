@@ -1,5 +1,5 @@
 import { Component, inject, input, signal, type OnInit } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { form, FormField, FormRoot } from "@angular/forms/signals";
 import { Router } from "@angular/router";
 import {
   Api,
@@ -8,12 +8,15 @@ import {
   type DvirReportDto,
   type ReviewDvirReportCommand,
 } from "@logistics/shared/api";
-import { FormField, ValidatedForm } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TextareaModule } from "primeng/textarea";
-import { ToggleSwitchModule } from "primeng/toggleswitch";
+import {
+  Card,
+  Spinner,
+  UiButton,
+  UiFormField,
+  UiTextareaField,
+  UiToggleField,
+  ValidatedForm,
+} from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import { ToastService } from "@/core/services";
 import { PageHeader } from "@/shared/components";
@@ -23,16 +26,17 @@ import { DvirDefectsList } from "../_components/dvir-defects-list/dvir-defects-l
   selector: "app-dvir-review",
   templateUrl: "./dvir-review.html",
   imports: [
-    ReactiveFormsModule,
-    ButtonModule,
-    CardModule,
-    ProgressSpinnerModule,
-    TextareaModule,
-    ToggleSwitchModule,
-    PageHeader,
-    FormField,
-    ValidatedForm,
+    Card,
     DvirDefectsList,
+    FormField,
+    FormRoot,
+    PageHeader,
+    Spinner,
+    UiButton,
+    UiFormField,
+    UiTextareaField,
+    UiToggleField,
+    ValidatedForm,
   ],
 })
 export class DvirReviewPage implements OnInit {
@@ -44,13 +48,50 @@ export class DvirReviewPage implements OnInit {
   public readonly id = input.required<string>();
 
   protected readonly isLoading = signal(true);
-  protected readonly isSaving = signal(false);
   protected readonly report = signal<DvirReportDto | null>(null);
 
-  protected readonly form = new FormGroup({
-    defectsCorrected: new FormControl<boolean>(false, { nonNullable: true }),
-    mechanicNotes: new FormControl<string | null>(null),
+  protected readonly model = signal<{ defectsCorrected: boolean; mechanicNotes: string }>({
+    defectsCorrected: false,
+    mechanicNotes: "",
   });
+
+  /** The review fields are all optional, so the form declares no validation rules. */
+  protected readonly form = form(
+    this.model,
+    () => {
+      // No validation rules — DVIR review fields are all optional.
+    },
+    {
+      submission: {
+        action: async () => {
+          const userId = this.authService.getUserData()?.id;
+          if (!userId) {
+            this.toastService.showError("User not authenticated");
+            return undefined;
+          }
+
+          const v = this.model();
+          const command: ReviewDvirReportCommand = {
+            reportId: this.id(),
+            reviewedById: userId,
+            defectsCorrected: v.defectsCorrected,
+            mechanicNotes: v.mechanicNotes || null,
+          };
+
+          try {
+            await this.api.invoke(reviewDvirReport, { id: this.id(), body: command });
+          } catch {
+            this.toastService.showError("Failed to submit review");
+            return undefined;
+          }
+
+          this.toastService.showSuccess("DVIR review submitted successfully");
+          this.router.navigateByUrl(`/safety/dvir/${this.id()}`);
+          return undefined;
+        },
+      },
+    },
+  );
 
   async ngOnInit(): Promise<void> {
     await this.loadReport();
@@ -75,39 +116,6 @@ export class DvirReviewPage implements OnInit {
       }
     } finally {
       this.isLoading.set(false);
-    }
-  }
-
-  protected async submitReview(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.isSaving.set(true);
-    try {
-      const formValue = this.form.getRawValue();
-      const userId = this.authService.getUserData()?.id;
-
-      if (!userId) {
-        this.toastService.showError("User not authenticated");
-        return;
-      }
-
-      const command: ReviewDvirReportCommand = {
-        reportId: this.id(),
-        reviewedById: userId,
-        defectsCorrected: formValue.defectsCorrected,
-        mechanicNotes: formValue.mechanicNotes,
-      };
-
-      await this.api.invoke(reviewDvirReport, { id: this.id(), body: command });
-      this.toastService.showSuccess("DVIR review submitted successfully");
-      this.router.navigateByUrl(`/safety/dvir/${this.id()}`);
-    } catch {
-      this.toastService.showError("Failed to submit review");
-    } finally {
-      this.isSaving.set(false);
     }
   }
 

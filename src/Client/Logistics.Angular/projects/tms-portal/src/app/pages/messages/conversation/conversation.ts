@@ -9,13 +9,9 @@ import {
   type OnDestroy,
   type OnInit,
 } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import type { ConversationDto, EmployeeDto, MessageDto } from "@logistics/shared/api";
-import { EmptyState, Stack } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { InputTextModule } from "primeng/inputtext";
-import { SkeletonModule } from "primeng/skeleton";
+import { EmptyState, Skeleton, Stack, UiButton, UiTextField } from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import { ChatService } from "@/core/services";
 import {
@@ -31,16 +27,15 @@ import { MessagesStore } from "../store/messages.store";
   templateUrl: "./conversation.html",
   providers: [MessagesStore],
   imports: [
-    ButtonModule,
-    InputTextModule,
-    FormsModule,
-    SkeletonModule,
-    EmptyState,
-    Stack,
-    ConversationHeader,
     ConversationDetails,
+    ConversationHeader,
+    EmptyState,
     MessageBubble,
     RecipientSelector,
+    Skeleton,
+    Stack,
+    UiButton,
+    UiTextField,
   ],
 })
 export class ConversationComponent implements OnInit, OnDestroy {

@@ -3,11 +3,11 @@
   subtitle="Connect your ELD devices to sync driver Hours of Service data"
   backLink="/eld"
 >
-  <p-button
+  <ui-button
+    buttonClass="whitespace-nowrap"
     label="Add Provider"
-    icon="pi pi-plus"
-    styleClass="whitespace-nowrap"
-    (onClick)="showAddDialog.set(true)"
+    icon="plus"
+    (click)="showAddDialog.set(true)"
   />
 </ui-page-header>
 
@@ -17,10 +17,10 @@
   HOS data every 5 minutes and receive real-time updates via webhooks.
 </ui-alert>
 
-<ui-dashboard-card title="Configured Providers" icon="pi-cog">
+<ui-dashboard-card title="Configured Providers" icon="settings">
   @if (loading()) {
     <ui-stack align="center" justify="center" class="p-5">
-      <p-progressSpinner />
+      <ui-spinner />
     </ui-stack>
   } @else if (error()) {
     <ui-error-state [message]="error()!" (retry)="loadProviders()" />

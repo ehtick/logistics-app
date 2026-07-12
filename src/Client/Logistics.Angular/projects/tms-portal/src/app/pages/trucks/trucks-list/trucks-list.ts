@@ -1,14 +1,17 @@
 import { Component, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import type { Address, TruckDto } from "@logistics/shared/api";
-import { Stack } from "@logistics/shared/components";
 import { AddressPipe } from "@logistics/shared/pipes";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Card,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  UiTooltip,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { DataContainer, PageHeader, TruckStatusTag, TruckTypeTag } from "@/shared/components";
 import {
   TrucksFilterPanel,
@@ -23,20 +26,21 @@ import { TrucksListStore } from "../store/trucks-list.store";
   templateUrl: "./trucks-list.html",
   providers: [TrucksListStore, AddressPipe],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    MenuModule,
     AddressPipe,
+    Card,
     DataContainer,
     PageHeader,
-    TruckStatusTag,
-    TruckTypeTag,
-    TrucksSummaryStats,
+    Stack,
     TrucksFilterPanel,
     TrucksMapView,
-    Stack,
+    TrucksSummaryStats,
+    TruckStatusTag,
+    TruckTypeTag,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
+    UiTooltip,
   ],
 })
 export class TrucksList {
@@ -47,20 +51,20 @@ export class TrucksList {
   protected readonly selectedRow = signal<TruckDto | null>(null);
   protected readonly viewMode = signal<"table" | "map">("table");
 
-  protected readonly actionMenuItems: MenuItem[] = [
+  protected readonly actionMenuItems: UiMenuItem[] = [
     {
       label: "View details",
-      icon: "pi pi-eye",
+      icon: "eye",
       command: () => this.router.navigateByUrl(`/trucks/${this.selectedRow()!.id}`),
     },
     {
       label: "Edit truck",
-      icon: "pi pi-pencil",
+      icon: "pencil",
       command: () => this.router.navigateByUrl(`/trucks/${this.selectedRow()!.id}/edit`),
     },
     {
       label: "Manage documents",
-      icon: "pi pi-folder",
+      icon: "folder",
       command: () => this.router.navigateByUrl(`/trucks/${this.selectedRow()!.id}/documents`),
     },
   ];

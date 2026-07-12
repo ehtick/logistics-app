@@ -1,11 +1,5 @@
 import { Component, inject, model, output, signal } from "@angular/core";
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
+import { email, form, FormField, FormRoot, required } from "@angular/forms/signals";
 import { UserRole } from "@logistics/shared";
 import {
   Api,
@@ -14,41 +8,40 @@ import {
   type CreateInvitationCommand,
   type RoleDto,
 } from "@logistics/shared/api";
-import { Stack, ValidatedForm } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { SelectModule } from "primeng/select";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Spinner,
+  Stack,
+  UiButton,
+  UiDialog,
+  UiSelectField,
+  UiTextareaField,
+  UiTextField,
+  ValidatedForm,
+} from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import { ToastService } from "@/core/services";
-import { FormField } from "@/shared/components";
+import { UiFormField } from "@/shared/components";
+
+const EMPTY = { email: "", role: "", personalMessage: "" };
 
 @Component({
   selector: "app-invite-employee-dialog",
   templateUrl: "./invite-employee-dialog.html",
   imports: [
-    ValidatedForm,
-    DialogModule,
-    ProgressSpinnerModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ButtonModule,
-    SelectModule,
-    InputTextModule,
-    TextareaModule,
     FormField,
+    FormRoot,
+    Spinner,
     Stack,
+    UiButton,
+    UiDialog,
+    UiFormField,
+    UiSelectField,
+    UiTextareaField,
+    UiTextField,
+    ValidatedForm,
   ],
 })
 export class InviteEmployeeDialog {
-  protected readonly form = new FormGroup({
-    email: new FormControl("", [Validators.required, Validators.email]),
-    role: new FormControl("", Validators.required),
-    personalMessage: new FormControl(""),
-  });
-
   private readonly api = inject(Api);
   private readonly toastService = inject(ToastService);
   private readonly authService = inject(AuthService);
@@ -57,9 +50,42 @@ export class InviteEmployeeDialog {
   public readonly invitationSent = output<void>();
 
   protected readonly roles = signal<RoleDto[]>([]);
-  protected readonly isLoading = signal(false);
 
   private userRole?: string | null;
+
+  protected readonly model = signal({ ...EMPTY });
+
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.email, { message: "Email address is required." });
+      email(p.email, { message: "Enter a valid email address." });
+      required(p.role, { message: "Role is required." });
+    },
+    {
+      submission: {
+        action: async () => {
+          const v = this.model();
+          const command: CreateInvitationCommand = {
+            email: v.email || null,
+            type: "employee",
+            tenantRole: v.role || null,
+            personalMessage: v.personalMessage || null,
+          };
+
+          try {
+            await this.api.invoke(createInvitation, { body: command });
+            this.toastService.showSuccess(`Invitation sent to ${v.email}`);
+            this.invitationSent.emit();
+            this.close();
+          } catch {
+            this.toastService.showError("Failed to send invitation");
+          }
+          return undefined;
+        },
+      },
+    },
+  );
 
   constructor() {
     const user = this.authService.getUserData();
@@ -67,37 +93,9 @@ export class InviteEmployeeDialog {
     this.fetchRoles();
   }
 
-  async submit(): Promise<void> {
-    if (this.form.invalid) {
-      this.toastService.showError("Please fill in all required fields");
-      return;
-    }
-
-    const formValue = this.form.value;
-
-    const command: CreateInvitationCommand = {
-      email: formValue.email ?? null,
-      type: "employee",
-      tenantRole: formValue.role ?? null,
-      personalMessage: formValue.personalMessage ?? null,
-    };
-
-    this.isLoading.set(true);
-    try {
-      await this.api.invoke(createInvitation, { body: command });
-      this.toastService.showSuccess(`Invitation sent to ${formValue.email}`);
-      this.invitationSent.emit();
-      this.close();
-    } catch {
-      this.toastService.showError("Failed to send invitation");
-    } finally {
-      this.isLoading.set(false);
-    }
-  }
-
   close(): void {
     this.visible.set(false);
-    this.form.reset();
+    this.form().reset({ ...EMPTY });
   }
 
   private async fetchRoles(): Promise<void> {

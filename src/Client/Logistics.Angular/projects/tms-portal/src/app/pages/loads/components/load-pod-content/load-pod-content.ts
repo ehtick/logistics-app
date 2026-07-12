@@ -1,30 +1,34 @@
 import { CommonModule, DatePipe } from "@angular/common";
 import { Component, effect, inject, input, signal } from "@angular/core";
-import { Api, downloadDocument, getDocuments } from "@logistics/shared/api";
-import type { DocumentDto } from "@logistics/shared/api";
+import { Api, downloadDocument, getDocuments, type DocumentDto } from "@logistics/shared/api";
+import {
+  Badge,
+  Card,
+  Icon,
+  Spinner,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiTooltip,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { downloadBlobFile, formatFileSize } from "@logistics/shared/utils";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
 import { ToastService } from "@/core/services";
 
 @Component({
   selector: "app-load-pod-content",
   templateUrl: "./load-pod-content.html",
   imports: [
+    Badge,
+    Card,
     CommonModule,
-    CardModule,
-    ButtonModule,
-    TableModule,
-    TagModule,
-    TooltipModule,
-    DialogModule,
-    ProgressSpinnerModule,
     DatePipe,
+    Icon,
+    Spinner,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiTooltip,
   ],
 })
 export class LoadPodContent {
@@ -92,7 +96,7 @@ export class LoadPodContent {
     return type === "proof_of_delivery" ? "Proof of Delivery" : "Bill of Lading";
   }
 
-  protected getTypeSeverity(type?: string): "success" | "info" {
+  protected getTypeSeverity(type?: string): UiBadgeIntent {
     return type === "proof_of_delivery" ? "success" : "info";
   }
 

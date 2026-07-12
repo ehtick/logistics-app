@@ -2,18 +2,19 @@ import { Component, computed, inject, signal, viewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { Api, deleteTenant, resendTenantWelcome } from "@logistics/shared/api";
 import {
+  Badge,
+  Card,
   ConfirmDeleteDialog,
   DataContainer,
   PageHeader,
   SearchField,
-} from "@logistics/shared/components";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { Menu, MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { TenantsListStore } from "../store/tenants-list.store";
 
@@ -22,16 +23,16 @@ import { TenantsListStore } from "../store/tenants-list.store";
   templateUrl: "./tenants-list.html",
   providers: [TenantsListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    MenuModule,
+    Badge,
+    Card,
+    ConfirmDeleteDialog,
     DataContainer,
     PageHeader,
     SearchField,
-    TagModule,
-    ConfirmDeleteDialog,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
   ],
 })
 export class TenantsList {
@@ -40,7 +41,7 @@ export class TenantsList {
   private readonly toastService = inject(ToastService);
   protected readonly store = inject(TenantsListStore);
 
-  private readonly actionMenu = viewChild<Menu>("actionMenu");
+  private readonly actionMenu = viewChild<UiMenu>("actionMenu");
   private readonly selectedTenant = signal<{ id: string; name: string } | null>(null);
 
   protected readonly resendingTenantId = signal<string | null>(null);
@@ -49,24 +50,24 @@ export class TenantsList {
   protected readonly deletingTenantName = signal<string>("");
   protected readonly isDeleting = signal(false);
 
-  protected readonly actionMenuItems = computed<MenuItem[]>(() => {
+  protected readonly actionMenuItems = computed<UiMenuItem[]>(() => {
     const tenant = this.selectedTenant();
     return [
       {
         label: "Edit",
-        icon: "pi pi-pen-to-square",
+        icon: "square-pen",
         command: () => this.router.navigate(["/tenants", tenant!.id, "edit"]),
       },
       {
         label: "Resend Welcome Email",
-        icon: "pi pi-envelope",
+        icon: "mail",
         command: () => this.resendWelcome(tenant!.id),
       },
       { separator: true },
       {
         label: "Delete",
-        icon: "pi pi-trash",
-        styleClass: "text-red-600",
+        icon: "trash",
+        variant: "destructive",
         command: () => this.openDeleteDialog(tenant!.id, tenant!.name),
       },
     ];
@@ -119,9 +120,7 @@ export class TenantsList {
     return tenant.subscription?.status ?? "none";
   }
 
-  protected getStatusSeverity(
-    status: string,
-  ): "success" | "secondary" | "info" | "warn" | "danger" | "contrast" {
+  protected getStatusSeverity(status: string): UiBadgeIntent {
     switch (status) {
       case "active":
         return "success";

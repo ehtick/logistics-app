@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
 import { Component, computed, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import {
   Api,
   cancelDataDeletion,
@@ -14,37 +13,39 @@ import {
   type DataDeletionRequestDto,
   type DataExportRequestDto,
 } from "@logistics/shared/api";
-import { Container, Stack } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DialogModule } from "primeng/dialog";
-import { MessageModule } from "primeng/message";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Alert,
+  Badge,
+  Card,
+  Container,
+  Spinner,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiDialog,
+  UiTextareaField,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
-import { FormField, PageHeader } from "@/shared/components";
-import type { SeverityLevel } from "@/shared/utils";
+import { PageHeader, UiFormField } from "@/shared/components";
 
 @Component({
   selector: "app-privacy-settings",
   templateUrl: "./privacy-settings.html",
   imports: [
+    Alert,
+    Badge,
+    Card,
     CommonModule,
-    FormsModule,
-    ButtonModule,
-    CardModule,
-    DialogModule,
-    MessageModule,
-    ProgressSpinnerModule,
-    TableModule,
-    TagModule,
-    TextareaModule,
-    FormField,
-    PageHeader,
-    Stack,
     Container,
+    PageHeader,
+    Spinner,
+    Stack,
+    UiButton,
+    UiDataTable,
+    UiDialog,
+    UiFormField,
+    UiTextareaField,
   ],
 })
 export class PrivacySettings {
@@ -133,7 +134,7 @@ export class PrivacySettings {
     }
   }
 
-  protected statusSeverity(status: string | undefined): SeverityLevel {
+  protected statusSeverity(status: string | undefined): UiBadgeIntent {
     switch (status) {
       case "ready":
       case "processed":

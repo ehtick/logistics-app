@@ -1,14 +1,14 @@
 @if (isLoading()) {
   <div class="flex justify-center py-8">
-    <p-progress-spinner />
+    <ui-spinner />
   </div>
 } @else {
   <div class="mb-4 flex justify-end">
-    <p-button label="Create API Key" icon="pi pi-plus" (onClick)="openCreateDialog()" />
+    <ui-button label="Create API Key" icon="plus" (click)="openCreateDialog()" />
   </div>
 
   @if (apiKeys().length > 0) {
-    <p-table [value]="apiKeys()" [tableStyle]="{ 'min-width': '50rem' }">
+    <ui-data-table [value]="apiKeys()" [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template #header>
         <tr>
           <th>Name</th>
@@ -29,96 +29,87 @@
             @if (key.lastUsedAt) {
               {{ key.lastUsedAt | date: "medium" }}
             } @else {
-              <span class="text-muted">Never</span>
+              <span class="text-muted-foreground">Never</span>
             }
           </td>
           <td>
-            <p-button
-              icon="pi pi-trash"
-              severity="danger"
-              [text]="true"
+            <ui-button
+              intent="danger"
+              appearance="text"
+              ariaLabel="Revoke key"
+              icon="trash"
               [rounded]="true"
-              pTooltip="Revoke key"
-              (onClick)="confirmRevoke(key)"
+              uiTooltip="Revoke key"
+              (click)="confirmRevoke(key)"
             />
           </td>
         </tr>
       </ng-template>
-      <ng-template #emptymessage>
+      <ng-template #empty>
         <tr>
-          <td colspan="6" class="text-muted text-center">No API keys yet.</td>
+          <td colspan="6" class="text-muted-foreground text-center">No API keys yet.</td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   } @else {
-    <div class="text-muted py-8 text-center">
-      <i class="pi pi-key mb-2 text-4xl"></i>
+    <div class="text-muted-foreground py-8 text-center">
+      <ui-icon name="key" size="inherit" class="mb-2 text-4xl" />
       <p>No API keys yet. Create one to get started.</p>
     </div>
   }
 }
 
 <!-- Create API Key Dialog -->
-<p-dialog
-  header="Create API Key"
-  [(visible)]="showCreateDialog"
-  [modal]="true"
-  [style]="{ width: '450px' }"
->
+<ui-dialog header="Create API Key" [(open)]="showCreateDialog" [modal]="true" width="450px">
   <ui-form-field label="Key Name" for="keyName" [required]="true">
-    <input
-      pInputText
-      id="keyName"
-      [(ngModel)]="newKeyName"
-      placeholder="e.g., Claude Desktop, Cursor"
-      [fluid]="true"
-    />
+    <ui-text-field id="keyName" [(value)]="newKeyName" placeholder="e.g., Claude Desktop, Cursor" />
   </ui-form-field>
 
   <ng-template #footer>
-    <p-button label="Cancel" [text]="true" (onClick)="showCreateDialog.set(false)" />
-    <p-button
+    <ui-button appearance="text" label="Cancel" (click)="showCreateDialog.set(false)" />
+    <ui-button
       label="Create"
-      icon="pi pi-check"
+      icon="check"
       [loading]="isCreating()"
       [disabled]="!newKeyName().trim()"
-      (onClick)="createKey()"
+      (click)="createKey()"
     />
   </ng-template>
-</p-dialog>
+</ui-dialog>
 
 <!-- One-Time Key Display Dialog -->
-<p-dialog
+<ui-dialog
   header="API Key Created"
-  [(visible)]="showKeyDialog"
+  [(open)]="showKeyDialog"
   [modal]="true"
   [closable]="true"
-  [style]="{ width: '550px' }"
-  (onHide)="onKeyDialogHide()"
+  width="550px"
+  (closed)="onKeyDialogHide()"
 >
   @let key = createdKey();
   @if (key) {
-    <p-message severity="warn" styleClass="mb-4 w-full">
+    <ui-alert intent="warning" class="mb-4 w-full">
       Copy your API key now. You won't be able to see it again.
-    </p-message>
+    </ui-alert>
 
     <div class="bg-subtle border-default mb-4 flex items-center gap-2 rounded-lg border p-3">
       <code class="flex-1 text-sm break-all">{{ key.plaintextKey }}</code>
-      <p-button
-        icon="pi pi-copy"
-        [text]="true"
+      <ui-button
+        appearance="text"
+        ariaLabel="Copy to clipboard"
+        icon="copy"
         [rounded]="true"
-        pTooltip="Copy to clipboard"
-        (onClick)="copyToClipboard(key.plaintextKey)"
+        uiTooltip="Copy to clipboard"
+        (click)="copyToClipboard(key.plaintextKey)"
       />
     </div>
 
-    <p class="text-muted text-sm">
+    <p class="text-muted-foreground text-sm">
       Use this key as a Bearer token for MCP clients or REST API requests.
     </p>
   }
 
   <ng-template #footer>
-    <p-button label="Done" (onClick)="showKeyDialog.set(false)" />
+    <ui-button label="Done" (click)="showKeyDialog.set(false)" />
   </ng-template>
-</p-dialog>
+</ui-dialog>

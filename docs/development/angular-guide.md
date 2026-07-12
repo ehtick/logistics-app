@@ -1,6 +1,6 @@
 # Angular Development Guide
 
-Patterns and conventions for the Angular workspace (Angular 21).
+Patterns and conventions for the Angular workspace (Angular 22, zoneless, Signal Forms, spartan/ui).
 
 ## Workspace Structure
 
@@ -18,7 +18,19 @@ src/Client/Logistics.Angular/
 │   │   │   ├── api/                # Generated API client
 │   │   │   ├── errors/             # Error handling
 │   │   │   ├── services/           # Shared services (toast, cache)
-│   │   │   └── interceptors/       # HTTP interceptors
+│   │   │   ├── interceptors/       # HTTP interceptors
+│   │   │   └── ui/                 # Design system (@logistics/shared/ui)
+│   │   │       ├── primitives/     # Vendored spartan/ui Helm components
+│   │   │       ├── form/           # ui-form-field + the ui-*-field controls
+│   │   │       ├── table/          # ui-data-table
+│   │   │       ├── layout/         # ui-stack, ui-grid, ui-page-header, ...
+│   │   │       ├── containers/     # ui-card, ui-dashboard-card, ...
+│   │   │       ├── badges/         # ui-badge, ui-status-badge, ...
+│   │   │       ├── display/        # ui-alert, ui-typography, ui-avatar, ...
+│   │   │       ├── overlay/        # ui-dialog, ui-popover, ui-toaster, ...
+│   │   │       ├── status/         # ui-empty-state, ui-error-state, ...
+│   │   │       ├── disclosure/     # ui-tabs, ui-accordion, ui-stepper, ...
+│   │   │       └── icons/          # UI_ICONS record (icons.ts) + ui-icon
 │   │   └── ng-package.json
 │   ├── admin-portal/               # Admin Portal (super admin)
 │   │   └── src/app/
@@ -43,13 +55,13 @@ src/Client/Logistics.Angular/
 
 ## Projects
 
-| Project | Prefix | Port | Description |
-|---------|--------|------|-------------|
-| @logistics/shared | `ui-` | N/A | Shared library (API, services, pipes) |
-| @logistics/admin-portal | `adm-` | 7002 | Super admin management |
-| @logistics/tms-portal | `app-` | 7003 | Internal TMS for dispatchers |
-| @logistics/customer-portal | `cp-` | 7004 | Customer self-service portal |
-| @logistics/website | `web-` | 7005 | Marketing website (SSR) |
+| Project                    | Prefix | Port | Description                           |
+| -------------------------- | ------ | ---- | ------------------------------------- |
+| @logistics/shared          | `ui-`  | N/A  | Shared library (API, services, pipes) |
+| @logistics/admin-portal    | `adm-` | 7002 | Super admin management                |
+| @logistics/tms-portal      | `app-` | 7003 | Internal TMS for dispatchers          |
+| @logistics/customer-portal | `cp-`  | 7004 | Customer self-service portal          |
+| @logistics/website         | `web-` | 7005 | Marketing website (SSR)               |
 
 ## TMS Portal Structure
 
@@ -82,12 +94,12 @@ No NgModules. All components are standalone:
 
 ```typescript
 @Component({
-  selector: 'app-load-list',
+  selector: "app-load-list",
   imports: [CommonModule, TableModule, ButtonModule],
-  templateUrl: './load-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: "./load-list.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoadListComponent { }
+export class LoadListComponent {}
 ```
 
 ### Signal-Based State
@@ -155,19 +167,17 @@ Use `@if`, `@for`, `@switch` instead of structural directives:
 ```html
 <!-- Good -->
 @if (loading()) {
-  <p-progressSpinner />
+<ui-loading-skeleton />
 } @else if (error()) {
-  <p-message severity="error" [text]="error()" />
-} @else {
-  @for (load of loads(); track load.id) {
-    <app-load-card [load]="load" />
-  } @empty {
-    <p>No loads found</p>
-  }
-}
+<ui-error-state [message]="error()" />
+} @else { @for (load of loads(); track load.id) {
+<app-load-card [load]="load" />
+} @empty {
+<p>No loads found</p>
+} }
 
 <!-- Avoid -->
-<p-progressSpinner *ngIf="loading"></p-progressSpinner>
+<ui-loading-skeleton *ngIf="loading"></ui-loading-skeleton>
 <div *ngFor="let load of loads">...</div>
 ```
 
@@ -180,7 +190,7 @@ Use `inject()` instead of constructor injection:
 export class LoadListComponent {
   private loadService = inject(LoadService);
   private router = inject(Router);
-  private messageService = inject(MessageService);
+  private toastService = inject(ToastService);
 
   // No constructor needed for DI
 }
@@ -196,29 +206,61 @@ Always use OnPush:
 })
 ```
 
-### Reactive Forms
+### Signal Forms
 
-Prefer reactive forms:
+The workspace is **100% Signal Forms** (`@angular/forms/signals`). There is no `ReactiveFormsModule`
+and no `formControlName` anywhere — do not introduce either. A form is a model `signal()` plus a
+`form()` schema:
 
 ```typescript
-@Component({ ... })
+@Component({
+  imports: [FormRoot, FormField, UiFormField, UiTextField, UiNumberField, ValidatedForm],
+  // ...
+})
 export class LoadFormComponent {
-  private fb = inject(FormBuilder);
+  private readonly api = inject(Api);
 
-  form = this.fb.group({
-    customerId: ['', Validators.required],
-    origin: ['', [Validators.required, Validators.maxLength(200)]],
-    destination: ['', [Validators.required, Validators.maxLength(200)]],
-    weight: [0, [Validators.min(0)]]
-  });
+  protected readonly model = signal({ customerId: "", origin: "", destination: "", weight: 0 });
 
-  onSubmit() {
-    if (this.form.valid) {
-      // Submit form.getRawValue()
-    }
-  }
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.customerId, { message: "Customer is required." });
+      required(p.origin, { message: "Origin is required." });
+      maxLength(p.origin, 200, { message: "Origin must be 200 characters or fewer." });
+      required(p.destination, { message: "Destination is required." });
+      maxLength(p.destination, 200, { message: "Destination must be 200 characters or fewer." });
+      min(p.weight, 0, { message: "Weight cannot be negative." });
+    },
+    {
+      submission: {
+        action: async () => {
+          await this.api.invoke(createLoad, { body: this.model() });
+          return undefined; // or ValidationError[] to attach server errors to fields
+        },
+      },
+    },
+  );
 }
 ```
+
+```html
+<form [formRoot]="form">
+  <ui-form-field label="Origin" for="origin" [required]="true">
+    <ui-text-field id="origin" [formField]="form.origin" />
+  </ui-form-field>
+
+  <button type="submit" [disabled]="form().submitting()">Save</button>
+</form>
+```
+
+`<form [formRoot]>` runs `submission.action` on submit: it marks the whole tree touched _first_
+(so inline errors reveal themselves), skips the action while invalid, and drives
+`form().submitting()`. No `markAllAsTouched()`, no `if (form.invalid) return` guard, no
+`(ngSubmit)`. Never gate the submit button on `form().invalid()` — keep it clickable so the
+`ValidatedForm` directive can focus the first invalid control.
+
+Full API and migration recipes: `.claude/skills/signal-forms-migration/SKILL.md`.
 
 ## API Client
 
@@ -259,13 +301,11 @@ export class LoadListComponent {
 
 ```typescript
 // API services
-import { LoadsApiService, CustomersApiService } from '@logistics/shared/api';
-
+import { CustomersApiService, LoadsApiService } from "@logistics/shared/api";
 // Error handling
-import { ErrorHandlerService } from '@logistics/shared/errors';
-
+import { ErrorHandlerService } from "@logistics/shared/errors";
 // Common services
-import { ToastService, HttpCacheService } from '@logistics/shared/services';
+import { HttpCacheService, ToastService } from "@logistics/shared/services";
 ```
 
 ## Common Commands
@@ -291,16 +331,52 @@ bun run format
 bun run gen:api
 ```
 
-## PrimeNG Components
+## UI Components
 
-The app uses PrimeNG for UI components:
+The UI library is **spartan/ui**: Helm components vendored in-repo under
+`projects/shared/src/lib/ui/primitives/` on top of `@spartan-ng/brain`.
+
+**PrimeNG is gone** — fully removed (no dependency, no import, no `p-*` markup, no theme preset).
+Never reintroduce a `p-*` component or a `primeng/*` import: the ESLint `no-restricted-imports` rule
+in `eslint.config.js` fails lint on any `primeng`/`primeicons`/`@primeuix/*` import. Browse `/ui-lab`
+(a lazy dev route in tms-portal) to see every `ui-*` component rendered in light and dark before
+hand-rolling anything new.
+
+Feature code does not touch the Helm primitives directly. It uses the shared `ui-*` components from
+`@logistics/shared/ui`, which live in `projects/shared/src/lib/ui/`:
 
 ```typescript
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { ToastModule } from 'primeng/toast';
+import {
+  Alert, // ui-alert, ui-badge, ui-status-badge, ui-typography, ui-theme-toggle
+  EmptyState, // ui-empty-state, ui-error-state, ui-loading-skeleton, ui-data-container
+  Icon, // ui-icon — the only way to render an icon
+  Stack, // ui-stack, ui-grid, ui-container, ui-surface, ui-toolbar, ui-page-header
+  UiDataTable, // ui-data-table, with <th uiSortHeader="Field">
+  UiFormField, // label / hint / error wrapper
+  UiTextField, // ...and select, multiselect, number, currency, unit, date,
+} from "@logistics/shared/ui";
 ```
+
+| Area       | Components                                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Forms      | `ui-form-field`, `ui-text-field`, `ui-textarea-field`, `ui-select-field`, `ui-multiselect-field`, `ui-number-field`, `ui-currency-field`, `ui-unit-field`, `ui-date-field`, `ui-date-range-picker`, `ui-checkbox-field`, `ui-toggle-field`, `ui-password-field`, `ui-autocomplete-field`, `ui-search-field`, `ui-phone-field`, `ui-address-form`, `ui-language-picker` |
+| Table      | `ui-data-table` (+ `<th uiSortHeader="Field">`), `ui-table-paginator`                                                                                                                                                                                                                                                                                                  |
+| Action     | `ui-button`, `ui-toggle-group`, `ui-theme-toggle`                                                                                                                                                                                                                                                                                                                      |
+| Badges     | `ui-badge`, `ui-status-badge`, `ui-count-badge`, `ui-overlay-badge`                                                                                                                                                                                                                                                                                                    |
+| Display    | `ui-typography`, `ui-avatar`, `ui-timeline`, `ui-chart`, `ui-money-with-tax`, `ui-pdf-viewer`, `ui-alert`                                                                                                                                                                                                                                                              |
+| Overlay    | `ui-dialog`, `ui-confirm-dialog`, `ui-confirm-delete-dialog`, `ui-popover`, `[uiTooltip]`, `ui-drawer`, `ui-menu`, `ui-lightbox`, `ui-toaster`, `ui-cookie-banner`                                                                                                                                                                                                     |
+| Status     | `ui-spinner`, `ui-skeleton`, `ui-loading-skeleton`, `ui-progress`, `ui-empty-state`, `ui-error-state`, `ui-data-container`                                                                                                                                                                                                                                             |
+| Layout     | `ui-divider`, `ui-container`, `ui-grid`, `ui-stack`, `ui-surface`, `ui-toolbar`                                                                                                                                                                                                                                                                                        |
+| Containers | `ui-card`, `ui-dashboard-card`, `ui-feature-row`, `ui-page-header`                                                                                                                                                                                                                                                                                                     |
+| Disclosure | `ui-tabs`, `ui-accordion`, `ui-stepper`, `ui-collapsible`                                                                                                                                                                                                                                                                                                              |
+
+Check `projects/shared/src/lib/ui/` for the full set before hand-rolling a new component.
+
+Icons are `<ui-icon name="..."/>` only — never a raw `<ng-icon>` in feature code. `name` is the typed
+`IconName` union (a key of the `UI_ICONS` record in `projects/shared/src/lib/ui/icons/icons.ts`); an
+unknown static name is a compile error. To add a glyph, import its `@ng-icons/lucide` export and add
+one entry to `UI_ICONS`. Toasts and confirmation dialogs go through `ToastService` from
+`@logistics/shared` — never inject `MessageService` or `ConfirmationService`.
 
 ## Routing
 
@@ -309,19 +385,19 @@ Routes are defined in `app.routes.ts`:
 ```typescript
 export const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      { path: "dashboard", component: DashboardComponent },
       {
-        path: 'loads',
-        loadComponent: () => import('./features/loads/load-list.component')
-          .then(m => m.LoadListComponent)
-      }
-    ]
+        path: "loads",
+        loadComponent: () =>
+          import("./features/loads/load-list.component").then((m) => m.LoadListComponent),
+      },
+    ],
   },
-  { path: 'login', component: LoginComponent }
+  { path: "login", component: LoginComponent },
 ];
 ```
 
@@ -331,7 +407,7 @@ Auth is handled via OIDC:
 
 ```typescript
 // auth.service.ts
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class AuthService {
   private user = signal<User | null>(null);
 

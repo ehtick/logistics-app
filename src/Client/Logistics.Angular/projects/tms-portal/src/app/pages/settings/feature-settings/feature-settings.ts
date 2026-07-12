@@ -1,5 +1,4 @@
 import { Component, inject, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import {
   Api,
   getCurrentTenantFeatures,
@@ -7,12 +6,17 @@ import {
   type FeatureStatusDto,
   type TenantFeature,
 } from "@logistics/shared/api";
-import { Container, FeatureRow, Icon, Stack, Typography } from "@logistics/shared/components";
 import { FEATURE_DESCRIPTIONS } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { ToggleSwitchModule } from "primeng/toggleswitch";
+import {
+  Card,
+  Container,
+  FeatureRow,
+  Icon,
+  Spinner,
+  Stack,
+  Typography,
+  UiToggleField,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { PageHeader } from "@/shared/components";
 
@@ -20,17 +24,15 @@ import { PageHeader } from "@/shared/components";
   selector: "app-feature-settings",
   templateUrl: "./feature-settings.html",
   imports: [
-    FormsModule,
-    CardModule,
-    ProgressSpinnerModule,
-    ButtonModule,
-    ToggleSwitchModule,
-    PageHeader,
-    Icon,
-    Stack,
-    FeatureRow,
-    Typography,
+    Card,
     Container,
+    FeatureRow,
+    Icon,
+    PageHeader,
+    Spinner,
+    Stack,
+    Typography,
+    UiToggleField,
   ],
 })
 export class FeatureSettingsComponent implements OnInit {

@@ -6,15 +6,13 @@ import {
   createSubscriptionPlan,
   type CreateSubscriptionPlanCommand,
 } from "@logistics/shared/api";
-import { PageHeader } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
+import { Card, PageHeader } from "@logistics/shared/ui";
 import { PlanForm, type PlanFormValue } from "@/shared/components";
 
 @Component({
   selector: "adm-plan-add",
   templateUrl: "./plan-add.html",
-  imports: [CardModule, ButtonModule, RouterModule, PlanForm, PageHeader],
+  imports: [Card, PageHeader, PlanForm, RouterModule],
 })
 export class PlanAdd {
   private readonly api = inject(Api);

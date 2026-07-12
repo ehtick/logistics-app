@@ -1,15 +1,15 @@
-<div class="animate-fadein">
+<div class="animate-in fade-in">
   <ui-page-header title="Load Invoice Details" backLink="/invoices/loads" />
 
   @if (isLoading()) {
     <ui-stack align="center" justify="center" class="py-8">
-      <p-progress-spinner />
+      <ui-spinner />
     </ui-stack>
   } @else if (invoice()) {
     <ui-grid container spacing="4">
       <!-- Invoice Header -->
       <ui-grid [size]="{ xs: 12, lg: 8 }">
-        <p-card>
+        <ui-card>
           <ui-stack direction="row" align="start" justify="between" class="mb-4">
             <div>
               <ui-typography variant="h4" tag="h2" class="mb-1">{{ companyName() }}</ui-typography>
@@ -25,7 +25,7 @@
             </div>
           </ui-stack>
 
-          <p-divider />
+          <ui-divider />
 
           <ui-grid container spacing="4" class="mb-4">
             <ui-grid [size]="6">
@@ -56,9 +56,9 @@
 
           <!-- Line Items -->
           @if (invoice()!.lineItems && invoice()!.lineItems!.length > 0) {
-            <p-divider />
+            <ui-divider />
             <h4>Line Items</h4>
-            <p-table [value]="invoice()!.lineItems!">
+            <ui-data-table [value]="invoice()!.lineItems!">
               <ng-template #header>
                 <tr>
                   <th>Description</th>
@@ -77,7 +77,7 @@
                   <td>
                     <span>{{ item.description }}</span>
                     @if (item.type) {
-                      <p-tag [value]="item.type" severity="secondary" styleClass="ml-2 text-xs" />
+                      <ui-badge class="ml-2" size="sm" [value]="item.type" severity="secondary" />
                     }
                   </td>
                   <td class="text-right">{{ item.quantity ?? 1 }}</td>
@@ -94,7 +94,7 @@
                   }
                 </tr>
               </ng-template>
-            </p-table>
+            </ui-data-table>
           }
 
           @if (isReverseCharge()) {
@@ -104,9 +104,9 @@
           }
 
           @if (hasTax() && (invoice()!.taxBreakdown?.length ?? 0) > 1) {
-            <p-divider />
+            <ui-divider />
             <h4>{{ taxLabel() }} breakdown</h4>
-            <p-table [value]="invoice()!.taxBreakdown!">
+            <ui-data-table [value]="invoice()!.taxBreakdown!">
               <ng-template #header>
                 <tr>
                   <th>Jurisdiction</th>
@@ -125,10 +125,10 @@
                   <td class="text-right">{{ line.taxAmount | currencyFormat }}</td>
                 </tr>
               </ng-template>
-            </p-table>
+            </ui-data-table>
           }
 
-          <p-divider />
+          <ui-divider />
 
           <div class="flex justify-end">
             <div class="w-72">
@@ -140,7 +140,7 @@
                 <div class="flex justify-between py-1">
                   <span>{{ taxLabel() }}:</span>
                   @if (isReverseCharge()) {
-                    <span class="text-muted">0.00 (reverse charge)</span>
+                    <span class="text-muted-foreground">0.00 (reverse charge)</span>
                   } @else {
                     <span>{{ invoice()!.taxTotal?.amount ?? 0 | currencyFormat }}</span>
                   }
@@ -167,56 +167,51 @@
               }
             </div>
           </div>
-        </p-card>
+        </ui-card>
       </ui-grid>
 
       <!-- Actions Sidebar -->
       <ui-grid [size]="{ xs: 12, lg: 4 }">
-        <p-card header="Actions">
+        <ui-card header="Actions">
           <ui-stack gap="2">
-            <p-button
-              icon="pi pi-send"
+            <ui-button
+              block
+              icon="send"
               label="Send Invoice"
-              styleClass="w-full"
               (click)="showSendInvoiceDialog.set(true)"
             />
-            <p-button
-              icon="pi pi-dollar"
+            <ui-button
+              appearance="outlined"
+              block
+              icon="dollar-sign"
               label="Record Payment"
-              styleClass="w-full"
-              [outlined]="true"
               (click)="showRecordPaymentDialog.set(true)"
               [disabled]="getOutstandingAmount() <= 0"
             />
-            <p-button
-              icon="pi pi-link"
+            <ui-button
+              appearance="outlined"
+              block
+              icon="link"
               label="Payment Link"
-              styleClass="w-full"
-              [outlined]="true"
               (click)="showPaymentLinkDialog.set(true)"
             />
-            <p-button
-              icon="pi pi-file-pdf"
+            <ui-button
+              appearance="outlined"
+              block
+              icon="file-text"
               label="Download PDF"
-              styleClass="w-full"
-              [outlined]="true"
               [loading]="isDownloadingPdf()"
               (click)="exportToPdf()"
             />
             <a [routerLink]="['/loads', invoice()!.loadId]" class="no-underline">
-              <p-button
-                icon="pi pi-truck"
-                label="View Load"
-                styleClass="w-full"
-                [outlined]="true"
-              />
+              <ui-button appearance="outlined" block icon="truck" label="View Load" />
             </a>
           </ui-stack>
-        </p-card>
+        </ui-card>
 
         <!-- Payment History -->
         @if (invoice()!.payments && invoice()!.payments!.length > 0) {
-          <p-card header="Payment History" styleClass="mt-4">
+          <ui-card header="Payment History" class="mt-4">
             <ui-stack gap="3">
               @for (payment of invoice()!.payments; track payment.id) {
                 <ui-stack
@@ -227,7 +222,7 @@
                 >
                   <div>
                     <p class="font-semibold">{{ payment.amount?.amount | currencyFormat }}</p>
-                    <p class="text-muted text-sm">
+                    <p class="text-muted-foreground text-sm">
                       {{ payment.createdDate | dateFormat: "short" }}
                     </p>
                   </div>
@@ -237,13 +232,13 @@
                 </ui-stack>
               }
             </ui-stack>
-          </p-card>
+          </ui-card>
         }
 
         @if (invoice()!.notes) {
-          <p-card header="Notes" styleClass="mt-4">
-            <p class="text-muted-color">{{ invoice()!.notes }}</p>
-          </p-card>
+          <ui-card header="Notes" class="mt-4">
+            <p class="text-muted-foreground">{{ invoice()!.notes }}</p>
+          </ui-card>
         }
       </ui-grid>
     </ui-grid>
@@ -264,11 +259,11 @@
 
     <app-payment-link-dialog [invoiceId]="invoiceId()" [(visible)]="showPaymentLinkDialog" />
   } @else {
-    <p-card>
-      <ui-stack align="center" gap="4" class="text-muted-color py-8">
-        <ui-icon name="exclamation-circle" size="xl" />
+    <ui-card>
+      <ui-stack align="center" gap="4" class="text-muted-foreground py-8">
+        <ui-icon name="circle-alert" size="xl" />
         <p>Invoice not found</p>
       </ui-stack>
-    </p-card>
+    </ui-card>
   }
 </div>

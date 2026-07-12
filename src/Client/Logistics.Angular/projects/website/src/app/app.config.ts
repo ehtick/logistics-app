@@ -1,16 +1,20 @@
-import { type ApplicationConfig, provideBrowserGlobalErrorListeners } from "@angular/core";
+import { provideBrowserGlobalErrorListeners, type ApplicationConfig } from "@angular/core";
 import { provideClientHydration, withEventReplay } from "@angular/platform-browser";
-import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from "@angular/router";
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withInMemoryScrolling,
+  withRouterConfig,
+} from "@angular/router";
+import { provideSpartanHlm } from "@logistics/shared";
 import { provideApi } from "@logistics/shared/api";
-import Aura from "@primeuix/themes/aura";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { providePrimeNG } from "primeng/config";
 import { environment } from "../environments/environment";
 import { routes } from "./app.routes";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideSpartanHlm(),
     provideRouter(
       routes,
       withInMemoryScrolling({
@@ -18,22 +22,13 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: "enabled",
       }),
       withComponentInputBinding(),
+      // Angular 22 changed the default paramsInheritanceStrategy from 'emptyOnly' to 'always'.
+      // Pin 'emptyOnly' so children don't silently inherit parent params/data (no migration exists).
+      withRouterConfig({ paramsInheritanceStrategy: "emptyOnly" }),
     ),
     provideClientHydration(withEventReplay()),
     provideApi({
       baseUrl: environment.apiUrl,
     }),
-    providePrimeNG({
-      theme: {
-        preset: Aura,
-        options: {
-          darkModeSelector: false,
-        },
-      },
-    }),
-
-    // PrimeNG Services
-    MessageService,
-    ConfirmationService,
   ],
 };

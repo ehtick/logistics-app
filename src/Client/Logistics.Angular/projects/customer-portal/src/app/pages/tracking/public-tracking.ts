@@ -15,10 +15,17 @@ import {
   type DocumentDto,
   type PublicTrackingDto,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
+import {
+  Badge,
+  Grid,
+  Icon,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiDataTable,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { ShipmentTimeline } from "@/shared/components";
 import { PublicLayout } from "@/shared/layout";
 
@@ -26,20 +33,20 @@ import { PublicLayout } from "@/shared/layout";
   selector: "cp-public-tracking",
   templateUrl: "./public-tracking.html",
   imports: [
-    DatePipe,
-    ButtonModule,
-    TagModule,
-    TableModule,
     AddressPipe,
+    Badge,
+    DatePipe,
     ErrorState,
+    Grid,
+    Icon,
     LoadingSkeleton,
     PublicLayout,
     ShipmentTimeline,
-    Grid,
-    Icon,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
   ],
 })
 export class PublicTracking {
@@ -86,7 +93,7 @@ export class PublicTracking {
     }
   }
 
-  protected getStatusSeverity(status: string | undefined): "success" | "info" | "warn" | "danger" {
+  protected getStatusSeverity(status: string | undefined): UiBadgeIntent {
     switch (status) {
       case "Delivered":
         return "success";

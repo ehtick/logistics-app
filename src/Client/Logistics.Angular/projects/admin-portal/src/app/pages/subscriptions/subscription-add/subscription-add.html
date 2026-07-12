@@ -1,19 +1,19 @@
 <ui-page-header title="Add Subscription" />
 
 <div class="flex flex-col justify-center gap-6 md:flex-row">
-  <p-card class="w-full lg:w-2/3">
+  <ui-card class="w-full lg:w-2/3">
     @if (isFetching()) {
       <ui-stack gap="4">
-        <p-skeleton height="3rem" />
-        <p-skeleton height="3rem" />
+        <ui-skeleton height="3rem" />
+        <ui-skeleton height="3rem" />
       </ui-stack>
     } @else {
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <form [formRoot]="form">
         <ui-grid container spacing="4" class="mb-4">
           <ui-grid [size]="12">
             <ui-form-field label="Tenant" [required]="true">
-              <p-select
-                formControlName="tenantId"
+              <ui-select-field
+                [formField]="form.tenantId"
                 [options]="tenantOptions()"
                 optionLabel="label"
                 optionValue="value"
@@ -24,7 +24,7 @@
               />
             </ui-form-field>
             @if (tenantOptions().length === 0) {
-              <ui-stack direction="row" align="center" gap="2" class="mt-1 text-sm text-orange-500">
+              <ui-stack direction="row" align="center" gap="2" class="text-warning mt-1 text-sm">
                 <ui-icon name="info" size="sm" />
                 <ui-typography variant="body-sm">
                   All tenants already have active subscriptions.
@@ -37,8 +37,8 @@
         <ui-grid container spacing="4" class="mb-4">
           <ui-grid [size]="12">
             <ui-form-field label="Subscription Plan" [required]="true">
-              <p-select
-                formControlName="planId"
+              <ui-select-field
+                [formField]="form.planId"
                 [options]="planOptions()"
                 optionLabel="label"
                 optionValue="value"
@@ -47,7 +47,7 @@
               />
             </ui-form-field>
             @if (planOptions().length === 0) {
-              <ui-stack direction="row" align="center" gap="2" class="mt-1 text-sm text-orange-500">
+              <ui-stack direction="row" align="center" gap="2" class="text-warning mt-1 text-sm">
                 <ui-icon name="info" size="sm" />
                 <ui-typography variant="body-sm">
                   No subscription plans available.
@@ -58,27 +58,19 @@
           </ui-grid>
         </ui-grid>
 
-
         <ui-stack direction="row" gap="2" class="mt-6">
-          <p-button
+          <ui-button
             label="Create Subscription"
-            icon="pi pi-check"
+            icon="check"
             type="submit"
-            [loading]="isLoading()"
+            [loading]="form().submitting()"
             [disabled]="
-              isLoading() ||
-              tenantOptions().length === 0 ||
-              planOptions().length === 0
+              form().submitting() || tenantOptions().length === 0 || planOptions().length === 0
             "
           />
-          <p-button
-            label="Cancel"
-            icon="pi pi-times"
-            severity="secondary"
-            routerLink="/subscriptions"
-          />
+          <ui-button intent="secondary" label="Cancel" icon="x" routerLink="/subscriptions" />
         </ui-stack>
       </form>
     }
-  </p-card>
+  </ui-card>
 </div>

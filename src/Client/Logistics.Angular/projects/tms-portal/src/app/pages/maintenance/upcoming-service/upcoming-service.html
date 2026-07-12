@@ -5,7 +5,7 @@
   addTooltip="Log service record"
 />
 
-<p-card>
+<ui-card>
   <ui-data-container
     [loading]="store.isLoading()"
     [error]="store.error()"
@@ -16,7 +16,7 @@
     emptyMessage="All vehicles are up to date on maintenance."
     (retry)="store.retry()"
   >
-    <p-table
+    <ui-data-table
       [value]="store.data()"
       [paginator]="true"
       [rows]="10"
@@ -25,16 +25,15 @@
       <ng-template #header>
         <tr>
           <th>Status</th>
-          <th pSortableColumn="TruckNumber">
-            Truck
-            <p-sortIcon field="TruckNumber" />
-          </th>
+          <!--
+            CLIENT-side table: the sort field is resolved off the ROW OBJECT, so it must be the
+            camelCase DTO property (`schedule.truckNumber` below), not the PascalCase server field
+            name. Lazy tables are the opposite — they forward the string to the API as `OrderBy`.
+          -->
+          <th uiSortHeader="truckNumber">Truck</th>
           <th>Service Type</th>
           <th>Interval</th>
-          <th pSortableColumn="NextServiceDate">
-            Due Date
-            <p-sortIcon field="NextServiceDate" />
-          </th>
+          <th uiSortHeader="nextServiceDate">Due Date</th>
           <th>Due In</th>
           <th></th>
         </tr>
@@ -42,7 +41,7 @@
       <ng-template #body let-schedule>
         <tr>
           <td>
-            <p-tag [value]="getStatusLabel(schedule)" [severity]="getStatusSeverity(schedule)" />
+            <ui-badge [value]="getStatusLabel(schedule)" [severity]="getStatusSeverity(schedule)" />
           </td>
           <td>{{ schedule.truckNumber || "-" }}</td>
           <td>{{ schedule.typeDisplay || schedule.type }}</td>
@@ -57,7 +56,7 @@
           <td>
             @if (schedule.isOverdue) {
               <span class="text-danger inline-flex items-center gap-1 font-medium">
-                <ui-icon name="exclamation-triangle" size="sm" color="danger" />
+                <ui-icon name="triangle-alert" size="sm" color="danger" />
                 <span>Overdue</span>
               </span>
             } @else if (schedule.daysUntilDue) {
@@ -71,18 +70,18 @@
             }
           </td>
           <td>
-            <p-button
-              icon="pi pi-ellipsis-v"
-              [text]="true"
-              aria-label="Show actions menu"
+            <ui-button
+              appearance="text"
+              icon="ellipsis-vertical"
+              ariaLabel="Show actions menu"
               (click)="$event.stopPropagation(); selectedRow.set(schedule); menu.toggle($event)"
             />
           </td>
         </tr>
       </ng-template>
-    </p-table>
+    </ui-data-table>
   </ui-data-container>
-</p-card>
+</ui-card>
 
 <!-- Context menu for row actions -->
-<p-menu #menu [model]="actionMenuItems" [popup]="true" />
+<ui-menu #menu [items]="actionMenuItems" />

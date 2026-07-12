@@ -1,27 +1,24 @@
-<p-dialog
+<ui-dialog
   header="Attach Existing Load"
   [modal]="true"
-  [(visible)]="visible"
-  [style]="{ width: '80vw', maxWidth: '1200px' }"
-  (onShow)="onDialogShow()"
+  [(open)]="visible"
+  width="80vw"
+  maxWidth="1200px"
+  (opened)="onDialogShow()"
 >
   <div class="flex flex-col gap-4">
     <!-- Search -->
     <div class="flex items-center gap-2">
-      <p-icon-field class="flex-1">
-        <p-inputicon class="pi pi-search" />
-        <input
-          pInputText
-          type="text"
-          placeholder="Search by load name, customer, origin, or destination..."
-          class="w-full"
-          [(ngModel)]="searchQuery"
-        />
-      </p-icon-field>
-      <p-button
-        icon="pi pi-refresh"
-        variant="outlined"
-        pTooltip="Refresh"
+      <ui-search-field
+        class="flex-1"
+        placeholder="Search by load name, customer, origin, or destination..."
+        (searchChange)="searchQuery.set($event)"
+      />
+      <ui-button
+        appearance="outlined"
+        ariaLabel="Refresh"
+        icon="refresh-cw"
+        uiTooltip="Refresh"
         [loading]="isLoading()"
         (click)="loadUnassignedLoads()"
       />
@@ -30,11 +27,11 @@
     <!-- Loading state -->
     @if (isLoading()) {
       <div class="flex items-center justify-center p-8">
-        <p-progressSpinner strokeWidth="4" />
+        <ui-spinner />
       </div>
     } @else if (filteredLoads().length === 0) {
-      <div class="text-muted-color flex flex-col items-center p-8 text-center">
-        <i class="pi pi-inbox mb-2 text-4xl"></i>
+      <div class="text-muted-foreground flex flex-col items-center p-8 text-center">
+        <ui-icon name="inbox" size="inherit" class="mb-2 text-4xl" />
         @if (searchQuery()) {
           <p>No loads match your search criteria</p>
         } @else {
@@ -44,7 +41,7 @@
       </div>
     } @else {
       <!-- Loads table -->
-      <p-table
+      <ui-data-table
         [value]="filteredLoads()"
         [scrollable]="true"
         scrollHeight="400px"
@@ -55,7 +52,7 @@
         <ng-template #header>
           <tr>
             <th style="width: 3rem">
-              <p-tableHeaderCheckbox />
+              <ui-table-header-checkbox />
             </th>
             <th>Load</th>
             <th>Type</th>
@@ -69,11 +66,11 @@
         <ng-template #body let-load>
           <tr>
             <td>
-              <p-tableCheckbox [value]="load" />
+              <ui-table-checkbox [value]="load" />
             </td>
             <td>
               <div class="font-medium">{{ load.name }}</div>
-              <div class="text-muted-color text-sm">#{{ load.number }}</div>
+              <div class="text-muted-foreground text-sm">#{{ load.number }}</div>
             </td>
             <td>
               @if (load.type) {
@@ -87,12 +84,12 @@
             <td class="text-right">{{ load.deliveryCost | currencyFormat }}</td>
           </tr>
         </ng-template>
-      </p-table>
+      </ui-data-table>
 
       <!-- Selection summary -->
       @if (selectedLoads().length > 0) {
         <div class="bg-surface-100 flex items-center justify-between rounded-lg p-3">
-          <span class="font-medium"> {{ selectedLoads().length }} load(s) selected </span>
+          <span class="font-medium">{{ selectedLoads().length }} load(s) selected</span>
           <div class="flex items-center gap-4 text-sm">
             <span>
               Total Distance:
@@ -110,13 +107,13 @@
 
   <ng-template #footer>
     <div class="flex justify-end gap-2">
-      <p-button label="Cancel" variant="outlined" (click)="visible.set(false)" />
-      <p-button
+      <ui-button appearance="outlined" label="Cancel" (click)="visible.set(false)" />
+      <ui-button
         label="Attach Selected"
-        icon="pi pi-plus"
+        icon="plus"
         [disabled]="selectedLoads().length === 0"
         (click)="attachSelected()"
       />
     </div>
   </ng-template>
-</p-dialog>
+</ui-dialog>

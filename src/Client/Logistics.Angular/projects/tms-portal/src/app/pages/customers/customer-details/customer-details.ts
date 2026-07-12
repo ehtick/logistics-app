@@ -1,14 +1,19 @@
 import { CommonModule, DatePipe } from "@angular/common";
 import { Component, inject, input, signal, type OnInit } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
 import { ToastService } from "@logistics/shared/services";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TabsModule } from "primeng/tabs";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Card,
+  Divider,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiTabsImports,
+} from "@logistics/shared/ui";
 import { PageHeader } from "@/shared/components";
 import { CustomerStatusTag } from "@/shared/components/tags";
 import { CustomerAvatar } from "../components";
@@ -22,26 +27,25 @@ import { CustomerDetailsStore } from "../store";
   templateUrl: "./customer-details.html",
   providers: [CustomerDetailsStore],
   imports: [
+    Card,
     CommonModule,
-    ButtonModule,
-    CardModule,
-    TooltipModule,
-    TabsModule,
-    DividerModule,
-    ProgressSpinnerModule,
-    RouterLink,
-    DatePipe,
-    PageHeader,
-    CustomerStatusTag,
     CustomerAvatar,
     CustomerEditDialog,
     CustomerInvoicesList,
     CustomerLoadsList,
+    CustomerStatusTag,
+    DatePipe,
+    Divider,
     Grid,
     Icon,
+    PageHeader,
+    RouterLink,
+    Spinner,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiTabsImports,
   ],
 })
 export class CustomerDetails implements OnInit {
@@ -79,7 +83,7 @@ export class CustomerDetails implements OnInit {
       message: "Are you sure you want to delete this customer? This action cannot be undone.",
       acceptLabel: "Delete",
       rejectLabel: "Cancel",
-      acceptButtonStyleClass: "p-button-danger",
+      severity: "danger",
       accept: async () => {
         const success = await this.store.deleteCustomer();
         if (success) {

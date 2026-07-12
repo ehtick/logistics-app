@@ -1,9 +1,8 @@
-<form [formGroup]="form()" class="py-4">
-
+<div class="py-4">
   <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
     <ui-form-field label="Date & Time" for="accidentDateTime" [required]="true">
-      <p-datepicker
-        formControlName="accidentDateTime"
+      <ui-date-field
+        [formField]="field().accidentDateTime"
         id="accidentDateTime"
         [showTime]="true"
         [showIcon]="true"
@@ -14,7 +13,7 @@
 
     <ui-form-field label="Location" for="location" [required]="true">
       <app-address-autocomplete
-        formControlName="location"
+        [formField]="field().location"
         placeholder="Type address..."
         [forceSelection]="true"
       />
@@ -23,12 +22,12 @@
 
   <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
     <ui-form-field label="Truck" for="truck" [required]="true">
-      <app-search-truck formControlName="truck" />
+      <app-search-truck [formField]="field().truck" />
     </ui-form-field>
 
     <ui-form-field label="Driver" for="driver" [required]="true">
       <app-search-employee
-        formControlName="driver"
+        [formField]="field().driver"
         [role]="'tenant.driver'"
         placeholder="Search for driver..."
       />
@@ -37,10 +36,9 @@
 
   <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
     <ui-form-field label="Accident Type" for="type" [required]="true">
-      <p-select
-        formControlName="type"
+      <ui-select-field
+        [formField]="field().type"
         id="type"
-        class="w-full"
         [options]="typeOptions"
         optionLabel="label"
         optionValue="value"
@@ -49,10 +47,9 @@
     </ui-form-field>
 
     <ui-form-field label="Severity" for="severity" [required]="true">
-      <p-select
-        formControlName="severity"
+      <ui-select-field
+        [formField]="field().severity"
         id="severity"
-        class="w-full"
         [options]="severityOptions"
         optionLabel="label"
         optionValue="value"
@@ -62,35 +59,29 @@
   </div>
 
   <ui-form-field label="Description" for="description" [required]="true" class="mt-4">
-    <textarea
-      pInputTextarea
-      formControlName="description"
+    <ui-textarea-field
+      [formField]="field().description"
       id="description"
-      class="w-full"
-      rows="4"
+      [rows]="4"
       placeholder="Describe what happened..."
-    ></textarea>
+    />
   </ui-form-field>
 
   <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
     <ui-form-field label="Weather Conditions" for="weatherConditions">
-      <input
-        pInputText
-        formControlName="weatherConditions"
+      <ui-text-field
+        [formField]="field().weatherConditions"
         id="weatherConditions"
-        class="w-full"
         placeholder="e.g., Clear, Rainy, Foggy"
       />
     </ui-form-field>
 
     <ui-form-field label="Road Conditions" for="roadConditions">
-      <input
-        pInputText
-        formControlName="roadConditions"
+      <ui-text-field
+        [formField]="field().roadConditions"
         id="roadConditions"
-        class="w-full"
         placeholder="e.g., Dry, Wet, Icy"
       />
     </ui-form-field>
   </div>
-</form>
+</div>

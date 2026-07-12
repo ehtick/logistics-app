@@ -3,22 +3,21 @@ import { Component, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import type { InvoiceDto } from "@logistics/shared/api";
 import { CurrencyFormatPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import { Icon, UiButton, UiDataTable, UiTooltip } from "@logistics/shared/ui";
 import { InvoiceStatusTag } from "@/shared/components";
 
 @Component({
   selector: "app-customer-invoices-list",
   templateUrl: "./customer-invoices-list.html",
   imports: [
-    TableModule,
-    ButtonModule,
-    TooltipModule,
-    RouterLink,
     CurrencyFormatPipe,
     DatePipe,
+    Icon,
     InvoiceStatusTag,
+    RouterLink,
+    UiButton,
+    UiDataTable,
+    UiTooltip,
   ],
 })
 export class CustomerInvoicesList {

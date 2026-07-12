@@ -1,5 +1,5 @@
 <div class="mx-auto max-w-4xl">
-  <p-card class="shadow-lg">
+  <ui-card class="shadow-lg">
     <ng-template #header>
       <ui-stack
         direction="row"
@@ -8,22 +8,22 @@
         class="from-primary/5 border-b bg-linear-to-r to-transparent p-5"
       >
         <ui-stack direction="row" align="center" gap="3">
-          <ui-icon name="comments" size="lg" color="primary" />
+          <ui-icon name="messages-square" size="lg" color="primary" />
           <ui-typography variant="h4" tag="h2">Messages</ui-typography>
         </ui-stack>
         <ui-stack direction="row" gap="2">
-          <p-button
-            icon="pi pi-users"
+          <ui-button
+            intent="info"
+            appearance="outlined"
+            icon="users"
             label="Team Chat"
-            severity="info"
-            [outlined]="true"
-            (onClick)="openTeamChat()"
+            (click)="openTeamChat()"
           />
-          <p-button
-            icon="pi pi-plus"
+          <ui-button
+            intent="success"
+            icon="plus"
             label="New Conversation"
-            severity="success"
-            (onClick)="createNewConversation()"
+            (click)="createNewConversation()"
           />
         </ui-stack>
       </ui-stack>
@@ -33,10 +33,10 @@
       <div class="space-y-2 p-2">
         @for (i of [1, 2, 3, 4, 5]; track i) {
           <div class="bg-hover flex items-center gap-4 rounded-xl p-4">
-            <p-skeleton shape="circle" size="3.5rem" />
+            <ui-skeleton shape="circle" size="3.5rem" />
             <div class="flex-1">
-              <p-skeleton width="50%" height="1.25rem" styleClass="mb-2" />
-              <p-skeleton width="75%" height="0.875rem" />
+              <ui-skeleton width="50%" height="1.25rem" class="mb-2" />
+              <ui-skeleton width="75%" height="0.875rem" />
             </div>
           </div>
         }
@@ -44,18 +44,18 @@
     } @else if (store.conversations().length === 0) {
       <ui-stack align="center" justify="center" gap="4" class="py-16 text-center">
         <div class="bg-primary/10 mb-2 flex h-24 w-24 items-center justify-center rounded-full">
-          <ui-icon name="comments" size="xl" color="primary" />
+          <ui-icon name="messages-square" size="xl" color="primary" />
         </div>
         <ui-typography variant="h5" tag="h3" color="secondary">No conversations yet</ui-typography>
         <ui-typography variant="body" color="muted" class="max-w-sm">
           Start a conversation with your team members to collaborate and stay connected
         </ui-typography>
-        <p-button
-          icon="pi pi-plus"
+        <ui-button
+          intent="success"
+          size="lg"
+          icon="plus"
           label="Start Conversation"
-          severity="success"
-          size="large"
-          (onClick)="createNewConversation()"
+          (click)="createNewConversation()"
         />
       </ui-stack>
     } @else {
@@ -72,18 +72,18 @@
 
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between gap-2">
-                <span class="text-primary truncate font-semibold">
+                <span class="text-foreground truncate font-semibold">
                   {{ conversation.name || getParticipantNames(conversation) }}
                 </span>
                 @if (conversation.lastMessageAt) {
-                  <span class="text-muted shrink-0 text-xs">
+                  <span class="text-muted-foreground shrink-0 text-xs">
                     {{ conversation.lastMessageAt | date: "shortTime" }}
                   </span>
                 }
               </div>
 
               <div class="mt-1 flex items-center justify-between gap-2">
-                <p class="text-muted truncate text-sm">
+                <p class="text-muted-foreground truncate text-sm">
                   @if (conversation.lastMessage) {
                     {{ conversation.lastMessage.content }}
                   } @else {
@@ -92,19 +92,19 @@
                 </p>
 
                 @if (conversation.unreadCount && conversation.unreadCount > 0) {
-                  <p-badge
+                  <ui-count-badge
                     [value]="conversation.unreadCount.toString()"
                     severity="danger"
-                    styleClass="shrink-0"
+                    class="shrink-0"
                   />
                 }
               </div>
             </div>
 
-            <ui-icon name="angle-right" color="muted" />
+            <ui-icon name="chevron-right" color="muted" />
           </div>
         }
       </div>
     }
-  </p-card>
+  </ui-card>
 </div>

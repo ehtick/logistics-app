@@ -1,11 +1,11 @@
 @if (invoices().length === 0) {
   <div class="py-8 text-center">
-    <i class="pi pi-inbox text-muted mb-3 text-4xl"></i>
-    <p class="text-muted">No invoices found for this customer</p>
-    <p class="text-muted text-sm">Invoices will appear here when created for loads</p>
+    <ui-icon name="inbox" size="inherit" class="text-muted-foreground mb-3 text-4xl" />
+    <p class="text-muted-foreground">No invoices found for this customer</p>
+    <p class="text-muted-foreground text-sm">Invoices will appear here when created for loads</p>
   </div>
 } @else {
-  <p-table [value]="invoices()" dataKey="id" [scrollable]="true">
+  <ui-data-table [value]="invoices()" dataKey="id" [scrollable]="true">
     <ng-template #header>
       <tr>
         <th>Invoice #</th>
@@ -22,62 +22,63 @@
         <td>
           <a
             [routerLink]="['/invoices', invoice.id]"
-            class="text-primary font-bold hover:underline"
+            class="text-foreground font-bold hover:underline"
           >
             #{{ invoice.number }}
           </a>
           @if (invoice.loadNumber) {
-            <div class="text-muted text-xs">Load #{{ invoice.loadNumber }}</div>
+            <div class="text-muted-foreground text-xs">Load #{{ invoice.loadNumber }}</div>
           }
         </td>
         <td>
           <app-invoice-status-tag [status]="invoice.status" />
         </td>
         <td>
-          <span class="font-medium">{{
-            invoice.total?.amount | currencyFormat: invoice.total?.currency || "USD"
-          }}</span>
+          <span class="font-medium">
+            {{ invoice.total?.amount | currencyFormat: invoice.total?.currency || "USD" }}
+          </span>
         </td>
         <td>
           @if (invoice.dueDate) {
             <span class="text-sm">{{ invoice.dueDate | date: "mediumDate" }}</span>
           } @else {
-            <span class="text-muted">-</span>
+            <span class="text-muted-foreground">-</span>
           }
         </td>
         <td>
           @if (invoice.createdDate) {
             <span class="text-sm">{{ invoice.createdDate | date: "mediumDate" }}</span>
           } @else {
-            <span class="text-muted">-</span>
+            <span class="text-muted-foreground">-</span>
           }
         </td>
         <td>
-          <p-button
-            icon="pi pi-eye"
+          <ui-button
+            appearance="text"
+            ariaLabel="View invoice"
+            icon="eye"
             [rounded]="true"
-            [text]="true"
-            pTooltip="View invoice"
+            uiTooltip="View invoice"
             [routerLink]="['/invoices/loads', invoice.id]"
           />
         </td>
       </tr>
     </ng-template>
 
-    <ng-template #emptymessage>
+    <ng-template #empty>
       <tr>
         <td colspan="6" class="text-center">
-          <span class="text-muted">No invoices found</span>
+          <span class="text-muted-foreground">No invoices found</span>
         </td>
       </tr>
     </ng-template>
-  </p-table>
+  </ui-data-table>
 
   @if (customerId()) {
     <div class="mt-4 text-right">
-      <p-button
+      <ui-button
+        appearance="outlined"
         label="View All Invoices"
-        [outlined]="true"
         [routerLink]="['/invoices']"
         [queryParams]="{ customerId: customerId() }"
       />

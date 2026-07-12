@@ -1,6 +1,5 @@
 import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
 import { Component, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Permission, PermissionGuard } from "@logistics/shared";
 import {
@@ -12,14 +11,18 @@ import {
   type TimeEntryType,
 } from "@logistics/shared/api";
 import { timeEntryTypeOptions } from "@logistics/shared/api/enums";
-import { Stack } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DatePickerModule } from "primeng/datepicker";
-import { SelectModule } from "primeng/select";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiDateField,
+  UiSelectField,
+  UiSortHeader,
+  UiTooltip,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { DataContainer, PageHeader } from "@/shared/components";
 import { TimesheetFormDialog } from "../components/form-dialog/form-dialog";
@@ -30,22 +33,22 @@ import { TimesheetsListStore } from "../store/list.store";
   templateUrl: "./timesheets-list.html",
   providers: [TimesheetsListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    TagModule,
-    SelectModule,
-    DatePickerModule,
-    FormsModule,
+    Badge,
+    Card,
+    DataContainer,
     DatePipe,
     DecimalPipe,
-    SlicePipe,
-    DataContainer,
     PageHeader,
-    TimesheetFormDialog,
     PermissionGuard,
+    SlicePipe,
     Stack,
+    TimesheetFormDialog,
+    UiDateField,
+    UiSelectField,
+    UiButton,
+    UiDataTable,
+    UiSortHeader,
+    UiTooltip,
   ],
 })
 export class TimesheetsList {
@@ -66,15 +69,16 @@ export class TimesheetsList {
   protected readonly filterStartDate = signal<Date | null>(null);
   protected readonly filterEndDate = signal<Date | null>(null);
 
-  private employeeId: string | null = null;
+  private readonly employeeId = signal<string | null>(null);
 
   constructor() {
     // Check if we have an employee ID in the route
     this.route.paramMap.subscribe((params) => {
-      this.employeeId = params.get("employeeId");
-      if (this.employeeId) {
-        this.store.setFilters({ EmployeeId: this.employeeId });
-        this.fetchEmployee(this.employeeId);
+      const employeeId = params.get("employeeId");
+      this.employeeId.set(employeeId);
+      if (employeeId) {
+        this.store.setFilters({ EmployeeId: employeeId });
+        this.fetchEmployee(employeeId);
       }
     });
   }
@@ -97,8 +101,8 @@ export class TimesheetsList {
     this.toastService.confirm({
       message: `Are you sure you want to delete this timesheet entry for ${entry.employeeName} on ${new Date(entry.date!).toLocaleDateString()}?`,
       header: "Delete Timesheet Entry",
-      icon: "pi pi-exclamation-triangle",
-      acceptButtonStyleClass: "p-button-danger",
+      icon: "warning",
+      severity: "danger",
       accept: () => this.deleteEntry(entry),
     });
   }
@@ -144,9 +148,7 @@ export class TimesheetsList {
     return timeEntryTypeOptions.find((o) => o.value === type)?.label ?? type;
   }
 
-  protected getTypeSeverity(
-    type: string | null | undefined,
-  ): "success" | "info" | "warn" | "danger" | "secondary" {
+  protected getTypeSeverity(type: string | null | undefined): UiBadgeIntent {
     switch (type) {
       case "regular":
         return "info";
@@ -178,6 +180,6 @@ export class TimesheetsList {
   }
 
   protected get preselectedEmployeeId(): string | null {
-    return this.employeeId;
+    return this.employeeId();
   }
 }

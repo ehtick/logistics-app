@@ -7,32 +7,37 @@ import {
   type DocumentDto,
   type PortalLoadDto,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
 import { CurrencyFormatPipe, DateFormatPipe, DistanceUnitPipe } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
+import {
+  Badge,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiDataTable,
+  type UiBadgeIntent,
+} from "@logistics/shared/ui";
 
 @Component({
   selector: "cp-shipment-details",
   templateUrl: "./shipment-details.html",
   imports: [
+    Badge,
     CurrencyFormatPipe,
     DateFormatPipe,
     DistanceUnitPipe,
-    RouterLink,
-    CardModule,
-    ButtonModule,
-    TagModule,
-    TableModule,
-    ProgressSpinnerModule,
     Grid,
     Icon,
+    RouterLink,
+    Spinner,
     Stack,
     Surface,
     Typography,
+    UiButton,
+    UiDataTable,
   ],
 })
 export class ShipmentDetails {
@@ -69,7 +74,7 @@ export class ShipmentDetails {
     }
   }
 
-  protected getStatusSeverity(status: string | undefined): "success" | "info" | "warn" | "danger" {
+  protected getStatusSeverity(status: string | undefined): UiBadgeIntent {
     switch (status) {
       case "Delivered":
         return "success";

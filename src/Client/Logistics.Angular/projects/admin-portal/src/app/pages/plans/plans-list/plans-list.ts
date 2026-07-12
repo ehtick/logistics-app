@@ -3,15 +3,19 @@ import { Component, computed, inject, signal, viewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { ToastService } from "@logistics/shared";
 import { Api, deleteSubscriptionPlan, type PlanTier } from "@logistics/shared/api";
-import { DataContainer, PageHeader, SearchField } from "@logistics/shared/components";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
-import { Menu, MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  DataContainer,
+  PageHeader,
+  SearchField,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { PlansListStore } from "../store/plans-list.store";
 
 @Component({
@@ -19,18 +23,17 @@ import { PlansListStore } from "../store/plans-list.store";
   templateUrl: "./plans-list.html",
   providers: [PlansListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    ConfirmDialogModule,
+    Badge,
+    Card,
+    CurrencyPipe,
     DataContainer,
     PageHeader,
     SearchField,
-    TagModule,
-    CurrencyPipe,
     TitleCasePipe,
-    MenuModule,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
   ],
 })
 export class PlansList {
@@ -39,22 +42,22 @@ export class PlansList {
   private readonly toastService = inject(ToastService);
   protected readonly store = inject(PlansListStore);
 
-  private readonly actionMenu = viewChild<Menu>("actionMenu");
+  private readonly actionMenu = viewChild<UiMenu>("actionMenu");
   private readonly selectedPlan = signal<{ id?: string; name?: string } | null>(null);
 
-  protected readonly actionMenuItems = computed<MenuItem[]>(() => {
+  protected readonly actionMenuItems = computed<UiMenuItem[]>(() => {
     const plan = this.selectedPlan();
     return [
       {
         label: "Edit",
-        icon: "pi pi-pen-to-square",
+        icon: "square-pen",
         command: () => this.router.navigate(["/subscription-plans", plan!.id, "edit"]),
       },
       { separator: true },
       {
         label: "Delete",
-        icon: "pi pi-trash",
-        styleClass: "text-red-600",
+        icon: "trash",
+        variant: "destructive",
         command: () => this.confirmToDelete(plan!.id!),
       },
     ];
@@ -102,7 +105,7 @@ export class PlansList {
     }
   }
 
-  protected tierSeverity(tier?: PlanTier): "success" | "info" | "warn" | "secondary" {
+  protected tierSeverity(tier?: PlanTier): UiBadgeIntent {
     switch (tier) {
       case "starter":
         return "info";

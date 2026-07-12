@@ -1,26 +1,32 @@
 import { Component, inject, input, model, output, signal } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { FormField } from "@logistics/shared";
+import { email, form, FormField, FormRoot, required } from "@angular/forms/signals";
+import { UiFormField } from "@logistics/shared";
 import { Api, sendInvoice } from "@logistics/shared/api";
-import { Stack, ValidatedForm } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Stack,
+  UiButton,
+  UiDialog,
+  UiTextareaField,
+  UiTextField,
+  ValidatedForm,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
+
+const EMPTY = { email: "", personalMessage: "" };
 
 @Component({
   selector: "app-send-invoice-dialog",
   templateUrl: "./send-invoice-dialog.html",
   imports: [
-    ValidatedForm,
-    DialogModule,
-    ButtonModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    TextareaModule,
     FormField,
+    FormRoot,
     Stack,
+    UiButton,
+    UiDialog,
+    UiFormField,
+    UiTextareaField,
+    UiTextField,
+    ValidatedForm,
   ],
 })
 export class SendInvoiceDialog {
@@ -32,45 +38,44 @@ export class SendInvoiceDialog {
   public readonly visible = model<boolean>(false);
   public readonly sent = output<void>();
 
-  protected readonly isSending = signal(false);
+  protected readonly model = signal({ ...EMPTY });
 
-  protected readonly form = new FormGroup({
-    email: new FormControl("", [Validators.required, Validators.email]),
-    personalMessage: new FormControl(""),
-  });
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.email, { message: "Email address is required." });
+      email(p.email, { message: "Enter a valid email address." });
+    },
+    {
+      submission: {
+        action: async () => {
+          try {
+            await this.api.invoke(sendInvoice, {
+              id: this.invoiceId(),
+              body: {
+                email: this.model().email,
+                personalMessage: this.model().personalMessage || undefined,
+              },
+            });
+          } catch {
+            this.toastService.showError("Failed to send invoice");
+            return undefined;
+          }
+          this.toastService.showSuccess("Invoice sent successfully");
+          this.sent.emit();
+          this.close();
+          return undefined;
+        },
+      },
+    },
+  );
 
   onShow(): void {
-    const email = this.customerEmail();
-    this.form.reset();
-    if (email) {
-      this.form.patchValue({ email });
-    }
+    this.form().reset({ ...EMPTY, email: this.customerEmail() ?? "" });
   }
 
   close(): void {
     this.visible.set(false);
-    this.form.reset();
-  }
-
-  async send(): Promise<void> {
-    if (this.form.invalid) return;
-
-    this.isSending.set(true);
-    try {
-      await this.api.invoke(sendInvoice, {
-        id: this.invoiceId(),
-        body: {
-          email: this.form.value.email!,
-          personalMessage: this.form.value.personalMessage || undefined,
-        },
-      });
-      this.toastService.showSuccess("Invoice sent successfully");
-      this.sent.emit();
-      this.close();
-    } catch {
-      this.toastService.showError("Failed to send invoice");
-    } finally {
-      this.isSending.set(false);
-    }
+    this.form().reset({ ...EMPTY });
   }
 }

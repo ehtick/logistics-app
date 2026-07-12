@@ -1,11 +1,5 @@
 import { Component, inject, input, model, output, signal } from "@angular/core";
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
+import { disabled, email, form, FormField, FormRoot, required } from "@angular/forms/signals";
 import {
   Api,
   createInvitation,
@@ -13,40 +7,39 @@ import {
   type CreateInvitationCommand,
   type CustomerDto,
 } from "@logistics/shared/api";
-import { Stack, ValidatedForm } from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { SelectModule } from "primeng/select";
-import { TextareaModule } from "primeng/textarea";
+import {
+  Spinner,
+  Stack,
+  UiButton,
+  UiDialog,
+  UiSelectField,
+  UiTextareaField,
+  UiTextField,
+  ValidatedForm,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
-import { FormField } from "@/shared/components";
+import { UiFormField } from "@/shared/components";
+
+const EMPTY = { email: "", customerId: "", personalMessage: "" };
 
 @Component({
   selector: "app-invite-customer-dialog",
   templateUrl: "./invite-customer-dialog.html",
   imports: [
-    ValidatedForm,
-    DialogModule,
-    ProgressSpinnerModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ButtonModule,
-    SelectModule,
-    InputTextModule,
-    TextareaModule,
     FormField,
+    FormRoot,
+    Spinner,
     Stack,
+    UiButton,
+    UiDialog,
+    UiFormField,
+    UiSelectField,
+    UiTextField,
+    UiTextareaField,
+    ValidatedForm,
   ],
 })
 export class InviteCustomerDialogComponent {
-  protected readonly form = new FormGroup({
-    email: new FormControl("", [Validators.required, Validators.email]),
-    customerId: new FormControl("", Validators.required),
-    personalMessage: new FormControl(""),
-  });
-
   private readonly api = inject(Api);
   private readonly toastService = inject(ToastService);
 
@@ -58,52 +51,58 @@ export class InviteCustomerDialogComponent {
   public readonly invitationSent = output<void>();
 
   protected readonly customers = signal<CustomerDto[]>([]);
-  protected readonly isLoading = signal(false);
   protected readonly isLoadingCustomers = signal(false);
+
+  protected readonly model = signal({ ...EMPTY });
+
+  protected readonly form = form(
+    this.model,
+    (p) => {
+      required(p.email, { message: "Email address is required." });
+      email(p.email, { message: "Enter a valid email address." });
+      required(p.customerId, { message: "Please select a customer." });
+      // Pre-selected customers cannot be changed (mirrors the old controls.customerId.disable()).
+      disabled(p.customerId, { when: () => !!this.customerId() });
+    },
+    {
+      submission: {
+        action: async () => {
+          const value = this.model();
+          const command: CreateInvitationCommand = {
+            email: value.email,
+            type: "customer_user",
+            tenantRole: "tenant.customer",
+            customerId: value.customerId,
+            personalMessage: value.personalMessage || undefined,
+          };
+
+          try {
+            await this.api.invoke(createInvitation, { body: command });
+            this.toastService.showSuccess(`Invitation sent to ${value.email}`);
+            this.invitationSent.emit();
+            this.close();
+          } catch {
+            this.toastService.showError("Failed to send invitation");
+          }
+          return undefined;
+        },
+        onInvalid: () => this.toastService.showError("Please fill in all required fields"),
+      },
+    },
+  );
 
   onShow(): void {
     const preselectedCustomerId = this.customerId();
     if (preselectedCustomerId) {
-      this.form.patchValue({ customerId: preselectedCustomerId });
-      this.form.controls.customerId.disable();
+      this.model.update((v) => ({ ...v, customerId: preselectedCustomerId }));
     } else {
-      this.form.controls.customerId.enable();
       this.fetchCustomers();
-    }
-  }
-
-  async submit(): Promise<void> {
-    if (this.form.invalid) {
-      this.toastService.showError("Please fill in all required fields");
-      return;
-    }
-
-    const formValue = this.form.getRawValue();
-
-    const command: CreateInvitationCommand = {
-      email: formValue.email,
-      type: "customer_user",
-      tenantRole: "tenant.customer",
-      customerId: formValue.customerId,
-      personalMessage: formValue.personalMessage || undefined,
-    };
-
-    this.isLoading.set(true);
-    try {
-      await this.api.invoke(createInvitation, { body: command });
-      this.toastService.showSuccess(`Invitation sent to ${formValue.email}`);
-      this.invitationSent.emit();
-      this.close();
-    } catch {
-      this.toastService.showError("Failed to send invitation");
-    } finally {
-      this.isLoading.set(false);
     }
   }
 
   close(): void {
     this.visible.set(false);
-    this.form.reset();
+    this.form().reset({ ...EMPTY });
   }
 
   private async fetchCustomers(): Promise<void> {

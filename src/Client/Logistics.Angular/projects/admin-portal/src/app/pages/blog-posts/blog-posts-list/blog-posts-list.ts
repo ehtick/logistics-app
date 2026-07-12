@@ -8,14 +8,22 @@ import {
   unpublishBlogPost,
   type BlogPostDto,
 } from "@logistics/shared/api";
-import { DataContainer, Icon, PageHeader, SearchField, Stack } from "@logistics/shared/components";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Badge,
+  Card,
+  DataContainer,
+  Icon,
+  PageHeader,
+  SearchField,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  UiTooltip,
+  type UiBadgeIntent,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { BlogPostsListStore } from "../store/blog-posts-list.store";
 
@@ -24,18 +32,19 @@ import { BlogPostsListStore } from "../store/blog-posts-list.store";
   templateUrl: "./blog-posts-list.html",
   providers: [BlogPostsListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    MenuModule,
+    Badge,
+    Card,
     DataContainer,
-    PageHeader,
-    SearchField,
-    TagModule,
     DatePipe,
     Icon,
+    PageHeader,
+    SearchField,
     Stack,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
+    UiTooltip,
   ],
 })
 export class BlogPostsList {
@@ -46,7 +55,7 @@ export class BlogPostsList {
 
   protected readonly selectedPost = signal<BlogPostDto | null>(null);
 
-  protected readonly actionMenuItems = computed<MenuItem[]>(() => {
+  protected readonly actionMenuItems = computed<UiMenuItem[]>(() => {
     const post = this.selectedPost();
     if (!post) return [];
 
@@ -54,10 +63,10 @@ export class BlogPostsList {
     const isArchived = post.status?.toLowerCase() === "archived";
     const isPublished = post.status?.toLowerCase() === "published";
 
-    const items: MenuItem[] = [
+    const items: UiMenuItem[] = [
       {
         label: "Edit",
-        icon: "pi pi-pen-to-square",
+        icon: "square-pen",
         command: () => this.editPost(),
       },
     ];
@@ -65,7 +74,7 @@ export class BlogPostsList {
     if (isDraft || isArchived) {
       items.push({
         label: "Publish",
-        icon: "pi pi-send",
+        icon: "send",
         command: () => this.publishPost(),
       });
     }
@@ -73,7 +82,7 @@ export class BlogPostsList {
     if (isPublished) {
       items.push({
         label: "Unpublish",
-        icon: "pi pi-eye-slash",
+        icon: "eye-off",
         command: () => this.unpublishPost(),
       });
     }
@@ -82,8 +91,8 @@ export class BlogPostsList {
       { separator: true },
       {
         label: "Delete",
-        icon: "pi pi-trash",
-        styleClass: "text-red-600",
+        icon: "trash",
+        variant: "destructive",
         command: () => this.confirmDelete(),
       },
     );
@@ -146,9 +155,7 @@ export class BlogPostsList {
     this.store.removeItem(id);
   }
 
-  protected getStatusSeverity(
-    status: string,
-  ): "success" | "secondary" | "info" | "warn" | "danger" | "contrast" {
+  protected getStatusSeverity(status: string): UiBadgeIntent {
     switch (status?.toLowerCase()) {
       case "published":
         return "success";

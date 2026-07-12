@@ -3,14 +3,15 @@ import { Component, effect, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { Api, deleteCustomer, Permission, PermissionGuard } from "@logistics/shared";
 import type { CustomerDto } from "@logistics/shared/api";
-import { Stack } from "@logistics/shared/components";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
-import { MenuModule } from "primeng/menu";
-import { TableModule } from "primeng/table";
-import { TooltipModule } from "primeng/tooltip";
+import {
+  Card,
+  Stack,
+  UiButton,
+  UiDataTable,
+  UiMenu,
+  UiSortHeader,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
 import { DataContainer, PageHeader, SearchField } from "@/shared/components";
 import { CustomerStatusTag } from "@/shared/components/tags";
@@ -22,21 +23,20 @@ import { CustomersListStore } from "../store";
   templateUrl: "./customers-list.html",
   providers: [CustomersListStore],
   imports: [
-    ButtonModule,
-    TooltipModule,
-    CardModule,
-    TableModule,
-    MenuModule,
-    ConfirmDialogModule,
-    DatePipe,
-    DataContainer,
-    PageHeader,
-    SearchField,
+    Card,
     CustomerAvatar,
     CustomerStatusTag,
+    DataContainer,
+    DatePipe,
     InviteCustomerDialogComponent,
+    PageHeader,
     PermissionGuard,
+    SearchField,
     Stack,
+    UiButton,
+    UiDataTable,
+    UiMenu,
+    UiSortHeader,
   ],
 })
 export class CustomersList {
@@ -58,22 +58,22 @@ export class CustomersList {
     });
   }
 
-  protected readonly actionMenuItems: MenuItem[] = [
+  protected readonly actionMenuItems: UiMenuItem[] = [
     {
       label: "View Details",
-      icon: "pi pi-eye",
+      icon: "eye",
       command: () => this.viewCustomer(this.selectedRow()?.id),
     },
     {
       label: "Invite Portal User",
-      icon: "pi pi-send",
+      icon: "send",
       command: () =>
         this.openInviteDialog(this.selectedRow()?.id, this.selectedRow()?.name ?? undefined),
     },
     { separator: true },
     {
       label: "Delete",
-      icon: "pi pi-trash",
+      icon: "trash",
       command: () => this.confirmToDelete(this.selectedRow()?.id),
     },
   ];

@@ -8,18 +8,24 @@ import {
   type LoadDto,
   type LoadExceptionDto,
 } from "@logistics/shared/api";
-import { Grid, Icon, Stack, Surface, Typography } from "@logistics/shared/components";
 import {
   AddressPipe,
   CurrencyFormatPipe,
   DateFormatPipe,
   DistanceUnitPipe,
 } from "@logistics/shared/pipes";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { DividerModule } from "primeng/divider";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { TabsModule } from "primeng/tabs";
+import {
+  Card,
+  Divider,
+  Grid,
+  Icon,
+  Spinner,
+  Stack,
+  Surface,
+  Typography,
+  UiButton,
+  UiTabsImports,
+} from "@logistics/shared/ui";
 import { DocumentManager, PageHeader } from "@/shared/components";
 import { LoadStatusTag, LoadTypeTag } from "@/shared/components/tags";
 import {
@@ -35,32 +41,32 @@ import {
   selector: "app-load-detail",
   templateUrl: "./load-detail.html",
   imports: [
-    CommonModule,
-    RouterModule,
-    CardModule,
-    ButtonModule,
-    TabsModule,
-    DividerModule,
-    ProgressSpinnerModule,
-    DateFormatPipe,
-    CurrencyFormatPipe,
-    PageHeader,
-    LoadStatusTag,
-    LoadTypeTag,
     AddressPipe,
+    Card,
+    CommonModule,
+    CurrencyFormatPipe,
+    DateFormatPipe,
     DistanceUnitPipe,
+    Divider,
     DocumentManager,
-    LoadStatusStepper,
-    LoadPodContent,
-    LoadExceptionsContent,
-    TrackingLinkDialog,
-    ReportExceptionDialog,
-    ResolveExceptionDialog,
     Grid,
     Icon,
+    LoadExceptionsContent,
+    LoadPodContent,
+    LoadStatusStepper,
+    LoadStatusTag,
+    LoadTypeTag,
+    PageHeader,
+    ReportExceptionDialog,
+    ResolveExceptionDialog,
+    RouterModule,
+    Spinner,
     Stack,
     Surface,
+    TrackingLinkDialog,
     Typography,
+    UiButton,
+    UiTabsImports,
   ],
 })
 export class LoadDetailPage implements OnInit {

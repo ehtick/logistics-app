@@ -9,7 +9,7 @@
   <ui-grid container>
     @for (item of [1, 2, 3, 4]; track item) {
       <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-6">
-        <p-skeleton height="120px"></p-skeleton>
+        <ui-skeleton height="120px"></ui-skeleton>
       </ui-grid>
     }
   </ui-grid>
@@ -18,7 +18,7 @@
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-users"
+        icon="users"
         label="Total Drivers"
         [value]="(data()?.totalDrivers || 0 | number) ?? '0'"
         color="blue"
@@ -28,7 +28,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-dollar"
+        icon="dollar-sign"
         label="Total Earnings"
         [value]="(data()?.totalEarnings || 0 | currencyFormat) ?? '$0'"
         color="green"
@@ -39,7 +39,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-map"
+        icon="map"
         label="Total Distance"
         [value]="(data()?.totalDistance || 0 | number: '1.0-0') + ' ' + distanceUnitLabel"
         color="blue"
@@ -50,7 +50,7 @@
 
     <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
       <app-stat-card
-        icon="pi-check-circle"
+        icon="circle-check"
         label="Loads Delivered"
         [value]="(data()?.totalLoadsDelivered || 0 | number) ?? '0'"
         color="orange"
@@ -62,7 +62,7 @@
 
   <!-- Efficiency Metrics -->
   <div class="mb-6">
-    <ui-dashboard-card title="Efficiency Metrics" icon="pi-chart-line" iconColor="blue">
+    <ui-dashboard-card title="Efficiency Metrics" icon="chart-line" iconColor="blue">
       <ui-grid container spacing="1">
         @for (metric of data()?.efficiencyMetrics || []; track metric.metric) {
           <ui-grid [size]="{ xs: 12, md: 6, lg: 3 }" class="mb-4">
@@ -74,7 +74,7 @@
                 </ui-typography>
               </div>
               <div class="shrink-0">
-                <p-tag
+                <ui-badge
                   [value]="((metric.trend ?? 0) >= 0 ? '+' : '') + (metric.trend ?? 0) + '%'"
                   [severity]="(metric.trend ?? 0) >= 0 ? 'success' : 'danger'"
                 />
@@ -89,8 +89,8 @@
   <!-- Charts Row 1 -->
   <ui-grid container spacing="2" class="mb-6">
     <ui-grid [size]="{ xs: 12, lg: 8 }" class="mb-6">
-      <ui-dashboard-card title="Driver Trends Over Time" icon="pi-chart-line" iconColor="blue">
-        <p-chart
+      <ui-dashboard-card title="Driver Trends Over Time" icon="chart-line" iconColor="blue">
+        <ui-chart
           type="line"
           [data]="trendChartData()"
           [options]="trendChartOptions"
@@ -100,8 +100,8 @@
     </ui-grid>
 
     <ui-grid [size]="{ xs: 12, lg: 4 }" class="mb-6">
-      <ui-dashboard-card title="Top Performers" icon="pi-chart-bar" iconColor="blue">
-        <p-chart
+      <ui-dashboard-card title="Top Performers" icon="chart-column" iconColor="blue">
+        <ui-chart
           type="bar"
           [data]="performanceChartData()"
           [options]="performanceChartOptions"
@@ -113,8 +113,8 @@
 
   <!-- Efficiency Chart -->
   <div class="mb-6">
-    <ui-dashboard-card title="Efficiency Metrics" icon="pi-chart-bar" iconColor="blue">
-      <p-chart
+    <ui-dashboard-card title="Efficiency Metrics" icon="chart-column" iconColor="blue">
+      <ui-chart
         type="bar"
         [data]="efficiencyChartData()"
         [options]="efficiencyChartOptions"
@@ -125,8 +125,8 @@
 
   <!-- Top Performers Table -->
   <div>
-    <ui-dashboard-card title="Top Performing Drivers" icon="pi-star" iconColor="blue">
-      <p-table [value]="data()?.topPerformers || []" [paginator]="true" [rows]="10">
+    <ui-dashboard-card title="Top Performing Drivers" icon="star" iconColor="blue">
+      <ui-data-table [value]="data()?.topPerformers || []" [paginator]="true" [rows]="10">
         <ng-template #header>
           <tr>
             <th>Driver Name</th>
@@ -152,14 +152,14 @@
             <td>{{ driver.distance | number: "1.0-0" }} {{ distanceUnitLabel }}</td>
             <td>{{ driver.efficiency | number: "1.1-1" }} loads/day</td>
             <td>
-              <p-tag
+              <ui-badge
                 [value]="getPerformanceLevel(driver.efficiency)"
                 [severity]="getPerformanceSeverity(driver.efficiency)"
               />
             </td>
           </tr>
         </ng-template>
-      </p-table>
+      </ui-data-table>
     </ui-dashboard-card>
   </div>
 }

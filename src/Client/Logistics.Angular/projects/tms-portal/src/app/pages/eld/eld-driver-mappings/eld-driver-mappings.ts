@@ -1,6 +1,5 @@
 import { DatePipe } from "@angular/common";
 import { Component, computed, inject, input, signal, type OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import {
   Api,
   deleteEldDriverMapping,
@@ -15,43 +14,42 @@ import {
   type EmployeeDto,
 } from "@logistics/shared/api";
 import {
+  Badge,
   DashboardCard,
   EmptyState,
   ErrorState,
   Grid,
   Icon,
+  Spinner,
   Stack,
-} from "@logistics/shared/components";
-import { ButtonModule } from "primeng/button";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { SelectModule } from "primeng/select";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { TooltipModule } from "primeng/tooltip";
+  UiButton,
+  UiDataTable,
+  UiSelectField,
+  UiTooltip,
+} from "@logistics/shared/ui";
 import { ToastService } from "@/core/services";
-import { FormField, PageHeader } from "@/shared/components";
+import { PageHeader, UiFormField } from "@/shared/components";
 import { getEldProviderLabel } from "../_components";
 
 @Component({
   selector: "app-eld-driver-mappings",
   templateUrl: "./eld-driver-mappings.html",
   imports: [
-    ButtonModule,
+    Badge,
     DashboardCard,
     DatePipe,
     EmptyState,
     ErrorState,
-    FormsModule,
-    FormField,
     Grid,
     Icon,
     PageHeader,
-    ProgressSpinnerModule,
-    SelectModule,
+    Spinner,
     Stack,
-    TableModule,
-    TagModule,
-    TooltipModule,
+    UiButton,
+    UiDataTable,
+    UiFormField,
+    UiSelectField,
+    UiTooltip,
   ],
 })
 export class EldDriverMappingsComponent implements OnInit {
@@ -88,8 +86,8 @@ export class EldDriverMappingsComponent implements OnInit {
     return this.employees().filter((e) => !mappedIds.has(e.id!));
   });
 
-  protected selectedEldDriver: EldDriverDto | null = null;
-  protected selectedEmployee: EmployeeDto | null = null;
+  protected readonly selectedEldDriver = signal<EldDriverDto | null>(null);
+  protected readonly selectedEmployee = signal<EmployeeDto | null>(null);
 
   ngOnInit(): void {
     this.loadData();
@@ -127,7 +125,9 @@ export class EldDriverMappingsComponent implements OnInit {
   }
 
   protected async createMapping(): Promise<void> {
-    if (!this.selectedEldDriver || !this.selectedEmployee || !this.providerType()) {
+    const eldDriver = this.selectedEldDriver();
+    const employee = this.selectedEmployee();
+    if (!eldDriver || !employee || !this.providerType()) {
       return;
     }
 
@@ -135,15 +135,15 @@ export class EldDriverMappingsComponent implements OnInit {
     try {
       await this.api.invoke(mapEldDriver, {
         body: {
-          employeeId: this.selectedEmployee.id!,
+          employeeId: employee.id!,
           providerType: this.providerType()!,
-          externalDriverId: this.selectedEldDriver.externalDriverId!,
-          externalDriverName: this.selectedEldDriver.name,
+          externalDriverId: eldDriver.externalDriverId!,
+          externalDriverName: eldDriver.name,
         },
       });
 
-      this.selectedEldDriver = null;
-      this.selectedEmployee = null;
+      this.selectedEldDriver.set(null);
+      this.selectedEmployee.set(null);
       await this.loadData();
     } catch (err) {
       console.error("Error creating mapping:", err);
@@ -156,8 +156,8 @@ export class EldDriverMappingsComponent implements OnInit {
     this.toastService.confirm({
       message: `Are you sure you want to remove the mapping for ${mapping.employeeName}?`,
       header: "Remove Mapping",
-      icon: "pi pi-exclamation-triangle",
-      acceptButtonStyleClass: "p-button-danger",
+      icon: "warning",
+      severity: "danger",
       accept: () => this.deleteMapping(mapping.id!),
     });
   }

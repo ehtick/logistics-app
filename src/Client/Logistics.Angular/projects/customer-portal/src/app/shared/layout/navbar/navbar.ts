@@ -1,25 +1,28 @@
 import { Component, computed, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Router, RouterLink, RouterLinkActive } from "@angular/router";
-import type { UserTenantAccessDto } from "@logistics/shared";
-import type { MenuItem } from "primeng/api";
-import { ButtonModule } from "primeng/button";
-import { MenuModule } from "primeng/menu";
-import { SelectModule } from "primeng/select";
+import { ThemeToggle } from "@logistics/shared";
+import {
+  Icon,
+  UiButton,
+  UiMenu,
+  UiSelectField,
+  type IconName,
+  type UiMenuItem,
+} from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
 import { TenantContextService } from "@/core/services";
 import { environment } from "@/env";
 
 interface NavItem {
   label: string;
-  icon: string;
+  icon: IconName;
   route: string;
 }
 
 @Component({
   selector: "cp-navbar",
   templateUrl: "./navbar.html",
-  imports: [FormsModule, RouterLink, RouterLinkActive, ButtonModule, MenuModule, SelectModule],
+  imports: [Icon, RouterLink, RouterLinkActive, ThemeToggle, UiButton, UiMenu, UiSelectField],
 })
 export class Navbar {
   private readonly router = inject(Router);
@@ -37,32 +40,32 @@ export class Navbar {
   });
 
   protected readonly navItems: NavItem[] = [
-    { label: "Dashboard", icon: "pi-home", route: "/" },
-    { label: "Shipments", icon: "pi-truck", route: "/shipments" },
-    { label: "Invoices", icon: "pi-receipt", route: "/invoices" },
-    { label: "Documents", icon: "pi-file", route: "/documents" },
+    { label: "Dashboard", icon: "home", route: "/" },
+    { label: "Shipments", icon: "truck", route: "/shipments" },
+    { label: "Invoices", icon: "receipt", route: "/invoices" },
+    { label: "Documents", icon: "file", route: "/documents" },
   ];
 
-  protected readonly profileMenuItems: MenuItem[] = [
+  protected readonly profileMenuItems: UiMenuItem[] = [
     {
       label: "Account Settings",
-      icon: "pi pi-cog",
+      icon: "settings",
       routerLink: "/account",
     },
     {
       label: "Manage Profile",
-      icon: "pi pi-user",
+      icon: "user",
       command: () => this.openAccountUrl(),
     },
     {
       label: "Switch Company",
-      icon: "pi pi-building",
+      icon: "building-2",
       command: () => this.switchTenant(),
     },
     { separator: true },
     {
       label: "Sign Out",
-      icon: "pi pi-sign-out",
+      icon: "log-out",
       command: () => this.logout(),
     },
   ];
@@ -75,7 +78,14 @@ export class Navbar {
     });
   }
 
-  protected onTenantChange(tenant: UserTenantAccessDto): void {
+  /**
+   * The select is keyed by `tenantId` rather than the DTO object: binding whole objects would make
+   * the trigger label depend on reference identity between `currentTenant()` and a member of
+   * `availableTenants()`.
+   */
+  protected onTenantChange(tenantId: string | null): void {
+    const tenant = this.availableTenants().find((t) => t.tenantId === tenantId);
+    if (!tenant) return;
     this.tenantService.selectTenant(tenant);
     // Reload current page to refresh data with new tenant
     window.location.reload();

@@ -1,10 +1,10 @@
 <ui-page-header [title]="'Container ' + (container()?.number ?? '')" backLink="/containers" />
 
 <ui-container maxWidth="md">
-  <p-card>
+  <ui-card>
     <ui-stack direction="row" align="center" gap="3" wrap class="border-default mb-4 border-b pb-4">
       <ui-typography variant="body-sm" color="secondary">Status:</ui-typography>
-      <p-tag
+      <ui-badge
         [severity]="statusSeverity(container()?.status)"
         [value]="statusLabel(container()?.status)"
       />
@@ -15,26 +15,25 @@
         </span>
       }
       <ui-stack direction="row" gap="2" class="ml-auto">
-        <p-button
+        <ui-button
+          appearance="outlined"
           type="button"
-          icon="pi pi-sync"
+          icon="refresh-cw"
           label="Change Status"
-          [outlined]="true"
           (click)="openStatusDialog()"
         />
-        <p-button
+        <ui-button
+          appearance="outlined"
           type="button"
-          icon="pi pi-map-marker"
+          icon="map-pin"
           label="Move to Terminal"
-          [outlined]="true"
           (click)="openTerminalDialog()"
         />
       </ui-stack>
     </ui-stack>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <form [formRoot]="form">
       <ui-stack gap="4">
-
         <ui-stack tag="section" gap="3">
           <ui-stack direction="row" gap="2" align="center">
             <ui-icon name="tag" color="secondary" />
@@ -48,33 +47,32 @@
                   for="number"
                   [required]="true"
                   hint="11 characters: 4 letters + 7 digits"
-                  [control]="form.controls.number"
                 >
-                  <input pInputText id="number" formControlName="number" />
+                  <ui-text-field id="number" [formField]="form.number" />
                 </ui-form-field>
               </ui-grid>
 
               <ui-grid [size]="{ xs: 12, md: 6 }">
                 <ui-form-field label="ISO Type" for="isoType" [required]="true">
-                  <p-select formControlName="isoType" [options]="isoTypeOptions" />
+                  <ui-select-field [formField]="form.isoType" [options]="isoTypeOptions" />
                 </ui-form-field>
               </ui-grid>
 
               <ui-grid [size]="{ xs: 12, md: 6 }">
                 <ui-form-field label="Seal Number" for="sealNumber">
-                  <input pInputText id="sealNumber" formControlName="sealNumber" />
+                  <ui-text-field id="sealNumber" [formField]="form.sealNumber" />
                 </ui-form-field>
               </ui-grid>
 
               <ui-grid [size]="{ xs: 12, md: 6 }">
                 <ui-form-field label="Booking Reference" for="bookingReference">
-                  <input pInputText id="bookingReference" formControlName="bookingReference" />
+                  <ui-text-field id="bookingReference" [formField]="form.bookingReference" />
                 </ui-form-field>
               </ui-grid>
 
               <ui-grid [size]="12">
                 <ui-form-field label="Bill of Lading Number" for="billOfLadingNumber">
-                  <input pInputText id="billOfLadingNumber" formControlName="billOfLadingNumber" />
+                  <ui-text-field id="billOfLadingNumber" [formField]="form.billOfLadingNumber" />
                 </ui-form-field>
               </ui-grid>
             </ui-grid>
@@ -88,50 +86,56 @@
           </ui-stack>
           <ui-surface variant="elevated" [border]="true">
             <ui-form-field label="Gross Weight (kg)" for="grossWeight" class="mb-0">
-              <p-input-number id="grossWeight" formControlName="grossWeight" [min]="0" />
+              <ui-number-field id="grossWeight" [formField]="form.grossWeight" />
             </ui-form-field>
           </ui-surface>
         </ui-stack>
 
         <ui-stack tag="section" gap="3">
           <ui-stack direction="row" gap="2" align="center">
-            <ui-icon name="comment" color="secondary" />
+            <ui-icon name="message-square" color="secondary" />
             <ui-typography variant="overline" color="secondary">Notes</ui-typography>
           </ui-stack>
           <ui-surface variant="elevated" [border]="true">
             <ui-form-field label="Notes" for="notes" class="mb-0">
-              <textarea pTextarea id="notes" formControlName="notes" rows="3"></textarea>
+              <ui-textarea-field id="notes" [formField]="form.notes" [rows]="3" />
             </ui-form-field>
           </ui-surface>
         </ui-stack>
 
         <ui-stack direction="row" gap="2">
-          <p-button type="submit" icon="pi pi-check" label="Update" [disabled]="isLoading()" />
-          <p-button
+          <ui-button
+            type="submit"
+            icon="check"
+            label="Update"
+            [disabled]="isLoading()"
+            [loading]="form().submitting()"
+          />
+          <ui-button
+            appearance="outlined"
             type="button"
-            icon="pi pi-arrow-left"
+            icon="arrow-left"
             label="Back to list"
             [routerLink]="['/containers']"
-            [outlined]="true"
           />
         </ui-stack>
       </ui-stack>
     </form>
-  </p-card>
+  </ui-card>
 </ui-container>
 
 <!-- Status change dialog -->
-<p-dialog
+<ui-dialog
   header="Change Container Status"
   [modal]="true"
-  [(visible)]="statusDialogVisible"
-  [style]="{ width: '32rem' }"
+  [(open)]="statusDialogVisible"
+  width="32rem"
 >
-  <form [formGroup]="statusForm" (ngSubmit)="submitStatus()">
+  <form [formRoot]="statusForm">
     <ui-stack gap="3">
       <ui-form-field label="New Status" for="targetStatus" [required]="true">
-        <p-select
-          formControlName="targetStatus"
+        <ui-select-field
+          [formField]="statusForm.targetStatus"
           [options]="statusOptions"
           placeholder="Select target status"
         />
@@ -139,45 +143,55 @@
 
       @if (statusRequiresTerminal) {
         <ui-form-field label="Terminal" for="statusTerminal" [required]="true" class="mb-0">
-          <app-search-terminal formControlName="terminal" />
+          <app-search-terminal [formField]="statusForm.terminal" />
         </ui-form-field>
       }
 
       <ui-stack direction="row" justify="end" gap="2" class="pt-2">
-        <p-button
+        <ui-button
+          appearance="outlined"
           type="button"
           label="Cancel"
-          [outlined]="true"
           (click)="statusDialogVisible.set(false)"
         />
-        <p-button type="submit" label="Update Status" icon="pi pi-check" />
+        <ui-button
+          type="submit"
+          label="Update Status"
+          icon="check"
+          [loading]="statusForm().submitting()"
+        />
       </ui-stack>
     </ui-stack>
   </form>
-</p-dialog>
+</ui-dialog>
 
 <!-- Move to terminal dialog -->
-<p-dialog
+<ui-dialog
   header="Move Container to Terminal"
   [modal]="true"
-  [(visible)]="terminalDialogVisible"
-  [style]="{ width: '32rem' }"
+  [(open)]="terminalDialogVisible"
+  width="32rem"
 >
-  <form [formGroup]="terminalForm" (ngSubmit)="submitTerminal()">
+  <form [formRoot]="terminalForm">
     <ui-stack gap="3">
       <ui-form-field label="Terminal" for="moveTerminal" [required]="true" class="mb-0">
-        <app-search-terminal formControlName="terminal" />
+        <app-search-terminal [formField]="terminalForm.terminal" />
       </ui-form-field>
 
       <ui-stack direction="row" justify="end" gap="2" class="pt-2">
-        <p-button
+        <ui-button
+          appearance="outlined"
           type="button"
           label="Cancel"
-          [outlined]="true"
           (click)="terminalDialogVisible.set(false)"
         />
-        <p-button type="submit" label="Move" icon="pi pi-arrow-right" />
+        <ui-button
+          type="submit"
+          label="Move"
+          icon="arrow-right"
+          [loading]="terminalForm().submitting()"
+        />
       </ui-stack>
     </ui-stack>
   </form>
-</p-dialog>
+</ui-dialog>

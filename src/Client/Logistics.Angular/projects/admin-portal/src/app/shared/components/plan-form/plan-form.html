@@ -1,12 +1,10 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
+<form [formRoot]="form">
   <div class="mb-4 grid grid-cols-12 gap-4">
     <div class="col-span-12">
       <ui-form-field label="Plan Name" [required]="true">
-        <input
-          pInputText
-          formControlName="name"
+        <ui-text-field
+          [formField]="form.name"
           placeholder="Enter plan name (e.g., Basic, Pro, Enterprise)"
-          class="w-full"
         />
       </ui-form-field>
     </div>
@@ -15,20 +13,18 @@
   <div class="mb-4 grid grid-cols-12 gap-4">
     <div class="col-span-12 md:col-span-6">
       <ui-form-field label="Description">
-        <textarea
-          pInputTextarea
-          formControlName="description"
+        <ui-textarea-field
+          [formField]="form.description"
           placeholder="Enter plan description"
-          rows="3"
-          class="w-full"
-        ></textarea>
+          [rows]="3"
+        />
       </ui-form-field>
     </div>
 
     <div class="col-span-12 md:col-span-6">
       <ui-form-field label="Plan Tier" [required]="true">
-        <p-select
-          formControlName="tier"
+        <ui-select-field
+          [formField]="form.tier"
           [options]="tierOptions"
           placeholder="Select tier"
           [fluid]="true"
@@ -40,21 +36,20 @@
   <div class="mb-4 grid grid-cols-12 gap-4">
     <div class="col-span-12 md:col-span-4">
       <ui-form-field label="Base Monthly Fee" [required]="true">
-        <ui-currency-field [control]="form.controls.price" placeholder="0.00" />
+        <ui-currency-field [formField]="form.price" placeholder="0.00" />
       </ui-form-field>
     </div>
 
     <div class="col-span-12 md:col-span-4">
       <ui-form-field label="Per Truck Fee" [required]="true">
-        <ui-currency-field [control]="form.controls.perTruckPrice" placeholder="0.00" />
+        <ui-currency-field [formField]="form.perTruckPrice" placeholder="0.00" />
       </ui-form-field>
     </div>
 
     <div class="col-span-12 md:col-span-4">
       <ui-form-field label="Max Trucks">
-        <p-inputNumber
-          formControlName="maxTrucks"
-          [min]="1"
+        <ui-number-field
+          [formField]="form.maxTrucks"
           [showButtons]="true"
           placeholder="Unlimited"
           [fluid]="true"
@@ -66,9 +61,8 @@
   <div class="mb-4 grid grid-cols-12 gap-4">
     <div class="col-span-12 md:col-span-4">
       <ui-form-field label="Weekly AI Request Quota" hint="Leave empty for unlimited">
-        <p-inputNumber
-          formControlName="weeklyAiRequestQuota"
-          [min]="1"
+        <ui-number-field
+          [formField]="form.weeklyAiRequestQuota"
           [showButtons]="true"
           placeholder="Unlimited"
           [fluid]="true"
@@ -80,8 +74,8 @@
   <div class="mb-4 grid grid-cols-12 gap-4">
     <div class="col-span-12 md:col-span-4">
       <ui-form-field label="Billing Interval" [required]="true">
-        <p-select
-          formControlName="interval"
+        <ui-select-field
+          [formField]="form.interval"
           [options]="intervalOptions"
           placeholder="Select interval"
           [fluid]="true"
@@ -91,38 +85,26 @@
 
     <div class="col-span-12 md:col-span-4">
       <ui-form-field label="Interval Count" [required]="true">
-        <p-inputNumber
-          formControlName="intervalCount"
-          [min]="1"
-          [max]="12"
-          [showButtons]="true"
-          [fluid]="true"
-        />
+        <ui-number-field [formField]="form.intervalCount" [showButtons]="true" [fluid]="true" />
       </ui-form-field>
     </div>
   </div>
 
-
   <div class="mt-6 flex gap-2">
-    <p-button
+    <ui-button
       [label]="mode() === 'create' ? 'Create' : 'Save'"
-      icon="pi pi-check"
+      icon="check"
       type="submit"
       [loading]="isLoading()"
       [disabled]="isLoading()"
     />
-    <p-button
-      label="Cancel"
-      icon="pi pi-times"
-      severity="secondary"
-      routerLink="/subscription-plans"
-    />
+    <ui-button intent="secondary" label="Cancel" icon="x" routerLink="/subscription-plans" />
     @if (mode() === "edit") {
-      <p-button
+      <ui-button
+        intent="danger"
+        appearance="outlined"
         label="Delete"
-        icon="pi pi-trash"
-        severity="danger"
-        [outlined]="true"
+        icon="trash"
         (click)="askRemove()"
       />
     }

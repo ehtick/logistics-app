@@ -1,14 +1,11 @@
-<ui-page-header
-  title="ELD / HOS Dashboard"
-  subtitle="Monitor driver Hours of Service compliance"
->
-  <p-tag [value]="rules.ruleSetLabel()" severity="info" pTooltip="Active HOS rule set" />
-  <p-button label="Configure Providers" icon="pi pi-cog" (onClick)="configureProviders()" />
-  <p-button
+<ui-page-header title="ELD / HOS Dashboard" subtitle="Monitor driver Hours of Service compliance">
+  <ui-badge [value]="rules.ruleSetLabel()" severity="info" uiTooltip="Active HOS rule set" />
+  <ui-button label="Configure Providers" icon="settings" (click)="configureProviders()" />
+  <ui-button
     label="Sync HOS Data"
-    icon="pi pi-refresh"
+    icon="refresh-cw"
     [loading]="loading()"
-    (onClick)="syncDriversHos()"
+    (click)="syncDriversHos()"
   />
 </ui-page-header>
 
@@ -16,7 +13,7 @@
 <ui-grid container spacing="4" class="mb-6">
   <ui-grid [size]="{ xs: 12, md: 6, lg: 4 }">
     <app-stat-card
-      icon="pi-check-circle"
+      icon="circle-check"
       label="Available Drivers"
       [value]="availableDrivers().length"
       color="green"
@@ -26,7 +23,7 @@
 
   <ui-grid [size]="{ xs: 12, md: 6, lg: 4 }">
     <app-stat-card
-      icon="pi-users"
+      icon="users"
       label="Total Drivers"
       [value]="drivers().length"
       color="blue"
@@ -36,7 +33,7 @@
 
   <ui-grid [size]="{ xs: 12, md: 6, lg: 4 }">
     <app-stat-card
-      icon="pi-exclamation-triangle"
+      icon="triangle-alert"
       label="HOS Violations"
       [value]="violationCount()"
       [color]="violationCount() > 0 ? 'red' : 'gray'"
@@ -48,10 +45,10 @@
 <!-- Main Content -->
 <ui-grid container spacing="4">
   <ui-grid [size]="12">
-    <ui-dashboard-card title="Driver Hours of Service" icon="pi-clock" iconColor="blue">
+    <ui-dashboard-card title="Driver Hours of Service" icon="clock" iconColor="blue">
       @if (loading()) {
         <ui-stack align="center" justify="center" class="p-5">
-          <p-progressSpinner />
+          <ui-spinner />
         </ui-stack>
       } @else if (error()) {
         <ui-error-state [message]="error()!" (retry)="loadDriversHos()" />
@@ -59,14 +56,14 @@
         <ui-empty-state
           title="No driver HOS data"
           message="Configure an ELD provider and map your drivers to start tracking HOS."
-          icon="info-circle"
+          icon="info"
           severity="info"
           actionLabel="Configure Providers"
-          actionIcon="pi pi-cog"
+          actionIcon="settings"
           (action)="configureProviders()"
         />
       } @else {
-        <p-table
+        <ui-data-table
           [value]="drivers()"
           [paginator]="true"
           [rows]="10"
@@ -76,25 +73,13 @@
         >
           <ng-template #header>
             <tr>
-              <th pSortableColumn="employeeName">
-                Driver
-                <p-sortIcon field="employeeName"></p-sortIcon>
-              </th>
-              <th pSortableColumn="currentDutyStatus">
-                Status
-                <p-sortIcon field="currentDutyStatus"></p-sortIcon>
-              </th>
+              <th uiSortHeader="employeeName">Driver</th>
+              <th uiSortHeader="currentDutyStatus">Status</th>
               <th>Driving Time Left</th>
               <th>On-Duty Time Left</th>
               <th>Cycle Time Left</th>
-              <th pSortableColumn="isAvailableForDispatch">
-                Available
-                <p-sortIcon field="isAvailableForDispatch"></p-sortIcon>
-              </th>
-              <th pSortableColumn="lastUpdatedAt">
-                Last Updated
-                <p-sortIcon field="lastUpdatedAt"></p-sortIcon>
-              </th>
+              <th uiSortHeader="isAvailableForDispatch">Available</th>
+              <th uiSortHeader="lastUpdatedAt">Last Updated</th>
               <th>Actions</th>
             </tr>
           </ng-template>
@@ -103,16 +88,16 @@
               <td>
                 <div class="flex items-center gap-2">
                   @if (driver.isInViolation) {
-                    <i class="pi pi-exclamation-triangle text-danger" pTooltip="HOS Violation"></i>
+                    <ui-icon name="triangle-alert" class="text-danger" uiTooltip="HOS Violation" />
                   }
                   <span class="font-medium">{{ driver.employeeName }}</span>
                 </div>
               </td>
               <td>
-                <p-tag
+                <ui-badge
                   [value]="driver.currentDutyStatusDisplay"
                   [severity]="getDutyStatusSeverity(driver.currentDutyStatus)"
-                ></p-tag>
+                ></ui-badge>
               </td>
               <td>
                 <span [class.text-danger]="driver.drivingMinutesRemaining < drivingWarnMinutes()">
@@ -127,24 +112,25 @@
               <td>{{ driver.cycleTimeRemainingDisplay }}</td>
               <td>
                 @if (driver.isAvailableForDispatch) {
-                  <p-tag value="Available" severity="success"></p-tag>
+                  <ui-badge value="Available" severity="success"></ui-badge>
                 } @else {
-                  <p-tag value="Unavailable" severity="danger"></p-tag>
+                  <ui-badge value="Unavailable" severity="danger"></ui-badge>
                 }
               </td>
               <td>{{ driver.lastUpdatedAt | date: "short" }}</td>
               <td>
-                <p-button
-                  icon="pi pi-history"
+                <ui-button
+                  appearance="text"
+                  ariaLabel="View Logs"
+                  icon="history"
                   [rounded]="true"
-                  [text]="true"
-                  pTooltip="View Logs"
-                  (onClick)="viewDriverLogs(driver.employeeId)"
-                ></p-button>
+                  uiTooltip="View Logs"
+                  (click)="viewDriverLogs(driver.employeeId)"
+                ></ui-button>
               </td>
             </tr>
           </ng-template>
-        </p-table>
+        </ui-data-table>
       }
     </ui-dashboard-card>
   </ui-grid>
