@@ -31,7 +31,7 @@ internal sealed class OpenAiLlmProvider(Options.LlmProviderOptions config) : ILl
         // Conversation history
         foreach (var message in request.Messages)
         {
-            messages.Add(ToOpenAiMessage(message));
+            messages.AddRange(ToOpenAiMessages(message));
         }
 
         // Tools
@@ -60,18 +60,20 @@ internal sealed class OpenAiLlmProvider(Options.LlmProviderOptions config) : ILl
         return MapResponse(completion.Value);
     }
 
-    private static ChatMessage ToOpenAiMessage(LlmMessage message)
+    /// <summary>
+    /// Maps one provider-agnostic message to one or more OpenAI messages. A tool-results turn holds one
+    /// block per tool call (Anthropic's shape), but OpenAI needs a separate tool message per
+    /// tool_call_id - collapsing them into one is an HTTP 400 as soon as the model calls two tools.
+    /// </summary>
+    internal static IEnumerable<ChatMessage> ToOpenAiMessages(LlmMessage message)
     {
         if (message.Role == LlmRole.User)
         {
-            // Check if this is a tool results message
             var toolResults = message.Content.OfType<LlmToolResultBlock>().ToList();
             if (toolResults.Count > 0)
             {
-                // OpenAI expects individual ToolChatMessages for each result
-                // We return the first one; the caller handles multiple via the message list
-                // Actually, for OpenAI we need to return multiple messages - handle this specially
-                return ChatMessage.CreateToolMessage(toolResults[0].ToolUseId, toolResults[0].Content);
+                return toolResults.Select(ChatMessage (result) =>
+                    ChatMessage.CreateToolMessage(result.ToolUseId, result.Content));
             }
 
             var textParts = message.Content.OfType<LlmTextBlock>().ToList();
@@ -80,7 +82,7 @@ internal sealed class OpenAiLlmProvider(Options.LlmProviderOptions config) : ILl
             var documents = message.Content.OfType<LlmDocumentBlock>().ToList();
 
             if (images.Count == 0 && documents.Count == 0)
-                return ChatMessage.CreateUserMessage(text);
+                return [ChatMessage.CreateUserMessage(text)];
 
             // Multimodal message: text plus inline images and/or documents (e.g. PDFs) as content parts.
             var parts = new List<ChatMessageContentPart>();
@@ -108,7 +110,7 @@ internal sealed class OpenAiLlmProvider(Options.LlmProviderOptions config) : ILl
 #pragma warning restore OPENAI001
             }
 
-            return ChatMessage.CreateUserMessage(parts);
+            return [ChatMessage.CreateUserMessage(parts)];
         }
 
         // Assistant message with potential tool calls
@@ -116,7 +118,7 @@ internal sealed class OpenAiLlmProvider(Options.LlmProviderOptions config) : ILl
         var toolUses = message.Content.OfType<LlmToolUseBlock>().ToList();
 
         if (toolUses.Count == 0)
-            return ChatMessage.CreateAssistantMessage(assistantText ?? "");
+            return [ChatMessage.CreateAssistantMessage(assistantText ?? "")];
 
         var toolCalls = toolUses
             .Select(t => ChatToolCall.CreateFunctionToolCall(
@@ -128,7 +130,7 @@ internal sealed class OpenAiLlmProvider(Options.LlmProviderOptions config) : ILl
         var assistantMessage = new AssistantChatMessage(toolCalls);
         if (assistantText is not null)
             assistantMessage.Content.Add(ChatMessageContentPart.CreateTextPart(assistantText));
-        return assistantMessage;
+        return [assistantMessage];
     }
 
     private static LlmResponse MapResponse(ChatCompletion completion)
