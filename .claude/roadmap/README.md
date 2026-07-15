@@ -12,7 +12,7 @@ in its **Notes** section. Keep this index's Status column in sync.
 
 | Feature                                             | Priority | Effort | Status  |
 | --------------------------------------------------- | -------- | ------ | ------- |
-| [QuickBooks sync](quickbooks-sync.md)               | P0       | M      | Planned |
+| [QuickBooks sync](quickbooks-sync.md)               | P0       | M      | Done    |
 | [IFTA fuel tax reporting](ifta-reporting.md)        | P0       | M      | Planned |
 | [Fuel card integrations](fuel-card-integrations.md) | P0       | M      | Planned |
 | [Factoring integration](factoring-integration.md)   | P0       | M      | Planned |
