@@ -10,8 +10,8 @@
       <ui-stack gap="4">
         <div class="flex items-center justify-between gap-4">
           <div>
-            <h3 class="text-lg font-semibold text-foreground">QuickBooks Online</h3>
-            <p class="text-sm text-muted-foreground">
+            <h3 class="text-foreground text-lg font-semibold">QuickBooks Online</h3>
+            <p class="text-muted-foreground text-sm">
               Push customers, invoices, payments, and expenses to your QuickBooks company.
             </p>
           </div>
@@ -28,24 +28,28 @@
             @if (connection()?.companyName) {
               <div class="text-sm">
                 <span class="text-muted-foreground">Company:</span>
-                <span class="font-medium text-foreground">{{ connection()?.companyName }}</span>
+                <span class="text-foreground font-medium">{{ connection()?.companyName }}</span>
               </div>
             }
             @if (connection()?.lastSyncedAt) {
               <div class="text-sm">
                 <span class="text-muted-foreground">Last synced:</span>
-                <span class="font-medium text-foreground">{{ connection()?.lastSyncedAt | date: "medium" }}</span>
+                <span class="text-foreground font-medium">
+                  {{ connection()?.lastSyncedAt | date: "medium" }}
+                </span>
               </div>
             }
             <div>
-              <ui-button variant="destructive" (click)="disconnect()">Disconnect</ui-button>
+              <ui-button label="Disconnect" intent="danger" (click)="disconnect()" />
             </div>
           </ui-stack>
         } @else {
           <div>
-            <ui-button [disabled]="connecting()" (click)="connect()">
-              {{ connecting() ? "Redirecting…" : "Connect to QuickBooks" }}
-            </ui-button>
+            <ui-button
+              [label]="connecting() ? 'Redirecting…' : 'Connect to QuickBooks'"
+              [loading]="connecting()"
+              (click)="connect()"
+            />
           </div>
         }
       </ui-stack>
