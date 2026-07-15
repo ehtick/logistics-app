@@ -101,9 +101,10 @@ internal partial class TenantDatabaseService(
 
             if (existingRole != null)
             {
-                // Sync role claims - add missing and remove stale
+                // existingRole is tracked, so the change tracker handles claim add/remove.
+                // Don't call Update(): client-generated keys make it mark new claims as
+                // Modified, issuing UPDATEs for non-existent rows (DbUpdateConcurrencyException).
                 await SyncRolePermissionsAsync(existingRole);
-                context.Set<TenantRole>().Update(existingRole);
                 logger.LogInformation("Updated tenant role '{Role}'", existingRole.Name);
             }
             else
