@@ -150,7 +150,7 @@ export class ProductShowcase {
     {
       title: "Accounting",
       description:
-        "Load invoices, payroll, and payments in one place. Track what's outstanding, approve payroll, and keep the books in order.",
+        "Load invoices, payroll, and payments in one place. Track what's outstanding, approve payroll, and sync it all to QuickBooks Online so your accountant's books stay current.",
       screenshots: [
         {
           src: "images/screenshots/tms-invoice-dashboard.png",
@@ -167,6 +167,7 @@ export class ProductShowcase {
         "Load invoice tracking",
         "Payroll processing and approval",
         "Payment recording and history",
+        "QuickBooks Online sync",
       ],
       icon: "wallet",
     },

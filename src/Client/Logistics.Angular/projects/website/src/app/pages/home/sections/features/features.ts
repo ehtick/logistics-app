@@ -80,6 +80,12 @@ export class Features {
         "Log fleet expenses by category - fuel, tolls, repairs, and so on - and see the breakdown of where the money goes.",
     },
     {
+      icon: "refresh-cw",
+      title: "QuickBooks Sync",
+      description:
+        "Push customers, invoices, payments, and expenses to QuickBooks Online so your accountant's books stay current without re-entry.",
+    },
+    {
       icon: "clock",
       title: "ELD / HOS",
       description:

@@ -85,6 +85,13 @@ export class Compare {
         { name: "Stripe Connect payouts", us: "✓", dataTruck: "-", alvys: "-", roseRocket: "-" },
         { name: "Payment links (public)", us: "✓", dataTruck: "-", alvys: "-", roseRocket: "-" },
         { name: "Payroll management", us: "✓", dataTruck: "✓", alvys: "✓", roseRocket: "-" },
+        {
+          name: "QuickBooks accounting sync",
+          us: "✓",
+          dataTruck: "✓",
+          alvys: "✓",
+          roseRocket: "✓",
+        },
       ],
     },
     {

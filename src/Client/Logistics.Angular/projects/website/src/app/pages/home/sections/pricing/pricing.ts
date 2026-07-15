@@ -56,6 +56,7 @@ export class Pricing {
         "Maintenance tracking",
         "Telegram bot integration",
         "MCP Server",
+        "QuickBooks accounting sync",
         "AI Dispatch - higher usage",
         "Up to 30 trucks",
       ],
