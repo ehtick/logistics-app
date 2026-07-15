@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace Logistics.Infrastructure.Persistence.Services.Accounting;
 
-internal sealed class OAuthStateProtector(IDataProtectionProvider provider) : IOAuthStateProtector
+public sealed class OAuthStateProtector(IDataProtectionProvider provider) : IOAuthStateProtector
 {
     private const string Purpose = "Logistics.OAuthState.v1";
     private readonly IDataProtector protector = provider.CreateProtector(Purpose);

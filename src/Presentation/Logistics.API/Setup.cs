@@ -18,7 +18,9 @@ using Logistics.Infrastructure.Documents;
 using Logistics.Infrastructure.Integrations.Accounting;
 using Logistics.Infrastructure.Integrations.Eld;
 using Logistics.Infrastructure.Integrations.LoadBoard;
+using Logistics.Application.Abstractions.Accounting;
 using Logistics.Infrastructure.Persistence.Data;
+using Logistics.Infrastructure.Persistence.Services.Accounting;
 using Microsoft.AspNetCore.DataProtection;
 using Logistics.Infrastructure.Payments;
 using Logistics.Infrastructure.Persistence;
@@ -77,12 +79,15 @@ internal static class Setup
             .AddTenantDatabase()
             .AddIdentity();
 
-        // Data Protection backs provider-secret column encryption (EncryptedStringConverter) and
-        // the OAuth callback state protector. Keys persist in the master DB with a stable app name
-        // so ciphertext survives restarts and is decryptable across API instances.
+        // Backs secret-column encryption and the OAuth state protector. Stable app name + master-DB
+        // key ring so ciphertext survives restarts and works across API instances.
         services.AddDataProtection()
             .PersistKeysToDbContext<MasterDbContext>()
             .SetApplicationName("LogisticsX");
+
+        // Registered here (not the shared persistence builder) since it needs Data Protection —
+        // keeps hosts without it, e.g. the DB migrator, constructible.
+        services.AddScoped<IOAuthStateProtector, OAuthStateProtector>();
 
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
