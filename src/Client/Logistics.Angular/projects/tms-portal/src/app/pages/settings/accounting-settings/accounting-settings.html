@@ -1,0 +1,54 @@
+<ui-page-header title="Accounting" [centered]="true" />
+
+<ui-container>
+  <ui-card class="mb-4">
+    @if (loading()) {
+      <div class="flex justify-center p-8">
+        <ui-spinner />
+      </div>
+    } @else {
+      <ui-stack gap="4">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-semibold text-foreground">QuickBooks Online</h3>
+            <p class="text-sm text-muted-foreground">
+              Push customers, invoices, payments, and expenses to your QuickBooks company.
+            </p>
+          </div>
+
+          @if (isConnected()) {
+            <ui-badge severity="success" value="Connected" />
+          } @else {
+            <ui-badge severity="secondary" value="Not connected" />
+          }
+        </div>
+
+        @if (isConnected()) {
+          <ui-stack gap="2">
+            @if (connection()?.companyName) {
+              <div class="text-sm">
+                <span class="text-muted-foreground">Company:</span>
+                <span class="font-medium text-foreground">{{ connection()?.companyName }}</span>
+              </div>
+            }
+            @if (connection()?.lastSyncedAt) {
+              <div class="text-sm">
+                <span class="text-muted-foreground">Last synced:</span>
+                <span class="font-medium text-foreground">{{ connection()?.lastSyncedAt | date: "medium" }}</span>
+              </div>
+            }
+            <div>
+              <ui-button variant="destructive" (click)="disconnect()">Disconnect</ui-button>
+            </div>
+          </ui-stack>
+        } @else {
+          <div>
+            <ui-button [disabled]="connecting()" (click)="connect()">
+              {{ connecting() ? "Redirecting…" : "Connect to QuickBooks" }}
+            </ui-button>
+          </div>
+        }
+      </ui-stack>
+    }
+  </ui-card>
+</ui-container>

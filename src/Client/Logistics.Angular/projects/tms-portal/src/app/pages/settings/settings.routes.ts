@@ -41,6 +41,13 @@ export const settingsRoutes: Routes = [
     data: { breadcrumb: "API Keys" },
   },
   {
+    path: "accounting",
+    loadComponent: () =>
+      import("./accounting-settings/accounting-settings").then((m) => m.AccountingSettings),
+    canActivate: [authGuard],
+    data: { breadcrumb: "Accounting" },
+  },
+  {
     path: "privacy",
     loadComponent: () =>
       import("./privacy-settings/privacy-settings").then((m) => m.PrivacySettings),

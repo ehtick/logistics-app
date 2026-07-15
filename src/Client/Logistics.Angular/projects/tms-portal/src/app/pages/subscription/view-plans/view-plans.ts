@@ -49,6 +49,7 @@ const featureLabels: Record<TenantFeature, string> = {
   api_access: "API Access",
   telegram_bot: "Telegram Bot",
   mcp_server: "MCP Server",
+  accounting: "Accounting (QuickBooks)",
 };
 
 /** All features in display order */
@@ -76,6 +77,7 @@ const allFeatures: TenantFeature[] = [
   "api_access",
   "telegram_bot",
   "mcp_server",
+  "accounting",
 ];
 
 @Component({
