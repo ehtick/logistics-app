@@ -6,6 +6,7 @@ using Logistics.Infrastructure.Persistence.Helpers;
 using Logistics.Infrastructure.Persistence.Interceptors;
 using Logistics.Infrastructure.Persistence.Options;
 using Logistics.Shared.Models;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -19,16 +20,19 @@ public class TenantDbContext : DbContext
     private readonly string defaultConnectionString;
 
     private readonly DispatchDomainEventsInterceptor? dispatchDomain;
+    private readonly IDataProtectionProvider? dataProtectionProvider;
     private readonly ILogger<TenantDbContext>? logger;
 
     public TenantDbContext(
         TenantDbContextOptions? tenantDbContextOptions = null,
         DispatchDomainEventsInterceptor? dispatchDomain = null,
         AuditableEntitySaveChangesInterceptor? auditableEntity = null,
+        IDataProtectionProvider? dataProtectionProvider = null,
         ILogger<TenantDbContext>? logger = null)
     {
         this.dispatchDomain = dispatchDomain;
         this.auditableEntity = auditableEntity;
+        this.dataProtectionProvider = dataProtectionProvider;
         this.logger = logger;
 
         defaultConnectionString = tenantDbContextOptions?.ConnectionString
@@ -82,6 +86,10 @@ public class TenantDbContext : DbContext
         // Prune entity types that are only relevant for the master database
         // It avoids issues with master-specific entities being included in the tenant context and migration errors
         builder.PruneMasterOnlyTypesForTenant();
+
+        // Encrypt provider-secret columns at rest (ELD / LoadBoard / Accounting). Applied after
+        // entity configs so it overrides their plain string mappings. No-op when no protector.
+        builder.ApplyEncryptedSecretColumns(dataProtectionProvider);
 
         // Query-only DTOs for PostgreSQL functions - no table generation
         builder.Entity<CompanyStatsDto>(entity =>

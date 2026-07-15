@@ -15,7 +15,9 @@ using Logistics.Application.Abstractions.Modules.Platform.ReadModels;
 using Logistics.Application.Abstractions.SystemSettings;
 using Logistics.Application.Abstractions.Tenancy;
 using Logistics.Application.Abstractions.AiDispatch;
+using Logistics.Application.Abstractions.Accounting;
 using Logistics.Infrastructure.Persistence.Reads.Platform;
+using Logistics.Infrastructure.Persistence.Services.Accounting;
 
 namespace Logistics.Infrastructure.Persistence.Builder;
 
@@ -71,6 +73,7 @@ internal sealed class PersistenceInfrastructureBuilder : IPersistenceInfrastruct
         services.AddScoped<IFeatureService, FeatureService>();
         services.AddScoped<IAiQuotaService, AiQuotaService>();
         services.AddScoped<ISystemSettingsService, SystemSettingsService>();
+        services.AddScoped<IOAuthStateProtector, OAuthStateProtector>();
         logger?.LogInformation("Added master database with connection string: {ConnectionString}", connectionString);
         return this;
     }

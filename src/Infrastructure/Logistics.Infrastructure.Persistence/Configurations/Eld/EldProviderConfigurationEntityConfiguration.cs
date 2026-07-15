@@ -13,21 +13,10 @@ internal sealed class EldProviderConfigurationEntityConfiguration : IEntityTypeC
         builder.HasIndex(i => i.ProviderType)
             .IsUnique();
 
+        // Secret columns are encrypted at rest (EncryptedStringConverter); ciphertext is larger
+        // than the plaintext, so these are stored as unbounded text to avoid truncation.
         builder.Property(i => i.ApiKey)
-            .HasMaxLength(500)
             .IsRequired();
-
-        builder.Property(i => i.ApiSecret)
-            .HasMaxLength(500);
-
-        builder.Property(i => i.AccessToken)
-            .HasMaxLength(2000);
-
-        builder.Property(i => i.RefreshToken)
-            .HasMaxLength(2000);
-
-        builder.Property(i => i.WebhookSecret)
-            .HasMaxLength(500);
 
         builder.Property(i => i.ExternalAccountId)
             .HasMaxLength(100);

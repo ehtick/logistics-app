@@ -10,21 +10,25 @@ public class EldProviderConfiguration : Entity, ITenantEntity
     /// <summary>
     /// API key or client ID for the ELD provider (encrypted at rest)
     /// </summary>
+    [EncryptedSecret]
     public required string ApiKey { get; set; }
 
     /// <summary>
     /// API secret or client secret for the ELD provider (encrypted at rest)
     /// </summary>
+    [EncryptedSecret]
     public string? ApiSecret { get; set; }
 
     /// <summary>
     /// OAuth access token for providers that use OAuth (encrypted at rest)
     /// </summary>
+    [EncryptedSecret]
     public string? AccessToken { get; set; }
 
     /// <summary>
     /// OAuth refresh token for token renewal (encrypted at rest)
     /// </summary>
+    [EncryptedSecret]
     public string? RefreshToken { get; set; }
 
     /// <summary>
@@ -35,6 +39,7 @@ public class EldProviderConfiguration : Entity, ITenantEntity
     /// <summary>
     /// Secret for validating incoming webhooks from the provider
     /// </summary>
+    [EncryptedSecret]
     public string? WebhookSecret { get; set; }
 
     /// <summary>
