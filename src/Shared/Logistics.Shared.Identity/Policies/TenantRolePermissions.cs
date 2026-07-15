@@ -64,6 +64,7 @@ public static class TenantRolePermissions
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Tax)));
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Payroll)));
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Eld)));
+        list.AddRange(Permission.GeneratePermissions(nameof(Permission.Accounting)));
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Message)));
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Invitation)));
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Expense)));
@@ -91,6 +92,7 @@ public static class TenantRolePermissions
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Invoice)));
         list.Add(Permission.Tax.View);
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Payroll)));
+        list.AddRange(Permission.GeneratePermissions(nameof(Permission.Accounting)));
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Message)));
         list.AddRange(Permission.GeneratePermissions(nameof(Permission.Expense)));
         list.Add(Permission.Employee.Manage);

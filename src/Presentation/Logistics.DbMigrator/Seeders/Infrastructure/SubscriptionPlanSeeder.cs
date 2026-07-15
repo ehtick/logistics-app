@@ -41,7 +41,8 @@ internal class SubscriptionPlanSeeder(ILogger<SubscriptionPlanSeeder> logger) : 
         TenantFeature.Safety,
         TenantFeature.Maintenance,
         TenantFeature.TelegramBot,
-        TenantFeature.McpServer
+        TenantFeature.McpServer,
+        TenantFeature.Accounting
     ];
 
     private static readonly TenantFeature[] EnterpriseFeatures = Enum.GetValues<TenantFeature>();

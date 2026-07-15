@@ -116,6 +116,12 @@ public static class Permission
         public const string Sync = $"{nameof(Permission)}.{nameof(Eld)}.Sync";
     }
 
+    public static class Accounting
+    {
+        public const string View = $"{nameof(Permission)}.{nameof(Accounting)}.View";
+        public const string Manage = $"{nameof(Permission)}.{nameof(Accounting)}.Manage";
+    }
+
     public static class Message
     {
         public const string View = $"{nameof(Permission)}.{nameof(Message)}.View";

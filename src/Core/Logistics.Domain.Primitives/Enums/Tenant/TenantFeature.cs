@@ -42,5 +42,8 @@ public enum TenantFeature
     TelegramBot,
 
     [Description("MCP Server")]
-    McpServer
+    McpServer,
+
+    [Description("Accounting (QuickBooks)")]
+    Accounting
 }
