@@ -15,8 +15,11 @@ using Logistics.Domain.Options;
 using Logistics.Infrastructure.Communications;
 using Logistics.Infrastructure.Communications.SignalR.Hubs;
 using Logistics.Infrastructure.Documents;
+using Logistics.Infrastructure.Integrations.Accounting;
 using Logistics.Infrastructure.Integrations.Eld;
 using Logistics.Infrastructure.Integrations.LoadBoard;
+using Logistics.Infrastructure.Persistence.Data;
+using Microsoft.AspNetCore.DataProtection;
 using Logistics.Infrastructure.Payments;
 using Logistics.Infrastructure.Persistence;
 using Logistics.Infrastructure.Persistence.Builder;
@@ -60,6 +63,7 @@ internal static class Setup
         services.AddVinInfrastructure();
         services.AddEldIntegrations(configuration);
         services.AddLoadBoardIntegrations(configuration);
+        services.AddAccountingIntegrations(configuration);
         services.AddPaymentsInfrastructure(configuration);
         services.AddTaxInfrastructure(configuration);
         services.AddRoutingInfrastructure(configuration);
@@ -72,6 +76,13 @@ internal static class Setup
             .AddMasterDatabase()
             .AddTenantDatabase()
             .AddIdentity();
+
+        // Data Protection backs provider-secret column encryption (EncryptedStringConverter) and
+        // the OAuth callback state protector. Keys persist in the master DB with a stable app name
+        // so ciphertext survives restarts and is decryptable across API instances.
+        services.AddDataProtection()
+            .PersistKeysToDbContext<MasterDbContext>()
+            .SetApplicationName("LogisticsX");
 
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
@@ -237,6 +248,7 @@ internal static class Setup
         PayrollGenerationJob.ScheduleJobs();
         EldSyncJob.ScheduleJobs();
         LoadBoardSyncJob.ScheduleJobs();
+        AccountingSyncJob.ScheduleJobs();
         MaintenanceReminderJob.ScheduleJobs();
         LicenseExpiryReminderJob.ScheduleJobs();
         InvitationExpiryJob.ScheduleJobs();
