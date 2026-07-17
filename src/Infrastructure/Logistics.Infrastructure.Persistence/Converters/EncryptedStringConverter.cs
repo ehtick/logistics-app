@@ -35,7 +35,7 @@ public sealed class EncryptedStringConverter : ValueConverter<string, string>
 
     private static string Decrypt(IDataProtector protector, string stored)
     {
-        // Values written before encryption was introduced have no prefix — pass through.
+        // Values written before encryption was introduced have no prefix - pass through.
         return stored.StartsWith(Prefix, StringComparison.Ordinal)
             ? protector.Unprotect(stored[Prefix.Length..])
             : stored;

@@ -8,7 +8,7 @@ namespace Logistics.Infrastructure.Persistence.Extensions;
 public static class EncryptedColumnsExtensions
 {
     /// <summary>
-    ///     Data Protection purpose for provider secret columns. Stable string — do not change,
+    ///     Data Protection purpose for provider secret columns. Stable string - do not change,
     ///     or previously encrypted values become undecryptable.
     /// </summary>
     private const string ProtectorPurpose = "Logistics.ProviderSecrets.v1";
@@ -19,7 +19,7 @@ public static class EncryptedColumnsExtensions
     ///     mappings. Driven off the attribute (like the auditable/tenant marker conventions in this
     ///     folder) so a new provider-config secret column is encrypted by annotation alone.
     ///     If <paramref name="dataProtectionProvider"/> is null (e.g. design-time / tests),
-    ///     columns stay plaintext — the converter never changes the store type, so the schema
+    ///     columns stay plaintext - the converter never changes the store type, so the schema
     ///     is identical either way.
     /// </summary>
     public static void ApplyEncryptedSecretColumns(

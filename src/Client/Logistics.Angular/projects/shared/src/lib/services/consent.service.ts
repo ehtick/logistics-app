@@ -48,7 +48,7 @@ export class ConsentService {
   /** True after the visitor has explicitly accepted or rejected something. */
   public readonly hasDecided = computed(() => this.state() !== null);
 
-  /** Per-category consent state — drives `<ui-cookie-banner>` and analytics gating. */
+  /** Per-category consent state - drives `<ui-cookie-banner>` and analytics gating. */
   public readonly choices = computed<ConsentChoices>(
     () => this.state()?.choices ?? NEUTRAL_CHOICES,
   );

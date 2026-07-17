@@ -95,7 +95,7 @@ internal sealed class SearchLoadBoardHandler(
     }
 
     /// <summary>
-    /// Upserts search results as LoadBoardListing entities so they can be booked later —
+    /// Upserts search results as LoadBoardListing entities so they can be booked later -
     /// booking resolves the listing by entity Id. Stamps each DTO with the entity Id and
     /// reflects any already-booked state back onto the DTO.
     /// </summary>

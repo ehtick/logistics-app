@@ -1,22 +1,22 @@
 /**
  * `<ui-menu>`'s contract. Everything pinned here is something the 19 call sites depend on and that NO
- * other gate would catch — each one stays green through `build:all`, `lint` and every other spec while
+ * other gate would catch - each one stays green through `build:all`, `lint` and every other spec while
  * shipping a broken menu:
  *
  *   1. IT CLOSES. This is the whole reason the component owns its overlay. `CdkMenu` decides it is
  *      "inline" when there is no `CdkMenuTrigger` above it (`isInline = !this._parentTrigger`), and an
- *      inline menu never pushes itself onto the menu stack — so its Escape handler calls
+ *      inline menu never pushes itself onto the menu stack - so its Escape handler calls
  *      `menuStack.close(this)`, which begins with an `indexOf(this) >= 0` test that is false, and does
  *      NOTHING. Leaning on CDK here ships a menu that opens and never closes on Escape, silently.
  *      Escape, outside-click and item-activation are therefore each pinned below.
  *   2. THE TRIGGER TOGGLES. A pointerdown on the trigger is "outside" the overlay, so a naive
  *      outside-click handler closes the menu a beat before the trigger's own click reopens it, leaving
  *      the kebab unable to close what it opened. Clicking twice must end closed.
- *   3. `visible: false` REMOVES an item (not disables it) — `MenuItem.visible` semantics, which four
+ *   3. `visible: false` REMOVES an item (not disables it) - `MenuItem.visible` semantics, which four
  *      call sites use to hide actions per row status.
  *   4. `command` FIRES, and fires with the row the trigger set. The call sites run
  *      `selectedRow.set(row); menu.toggle($event)`, so a menu built from a stale row would navigate to
- *      the wrong record — the single most dangerous failure available to this component.
+ *      the wrong record - the single most dangerous failure available to this component.
  *   5. A `separator` renders as a separator and NOT as a clickable, empty menu item.
  *   6. The overlay anchors to the ELEMENT THAT WAS CLICKED, not to the <ui-menu> tag (which sits at the
  *      bottom of the template, far from the row).
@@ -112,7 +112,7 @@ describe("ui-menu", () => {
 
   // (1) Outside-click, the other path CDK would have owned.
   // CDK's dispatcher records the `pointerdown` target and EMITS on the `click`, both captured on
-  // <body> — so a faithful test has to send both, in that order.
+  // <body> - so a faithful test has to send both, in that order.
   it("CLOSES on an outside click", async () => {
     await open();
     document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
@@ -138,7 +138,7 @@ describe("ui-menu", () => {
     expect(panel()).toBeNull();
   });
 
-  // (4) The row the trigger set is the row the command sees — not a stale one.
+  // (4) The row the trigger set is the row the command sees - not a stale one.
   it("builds the menu from the row the trigger just selected", async () => {
     await open("kebab-b");
     itemsOf()[0].click();

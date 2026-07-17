@@ -10,7 +10,7 @@ interface Outcome {
 
 /**
  * Toasts + the confirmation dialog, driven through the REAL `ToastService` (it is `providedIn: 'root'`,
- * so this is the same instance the whole app uses — no fixture, no stub).
+ * so this is the same instance the whole app uses - no fixture, no stub).
  *
  * WHY THE OUTCOME LOG IS THE POINT: `confirm()`'s failure modes are invisible in a screenshot. A
  * dialog that opens but drops `accept` looks identical to one that works, and one that fires `accept`
@@ -59,41 +59,41 @@ export class UiLabNotificationsSection {
     this.toast.showSuccess("Payroll posted.", "Saved");
   }
 
-  /** The `confirmDelete` path — the one behind ~200 call sites. Defaults: "Yes" / "No", danger accept. */
+  /** The `confirmDelete` path - the one behind ~200 call sites. Defaults: "Yes" / "No", danger accept. */
   protected confirmDelete(): void {
-    this.toast.confirmDelete("truck", () => this.log("ACCEPT — confirmDelete('truck')"));
+    this.toast.confirmDelete("truck", () => this.log("ACCEPT - confirmDelete('truck')"));
   }
 
   /** The bare `confirm()` shape `truck-form.askRemove()` uses: no icon, no severity, default labels. */
   protected confirmPlain(): void {
     this.open({
       message: "Are you sure you want to delete this truck?",
-      accept: () => this.log("ACCEPT — plain confirm"),
-      reject: () => this.log("REJECT — plain confirm"),
+      accept: () => this.log("ACCEPT - plain confirm"),
+      reject: () => this.log("REJECT - plain confirm"),
     });
   }
 
-  /** Escapable, but NOT mask-dismissable — proves the two flags are independent. */
+  /** Escapable, but NOT mask-dismissable - proves the two flags are independent. */
   protected confirmEscapable(): void {
     this.open({
       message: "Escape closes this one. Clicking the backdrop must NOT.",
       header: "Escape only",
       icon: "question",
       closeOnEscape: true,
-      accept: () => this.log("ACCEPT — escapable"),
-      reject: () => this.log("REJECT — escapable"),
+      accept: () => this.log("ACCEPT - escapable"),
+      reject: () => this.log("REJECT - escapable"),
     });
   }
 
-  /** Mask-dismissable, but NOT escapable — the mirror image of the above. */
+  /** Mask-dismissable, but NOT escapable - the mirror image of the above. */
   protected confirmDismissable(): void {
     this.open({
       message: "The backdrop closes this one. Escape must NOT.",
       header: "Backdrop only",
       icon: "info",
       dismissableMask: true,
-      accept: () => this.log("ACCEPT — dismissable"),
-      reject: () => this.log("REJECT — dismissable"),
+      accept: () => this.log("ACCEPT - dismissable"),
+      reject: () => this.log("REJECT - dismissable"),
     });
   }
 
@@ -102,12 +102,12 @@ export class UiLabNotificationsSection {
     this.open({
       message: "Neither Escape nor the backdrop may close this. Only Yes or No.",
       header: "No way out",
-      accept: () => this.log("ACCEPT — trapped"),
-      reject: () => this.log("REJECT — trapped"),
+      accept: () => this.log("ACCEPT - trapped"),
+      reject: () => this.log("REJECT - trapped"),
     });
   }
 
-  /** The exact option set `manage-subscription.ts` passes — every field of `ConfirmOptions` at once. */
+  /** The exact option set `manage-subscription.ts` passes - every field of `ConfirmOptions` at once. */
   protected confirmEverything(): void {
     this.open({
       message:
@@ -122,20 +122,20 @@ export class UiLabNotificationsSection {
       rejectIcon: "close",
       closeOnEscape: true,
       dismissableMask: true,
-      accept: () => this.log("ACCEPT — manage-subscription"),
-      reject: () => this.log("REJECT — manage-subscription"),
+      accept: () => this.log("ACCEPT - manage-subscription"),
+      reject: () => this.log("REJECT - manage-subscription"),
     });
   }
 
-  /** A multi-line message — the `whitespace-pre-line` the TMS shell used to carry on its dialog. */
+  /** A multi-line message - the `whitespace-pre-line` the TMS shell used to carry on its dialog. */
   protected confirmMultiline(): void {
     this.open({
       message: "This load has 2 unpaid invoices.\n\nDelete it anyway?",
       header: "Confirm Delete",
       icon: "warning",
       severity: "danger",
-      accept: () => this.log("ACCEPT — multiline"),
-      reject: () => this.log("REJECT — multiline"),
+      accept: () => this.log("ACCEPT - multiline"),
+      reject: () => this.log("REJECT - multiline"),
     });
   }
 

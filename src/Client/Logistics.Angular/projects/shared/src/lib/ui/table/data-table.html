@@ -9,7 +9,7 @@
     The scroll container. A "scrollable" table needs BOTH this and a sticky <thead>; without them
     it just grows and pushes the page down, which looks perfectly fine in a screenshot and is wrong
     on all ~20 scrollable tables. `scrollHeight="flex"` means "fill the flex parent" (home.html), so
-    it gets no max-height — anything else is one.
+    it gets no max-height - anything else is one.
   -->
   <div
     [class]="scrollable() ? 'relative w-full overflow-auto' : 'relative w-full overflow-x-auto'"
@@ -23,7 +23,7 @@
         `[&>tr>th]` (direct children), never `[&_th]`: a descendant selector would also reach the
         <th>s of the nested <ui-data-table> that trips-list renders inside its expanded row.
         The uppercase/size/tracking values come from CSS custom properties so TMS can keep its
-        uppercase column signature while the other three portals do not — see theme.css.
+        uppercase column signature while the other three portals do not - see theme.css.
       -->
       <thead
         hlmTHead

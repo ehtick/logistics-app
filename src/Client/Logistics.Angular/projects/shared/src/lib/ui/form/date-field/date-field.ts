@@ -20,7 +20,7 @@ const pad = (value: number): string => String(value).padStart(2, "0");
 /**
  * Date (and optional time) picker field.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  *
  * The inner spartan `hlm-date-picker` (brain calendar + `BrnPopover`, native date adapter) is
  * driven with plain `[date]` / `(dateChange)`. `uiDetachedControl` severs the ambient `NgControl`

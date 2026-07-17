@@ -17,7 +17,7 @@
 
     <div class="border-default rounded-md border p-4">
       <ui-typography variant="body-sm" color="muted">
-        line —
+        line -
         <strong>filled</strong>
         (Filler canary: a bare stroke means Filler was dropped)
       </ui-typography>
@@ -50,7 +50,7 @@
   <div class="border-default rounded-md border p-4" data-lab="chart-dynamic-type">
     <ui-stack direction="row" align="center" justify="between" gap="4" class="mb-3">
       <ui-typography variant="body-sm" color="muted">
-        dynamic [type] — must DESTROY and rebuild, not mutate
+        dynamic [type] - must DESTROY and rebuild, not mutate
       </ui-typography>
       <ui-toggle-group
         [options]="dynamicTypeOptions"
@@ -73,7 +73,7 @@
   <div class="border-default rounded-md border p-4" data-lab="chart-live-data">
     <ui-stack direction="row" align="center" justify="between" gap="4" class="mb-3">
       <ui-typography variant="body-sm" color="muted">
-        [data] change — animates via chart.update()
+        [data] change - animates via chart.update()
       </ui-typography>
       <ui-button label="Randomise" icon="refresh-cw" size="sm" (click)="randomise()" />
     </ui-stack>
@@ -85,7 +85,7 @@
   <!-- ── toggle group ───────────────────────────────────────────────────────────────────────── -->
   <div class="border-default rounded-md border p-4" data-lab="toggle-group">
     <ui-typography variant="body-sm" color="muted">
-      ui-toggle-group — click the ACTIVE segment: the selection must NOT clear. p-selectButton
+      ui-toggle-group - click the ACTIVE segment: the selection must NOT clear. p-selectButton
       (allowEmpty) and BrnToggleGroup (nullable) both default to deselecting to null.
     </ui-typography>
     <ui-stack direction="row" align="center" gap="6" class="mt-3">
@@ -109,7 +109,7 @@
   <!-- ── lightbox ───────────────────────────────────────────────────────────────────────────── -->
   <div class="border-default rounded-md border p-4" data-lab="lightbox">
     <ui-typography variant="body-sm" color="muted">
-      ui-lightbox — click a thumbnail, then Left/Right/Home/End, then Escape.
+      ui-lightbox - click a thumbnail, then Left/Right/Home/End, then Escape.
     </ui-typography>
     <ui-stack direction="row" gap="2" class="mt-3">
       @for (photo of photos; track photo.src) {
@@ -174,7 +174,7 @@
   <div class="grid grid-cols-1 gap-4 md:grid-cols-2" data-lab="editor-phone">
     <div class="border-default rounded-md border p-4">
       <ui-typography variant="body-sm" color="muted">
-        ui-editor — FormValueControl, quill loaded lazily on render
+        ui-editor - FormValueControl, quill loaded lazily on render
       </ui-typography>
       <div class="mt-3">
         <ui-editor [(value)]="content" contentHeight="180px" />
@@ -184,7 +184,7 @@
 
     <div class="border-default rounded-md border p-4">
       <ui-typography variant="body-sm" color="muted">
-        ui-phone-field — hand-rolled mask. Type digits, backspace over a "(" or "-", paste "+1 (555)
+        ui-phone-field - hand-rolled mask. Type digits, backspace over a "(" or "-", paste "+1 (555)
         123-4567".
       </ui-typography>
       <div class="mt-3">

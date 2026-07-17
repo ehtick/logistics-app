@@ -2,7 +2,7 @@ namespace Logistics.Infrastructure.Tax.Data;
 
 /// <summary>
 /// US state-level base sales-tax rates as of 2026-05.
-/// Local (county/city) rates are NOT included — accurate destination-based US tax requires
+/// Local (county/city) rates are NOT included - accurate destination-based US tax requires
 /// Stripe Tax. The manual calculator surfaces a warning so the UI can flag this.
 /// Origin: Tax Foundation / state DOR sites.
 /// </summary>

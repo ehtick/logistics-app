@@ -115,7 +115,7 @@ const DUMMY_LOCATION: GeoPoint = { longitude: 0, latitude: 0 };
 /**
  * The signal-form model. Field types mirror the `ui-*-field` wrappers they bind to (e.g.
  * `ui-select-field` is a `FormValueControl<T | null>`), so nullability here is a binding
- * requirement, not a validation one — `required()` in the schema enforces presence.
+ * requirement, not a validation one - `required()` in the schema enforces presence.
  */
 interface LoadFormModel {
   name: string;
@@ -234,7 +234,7 @@ export class LoadForm implements OnInit {
   protected readonly model = signal<LoadFormModel>({ ...EMPTY });
 
   /**
-   * `distance`, `assignedDispatcherName`, `tripId` and `tripNumber` are permanently disabled — they
+   * `distance`, `assignedDispatcherName`, `tripId` and `tripNumber` are permanently disabled - they
    * are computed or informational. `model()` still holds them (a disabled field drops out of
    * validation, not out of the value), so they ride along to the parent's save.
    */
@@ -348,7 +348,7 @@ export class LoadForm implements OnInit {
     // Assign field by field rather than spreading `src`: `LoadFormValue` carries keys the model does
     // not have (`assignedTruckId`, `containerId`, `originTerminalId`, ...). `patchValue()` used to
     // drop them; a `model.update()` spread would add them to the form tree.
-    // `assignedTruck` is deliberately absent — the form only ever receives an `assignedTruckId`, and
+    // `assignedTruck` is deliberately absent - the form only ever receives an `assignedTruckId`, and
     // `app-search-truck` resolves that to the DTO through its `truckId` input.
     this.model.update((v) => ({
       ...v,

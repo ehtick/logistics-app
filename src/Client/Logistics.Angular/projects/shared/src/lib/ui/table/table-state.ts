@@ -55,7 +55,7 @@ export function resolveFieldData(data: unknown, field: string | undefined): unkn
  * Nullish sorts first on ascending (and therefore last on descending).
  *
  * Strings compare with `localeCompare`, which is not numeric-aware, so a column of numeric-ish
- * strings ("Load #") orders "10", "100", "9". Do not "fix" it here — client-sorted templates depend
+ * strings ("Load #") orders "10", "100", "9". Do not "fix" it here - client-sorted templates depend
  * on today's ordering, and it is pinned by the contract spec. Real numbers sort numerically.
  */
 function compareFieldValues(value1: unknown, value2: unknown): number {
@@ -118,7 +118,7 @@ export class UiTableState<T = unknown> {
   public readonly size = linkedSignal(() => this.src.rows());
   public readonly sortField = linkedSignal(() => this.src.sortField());
   /**
-   * `undefined` until something sorts — not 1. The initial lazy request must carry
+   * `undefined` until something sorts - not 1. The initial lazy request must carry
    * `sortOrder: undefined` so `createListStore` applies its own `?? -1`; emitting a nominal `1`
    * would silently change what the store records having asked for. Pinned by the contract spec.
    */
@@ -138,7 +138,7 @@ export class UiTableState<T = unknown> {
   /**
    * Page size, 0 when unbound; every slice/page computation guards on it.
    *
-   * Reads {@link size}, the linkedSignal — not the raw `rows` input. `setPageSize()` writes `size`,
+   * Reads {@link size}, the linkedSignal - not the raw `rows` input. `setPageSize()` writes `size`,
    * so reading the input here would bypass it and a client-paged table (which has no store to write
    * the new size back through `[rows]`) would keep rendering the old page size forever.
    */
@@ -166,7 +166,7 @@ export class UiTableState<T = unknown> {
   });
 
   /**
-   * Filtered and sorted, but not paged — this is what select-all and the header checkbox operate
+   * Filtered and sorted, but not paged - this is what select-all and the header checkbox operate
    * on, so select-all takes every matching row rather than just the visible page.
    */
   public readonly processed = computed<readonly T[]>(() => {
@@ -202,7 +202,7 @@ export class UiTableState<T = unknown> {
     this.lazy() ? (this.src.totalRecords() ?? this.src.value().length) : this.processed().length,
   );
 
-  // User intent — the only things that ask for a new page of data.
+  // User intent - the only things that ask for a new page of data.
 
   /**
    * Sorts by `field`. A fresh column starts ascending; the same column toggles. The page reset and
@@ -240,7 +240,7 @@ export class UiTableState<T = unknown> {
     }
   }
 
-  /** Multi-field, case-insensitive "contains". Resets to the first row — see {@link totalRecords}. */
+  /** Multi-field, case-insensitive "contains". Resets to the first row - see {@link totalRecords}. */
   public filterGlobal(value: string): void {
     this.globalFilter.set(value);
     this.first.set(0);
@@ -277,7 +277,7 @@ export class UiTableState<T = unknown> {
     return this.selectedKeys().has(this.keyOf(row));
   }
 
-  /** Whether anything at all is selected — drives `uiSelectableRow`'s roving tabindex. */
+  /** Whether anything at all is selected - drives `uiSelectableRow`'s roving tabindex. */
   public readonly hasSelection = computed(() => this.selectedRows().length > 0);
 
   /** Whether the table has no rows at all; the select-all checkbox is disabled when it does not. */
@@ -285,7 +285,7 @@ export class UiTableState<T = unknown> {
 
   /**
    * Toggles one row and preserves the rest, appending at the end. Individually-checked rows
-   * therefore survive paging — unlike select-all, which replaces.
+   * therefore survive paging - unlike select-all, which replaces.
    */
   public toggleRow(row: T): void {
     if (this.selectionMode() === "single") {
@@ -315,7 +315,7 @@ export class UiTableState<T = unknown> {
   }
 
   /**
-   * Checked only when every processed row is selected. A partial selection renders it unchecked —
+   * Checked only when every processed row is selected. A partial selection renders it unchecked -
    * there is no indeterminate/tri-state, and adding one is a behaviour change, not a bug fix.
    * Pinned by the contract spec.
    */
@@ -328,7 +328,7 @@ export class UiTableState<T = unknown> {
 
   /**
    * Replaces the selection with exactly the processed rows; it does not merge. Anything selected on
-   * another page is discarded — bulk actions rely on getting exactly these rows back.
+   * another page is discarded - bulk actions rely on getting exactly these rows back.
    */
   public toggleAll(checked: boolean): void {
     if (this.src.value().length === 0) {
@@ -351,7 +351,7 @@ export class UiTableState<T = unknown> {
   }
 
   /**
-   * Dev-only. A sort path that resolves `undefined` for every row is a silent no-op sort — usually
+   * Dev-only. A sort path that resolves `undefined` for every row is a silent no-op sort - usually
    * a server-side column name ("CreatedDate") pasted into a client-side table.
    */
   private warnIfSortFieldUnresolvable(field: string): void {

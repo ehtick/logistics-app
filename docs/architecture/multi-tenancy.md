@@ -100,7 +100,7 @@ sequenceDiagram
 
     TS->>Master: Find tenant by GUID or slug
     Master-->>TS: Tenant record (with subscription)
-    TS->>TS: CheckSubscription()<br/>(Active/Trialing — or bypass for billing endpoints)
+    TS->>TS: CheckSubscription()<br/>(Active/Trialing - or bypass for billing endpoints)
     TS-->>Mw: Tenant
     Mw->>TDb: Open TenantDbContext using tenant.ConnectionString
     TDb-->>Client: Response

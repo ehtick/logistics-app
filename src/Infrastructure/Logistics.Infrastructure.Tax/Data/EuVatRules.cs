@@ -2,7 +2,7 @@ namespace Logistics.Infrastructure.Tax.Data;
 
 /// <summary>
 /// EU member-state set + reverse-charge eligibility check. Mirrors the backend
-/// <c>RegionCountries</c> set in <c>Logistics.Domain</c> (EU-27) — kept narrow on purpose:
+/// <c>RegionCountries</c> set in <c>Logistics.Domain</c> (EU-27) - kept narrow on purpose:
 /// only true EU member states get reverse-charge under Article 196 of Directive 2006/112/EC.
 /// EEA/UK/Western-Balkans countries handled separately as they are not in the EU VAT area.
 /// </summary>

@@ -63,8 +63,8 @@ export class LoadImportComponent {
     const file = files[0];
     if (!file) return;
 
-    // `ui-file-upload` already enforces `accept=".pdf"` and the 10 MB `maxFileSize` — including for
-    // drag-and-drop, which the native `accept` attribute does not cover — and reports refusals via
+    // `ui-file-upload` already enforces `accept=".pdf"` and the 10 MB `maxFileSize` - including for
+    // drag-and-drop, which the native `accept` attribute does not cover - and reports refusals via
     // `(rejected)`. These two checks are kept as a backstop: they are the same limits, stated once
     // more at the point that actually consumes the file.
     if (!file.name.toLowerCase().endsWith(".pdf")) {

@@ -45,12 +45,12 @@ export class MaskedInput {
   /**
    * Digits of the selected country's dial code, e.g. `"1"` for +1. Stripped only when a paste
    * overflows the mask: `+1 (555) 123-4567` is eleven digits, and filling a 10-slot US mask in order
-   * would shift the country code into the first national slot and drop the last digit — a silently
+   * would shift the country code into the first national slot and drop the last digit - a silently
    * plausible wrong number. Overflow-only, so a national number starting with 1 is never touched.
    */
   public readonly dialPrefix = input<string>("");
 
-  /** Emits the DIGITS only — never the rendered text. */
+  /** Emits the DIGITS only - never the rendered text. */
   public readonly valueChange = output<string>();
   public readonly blurred = output<void>();
 
@@ -64,7 +64,7 @@ export class MaskedInput {
 
   /**
    * What the input shows. Empty (so the placeholder is visible) only when there is nothing to show
-   * AND the field is not focused — focusing an empty field reveals the slots to type into.
+   * AND the field is not focused - focusing an empty field reveals the slots to type into.
    */
   protected readonly display = computed(() => {
     const digits = this.digits();
@@ -177,14 +177,14 @@ export class MaskedInput {
     return mask.length;
   }
 
-  /** How many slots sit before `offset` in the rendered string — i.e. which digit the caret is on. */
+  /** How many slots sit before `offset` in the rendered string - i.e. which digit the caret is on. */
   private digitIndexAt(offset: number): number {
     return this.count(this.mask().slice(0, offset), DIGIT);
   }
 
   /**
    * Cut a digit string down to what the mask can hold, dropping a leading dial code before falling
-   * back to truncation — see {@link dialPrefix}.
+   * back to truncation - see {@link dialPrefix}.
    */
   private fit(digits: string): string {
     const capacity = this.capacity();

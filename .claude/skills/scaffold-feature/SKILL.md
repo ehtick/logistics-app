@@ -1,11 +1,11 @@
 ---
 name: scaffold-feature
-description: Scaffold a full vertical slice for a new domain feature in LogisticsX — entity, EF configuration, migration, command/query handlers, controller, DTO/mapper, Angular page, and feature-map row. Use when the user asks to add a new top-level feature (e.g., "add a Subcontractor entity with CRUD"). Outputs an ordered checklist tailored to the LogisticsX folder structure.
+description: Scaffold a full vertical slice for a new domain feature in LogisticsX - entity, EF configuration, migration, command/query handlers, controller, DTO/mapper, Angular page, and feature-map row. Use when the user asks to add a new top-level feature (e.g., "add a Subcontractor entity with CRUD"). Outputs an ordered checklist tailored to the LogisticsX folder structure.
 ---
 
 # Scaffold a Feature (Vertical Slice)
 
-Adds a new top-level feature end-to-end. Run through the steps in order — earlier steps gate later ones (e.g., the migration depends on the entity + EF config).
+Adds a new top-level feature end-to-end. Run through the steps in order - earlier steps gate later ones (e.g., the migration depends on the entity + EF config).
 
 ## Decide first
 
@@ -14,8 +14,8 @@ Before writing any code:
 1. **Master DB or tenant DB?** Master = platform-level data shared across tenants (Tenant, Subscription, BlogPost). Tenant = per-company operational data (Load, Trip, Customer). Most new features are tenant-scoped.
 2. **Which module?** Application code lives under `Logistics.Application/Modules/{Module}/{Feature}/`. Pick by bounded context: `Operations` (dispatching, fleet), `Compliance` (ELD, DVIR, safety, privacy), `Financial` (invoices, payments, payroll, tax), `IdentityAccess` (users, tenants, subscriptions), `Integrations` (AI dispatch, load board, webhooks), `Platform` (stats, marketing, notifications). See [module-layout.md](../../../docs/architecture/module-layout.md).
 3. **Aggregate root or child entity?** A new aggregate gets its own folder under `Entities/{Feature}/`. A child entity belongs to an existing aggregate's folder.
-4. **Is it auditable?** Almost always yes — inherit `AuditableEntity`. Use `Entity` only for very simple lookup tables.
-5. **Which marker interface?** `IMasterEntity` (master DB) or `ITenantEntity` (tenant DB). The DbContext picks up the entity automatically based on this — **no manual `DbSet<T>` needed**.
+4. **Is it auditable?** Almost always yes - inherit `AuditableEntity`. Use `Entity` only for very simple lookup tables.
+5. **Which marker interface?** `IMasterEntity` (master DB) or `ITenantEntity` (tenant DB). The DbContext picks up the entity automatically based on this - **no manual `DbSet<T>` needed**.
 
 ## Step-by-step
 
@@ -37,7 +37,7 @@ public class Subcontractor : AuditableEntity, ITenantEntity
 }
 ```
 
-If status enum needed: `src/Core/Logistics.Domain.Primitives/Enums/{Feature}/{Status}.cs`. Use `GetDescription()` for display — `[Description]` only when humanization isn't enough (acronyms, special formatting).
+If status enum needed: `src/Core/Logistics.Domain.Primitives/Enums/{Feature}/{Status}.cs`. Use `GetDescription()` for display - `[Description]` only when humanization isn't enough (acronyms, special formatting).
 
 ### 2. EF configuration
 
@@ -58,11 +58,11 @@ internal sealed class SubcontractorEntityConfiguration : IEntityTypeConfiguratio
 ```
 
 **Complex types cannot participate in a unique index.** If the entity needs uniqueness spanning a
-value-object member, EF can't express it — enforce it in code on every write path (see
+value-object member, EF can't express it - enforce it in code on every write path (see
 `IftaTaxRateUniqueness.FindConflictAsync`) and give the value object a normalizing factory like
 `TaxJurisdiction.Create` so casing or an empty-vs-null member can't defeat the comparison.
 
-The `MasterDbContext` / `TenantDbContext` discover configurations via `ApplyConfigurationsFromAssembly` — you don't need to register them.
+The `MasterDbContext` / `TenantDbContext` discover configurations via `ApplyConfigurationsFromAssembly` - you don't need to register them.
 
 ### 3. Migration
 
@@ -76,30 +76,30 @@ dotnet ef migrations add Add{Entity} \
   -o Migrations/Tenant
 ```
 
-Name it for what it does (`AddSubcontractor`) — EF prefixes the timestamp, so no `Version_NNNN`,
+Name it for what it does (`AddSubcontractor`) - EF prefixes the timestamp, so no `Version_NNNN`,
 numeric suffix, or date. Inspect the generated SQL before committing.
 
 ### 4. Reads (inline `.Query()` first)
 
-Default to an inline `.Query()` inside the query handler — do **not** create a `Specification<T>` class for a
+Default to an inline `.Query()` inside the query handler - do **not** create a `Specification<T>` class for a
 one-off read. Only add a dedicated spec (`src/Core/Logistics.Domain/Specifications/{Feature}/`) when the same
 condition is genuinely reused across handlers; there are just a few left in the codebase
 (`FilterLoadInvoices`, `FilterPayrollInvoices`, `FilterLoadsByDeliveryDate`).
 
 ### 5. Commands and queries
 
-Commands and queries are the request contract — bind them **directly** as the request body (flat properties),
+Commands and queries are the request contract - bind them **directly** as the request body (flat properties),
 no `*Dto` wrapper. Add a dedicated `*Request` record only when the wire shape must differ from the command.
 
 `src/Core/Logistics.Application/Modules/{Module}/{Feature}/Commands/`:
 
-- `Create{Entity}/Create{Entity}Command.cs` — flat-property command `: ICommand` (or `ICommand<Result<T>>` if the client needs data back)
-- `Create{Entity}/Create{Entity}Handler.cs` — `internal sealed class`, primary-constructor DI
-- `Create{Entity}/Create{Entity}Validator.cs` — FluentValidation (see validator rules below)
+- `Create{Entity}/Create{Entity}Command.cs` - flat-property command `: ICommand` (or `ICommand<Result<T>>` if the client needs data back)
+- `Create{Entity}/Create{Entity}Handler.cs` - `internal sealed class`, primary-constructor DI
+- `Create{Entity}/Create{Entity}Validator.cs` - FluentValidation (see validator rules below)
 - Same pattern for `Update{Entity}/`, `Delete{Entity}/`
 
 **Don't hand-write trivial handlers.** `Delete`/`GetById`/`Update` slices subclass the generic base handlers in
-`src/Core/Logistics.Application/Handlers/` — `DeleteTenantEntityHandler`, `DeleteMasterEntityHandler`,
+`src/Core/Logistics.Application/Handlers/` - `DeleteTenantEntityHandler`, `DeleteMasterEntityHandler`,
 `GetTenantEntityByIdHandler`, `UpdateTenantEntityHandler`. Only write a bespoke handler when there's real logic.
 
 **Validators.** Skip the validator entirely when its only rule would be `Id NotEmpty` (the handler's not-found
@@ -108,12 +108,12 @@ subclass (see Ifta `TaxRates`).
 
 `src/Core/Logistics.Application/Modules/{Module}/{Feature}/Queries/`:
 
-- `Get{Entity}ById/Get{Entity}ByIdQuery.cs` + handler — `: IQuery<Result<{Entity}Dto>>` (`Get{Entity}ByIdQuery` can subclass the base handler)
-- `Get{Entities}/Get{Entities}Query.cs` + handler — paged list
+- `Get{Entity}ById/Get{Entity}ByIdQuery.cs` + handler - `: IQuery<Result<{Entity}Dto>>` (`Get{Entity}ByIdQuery` can subclass the base handler)
+- `Get{Entities}/Get{Entities}Query.cs` + handler - paged list
 
 A command targets the master or tenant DB purely by which unit of work its handler injects (`IMasterUnitOfWork`
-vs `ITenantUnitOfWork`) — there is no separate marker interface. Handlers own their own `SaveChangesAsync`
-calls — there is no auto-transaction wrapper.
+vs `ITenantUnitOfWork`) - there is no separate marker interface. Handlers own their own `SaveChangesAsync`
+calls - there is no auto-transaction wrapper.
 
 ### 6. DTOs and Mapperly mapper
 
@@ -165,7 +165,7 @@ Add `Subcontractors.View` and `Subcontractors.Manage` to the `Permission` consta
 
 ### 9. Tests
 
-`tests/Logistics.Application.Tests/Commands/{Feature}/Create{Entity}HandlerTests.cs` — xUnit + NSubstitute. Field name `sut`.
+`tests/Logistics.Application.Tests/Commands/{Feature}/Create{Entity}HandlerTests.cs` - xUnit + NSubstitute. Field name `sut`.
 
 ```csharp
 public class CreateSubcontractorHandlerTests
@@ -237,17 +237,17 @@ Add a row under the appropriate domain section in `.claude/feature-map.md`:
 
 ## Common mistakes
 
-- Forgetting the `IMasterEntity` / `ITenantEntity` marker — entity is invisible to both DbContexts.
-- Manual mapping inside handlers — Mapperly should own all mapping.
-- Missing `[Authorize(Policy = ...)]` — controller falls back to default auth, leaks data across tenants.
-- Updating Angular `models.ts` barrel manually after regen but forgetting to commit it — breaks the build.
-- Forgetting the feature-map.md row — feature becomes invisible to future sessions.
+- Forgetting the `IMasterEntity` / `ITenantEntity` marker - entity is invisible to both DbContexts.
+- Manual mapping inside handlers - Mapperly should own all mapping.
+- Missing `[Authorize(Policy = ...)]` - controller falls back to default auth, leaks data across tenants.
+- Updating Angular `models.ts` barrel manually after regen but forgetting to commit it - breaks the build.
+- Forgetting the feature-map.md row - feature becomes invisible to future sessions.
 
 ## Related skills
 
-- `migration-creator` — generates the EF migration in step 3
-- `add-dispatch-tool` — if the new feature should be agent-callable
-- `simplify` — run after scaffolding to prune any boilerplate
+- `migration-creator` - generates the EF migration in step 3
+- `add-dispatch-tool` - if the new feature should be agent-callable
+- `simplify` - run after scaffolding to prune any boilerplate
 
 ## Related rules
 

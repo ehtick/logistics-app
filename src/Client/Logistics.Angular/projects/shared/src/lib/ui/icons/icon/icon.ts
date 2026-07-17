@@ -6,7 +6,7 @@ import { ERROR_ICON_SVG, UI_ICONS, type IconName } from "../../icons/icons";
  * `inherit` emits NO size class at all, so the icon takes its size from the surrounding element.
  * This matters: a consumer rule of the form `[&_ng-icon:not([class*='text-'])]:size-4` (exactly how
  * Helm's button sizes its icons) is defeated by ANY `text-*` class, so an icon inside a button must be
- * able to opt out of emitting one. `md` stays the default — 246 call sites depend on it.
+ * able to opt out of emitting one. `md` stays the default - 246 call sites depend on it.
  */
 export type IconSize = "inherit" | "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -43,7 +43,7 @@ const colorClasses: Record<IconColor, string> = {
 /**
  * Lucide icon (via `@ng-icons/lucide`) with size, color and spin variants.
  *
- * `name` is an {@link IconName} — a key of `UI_ICONS`. A name outside that union is a compile error
+ * `name` is an {@link IconName} - a key of `UI_ICONS`. A name outside that union is a compile error
  * rather than a silently blank <svg>. The glyph's SVG is bound directly, so there is nothing to
  * register.
  *
@@ -63,11 +63,11 @@ export class Icon {
   public readonly size = input<IconSize>("md");
   public readonly color = input<IconColor>("inherit");
 
-  /** Spins the glyph. primeicons' spin class was a CSS keyframe, not a glyph — this replaces it. */
+  /** Spins the glyph. primeicons' spin class was a CSS keyframe, not a glyph - this replaces it. */
   public readonly spin = input(false, { transform: booleanAttribute });
 
   /**
-   * The glyph's raw SVG, bound to `<ng-icon [svg]>` — which bypasses the registry entirely. An unknown
+   * The glyph's raw SVG, bound to `<ng-icon [svg]>` - which bypasses the registry entirely. An unknown
    * name is a compile error at every static call site, so `undefined` here is only reachable through a
    * dynamic `[name]` binding: log it and render a VISIBLE error glyph rather than a silently blank box.
    */

@@ -1,7 +1,7 @@
 /**
  * Proves the wrapper contract that the whole `ui-*-field` layer rests on.
  *
- * `UiSelectField` implements ONLY `FormValueControl` — no value-accessor glue of any kind. It must work:
+ * `UiSelectField` implements ONLY `FormValueControl` - no value-accessor glue of any kind. It must work:
  *   1. under Signal Forms `[formField]`,
  *   2. inside `<ui-form-field>`, whose `contentChild(NgControl)` must still resolve and
  *      render validation errors.
@@ -43,13 +43,13 @@ const OPTIONS = [
   `,
 })
 class HostSignalSelect {
-  /** Flips the schema's disabled rule — proves the wrapper REACTS, not just reads once. */
+  /** Flips the schema's disabled rule - proves the wrapper REACTS, not just reads once. */
   readonly lock = signal(false);
   readonly options = OPTIONS;
   readonly model = signal<{ color: string | null }>({ color: null });
   readonly f = form(this.model, (p) => {
     required(p.color, { message: "This field is required." });
-    // Reactive disabled rule — the shape every real form uses:
+    // Reactive disabled rule - the shape every real form uses:
     //   disabled(p.truckId, { when: () => this.mode() === "edit" })
     disabled(p.color, { when: () => this.lock() });
   });
@@ -57,7 +57,7 @@ class HostSignalSelect {
 }
 
 /**
- * Same host, but SEEDED with a value — so "the initial model value is rendered on first paint" is
+ * Same host, but SEEDED with a value - so "the initial model value is rendered on first paint" is
  * still covered. (It used to be covered by the Reactive-Forms host, whose FormControl was seeded
  * with "green"; that host is gone, and the plain signal host starts null.)
  */
@@ -103,17 +103,17 @@ function triggerText(fixture: ComponentFixture<unknown>): string {
   return (fixture.nativeElement.querySelector("hlm-select-trigger")?.textContent ?? "").trim();
 }
 
-/** Simulate a user picking an option — a click drives the BrnSelect value model. */
+/** Simulate a user picking an option - a click drives the BrnSelect value model. */
 function pick(fixture: ComponentFixture<unknown>, value: string | null): void {
   brnSelect(fixture).value.set(value);
 }
 
-/** The trigger the user actually clicks — spartan renders it as a real <button>. */
+/** The trigger the user actually clicks - spartan renders it as a real <button>. */
 function triggerButton(fixture: ComponentFixture<unknown>): HTMLButtonElement {
   return fixture.nativeElement.querySelector("hlm-select-trigger button") as HTMLButtonElement;
 }
 
-describe("UiSelectField — a FormValueControl-only wrapper", () => {
+describe("UiSelectField - a FormValueControl-only wrapper", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
   });
@@ -147,7 +147,7 @@ describe("UiSelectField — a FormValueControl-only wrapper", () => {
       expect(fixture.componentInstance.model().color).toBe("red");
     });
 
-    it("ui-form-field renders the required error once touched — with NO transitional code", async () => {
+    it("ui-form-field renders the required error once touched - with NO transitional code", async () => {
       const fixture = TestBed.createComponent(HostSignalSelect);
       await settle(fixture);
 
@@ -164,10 +164,10 @@ describe("UiSelectField — a FormValueControl-only wrapper", () => {
      * `disabled(p.truckId, ...)` in the expense forms, tax-rates, timesheets, ...).
      *
      * It used to be covered ONLY by the legacy Reactive-Forms host ("propagates disabled state from
-     * the control"). That host was deleted, and the assertion went with it — leaving the
+     * the control"). That host was deleted, and the assertion went with it - leaving the
      * whole `disabled` dimension of all 10 wrappers untested. This is its Signal Forms twin.
      */
-    it("propagates the schema's disabled rule to the control — and reacts when it flips", async () => {
+    it("propagates the schema's disabled rule to the control - and reacts when it flips", async () => {
       const fixture = TestBed.createComponent(HostSignalSelect);
       await settle(fixture);
 

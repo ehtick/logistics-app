@@ -149,7 +149,7 @@ public class TruckLocationRecorderTests
     public async Task Record_PlausibleOdometerDelta_WinsOverHaversine()
     {
         var now = DateTime.UtcNow;
-        // Haversine Dallas→Fort Worth ~31 mi; odometer says 40 (road distance) — within 2×h+5
+        // Haversine Dallas→Fort Worth ~31 mi; odometer says 40 (road distance) - within 2×h+5
         SetupPrevious(Previous(Dallas, now.AddHours(-1), odometer: 10_000));
 
         await sut.RecordAsync(truck, FortWorth, now, odometerReading: 10_040);

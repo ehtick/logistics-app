@@ -16,7 +16,7 @@ paths:
 
 ## Component Props
 
-- Always declare props as a named `interface {ComponentName}Props` — never inline object types
+- Always declare props as a named `interface {ComponentName}Props` - never inline object types
 - Destructure props inside the function body, not in parameters
 
 ```typescript
@@ -58,5 +58,5 @@ tsconfig uses `"@/*": ["./src/*"]`. Imports use `@/` without `src/`.
 ## React 19
 
 - Use `use()` hook for async data in client components instead of `useEffect` + `useState` pattern
-- **Never** use `useCallback`, `useMemo`, or `memo` — the React 19 compiler handles memoization
-- **Never** call `setState` synchronously inside a `useEffect` body — derive state from existing values, or call `setState` only inside async callbacks (`.then()`, event handlers)
+- **Never** use `useCallback`, `useMemo`, or `memo` - the React 19 compiler handles memoization
+- **Never** call `setState` synchronously inside a `useEffect` body - derive state from existing values, or call `setState` only inside async callbacks (`.then()`, event handlers)

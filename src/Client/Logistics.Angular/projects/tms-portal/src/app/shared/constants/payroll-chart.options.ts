@@ -1,4 +1,4 @@
-// Payroll chart configs — sourced from `chart-palette.ts`
+// Payroll chart configs - sourced from `chart-palette.ts`
 import { getChartPalette } from "./chart-palette";
 
 export const PAYROLL_STATUS_LABELS = [

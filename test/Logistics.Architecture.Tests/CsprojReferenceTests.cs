@@ -4,7 +4,7 @@ using Logistics.Application.Modules.Integrations.Webhooks.Commands;
 namespace Logistics.Architecture.Tests;
 
 /// <summary>
-/// XML-level rules over .csproj files — catches package/project references that
+/// XML-level rules over .csproj files - catches package/project references that
 /// NetArchTest's IL inspection can't see (e.g., an unused PackageReference still
 /// declared in the csproj).
 ///

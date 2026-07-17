@@ -9,7 +9,7 @@ paths:
 
 | Project                             | Tests For                                    | Extra Dependencies          |
 | ----------------------------------- | -------------------------------------------- | --------------------------- |
-| `Logistics.Application.Tests`       | Application layer (handlers, services)       | —                           |
+| `Logistics.Application.Tests`       | Application layer (handlers, services)       | -                           |
 | `Logistics.Infrastructure.AI.Tests` | AI agent, quota, tools, prompts, LLM pricing | `MockQueryable.NSubstitute` |
 | `Logistics.Architecture.Tests`      | Layering / dependency boundaries             | `TngTech.ArchUnitNET.xUnit` |
 
@@ -33,7 +33,7 @@ Other `Logistics.Infrastructure.*.Tests` projects cover their own infrastructure
 
 ## Architecture tests
 
-`Logistics.Architecture.Tests` **discovers** what it covers — never reintroduce an `InlineData`
+`Logistics.Architecture.Tests` **discovers** what it covers - never reintroduce an `InlineData`
 roster there, since a hand-maintained list silently skips whatever nobody remembered to add (which
 is how two infra projects went unchecked).
 

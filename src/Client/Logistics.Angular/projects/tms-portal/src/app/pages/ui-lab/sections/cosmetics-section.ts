@@ -19,7 +19,7 @@ import {
  *
  * The card matrix is the one that earns its keep. `ui-card` supports FOUR template slots
  * (`#header`, `#title`, `#subtitle`, `#footer`), and a card wired up with the wrong slot name
- * silently drops that content — nothing warns you. All four are rendered below, together and
+ * silently drops that content - nothing warns you. All four are rendered below, together and
  * separately.
  *
  * `ui-overlay-badge` is here for one row: the null-value case. The notification bell says "nothing
@@ -43,7 +43,7 @@ export class UiLabCosmeticsSection {
 
   protected readonly progress = signal(42);
 
-  /** Drives the overlay badge between its two states — the whole point of the component. */
+  /** Drives the overlay badge between its two states - the whole point of the component. */
   protected readonly unread = signal<number | null>(3);
 
   protected toggleUnread(): void {

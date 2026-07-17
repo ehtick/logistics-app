@@ -27,16 +27,16 @@ import { Icon } from "../../icons/icon/icon";
  *     this.uploading = true;
  *     this.http.request(this.method, this.url, { body: formData, ... })   // this.url is UNDEFINED
  *
- * — firing a spurious `POST` to `undefined` (i.e. `/undefined`, a 404) and latching the widget into a
+ * - firing a spurious `POST` to `undefined` (i.e. `/undefined`, a 404) and latching the widget into a
  * permanent "uploading" state, while the REAL upload happened in the app's own `(onSelect)` handler.
  * Nothing bound `(onUpload)` or `(onError)`, so the failure was swallowed and invisible.
  *
- * The app already owns the upload — `load-import` posts the PDF itself, `expense-receipt-upload`
+ * The app already owns the upload - `load-import` posts the PDF itself, `expense-receipt-upload`
  * calls `uploadExpenseReceipt`. So this component's whole job is to hand over `File[]` and get out of
  * the way. `auto` disappears with the phantom request.
  *
  * The `accept` / `maxFileSize` guards are enforced HERE (not just advertised to the file dialog), so
- * a drag-and-dropped file gets the same checks as a picked one — `accept` on `<input type="file">`
+ * a drag-and-dropped file gets the same checks as a picked one - `accept` on `<input type="file">`
  * filters the browser's dialog but does nothing for a drop.
  */
 @Component({
@@ -57,7 +57,7 @@ export class UiFileUpload {
 
   /** The accepted files. Never emitted empty. */
   public readonly filesSelect = output<File[]>();
-  /** A file the guards rejected, with the reason — so the page can surface it. */
+  /** A file the guards rejected, with the reason - so the page can surface it. */
   public readonly rejected = output<string>();
 
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput");

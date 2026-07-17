@@ -13,7 +13,7 @@ public record TaxJurisdiction
     public string? Region { get; set; }
 
     /// <summary>
-    /// Normalizing factory — use this on every write path. Codes are compared as upper-case, and a
+    /// Normalizing factory - use this on every write path. Codes are compared as upper-case, and a
     /// blank region means "country-level", so it must normalize to null rather than an empty string.
     /// </summary>
     public static TaxJurisdiction Create(string countryCode, string? region = null) => new()

@@ -1,6 +1,6 @@
 /**
  * TMS-only chrome: the sidebar gradients and the animations its layout components use.
- * Everything else — palette, tokens, typography, scrollbars — lives in shared/styles/theme.css.
+ * Everything else - palette, tokens, typography, scrollbars - lives in shared/styles/theme.css.
  */
 
 :root {

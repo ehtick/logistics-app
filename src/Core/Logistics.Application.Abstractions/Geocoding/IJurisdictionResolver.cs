@@ -4,7 +4,7 @@ namespace Logistics.Application.Abstractions.Geocoding;
 
 /// <summary>
 /// Resolves a GPS point to a tax jurisdiction (country + state/province) using offline
-/// boundary polygons — no per-ping API cost. Country-agnostic: coverage grows by adding
+/// boundary polygons - no per-ping API cost. Country-agnostic: coverage grows by adding
 /// polygons (US + CA today; EU road-toll reporting later).
 /// </summary>
 public interface IJurisdictionResolver

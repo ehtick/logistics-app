@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * normalize-helm.mjs — post-processor for `ng g @spartan-ng/cli:ui <primitive>`.
+ * normalize-helm.mjs - post-processor for `ng g @spartan-ng/cli:ui <primitive>`.
  *
  * The Spartan CLI stays the source of truth for Helm component code; this only fixes the monorepo
  * incompatibilities in its output so `ng build shared` (ng-packagr) succeeds and the layout matches
@@ -9,10 +9,10 @@
  * Passes:
  *   1. flattenSrc()               `<name>/src/**` -> `<name>/**` (the generator nests; we are flat).
  *
- *      ANTI-CLOBBER GUARD — the important part. The CLI recursively CO-GENERATES dependencies, so
+ *      ANTI-CLOBBER GUARD - the important part. The CLI recursively CO-GENERATES dependencies, so
  *      generating `pagination` also re-emits a STOCK `select`, which would overwrite our vendored one
  *      and silently drop its load-bearing `*hlmSelectPortal` directive (without which the overlay never
- *      opens). Therefore: any primitive dir ALREADY TRACKED IN GIT is "vendored" — if the generator
+ *      opens). Therefore: any primitive dir ALREADY TRACKED IN GIT is "vendored" - if the generator
  *      emits a `src/` for it we DISCARD the regenerated copy and keep ours. `--force <name>` overrides,
  *      for a deliberate upstream re-pull. Without the flag we refuse, loudly.
  *
@@ -21,7 +21,7 @@
  *                                   relativizeImports()  self-alias -> relative (ng-packagr rejects the alias)
  *                                   fixTypeOnlyImports() TS1484 under `verbatimModuleSyntax`
  *                                   stripGeneratorBugs() drop the CLI's bogus `[forceInvalid]` binding
- *                                 GATE — see lib/spartan-scan.mjs.
+ *                                 GATE - see lib/spartan-scan.mjs.
  *   3. stripInertCva()            the date-pickers ship dead CVA plumbing; this repo is Signal Forms.
  *   4. stripTsconfigPaths()       drop the paths the generator adds.
  *
@@ -51,11 +51,11 @@ const PRIMS_ABS = join(WORKSPACE_ROOT, PRIMS_DIR);
 const TSCONFIG = "tsconfig.json";
 
 /**
- * A safety floor only — the real guard is `trackedPrimitives()` ("is this dir tracked in git?"), which
+ * A safety floor only - the real guard is `trackedPrimitives()` ("is this dir tracked in git?"), which
  * protects every vendored primitive automatically. Listed here because their hand-modifications are the
  * ones that hurt most if silently regenerated: `utils` is hand-canonicalised, and `input` / `textarea`
  * had brain's `BrnInput` / `BrnFieldControlDescribedBy` host-directives stripped (they inject the
- * ambient `NgControl` and drive `aria-invalid` from ungated state — the pristine-invalid bug).
+ * ambient `NgControl` and drive `aria-invalid` from ungated state - the pristine-invalid bug).
  */
 const PRESERVE = new Set(["utils", "input", "textarea"]);
 
@@ -85,7 +85,7 @@ function parseForce(argv) {
 const FORCE = parseForce(process.argv.slice(2));
 
 /**
- * Primitive dirs that are already committed — i.e. vendored, hand-modified, ours.
+ * Primitive dirs that are already committed - i.e. vendored, hand-modified, ours.
  * `git ls-files` is the source of truth: a brand-new primitive (not yet committed) is NOT in here,
  * so its first generation lands normally; every subsequent co-generation of it is discarded.
  */
@@ -96,7 +96,7 @@ function trackedPrimitives() {
     out = execFileSync("git", ["ls-files", "--", PRIMS_DIR], { encoding: "utf8" });
   } catch {
     console.warn(
-      "normalize-helm: WARNING — `git ls-files` failed; falling back to the PRESERVE floor only. " +
+      "normalize-helm: WARNING - `git ls-files` failed; falling back to the PRESERVE floor only. " +
         "Vendored primitives beyond [" +
         [...PRESERVE].join(", ") +
         "] are NOT protected in this run.",
@@ -140,7 +140,7 @@ function flattenSrc(vendored) {
 
     const isVendored = vendored.has(name) || PRESERVE.has(name);
     if (isVendored && !FORCE.has(name)) {
-      // Hand-customised / already committed — drop the stock regenerated copy, keep ours.
+      // Hand-customised / already committed - drop the stock regenerated copy, keep ours.
       rmSync(src, { recursive: true, force: true });
       preserved.push(name);
       continue;
@@ -156,13 +156,13 @@ function flattenSrc(vendored) {
 
   for (const name of preserved) {
     console.log(
-      `normalize-helm: PRESERVED vendored '${name}' — discarded the co-generated stock copy. ` +
+      `normalize-helm: PRESERVED vendored '${name}' - discarded the co-generated stock copy. ` +
         `Pass --force ${name} to overwrite it deliberately.`,
     );
   }
   for (const name of forced) {
     console.log(
-      `normalize-helm: --force ${name} — OVERWROTE the vendored '${name}' with the regenerated copy. ` +
+      `normalize-helm: --force ${name} - OVERWROTE the vendored '${name}' with the regenerated copy. ` +
         `Re-apply any local modifications before committing.`,
     );
   }
@@ -223,7 +223,7 @@ function fixTypeOnlyImports(src) {
  * of the input element (a CLI/brain version mismatch → NG8002). The component already receives
  * `forceInvalid` as an input, so strip the redundant inner binding.
  *
- * Runs pre-prettier — quote-agnostic (Angular templates accept `'` or `"` around a binding value).
+ * Runs pre-prettier - quote-agnostic (Angular templates accept `'` or `"` around a binding value).
  */
 function stripGeneratorBugs(src) {
   return src.replace(/^[ \t]*\[forceInvalid\]=(["'])forceInvalid\(\)\1[ \t]*\r?\n/gm, "");
@@ -268,7 +268,7 @@ function rewriteSources() {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Pass 5 — strip the inert ControlValueAccessor from the vendored date pickers.
+// Pass 5 - strip the inert ControlValueAccessor from the vendored date pickers.
 // ---------------------------------------------------------------------------------------------
 
 /** Index of `src`'s matching `}` for the `{` at `open`. Bodies here contain no braces in strings. */
@@ -281,7 +281,7 @@ function matchBrace(src, open) {
   return -1;
 }
 
-/** True if `this.<field>(...)` / `this.<field>?.(...)` is READ (called) anywhere — assignment doesn't count. */
+/** True if `this.<field>(...)` / `this.<field>?.(...)` is READ (called) anywhere - assignment doesn't count. */
 function fieldIsRead(src, field) {
   return new RegExp(`this\\.${field}\\s*\\??\\.?\\s*\\(`).test(src);
 }
@@ -355,14 +355,14 @@ function pruneUnusedImports(src) {
  *   the ambient `NgControl`. No template anywhere binds `ngModel` / `formControlName` / `[formControl]`
  *   onto a picker. Angular therefore never resolves the `NG_VALUE_ACCESSOR` provider, and
  *   `writeValue` / `registerOnChange` / `registerOnTouched` / `setDisabledState` are never called.
- *   (Consumers bind `formControlName` on `ui-date-field` itself — that is the wrapper's own
+ *   (Consumers bind `formControlName` on `ui-date-field` itself - that is the wrapper's own
  *   FormValueControl, a different mechanism.)
  *
  * WHY WE STRIP IT: the project is FormValueControl-only, zero CVA; the Phase 7 exit gate is a
  * literal `git grep ControlValueAccessor` → 0.
  *
  * WHAT WE DO **NOT** STRIP: `_onChange` / `_onTouched` are still READ from live code paths
- * (`updateDate()`, `reset()`, `_onStateChange()`, `touched()` — the latter two are part of brain's
+ * (`updateDate()`, `reset()`, `_onStateChange()`, `touched()` - the latter two are part of brain's
  * `BrnDatePickerBase` contract). So the fields and the `registerOnX` methods that assign them stay;
  * they are simply never invoked. Only provably-dead members are removed. Correctness > aggression.
  *
@@ -447,7 +447,7 @@ function stripInertCva() {
   }
 
   for (const { file, removed } of report) {
-    console.log(`normalize-helm: stripped inert CVA from ${file} — removed ${removed.join("; ")}.`);
+    console.log(`normalize-helm: stripped inert CVA from ${file} - removed ${removed.join("; ")}.`);
   }
   return report.length;
 }
@@ -461,7 +461,7 @@ function assertNoBareSpartanClasses(offenders) {
   if (!offenders.length) return;
 
   console.error(
-    `\nnormalize-helm: FAILED — ${offenders.length} bare \`spartan-*\` class token(s).\n` +
+    `\nnormalize-helm: FAILED - ${offenders.length} bare \`spartan-*\` class token(s).\n` +
       `These class names are UNDEFINED in this repo, so the component renders UNSTYLED.\n` +
       `Replace each with the equivalent inlined Tailwind utilities:\n`,
   );

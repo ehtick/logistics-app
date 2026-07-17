@@ -8,7 +8,7 @@ import { classes } from "../../primitives/utils";
  * Slots are taken as `<ng-template #header|#title|#subtitle|#footer>` refs rendered through
  * `ngTemplateOutlet`, not as named `<ng-content select>` slots. DOM order matters: `card-header`
  * sits OUTSIDE `card-body` (different padding), and the `header` string input renders into
- * `card-title` inside the body — not into `card-header`.
+ * `card-title` inside the body - not into `card-header`.
  *
  * The `--ui-card-*` variables are a public hook: they are how the TMS dashboard makes a card fill
  * its gridster panel and scroll its content (see tms-portal/…/home/home.css). Custom properties
@@ -28,7 +28,7 @@ export class Card {
   public readonly subheader = input<string | null>(null);
 
   /**
-   * `descendants: false` IS LOAD-BEARING — do not drop it "because the default is fine".
+   * `descendants: false` IS LOAD-BEARING - do not drop it "because the default is fine".
    * `contentChild()` defaults `descendants` to true, and `#header` / `#title` / `#footer` are also
    * `ui-data-table`'s own slot names. Many pages nest a table inside a card, so a descending query
    * matches the TABLE's `<ng-template #header>` and renders its `<tr><th>` into `card-header`,

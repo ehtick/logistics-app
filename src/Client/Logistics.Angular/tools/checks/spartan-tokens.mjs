@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CI gate: no bare `spartan-*` CSS classes in the vendored Helm primitives — they would render the
+ * CI gate: no bare `spartan-*` CSS classes in the vendored Helm primitives - they would render the
  * component unstyled, silently. `normalize-helm.mjs` strips them at generation time; this guards the
  * tree, so a hand-edit or a re-vendor that skipped the normalizer cannot smuggle one back in.
  *

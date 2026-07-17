@@ -54,7 +54,7 @@ export interface TruckFormData {
  *
  * `make`, `model`, `vin`, `licensePlate`, `licensePlateState`, and `orangePlateNumber` are optional
  * on the wire (`TruckFormData`/DTO) but bind to `ui-text-field`, whose `FormValueControl<string>`
- * is invariant — so they're `string` here (empty string = "no value"), coerced to `null` only when
+ * is invariant - so they're `string` here (empty string = "no value"), coerced to `null` only when
  * building the outgoing `TruckFormData`.
  */
 export interface TruckFormModel {

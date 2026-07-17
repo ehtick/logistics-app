@@ -13,7 +13,7 @@ namespace Logistics.Infrastructure.Routing.Geospatial;
 
 /// <summary>
 /// Offline point-in-polygon jurisdiction lookup over Natural Earth admin-1 boundaries
-/// (embedded resource). Boundaries load once into an STRtree of prepared geometries —
+/// (embedded resource). Boundaries load once into an STRtree of prepared geometries -
 /// lookups are microseconds, so the 5-minute ELD ping path stays cheap. Registered as a
 /// singleton.
 /// </summary>

@@ -209,7 +209,7 @@ Always use OnPush:
 ### Signal Forms
 
 The workspace is **100% Signal Forms** (`@angular/forms/signals`). There is no `ReactiveFormsModule`
-and no `formControlName` anywhere — do not introduce either. A form is a model `signal()` plus a
+and no `formControlName` anywhere - do not introduce either. A form is a model `signal()` plus a
 `form()` schema:
 
 ```typescript
@@ -257,7 +257,7 @@ export class LoadFormComponent {
 `<form [formRoot]>` runs `submission.action` on submit: it marks the whole tree touched _first_
 (so inline errors reveal themselves), skips the action while invalid, and drives
 `form().submitting()`. No `markAllAsTouched()`, no `if (form.invalid) return` guard, no
-`(ngSubmit)`. Never gate the submit button on `form().invalid()` — keep it clickable so the
+`(ngSubmit)`. Never gate the submit button on `form().invalid()` - keep it clickable so the
 `ValidatedForm` directive can focus the first invalid control.
 
 Full API and migration recipes: `.claude/skills/signal-forms-migration/SKILL.md`.
@@ -336,7 +336,7 @@ bun run gen:api
 The UI library is **spartan/ui**: Helm components vendored in-repo under
 `projects/shared/src/lib/ui/primitives/` on top of `@spartan-ng/brain`.
 
-**PrimeNG is gone** — fully removed (no dependency, no import, no `p-*` markup, no theme preset).
+**PrimeNG is gone** - fully removed (no dependency, no import, no `p-*` markup, no theme preset).
 Never reintroduce a `p-*` component or a `primeng/*` import: the ESLint `no-restricted-imports` rule
 in `eslint.config.js` fails lint on any `primeng`/`primeicons`/`@primeuix/*` import. Browse `/ui-lab`
 (a lazy dev route in tms-portal) to see every `ui-*` component rendered in light and dark before
@@ -349,7 +349,7 @@ Feature code does not touch the Helm primitives directly. It uses the shared `ui
 import {
   Alert, // ui-alert, ui-badge, ui-status-badge, ui-typography, ui-theme-toggle
   EmptyState, // ui-empty-state, ui-error-state, ui-loading-skeleton, ui-data-container
-  Icon, // ui-icon — the only way to render an icon
+  Icon, // ui-icon - the only way to render an icon
   Stack, // ui-stack, ui-grid, ui-container, ui-surface, ui-toolbar, ui-page-header
   UiDataTable, // ui-data-table, with <th uiSortHeader="Field">
   UiFormField, // label / hint / error wrapper
@@ -372,11 +372,11 @@ import {
 
 Check `projects/shared/src/lib/ui/` for the full set before hand-rolling a new component.
 
-Icons are `<ui-icon name="..."/>` only — never a raw `<ng-icon>` in feature code. `name` is the typed
+Icons are `<ui-icon name="..."/>` only - never a raw `<ng-icon>` in feature code. `name` is the typed
 `IconName` union (a key of the `UI_ICONS` record in `projects/shared/src/lib/ui/icons/icons.ts`); an
 unknown static name is a compile error. To add a glyph, import its `@ng-icons/lucide` export and add
 one entry to `UI_ICONS`. Toasts and confirmation dialogs go through `ToastService` from
-`@logistics/shared` — never inject `MessageService` or `ConfirmationService`.
+`@logistics/shared` - never inject `MessageService` or `ConfirmationService`.
 
 ## Routing
 

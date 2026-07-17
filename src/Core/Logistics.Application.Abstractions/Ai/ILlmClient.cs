@@ -4,8 +4,8 @@ namespace Logistics.Application.Abstractions.Ai;
 
 /// <summary>
 /// Application-facing entry point for one-shot LLM calls (no agent loop, no tools).
-/// Resolves the globally configured model, sends a single prompt — optionally with inline
-/// documents/images — and reports token usage and estimated cost.
+/// Resolves the globally configured model, sends a single prompt - optionally with inline
+/// documents/images - and reports token usage and estimated cost.
 /// Pairs with the internal per-SDK <c>ILlmProvider</c> adapters (provider = adapter, client = entry point).
 /// </summary>
 public interface ILlmClient

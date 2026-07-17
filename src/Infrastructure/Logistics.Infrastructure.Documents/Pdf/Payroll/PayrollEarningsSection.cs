@@ -79,7 +79,7 @@ internal static class PayrollEarningsSection
 
                 if (earnings.Count == 0)
                 {
-                    var salaryLabel = payroll.Employee?.SalaryType is { } st ? PdfFormatting.Display(st) : "—";
+                    var salaryLabel = payroll.Employee?.SalaryType is { } st ? PdfFormatting.Display(st) : "-";
                     table.Cell().Element(PdfStyles.Cell).Text("Base Pay");
                     table.Cell().Element(PdfStyles.Cell).Text(salaryLabel);
                     table.Cell().Element(PdfStyles.Cell).AlignCenter().Text("1");

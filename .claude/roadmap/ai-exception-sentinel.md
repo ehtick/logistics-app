@@ -1,7 +1,7 @@
 # AI Exception Sentinel (event-driven agent)
 
 - **Status**: Planned
-- **Priority**: P1 — flips the agent from "runs when asked" to "notices problems before the customer does"; exception handling is the real dispatch pain
+- **Priority**: P1 - flips the agent from "runs when asked" to "notices problems before the customer does"; exception handling is the real dispatch pain
 - **Effort**: L
 - **Category**: AI differentiation
 
@@ -21,7 +21,7 @@ All the trigger data already flows through us (ELD webhooks, GPS tracking, HOS v
 
 ## Acceptance
 
-Simulated HOS shortfall on an active trip produces, without human prompting, a dispatcher notification containing a viable replan suggestion and a drafted delay notice — within minutes of the triggering event.
+Simulated HOS shortfall on an active trip produces, without human prompting, a dispatcher notification containing a viable replan suggestion and a drafted delay notice - within minutes of the triggering event.
 
 ## Notes
 

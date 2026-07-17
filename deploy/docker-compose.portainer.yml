@@ -1,4 +1,4 @@
-# Standalone Portainer stack — deployed ONCE, manually, and intentionally kept out
+# Standalone Portainer stack - deployed ONCE, manually, and intentionally kept out
 # of the main stack so `docker compose up --remove-orphans` on the app never touches it.
 #
 # One-time setup on the VPS (copy this file there, then):

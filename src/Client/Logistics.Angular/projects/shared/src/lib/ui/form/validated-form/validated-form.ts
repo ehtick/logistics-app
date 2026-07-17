@@ -4,7 +4,7 @@ import { FormRoot } from "@angular/forms/signals";
 /**
  * Reveals validation feedback when an invalid form is submitted.
  *
- * Auto-applies to every `<form [formRoot]>` in a component that imports it — no template attribute
+ * Auto-applies to every `<form [formRoot]>` in a component that imports it - no template attribute
  * and no submit-handler changes are required. On an invalid submit it:
  *  - scrolls to / focuses the first invalid control, and
  *  - announces the invalid-field count to assistive technologies via an `aria-live` region.
@@ -13,7 +13,7 @@ import { FormRoot } from "@angular/forms/signals";
  * entire tree touched *before* it checks validity, so inline `ui-form-field` errors reveal
  * themselves. (Pinned by `signal-forms-v22-api-probe.spec.ts`, claim F.)
  *
- * Focusing relies on each control implementing the optional `focus()` hook of `FormUiControl` —
+ * Focusing relies on each control implementing the optional `focus()` hook of `FormUiControl` -
  * without it, `focusBoundControl()` falls back to `.focus()` on the wrapper's non-focusable
  * custom-element host and silently does nothing. (Claim L.)
  *

@@ -2,7 +2,7 @@
 #
 # Images are pulled from GHCR. GITHUB_REPOSITORY and IMAGE_TAG are appended to .env
 # by the deploy workflow; the defaults below keep manual `docker compose` runs working.
-# All app ports are bound to 127.0.0.1 — the host nginx (deploy/nginx/logisticsx.conf)
+# All app ports are bound to 127.0.0.1 - the host nginx (deploy/nginx/logisticsx.conf)
 # is the only public entry point and terminates TLS.
 
 name: logistics

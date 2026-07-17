@@ -10,7 +10,7 @@ import { UiAutocompleteField } from "@logistics/shared/ui";
  * It emits the selected employee via its `value` model. Supports filtering by role
  * (e.g., "Driver", "Dispatcher").
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  * Never put `formControlName` / `[formField]` on an inner third-party element.
  */
 @Component({

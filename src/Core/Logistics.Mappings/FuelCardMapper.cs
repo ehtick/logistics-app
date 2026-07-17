@@ -5,7 +5,7 @@ using Riok.Mapperly.Abstractions;
 namespace Logistics.Mappings;
 
 /// <summary>
-/// TruckNumber is deliberately not flattened from the Truck navigation property — that would
+/// TruckNumber is deliberately not flattened from the Truck navigation property - that would
 /// lazy-load one query per row. Callers batch-load the numbers and pass them in.
 /// </summary>
 [Mapper]

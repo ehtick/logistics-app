@@ -4,7 +4,7 @@ namespace Logistics.Domain.Primitives.Enums;
 
 public enum HosViolationType
 {
-    // FMCSA (US) — 1–99
+    // FMCSA (US) - 1–99
     [Description("11-Hour Driving Limit")]
     Driving11Hour = 1,
 
@@ -23,7 +23,7 @@ public enum HosViolationType
     [Description("Form and Manner Violation")]
     FormAndMannerViolation = 6,
 
-    // EU 561/2006 — 100–199
+    // EU 561/2006 - 100–199
     [Description("4.5h Continuous Driving Without Break")]
     EuContinuousDriving4_5h = 100,
 

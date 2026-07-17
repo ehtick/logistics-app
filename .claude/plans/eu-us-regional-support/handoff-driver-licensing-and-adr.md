@@ -2,15 +2,15 @@
 
 > **Status: Done (2026-05-10).** Landed in five slices on `main`:
 >
-> - `fea56e89` — domain entities + value object + tenant migration `Version_0007`
-> - `7e1391f4` — license CRUD, `IDispatchEligibilityService`, `LicenseExpiryReminderService` Hangfire job, 19 tests
-> - `47bc3457` — API endpoints, eligibility moved to dispatch handlers, TMS portal UI (licenses tab + truck-form ADR fieldset + load-form hazmat fieldset)
-> - `0d756fad` — AI dispatch tool `check_dispatch_eligibility` (read-only) + 8 tests
-> - `14b1e650` — mobile `MyLicensesScreen` + nav wiring + feature-map row
+> - `fea56e89` - domain entities + value object + tenant migration `Version_0007`
+> - `7e1391f4` - license CRUD, `IDispatchEligibilityService`, `LicenseExpiryReminderService` Hangfire job, 19 tests
+> - `47bc3457` - API endpoints, eligibility moved to dispatch handlers, TMS portal UI (licenses tab + truck-form ADR fieldset + load-form hazmat fieldset)
+> - `0d756fad` - AI dispatch tool `check_dispatch_eligibility` (read-only) + 8 tests
+> - `14b1e650` - mobile `MyLicensesScreen` + nav wiring + feature-map row
 >
 > Notable design choice differing from this plan: **eligibility is enforced at the dispatch gate (`DispatchLoadHandler` / `BulkDispatchLoadsHandler` / `DispatchTripHandler`), not on assignment**. Assignment is treated as planning; dispatch is the hard commit. The eligibility endpoint (`GET /loads/{id}/eligibility`) is read-only and the UI calls it to preview warnings before the dispatcher hits Dispatch. See [.claude/feature-map.md](../feature-map.md) "Driver licensing" + "ADR / Hazmat" rows under Compliance & safety.
 >
-> Known follow-ups (deferred): dashboard "expiring licenses" widget, type-specific notification renderer in `pages/notifications/`, `BypassEligibility` admin override flag, i18n string migration for new labels. The `[Flags]` enum wire format also needs a smoke test — `ng-openapi-gen` types them as string unions but the wire is a numeric bitfield; three `as unknown as number` casts in Angular handle the round-trip and may need adjustment if the API serializes them as comma-separated names.
+> Known follow-ups (deferred): dashboard "expiring licenses" widget, type-specific notification renderer in `pages/notifications/`, `BypassEligibility` admin override flag, i18n string migration for new labels. The `[Flags]` enum wire format also needs a smoke test - `ng-openapi-gen` types them as string unions but the wire is a numeric bitfield; three `as unknown as number` casts in Angular handle the round-trip and may need adjustment if the API serializes them as comma-separated names.
 >
 > ---
 >
@@ -20,7 +20,7 @@
 
 - **Position in overall order:** 6th
 - **Depends on:** Plan #6 ([i18n](handoff-i18n-multi-language.md)) for license-class label translations. Plan #10 ([address forms](handoff-region-aware-address-and-tenant-fields.md)) for the country-aware `IssuingCountry` selector.
-- **Unblocks:** Plan #4 ([tachograph HOS](handoff-eu-tachograph-hos.md)) — `IDispatchEligibilityService` is consumed by HOS-aware dispatch. Plan #5 ([EU load boards](handoff-eu-load-boards.md)) — booking ADR loads will check eligibility.
+- **Unblocks:** Plan #4 ([tachograph HOS](handoff-eu-tachograph-hos.md)) - `IDispatchEligibilityService` is consumed by HOS-aware dispatch. Plan #5 ([EU load boards](handoff-eu-load-boards.md)) - booking ADR loads will check eligibility.
 - **Why sixth:** Adds two domain entities (`DriverLicense`, `AdrEquipment`) but does not change shared infrastructure. Safe to land in parallel with plans #8 / #9 if multiple sessions run.
 
 ## Why now
@@ -65,15 +65,15 @@
 ### Application
 
 - `Commands/Employee/CreateOrUpdateDriverLicense`
-- `Queries/Employee/GetExpiringLicensesQuery` — used by a notification job
+- `Queries/Employee/GetExpiringLicensesQuery` - used by a notification job
 - New domain service `IDispatchEligibilityService.CanAssignAsync(Truck, Driver, Load)`:
   - Returns reasons why an assignment is invalid (license class mismatch, ADR class missing, expired cert)
   - Used by `AssignTripCommand` and surfaced in the AI dispatch tool registry
-- New tool for AI dispatch: `CheckDispatchEligibility` — see [add-dispatch-tool skill](.claude/skills/add-dispatch-tool/) — exposes the service to the LLM
+- New tool for AI dispatch: `CheckDispatchEligibility` - see [add-dispatch-tool skill](.claude/skills/add-dispatch-tool/) - exposes the service to the LLM
 
 ### Infrastructure
 
-- New job `Jobs/LicenseExpiryReminderJob` (Hangfire daily) — generates notifications 60/30/7 days before expiry; handles both DOT medical and ADR/CDL
+- New job `Jobs/LicenseExpiryReminderJob` (Hangfire daily) - generates notifications 60/30/7 days before expiry; handles both DOT medical and ADR/CDL
 - Document upload path uses existing `IBlobStorageService`
 
 ### Persistence / migration
@@ -88,19 +88,19 @@
 - New endpoints:
   - `GET /api/employees/{id}/licenses`
   - `POST /api/employees/{id}/licenses`
-  - `GET /api/dispatch/eligibility?truckId=&driverId=&loadId=` — returns issues/warnings
+  - `GET /api/dispatch/eligibility?truckId=&driverId=&loadId=` - returns issues/warnings
 - Run `bun run gen:api`
 
 ## Frontend (Angular)
 
 ### TMS portal
 
-- `pages/employees/components/driver-licenses-tab/` — table of licenses, upload scan, expiry warnings
-- `pages/employees/employee-form/` — primary license fields (class, country, expiry)
-- `pages/trucks/truck-form/` — ADR equipment section (only for EU tenant) / Hazmat placard checkbox (US)
-- `pages/loads/load-form/` — Hazmat class + UN number; show real-time eligibility warning when assigning truck/driver
-- `pages/dashboard/` — widget: "Licenses expiring in 30 days"
-- `pages/notifications/` — license-expiry notification type rendered with link to driver
+- `pages/employees/components/driver-licenses-tab/` - table of licenses, upload scan, expiry warnings
+- `pages/employees/employee-form/` - primary license fields (class, country, expiry)
+- `pages/trucks/truck-form/` - ADR equipment section (only for EU tenant) / Hazmat placard checkbox (US)
+- `pages/loads/load-form/` - Hazmat class + UN number; show real-time eligibility warning when assigning truck/driver
+- `pages/dashboard/` - widget: "Licenses expiring in 30 days"
+- `pages/notifications/` - license-expiry notification type rendered with link to driver
 
 ### Customer portal
 
@@ -112,7 +112,7 @@
 
 ## Mobile (driver app)
 
-- New screen `screens/MyLicensesScreen.kt` — driver self-views their licenses, sees expiry warnings, uploads renewed scan
+- New screen `screens/MyLicensesScreen.kt` - driver self-views their licenses, sees expiry warnings, uploads renewed scan
 - Push notifications for expiry (already infra exists)
 
 ## Tests
@@ -121,12 +121,12 @@
   - US driver no Hazmat endorsement + Hazmat load → blocked
   - EU driver ADR Class 3 + ADR Class 7 load → blocked, suggests qualified drivers
   - Expired ADR cert → blocked with reason
-- License expiry job — generates exactly one notification per driver per threshold
+- License expiry job - generates exactly one notification per driver per threshold
 
 ## Acceptance criteria
 
 - [ ] Driver gets push notification 30 days before ADR cert expiry
-- [ ] Dispatcher cannot save Trip assignment when truck not ADR-equipped for the load's class — UI shows the reason
+- [ ] Dispatcher cannot save Trip assignment when truck not ADR-equipped for the load's class - UI shows the reason
 - [ ] AI dispatch agent returns "X is not qualified for ADR Class 7" when relevant
 - [ ] Licenses tab shows expiry status with color coding
 - [ ] US workflows unchanged: CDL Class A + Hazmat endorsement still works as before

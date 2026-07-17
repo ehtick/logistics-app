@@ -34,7 +34,7 @@ if (typeof window !== "undefined" && typeof window.matchMedia !== "function") {
 
 /**
  * JSDOM implements no scrolling, so `scrollIntoView` is absent. `BrnSelectItem` calls it whenever the
- * CDK key manager makes an option active — i.e. as soon as any `hlm-select` panel opens, including the
+ * CDK key manager makes an option active - i.e. as soon as any `hlm-select` panel opens, including the
  * data table paginator's rows-per-page dropdown.
  *
  * A no-op is faithful: there is no viewport to scroll, and nothing under test asserts scroll position.

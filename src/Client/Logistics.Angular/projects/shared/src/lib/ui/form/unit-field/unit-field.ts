@@ -12,10 +12,10 @@ import { focusFirstControl } from "../focus-control";
 import { UiNumberField } from "../number-field/number-field";
 
 /**
- * A numeric field with a trailing unit addon (`%`, `mi`, `kg`, …) — a thin `ui-number-field`
+ * A numeric field with a trailing unit addon (`%`, `mi`, `kg`, …) - a thin `ui-number-field`
  * with a `suffixLabel`.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  * `[formField]` binds this wrapper; the inner `ui-number-field` is driven by a plain two-way
  * `[(value)]`.
  */

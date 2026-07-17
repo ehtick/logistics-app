@@ -16,17 +16,17 @@ Each feature lists only the layers it touches: **Domain** (entities/VOs), **Appl
 - **Application workflow services** (stay in Application): `src/Core/Logistics.Application/Modules/{Module}/{Feature}/Services/`
 - **Application constants**: feature-scoped under `Modules/{Module}/{Feature}/Constants/`; cross-module shared in `Modules/Common/Constants/`
 - **Service implementations**: `src/Infrastructure/Logistics.Infrastructure.{Module}/`
-- **Shared provider HTTP**: `Logistics.Infrastructure.Integrations.Common/HttpClientJsonExtensions.cs` — `TryGetFromJsonAsync` (never throws; logs, returns `default`), used by LoadBoard/FuelCards/Eld. Don't copy it into a new integration. `Integrations.Accounting`'s QBO helpers deliberately **throw** so push errors surface — not duplicates, don't fold in
+- **Shared provider HTTP**: `Logistics.Infrastructure.Integrations.Common/HttpClientJsonExtensions.cs` - `TryGetFromJsonAsync` (never throws; logs, returns `default`), used by LoadBoard/FuelCards/Eld. Don't copy it into a new integration. `Integrations.Accounting`'s QBO helpers deliberately **throw** so push errors surface - not duplicates, don't fold in
 - **REST controllers**: `src/Presentation/Logistics.API/Controllers/{Feature}Controller.cs`
 - **SignalR hubs**: `src/Infrastructure/Logistics.Infrastructure.Communications/SignalR/Hubs/`
-- **Hangfire jobs**: `src/Presentation/Logistics.API/Jobs/` — fan out with `TenantJobRunner.ForEachTenantAsync` and gate features inside the body (see CLAUDE.md for the canonical `[RequiresFeature]`-is-inert rule)
+- **Hangfire jobs**: `src/Presentation/Logistics.API/Jobs/` - fan out with `TenantJobRunner.ForEachTenantAsync` and gate features inside the body (see CLAUDE.md for the canonical `[RequiresFeature]`-is-inert rule)
 - **Machine-readable API errors**: `Result.Fail(message, ErrorCodes.X)` → `errorCode` → frontend `err.error.errorCode`. Mirror new codes in `Logistics.Shared.Models/ErrorCodes.cs` **and** `projects/shared/src/lib/errors/upgrade-handler.ts`. Never encode a code in the message string
 - **Webhooks**: `WebhookController.cs` + `Application/Modules/Integrations/Webhooks/Commands/`
 - **EF configurations**: `src/Infrastructure/Logistics.Infrastructure.Persistence/Configurations/{Feature}/`
 - **Frontend pages**: `src/Client/Logistics.Angular/projects/{portal}/src/app/pages/{feature}/`
   - Portals: `tms-portal` (dispatchers), `customer-portal` (shippers), `admin-portal` (super admin), `website` (marketing)
 - **Mobile (driver)**: `src/Client/Logistics.DriverApp/composeApp/src/commonMain/kotlin/com/logisticsx/driver/`
-- **Provider connect dialogs**: ELD / load board / fuel card "add provider" dialogs MUST use `<app-provider-connect-dialog>` (`tms-portal/src/app/shared/components/other/provider-connect-dialog/`) — project the fields, keep the typed form in the feature, reset from `(opened)`.
+- **Provider connect dialogs**: ELD / load board / fuel card "add provider" dialogs MUST use `<app-provider-connect-dialog>` (`tms-portal/src/app/shared/components/other/provider-connect-dialog/`) - project the fields, keep the typed form in the feature, reset from `(opened)`.
 - **Address inputs**: every form that captures an `Address` value object MUST use `<ui-address-form>` from `@logistics/shared`. Do not build addresses from raw `<input>`s. Country drives the State / Region / Province label (US/CA/AU/MX/DE/NL/etc., see `state-labels.ts`); State stays required across all countries. Reusable server-side validator: `Logistics.Application.Validators.AddressValidator`.
 
 ## Operations
@@ -199,14 +199,14 @@ Each feature lists only the layers it touches: **Domain** (entities/VOs), **Appl
 
 - Domain: `Truck.AdrEquipment`, `Load.HazmatClass`, `ValueObjects/AdrEquipment.cs`
 - Application: `IDispatchEligibilityService` (gates `DispatchLoad`, `BulkDispatchLoads`, `DispatchTrip` handlers)
-- API/UI: (under Loads / Trucks pages — hazmat fields on load-form, ADR fieldset on truck-form)
+- API/UI: (under Loads / Trucks pages - hazmat fields on load-form, ADR fieldset on truck-form)
 
 ### IFTA reporting
 
 - Domain: `Entities/Ifta/` (`TruckLocationHistory`, `TruckJurisdictionMileage`, `IftaQuarterSnapshot`), `Entities/IftaTaxRate.cs` (master)
 - Application: `Modules/Compliance/Ifta/` (`TruckLocationRecorder`, `IftaReportService`, quarter-close + filing-reminder services, `IftaQuarters`), `Modules/Compliance/Ifta/TaxRates/` (admin rate CRUD), `Modules/Platform/Reports/Queries/Ifta/`
 - Infrastructure: `Infrastructure.Routing/Geospatial/JurisdictionResolver.cs` (NTS + embedded boundaries, built once at startup by `JurisdictionResolverWarmup`); `Infrastructure.Documents/Pdf/Ifta/`
-- **Traps**: closed quarters are served verbatim from `IftaQuarterSnapshot.ReportJson` (sole source of truth, deliberately not denormalized into columns). Tax-rate `(Year, Quarter, Jurisdiction)` uniqueness is enforced ONLY by `IftaTaxRateUniqueness.FindConflictAsync` — complex-type members can't be in a DB unique index, so every write path must probe or a duplicate silently changes computed tax due
+- **Traps**: closed quarters are served verbatim from `IftaQuarterSnapshot.ReportJson` (sole source of truth, deliberately not denormalized into columns). Tax-rate `(Year, Quarter, Jurisdiction)` uniqueness is enforced ONLY by `IftaTaxRateUniqueness.FindConflictAsync` - complex-type members can't be in a DB unique index, so every write path must probe or a duplicate silently changes computed tax due
 - API/UI: `ReportController` `/reports/ifta` + `/reports/ifta/pdf`, `IftaTaxRateController.cs` `/ifta/rates`, `Jobs/IftaQuarterCloseJob.cs`, `Jobs/IftaFilingReminderJob.cs`, `tms-portal/pages/reports/ifta-report/`, `admin-portal/pages/ifta-rates/`
 
 ### Privacy (GDPR)
@@ -226,7 +226,7 @@ Each feature lists only the layers it touches: **Domain** (entities/VOs), **Appl
 
 ### Tax engine
 
-- Domain: `Entities/TenantTaxRate.cs`, `Invoice.TaxBehavior`, `Invoice.TaxBreakdownJson`, `ValueObjects/TaxJurisdiction.cs` — build jurisdictions with `TaxJurisdiction.Create(country, region)` on every write path; it upper-cases and normalizes a blank region to null, which is what the equality comparisons rely on
+- Domain: `Entities/TenantTaxRate.cs`, `Invoice.TaxBehavior`, `Invoice.TaxBreakdownJson`, `ValueObjects/TaxJurisdiction.cs` - build jurisdictions with `TaxJurisdiction.Create(country, region)` on every write path; it upper-cases and normalizes a blank region to null, which is what the equality comparisons rely on
 - Application: `Application.Abstractions/Tax/ITaxCalculator`, `Modules/Financial/Tax/Services/IInvoiceTaxApplier`, `Modules/Financial/Tax/Commands/`, `Modules/Financial/Tax/Queries/`, `Modules/Financial/Invoices/Queries/PreviewInvoiceTax/`
 - Infrastructure: `Infrastructure.Tax/` (`StripeTaxCalculator`, `ManualTaxCalculator`, `StripeTaxConfigService`, `EuVatRates`/`UsSalesTaxRates`/`OtherCountryRates`); `Infrastructure.Documents/Pdf/Invoice/` VAT block
 - API/UI: `TaxController.cs`, `TaxRatesController.cs`, `tms-portal/pages/settings/tax-rates-settings/`, `<ui-money-with-tax>`
@@ -287,9 +287,9 @@ Each feature lists only the layers it touches: **Domain** (entities/VOs), **Appl
 
 - Domain: `Entities/FuelCards/` (`FuelCardProviderConfiguration`, `FuelCard`, `FuelCardTransaction`); `TruckExpense.PurchaseJurisdiction`/`FuelCardProvider`/`ExternalTransactionId`
 - Application: `Modules/Integrations/FuelCards/` (Commands, Queries, `Services/FuelCardSyncService`)
-- Infrastructure: `Infrastructure.Integrations.FuelCards/` (WEX, EFS, Demo; factory). WEX/EFS share `Providers/BearerFuelCardService.cs`; config binds once from the `FuelCards` section into aggregate `FuelCardsOptions` (nullable `Wex`/`Efs`, read as `options.Value.Wex ?? new WexOptions()`) — same shape as `LoadBoardOptions`/`EldOptions`
+- Infrastructure: `Infrastructure.Integrations.FuelCards/` (WEX, EFS, Demo; factory). WEX/EFS share `Providers/BearerFuelCardService.cs`; config binds once from the `FuelCards` section into aggregate `FuelCardsOptions` (nullable `Wex`/`Efs`, read as `options.Value.Wex ?? new WexOptions()`) - same shape as `LoadBoardOptions`/`EldOptions`
 - API/UI: `FuelCardsController.cs` (providers, sync, transaction review queue), `Jobs/FuelCardSyncJob.cs`, `tms-portal/pages/fuel-cards/`
-- **Trap**: `FuelCard` has no endpoints by design — it's an internal card→truck mapping table written by `FuelCardSyncService` and `AssignFuelCardTransactionTruckHandler`. It looks orphaned; deleting it breaks both
+- **Trap**: `FuelCard` has no endpoints by design - it's an internal card→truck mapping table written by `FuelCardSyncService` and `AssignFuelCardTransactionTruckHandler`. It looks orphaned; deleting it breaks both
 
 ### Accounting sync (QBO)
 
@@ -500,10 +500,10 @@ Each feature lists only the layers it touches: **Domain** (entities/VOs), **Appl
 
 All under `test/` (singular):
 
-- `Logistics.Application.Tests/` — application handlers, services
-- `Logistics.Architecture.Tests/` — layering/dependency boundaries; discovers projects, never hard-code a list
-- `Logistics.Infrastructure.AI.Tests/` — AI agent, quota, tools, prompts, pricing
-- `Logistics.Infrastructure.{Documents,Payments,Persistence,Routing,Tax,Vin}.Tests/` — per-module
+- `Logistics.Application.Tests/` - application handlers, services
+- `Logistics.Architecture.Tests/` - layering/dependency boundaries; discovers projects, never hard-code a list
+- `Logistics.Infrastructure.AI.Tests/` - AI agent, quota, tools, prompts, pricing
+- `Logistics.Infrastructure.{Documents,Payments,Persistence,Routing,Tax,Vin}.Tests/` - per-module
 
 ## Updating this map
 

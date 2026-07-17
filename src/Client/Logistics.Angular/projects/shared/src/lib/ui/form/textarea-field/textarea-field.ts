@@ -15,7 +15,7 @@ import { focusFirstControl } from "../focus-control";
 /**
  * Multi-line text input.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  * The inner native textarea is styled by spartan's `hlmTextarea` and driven with plain value/event
  * bindings.
  *

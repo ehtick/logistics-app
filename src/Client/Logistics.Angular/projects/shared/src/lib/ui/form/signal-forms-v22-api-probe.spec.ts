@@ -1,5 +1,5 @@
 /**
- * Signal Forms — Angular 22 API surface probe
+ * Signal Forms - Angular 22 API surface probe
  * ===========================================
  *
  * Pins the facts about the Signal Forms API itself that `ValidatedForm`, `ui-form-field`, and the
@@ -16,7 +16,7 @@
  *   I. Signal Forms applies **no** `ng-invalid` / `ng-touched` / `ng-dirty` classes by default.
  *      They are opt-in via `provideSignalFormsConfig({classes})`.
  *      => any CSS or querySelector keyed on `.ng-invalid` silently stops matching.
- *   J. Built-in error `kind`s are camelCase: `minLength` / `maxLength` — NOT the classic
+ *   J. Built-in error `kind`s are camelCase: `minLength` / `maxLength` - NOT the classic
  *      reactive-forms keys `minlength` / `maxlength`. And the payload prop is `minLength`,
  *      not `requiredLength`. `InteropNgControl.errors` keys by raw `kind`, so a legacy
  *      `errors['minlength'].requiredLength` lookup returns `undefined` and the UI silently

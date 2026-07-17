@@ -43,7 +43,7 @@ public record IftaJurisdictionRowDto
     /// <summary>Gallons purchased in the jurisdiction.</summary>
     public decimal PurchasedGallons { get; set; }
 
-    /// <summary>Miles / fleet MPG — the gallons deemed consumed in the jurisdiction.</summary>
+    /// <summary>Miles / fleet MPG - the gallons deemed consumed in the jurisdiction.</summary>
     public decimal TaxableGallons { get; set; }
 
     /// <summary>TaxableGallons - PurchasedGallons; negative = credit.</summary>
@@ -58,6 +58,6 @@ public record IftaJurisdictionRowDto
     /// </summary>
     public decimal? TaxDue { get; set; }
 
-    /// <summary>No published rate exists for this jurisdiction/quarter — filing needs it added.</summary>
+    /// <summary>No published rate exists for this jurisdiction/quarter - filing needs it added.</summary>
     public bool RateMissing { get; set; }
 }

@@ -31,8 +31,8 @@ All app container ports bind to `127.0.0.1`; nginx is the only public entry poin
 
 ## Deployment Steps
 
-1. **[VPS Setup](vps-setup.md)** — install Docker + nginx, configure the server and Portainer
-2. **[Docker Compose Deployment](docker-deployment.md)** — configure and run the stack (automated or manual)
+1. **[VPS Setup](vps-setup.md)** - install Docker + nginx, configure the server and Portainer
+2. **[Docker Compose Deployment](docker-deployment.md)** - configure and run the stack (automated or manual)
 
 ## DNS Configuration
 

@@ -53,7 +53,7 @@ internal static class Setup
         AddAuthSchemes(services);
 
         // Explicit app name (previously unset). This invalidates cookies protected before this
-        // change — a one-time forced re-login; there are no persisted grants to lose.
+        // change - a one-time forced re-login; there are no persisted grants to lose.
         services.AddLogisticsDataProtection<MasterDbContext>("LogisticsX.IdentityServer");
 
         // Real health probe: master DB connectivity (composes with AddHealthChecks() in LogisticsHost).

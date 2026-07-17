@@ -32,7 +32,7 @@ internal sealed class GetAdminInvitationsHandler(IMasterUnitOfWork masterUow)
             .ToListAsync(ct);
 
         // For app-user invitations Tenant is null, so the default mapper resolves TenantName to
-        // empty and InvitedByName from InvitedByUser — no explicit overrides needed.
+        // empty and InvitedByName from InvitedByUser - no explicit overrides needed.
         var dtos = invitations.Select(i => i.ToDto()).ToList();
 
         return PagedResult<InvitationDto>.Ok(dtos, totalItems, req.PageSize);

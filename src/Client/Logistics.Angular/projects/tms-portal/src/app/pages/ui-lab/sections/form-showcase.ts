@@ -77,9 +77,9 @@ const EMPTY: LabFormModel = {
  * {@link LabFormVariant}.
  *
  * The model starts empty and every field is `required`, so the *same* form is the pristine case
- * (untouched — no errors visible) and the invalid case (touched via `submit()`, every error
- * visible). `disabled()` in the schema — never a `[disabled]` template binding, which would fight
- * the state input Signal Forms writes — gives the third.
+ * (untouched - no errors visible) and the invalid case (touched via `submit()`, every error
+ * visible). `disabled()` in the schema - never a `[disabled]` template binding, which would fight
+ * the state input Signal Forms writes - gives the third.
  *
  * This is where wrapper default-drift shows up: a wrapper that quietly changes its own default
  * (`fluid`, `showClear`, `toggleMask`, …) looks identical in a unit test and obviously wrong here.
@@ -142,7 +142,7 @@ export class UiLabFormShowcase {
         value() ? null : { kind: "required", message: "Toggle must be on." },
       );
 
-      // Disabled is form *state*, not a template attribute — per field, so nothing depends on
+      // Disabled is form *state*, not a template attribute - per field, so nothing depends on
       // whether root-level logic propagates down the tree.
       disabled(p.text, { when: this.isDisabled });
       disabled(p.textarea, { when: this.isDisabled });
@@ -175,7 +175,7 @@ export class UiLabFormShowcase {
     });
   }
 
-  /** Unique per variant — three copies of this form share one document. */
+  /** Unique per variant - three copies of this form share one document. */
   protected fieldId(name: string): string {
     return `lab-${this.variant()}-${name}`;
   }

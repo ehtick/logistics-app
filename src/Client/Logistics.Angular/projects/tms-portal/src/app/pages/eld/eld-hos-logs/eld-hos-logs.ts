@@ -60,7 +60,7 @@ export class EldHosLogsComponent implements OnInit {
   protected readonly pageSize = signal(25);
   protected readonly first = signal(0);
 
-  // `Date | null` because `ui-date-field` is a `FormValueControl<Date | null>` — the value type is
+  // `Date | null` because `ui-date-field` is a `FormValueControl<Date | null>` - the value type is
   // invariant, so a non-nullable `Date` signal will not two-way bind to it.
   protected readonly startDate = signal<Date | null>(
     new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),

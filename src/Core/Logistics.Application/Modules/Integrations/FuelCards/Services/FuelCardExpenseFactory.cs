@@ -7,7 +7,7 @@ namespace Logistics.Application.Modules.Integrations.FuelCards.Services;
 internal static class FuelCardExpenseFactory
 {
     /// <summary>
-    /// Materializes a TruckExpense from a matched fuel card transaction. Created as Paid —
+    /// Materializes a TruckExpense from a matched fuel card transaction. Created as Paid -
     /// card transactions are already-settled funds, so routing them through the Pending
     /// approval flow would only create busywork.
     /// </summary>

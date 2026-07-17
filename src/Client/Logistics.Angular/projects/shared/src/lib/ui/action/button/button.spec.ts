@@ -1,17 +1,17 @@
 /**
- * `ui-button`'s contract. Everything pinned here fails SILENTLY — build, lint and every other spec
+ * `ui-button`'s contract. Everything pinned here fails SILENTLY - build, lint and every other spec
  * stay green while the button is broken:
  *
- *   1. the intent x appearance matrix — a hole emits no CSS and no warning, so the button just
+ *   1. the intent x appearance matrix - a hole emits no CSS and no warning, so the button just
  *      renders unstyled;
  *   2. `type` defaults to "button" and survives being set to "submit" (a dropped `submit` is a save
  *      button that does nothing), proven against a real <form>;
- *   3. `loading` disables AND swaps the glyph for a spinner — miss the disable and the button
+ *   3. `loading` disables AND swaps the glyph for a spinner - miss the disable and the button
  *      double-submits, miss the swap and it looks idle while it works;
  *   4. icon-only goes square and is named only by `ariaLabel`;
- *   5. `buttonClass` lands on the INNER button — putting it on the host looks right in review and
+ *   5. `buttonClass` lands on the INNER button - putting it on the host looks right in review and
  *      breaks every call site's layout;
- *   6. `(click)` bubbles — there is no output, so every call site's `(click)` rests on it.
+ *   6. `(click)` bubbles - there is no output, so every call site's `(click)` rests on it.
  */
 import { Component, provideZonelessChangeDetection, signal } from "@angular/core";
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
@@ -133,12 +133,12 @@ describe("ui-button", () => {
 
       for (const { intent, appearance } of cells) {
         const cell = INTENT_APPEARANCE[intent][appearance];
-        expect(cell, `${intent}/${appearance} is empty — it would render unstyled`).toBeTruthy();
+        expect(cell, `${intent}/${appearance} is empty - it would render unstyled`).toBeTruthy();
         expect(cell.trim().length).toBeGreaterThan(0);
       }
     });
 
-    it("gives every intent its own colours — no intent silently collapses into another", () => {
+    it("gives every intent its own colours - no intent silently collapses into another", () => {
       for (const appearance of APPEARANCES) {
         const rendered = INTENTS.map((intent) => INTENT_APPEARANCE[intent][appearance]);
         expect(new Set(rendered).size, `two intents share one ${appearance} cell`).toBe(
@@ -147,7 +147,7 @@ describe("ui-button", () => {
       }
     });
 
-    it("keeps danger a SOLID red fill and success green — these are money-moving actions", () => {
+    it("keeps danger a SOLID red fill and success green - these are money-moving actions", () => {
       // Full opacity, not a tint. Asserted against the split class list rather than the raw string,
       // because the cell also carries a `hover:` class with the same colour name.
       expect(INTENT_APPEARANCE.danger.solid.split(" ")).toContain("bg-danger");
@@ -182,7 +182,7 @@ describe("ui-button", () => {
       expect(INTENT_APPEARANCE.primary.solid).toContain("var(--ui-btn-primary-bg)");
       expect(INTENT_APPEARANCE.primary.solid).toContain("var(--ui-btn-primary-image)");
       expect(INTENT_APPEARANCE.primary.solid).toContain("var(--ui-btn-primary-weight)");
-      // ...and only for `solid` — the gradient must not reach outlined/text/link.
+      // ...and only for `solid` - the gradient must not reach outlined/text/link.
       for (const appearance of ["outlined", "text", "link"] as const) {
         expect(INTENT_APPEARANCE.primary[appearance]).not.toContain("--ui-btn-primary");
       }
@@ -202,7 +202,7 @@ describe("ui-button", () => {
       expect(button(fixture).type).toBe("submit");
     });
 
-    it("actually submits the surrounding form — and the default button does not", async () => {
+    it("actually submits the surrounding form - and the default button does not", async () => {
       const fixture = TestBed.createComponent(HostForm);
       await settle(fixture);
 
@@ -242,7 +242,7 @@ describe("ui-button", () => {
       expect((icons[0] as HTMLElement).className).toContain("animate-spin");
     });
 
-    it("sizes the spinner from the button — it emits no text-* class of its own", async () => {
+    it("sizes the spinner from the button - it emits no text-* class of its own", async () => {
       const fixture = await render();
       fixture.componentInstance.loading.set(true);
       await settle(fixture);
@@ -278,7 +278,7 @@ describe("ui-button", () => {
       expect(className).not.toContain("px-4");
     });
 
-    it("takes its accessible name from ariaLabel — there is no text to name it", async () => {
+    it("takes its accessible name from ariaLabel - there is no text to name it", async () => {
       const fixture = await render();
       fixture.componentInstance.label.set(undefined);
       fixture.componentInstance.icon.set("trash");
@@ -299,7 +299,7 @@ describe("ui-button", () => {
       expect(className).toContain("px-4");
     });
 
-    it("goes square while loading with no label — the spinner is the glyph", () => {
+    it("goes square while loading with no label - the spinner is the glyph", () => {
       expect(uiButtonClass({ ...base, iconOnly: true })).toContain("size-9");
     });
   });
@@ -315,7 +315,7 @@ describe("ui-button", () => {
       expect(host(fixture).className).not.toContain("mt-2");
     });
 
-    it("wins over the variant it collides with — twMerge, last one in", () => {
+    it("wins over the variant it collides with - twMerge, last one in", () => {
       const withOverride = uiButtonClass({ ...base, extra: "h-20" });
       expect(withOverride).toContain("h-20");
       expect(withOverride).not.toContain("h-9");
@@ -323,7 +323,7 @@ describe("ui-button", () => {
   });
 
   describe("host", () => {
-    it("bubbles (click) from the inner button — the component declares no output", async () => {
+    it("bubbles (click) from the inner button - the component declares no output", async () => {
       const fixture = await render();
       button(fixture).click();
       await settle(fixture);

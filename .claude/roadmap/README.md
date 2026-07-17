@@ -8,7 +8,7 @@ in its **Notes** section. Keep this index's Status column in sync.
 **Priority**: P0 = loses deals today · P1 = differentiator, build soon · P2 = strategic bet
 **Effort**: S (< 1 wk) · M (1–3 wk) · L (1–2 mo) · XL (2+ mo)
 
-## Phase 1 — Table stakes (US small-carrier deal-breakers)
+## Phase 1 - Table stakes (US small-carrier deal-breakers)
 
 | Feature                                             | Priority | Effort | Status  |
 | --------------------------------------------------- | -------- | ------ | ------- |
@@ -19,7 +19,7 @@ in its **Notes** section. Keep this index's Status column in sync.
 | [Broker credit check](broker-credit-check.md)       | P0       | S      | Done    |
 | [EDI integration](edi-integration.md)               | P2       | XL     | Planned |
 
-## Phase 2 — AI differentiation (extend the existing agent platform)
+## Phase 2 - AI differentiation (extend the existing agent platform)
 
 | Feature                                                | Priority | Effort | Status  |
 | ------------------------------------------------------ | -------- | ------ | ------- |
@@ -33,7 +33,7 @@ in its **Notes** section. Keep this index's Status column in sync.
 | [Voice driver assistant](ai-voice-driver-assistant.md) | P2       | XL     | Planned |
 | [MCP client (outbound)](mcp-client-integrations.md)    | P2       | L      | Planned |
 
-## Phase 3 — Wedge products (attack competitor economics)
+## Phase 3 - Wedge products (attack competitor economics)
 
 | Feature                                              | Priority | Effort | Status  |
 | ---------------------------------------------------- | -------- | ------ | ------- |
@@ -41,7 +41,7 @@ in its **Notes** section. Keep this index's Status column in sync.
 | [AI customer update agent](customer-update-agent.md) | P1       | M      | Planned |
 | [Predictive maintenance](predictive-maintenance.md)  | P2       | L      | Planned |
 
-## Phase 4 — Market expansion
+## Phase 4 - Market expansion
 
 | Feature                                              | Priority | Effort | Status  |
 | ---------------------------------------------------- | -------- | ------ | ------- |

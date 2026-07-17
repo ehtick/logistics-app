@@ -53,12 +53,12 @@ const TOOLTIP_POSITIONS: Record<UiTooltipPosition, ConnectedPosition> = {
 
 /**
  * The tooltip. It reuses brain's `BrnTooltipContent` but owns the trigger and a11y wiring itself,
- * because `BrnTooltip` binds both to its own host — and most hosts here are `<ui-button>`, a wrapper
+ * because `BrnTooltip` binds both to its own host - and most hosts here are `<ui-button>`, a wrapper
  * around the real `<button>`. On a wrapper that breaks twice, silently: `focus`/`blur` do not bubble,
  * so brain's focus listener never fires and the tooltip never opens for keyboard users; and
  * `aria-describedby` would land on the non-focusable wrapper, where no screen reader reads it. We
  * listen for `focusin`/`focusout` (which do bubble) and resolve the description onto the focusable
- * descendant. Escape closing is ours too — brain has no keydown handling.
+ * descendant. Escape closing is ours too - brain has no keydown handling.
  *
  * A tooltip is a description, never a name: this only writes `aria-describedby` and never touches
  * `aria-label`.
@@ -82,7 +82,7 @@ const TOOLTIP_POSITIONS: Record<UiTooltipPosition, ConnectedPosition> = {
     // descendants does not re-fire them. Right for a wrapper.
     "(mouseenter)": "requestShow()",
     "(mouseleave)": "requestHide()",
-    // focusin/focusout bubble (focus/blur do not) — this is what catches the inner <button>.
+    // focusin/focusout bubble (focus/blur do not) - this is what catches the inner <button>.
     "(focusin)": "requestShow()",
     "(focusout)": "requestHide()",
   },
@@ -124,7 +124,7 @@ export class UiTooltip {
 
   constructor() {
     // Keep an open tooltip in sync with text that changes underneath it, and close it if the text
-    // goes empty — otherwise a stale or empty box stays on screen.
+    // goes empty - otherwise a stale or empty box stays on screen.
     effect(() => {
       const content = this.content();
       if (!this.contentRef) return;
@@ -179,7 +179,7 @@ export class UiTooltip {
     });
 
     // Close on scroll. Must be capture-phase on `document`: scroll events do not bubble, and this app
-    // never scrolls the window — pages scroll inside `div.overflow-y-auto` or the sidebar nav — so a
+    // never scrolls the window - pages scroll inside `div.overflow-y-auto` or the sidebar nav - so a
     // window/bubble-phase listener never fires and a focus-opened tooltip stays stranded away from its
     // host. `Renderer2.listen` cannot pass `capture`, hence the raw listener plus explicit teardown.
     const onScroll = () => this.hide();

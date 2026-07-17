@@ -144,7 +144,7 @@ import { brandFacebook, brandLinkedin, brandX } from "./brand-icons";
 
 /**
  * Every icon the app can render, keyed by its canonical lucide (or hand-vendored `brand-*`) kebab
- * name. A name outside this record is a compile error at `<ui-icon name="...">` — which is the
+ * name. A name outside this record is a compile error at `<ui-icon name="...">` - which is the
  * whole point: an unmapped icon used to render a silently blank <svg>.
  *
  * To add an icon: import its `@ng-icons/lucide` export and add one alphabetically-sorted entry.
@@ -298,5 +298,5 @@ export const UI_ICONS = {
 /** Every name `<ui-icon>` accepts. The 51 files that import `IconName` key off this. */
 export type IconName = keyof typeof UI_ICONS;
 
-/** Rendered when a dynamic name does not resolve — visibly wrong beats silently blank. */
+/** Rendered when a dynamic name does not resolve - visibly wrong beats silently blank. */
 export const ERROR_ICON_SVG = UI_ICONS["circle-alert"];

@@ -6,7 +6,7 @@ namespace Logistics.Domain.Entities;
 
 /// <summary>
 /// A fuel card transaction pulled from a provider. Every synced transaction lands here
-/// (matched or not) — the (ProviderType, ExternalTransactionId) unique index is the sync
+/// (matched or not) - the (ProviderType, ExternalTransactionId) unique index is the sync
 /// idempotency key, Pending rows form the dispatcher review queue, and RawPayloadJson
 /// preserves the provider record for disputes.
 /// </summary>

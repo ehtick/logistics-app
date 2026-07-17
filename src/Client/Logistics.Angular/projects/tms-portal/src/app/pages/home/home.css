@@ -7,7 +7,7 @@
  * MAKE THE CARD FILL ITS GRIDSTER PANEL AND SCROLL ITS CONTENT.
  *
  * `ui-card` exposes the same four boxes as CUSTOM PROPERTIES, and custom properties inherit straight
- * THROUGH component boundaries — so setting them here on `.dashboard-panel` reaches the `<ui-card>`
+ * THROUGH component boundaries - so setting them here on `.dashboard-panel` reaches the `<ui-card>`
  * nested inside `<app-stat-card>` / `<app-attention-panel>` without piercing anything and without
  * those children having to opt in. `::ng-deep` is deprecated precisely because it pierces
  * encapsulation that way; inheritance is the supported mechanism, and it is also the simpler one.

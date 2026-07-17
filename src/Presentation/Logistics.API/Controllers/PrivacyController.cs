@@ -11,7 +11,7 @@ using Logistics.Application.Modules.Compliance.Privacy.Queries;
 namespace Logistics.API.Controllers;
 
 /// <summary>
-///     GDPR data subject rights — data export, account deletion, cookie consent.
+///     GDPR data subject rights - data export, account deletion, cookie consent.
 /// </summary>
 [ApiController]
 [Route("privacy")]
@@ -145,6 +145,6 @@ public class PrivacyController(IMediator mediator) : ControllerBase
 }
 
 /// <summary>
-///     Body for the consent endpoint — UserId is taken from the auth context.
+///     Body for the consent endpoint - UserId is taken from the auth context.
 /// </summary>
 public record RecordConsentRequest(ConsentType ConsentType, bool Granted);

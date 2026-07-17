@@ -48,7 +48,7 @@ sealed class AppPermission(
 
     companion object {
         /**
-         * Permissions requested at app startup. Location is NOT included — it
+         * Permissions requested at app startup. Location is NOT included - it
          * is requested on-demand from the location disclosure screen so the
          * driver sees the rationale before the OS prompt (Play policy).
          */

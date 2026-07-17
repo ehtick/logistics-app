@@ -185,14 +185,14 @@ internal sealed class DataExportService(
             Generated: {DateTime.UtcNow:O}
 
             Contents:
-              profile.json          — your account profile (master)
-              tenant-access.json    — organizations you have access to
-              consents.json         — cookie / processing consents
-              data-requests.json    — your past data export & deletion requests
-              tenants/<name>/       — per-organization data
-                employee.json       — employee record (if applicable)
-                customer-user.json  — customer portal user (if applicable)
-                notifications.json  — recent notifications visible to you
+              profile.json          - your account profile (master)
+              tenant-access.json    - organizations you have access to
+              consents.json         - cookie / processing consents
+              data-requests.json    - your past data export & deletion requests
+              tenants/<name>/       - per-organization data
+                employee.json       - employee record (if applicable)
+                customer-user.json  - customer portal user (if applicable)
+                notifications.json  - recent notifications visible to you
 
             Operational records (loads, trips, invoices, payments, audit logs)
             are retained for legal/financial compliance and are not included here.

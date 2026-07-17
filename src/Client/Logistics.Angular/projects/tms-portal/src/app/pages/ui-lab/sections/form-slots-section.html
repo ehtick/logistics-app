@@ -12,7 +12,7 @@
 
   <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
     <!-- select: no slots -->
-    <ui-form-field label="Select — no slots" for="lab-slot-plain" hint="Label text only.">
+    <ui-form-field label="Select - no slots" for="lab-slot-plain" hint="Label text only.">
       <ui-select-field
         id="lab-slot-plain"
         [options]="providers"
@@ -26,7 +26,7 @@
 
     <!-- select: #item + #selectedItem -->
     <ui-form-field
-      label="Select — #item + #selectedItem"
+      label="Select - #item + #selectedItem"
       for="lab-slot-rich"
       hint="Panel rows show a description sub-line; the trigger shows a one-liner."
     >
@@ -53,7 +53,7 @@
 
     <!-- autocomplete: no slots -->
     <ui-form-field
-      label="Autocomplete — no slots"
+      label="Autocomplete - no slots"
       for="lab-ac-plain"
       hint="Type 'a'. Plain rows, default empty text."
     >
@@ -68,7 +68,7 @@
 
     <!-- autocomplete: #item + #empty -->
     <ui-form-field
-      label="Autocomplete — #item + #empty"
+      label="Autocomplete - #item + #empty"
       for="lab-ac-rich"
       hint="Type 'a' for rich rows; type 'zzz' for the custom empty template."
     >
@@ -101,7 +101,7 @@
     <!-- range picker -->
     <ui-form-field
       label="Date range picker"
-      hint="Emits only when BOTH ends are picked — the emission counter proves it."
+      hint="Emits only when BOTH ends are picked - the emission counter proves it."
     >
       <ui-date-range-picker [dates]="range()" (datesChange)="onRange($event)" />
     </ui-form-field>
@@ -113,9 +113,9 @@
       </div>
       <div>
         range:
-        <b>{{ range().length ? (range()[0] | date: "shortDate") : "—" }}</b>
+        <b>{{ range().length ? (range()[0] | date: "shortDate") : "-" }}</b>
         →
-        <b>{{ range().length > 1 ? (range()[1] | date: "shortDate") : "—" }}</b>
+        <b>{{ range().length > 1 ? (range()[1] | date: "shortDate") : "-" }}</b>
       </div>
     </div>
   </div>

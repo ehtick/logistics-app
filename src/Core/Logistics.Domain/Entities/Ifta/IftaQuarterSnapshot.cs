@@ -17,7 +17,7 @@ public class IftaQuarterSnapshot : AuditableEntity, ITenantEntity
     public required DateTime ClosedAt { get; set; }
 
     /// <summary>
-    /// Full serialized IftaReportDto for the quarter — the single source of truth. Totals are
+    /// Full serialized IftaReportDto for the quarter - the single source of truth. Totals are
     /// deliberately not denormalized into columns: nothing queries them, and a second copy can
     /// only drift from this one.
     /// </summary>

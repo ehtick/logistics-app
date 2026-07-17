@@ -11,7 +11,7 @@ import {
 import { HlmDialogService } from "../ui/primitives/dialog";
 
 /**
- * Semantic icon names for confirmation dialogs. Deliberately *not* icon-library names —
+ * Semantic icon names for confirmation dialogs. Deliberately *not* icon-library names -
  * this is the seam that lets the icon library change without touching call sites.
  */
 export type ConfirmIcon =
@@ -93,8 +93,8 @@ const REJECT_INTENT: Record<ConfirmSeverity, UiButtonIntent> = {
 };
 
 /**
- * The accept/reject labels used when a call site supplies none. `confirmDelete()` — i.e. most of the
- * ~386 call sites — never supplies any, so these two strings are what the user actually reads on the
+ * The accept/reject labels used when a call site supplies none. `confirmDelete()` - i.e. most of the
+ * ~386 call sites - never supplies any, so these two strings are what the user actually reads on the
  * button they click to delete something.
  */
 const DEFAULT_ACCEPT_LABEL = "Yes";
@@ -104,7 +104,7 @@ const DEFAULT_REJECT_LABEL = "No";
  * Toast notifications and confirmation dialogs.
  *
  * This is the single seam between the app and whatever notification library backs it.
- * Nothing outside this file may reference the rendering library — call sites pass semantic
+ * Nothing outside this file may reference the rendering library - call sites pass semantic
  * {@link ConfirmIcon} / {@link ConfirmSeverity} tokens, never icon names or CSS classes.
  */
 @Injectable({ providedIn: "root" })
@@ -164,21 +164,21 @@ export class ToastService {
       // THESE TWO DEFAULTS ARE NOT THE SAME, deliberately.
       //
       // `closeOnEscape` defaults TRUE: Escape has always cancelled a confirm dialog, everywhere,
-      // and no call site could ever opt out — so defaulting to `false` here would silently remove
+      // and no call site could ever opt out - so defaulting to `false` here would silently remove
       // Escape from all 72 `confirm()` / `confirmDelete()` call sites.
       //
       // Escape maps to REJECT, never accept (see `UiConfirmDialog.onEscape`), and is guarded by
       // `isTopmostOverlay`, so a confirm stacked over a half-filled `ui-dialog` form dismisses only
       // itself.
       closeOnEscape: options.closeOnEscape ?? true,
-      // The backdrop, by contrast, has never dismissed a confirm — so `?? false` is correct here.
+      // The backdrop, by contrast, has never dismissed a confirm - so `?? false` is correct here.
       dismissableMask: options.dismissableMask ?? false,
     };
 
     const dialogRef = this.dialogService.open<boolean, UiConfirmDialogContext>(UiConfirmDialog, {
       context,
       role: "alertdialog",
-      // Brain must never close this dialog by itself — `UiConfirmDialog` arbitrates escape and backdrop,
+      // Brain must never close this dialog by itself - `UiConfirmDialog` arbitrates escape and backdrop,
       // because brain gates both behind this one flag. See the docblock there.
       disableClose: true,
       // No "X". A close affordance that fires NEITHER callback is a cancel button that skips the

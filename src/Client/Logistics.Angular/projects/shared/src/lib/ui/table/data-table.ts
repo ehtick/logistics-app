@@ -28,7 +28,7 @@ export type DataTableSelectionMode = UiTableSelectionMode;
  * provided on this component's own node so that a `<th uiSortHeader>` or `<ui-table-checkbox>`
  * written inside a CONSUMER's `<ng-template>` can inject it.
  *
- * The input surface is deliberately only what the codebase uses — no column filters, cell editing,
+ * The input surface is deliberately only what the codebase uses - no column filters, cell editing,
  * frozen/resizable columns, virtual scroll or row grouping.
  *
  * @example
@@ -67,7 +67,7 @@ export class UiDataTable<T> implements OnInit {
   public readonly paginator = input(false, { transform: booleanAttribute });
   public readonly rows = input<number | undefined>(undefined);
   /**
-   * 0-indexed row offset of the current page — not a page number.
+   * 0-indexed row offset of the current page - not a page number.
    *
    * Must default to `0`, never `undefined`: most client-paged consumers leave it unbound, and an
    * `undefined` reaching the row slice degenerates to `slice(undefined, NaN)`, rendering no rows.
@@ -134,7 +134,7 @@ export class UiDataTable<T> implements OnInit {
   }
 
   /**
-   * The initial page request — the only reason a server-paged page ever shows data.
+   * The initial page request - the only reason a server-paged page ever shows data.
    *
    * Imperative, once, synchronously. Never derive this from an `effect()` over the state signals:
    * that yields either zero emits (reads as "no data") or two (doubles every list request). Every

@@ -19,7 +19,7 @@
         data-lab="alert-dismissible"
         (dismiss)="alertDismissed.set(true)"
       >
-        Click the × — this one has to actually go away.
+        Click the × - this one has to actually go away.
       </ui-alert>
     } @else {
       <ui-typography variant="body-sm" color="muted" data-lab="alert-dismissed">
@@ -88,7 +88,7 @@
     <div class="border-default bg-elevated rounded-lg border p-4" data-lab="error-state">
       <ui-error-state
         title="Could not load shipments"
-        message="The request failed. This state is fabricated — the lab makes no HTTP calls."
+        message="The request failed. This state is fabricated - the lab makes no HTTP calls."
         [retryable]="true"
         (retry)="lastAction.set('error-state retry')"
       />
@@ -120,7 +120,7 @@
     @for (variant of typographyVariants; track variant) {
       <div class="flex items-baseline gap-4">
         <span class="text-muted-foreground w-20 shrink-0 text-xs">{{ variant }}</span>
-        <ui-typography [variant]="variant">The quick brown fox — 0123456789</ui-typography>
+        <ui-typography [variant]="variant">The quick brown fox - 0123456789</ui-typography>
       </div>
     }
   </div>

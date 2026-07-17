@@ -43,14 +43,14 @@
   </div>
 
   <!-- The event log. `closed` appearing on an OPEN would mean the 16 real (onHide) handlers all run
-       at the wrong time — the failure that blanks a prefilled edit dialog as it appears. -->
+       at the wrong time - the failure that blanks a prefilled edit dialog as it appears. -->
   <div class="border-default mt-4 rounded-lg border p-4">
     <div class="mb-2 flex items-center justify-between">
-      <ui-typography variant="body-sm">Event log — (opened) / (closed)</ui-typography>
+      <ui-typography variant="body-sm">Event log - (opened) / (closed)</ui-typography>
       <ui-button label="Clear" size="sm" appearance="outlined" (click)="clearLog()" />
     </div>
     <pre class="text-muted-foreground text-xs" data-lab="dlg-log">{{
-      log().length ? log().join("\n") : "— open a dialog —"
+      log().length ? log().join("\n") : "- open a dialog -"
     }}</pre>
   </div>
 
@@ -64,7 +64,7 @@
       data-lab="collapsible"
     >
       <p class="text-muted-foreground text-sm">
-        Collapsed content is display:none and inert — never destroyed. That is what keeps the four
+        Collapsed content is display:none and inert - never destroyed. That is what keeps the four
         collapsed sections of load-form contributing their fields to the form.
       </p>
     </ui-collapsible>
@@ -81,7 +81,7 @@
   (closed)="note('closed')"
 >
   <p class="text-sm">
-    Measure me: 450px. Click the backdrop — I must NOT close. Press Escape — I must close.
+    Measure me: 450px. Click the backdrop - I must NOT close. Press Escape - I must close.
   </p>
   <ng-template #footer>
     <ui-button label="Close" (click)="basic.set(false)" />
@@ -92,7 +92,7 @@
   ESCAPE BELONGS TO THE INNERMOST OVERLAY.
 
   A dropdown opened inside a dialog is its OWN CDK overlay, stacked above the dialog's. Helm's select
-  does not stop Escape from propagating — so before `isTopmostOverlay` (internal/overlay-stack.ts) ONE
+  does not stop Escape from propagating - so before `isTopmostOverlay` (internal/overlay-stack.ts) ONE
   Escape dismissed the dropdown AND discarded the dialog behind it. This is the real trip-wizard
   "Create a new load" shape.
 
@@ -103,8 +103,8 @@
 <ui-dialog [(open)]="nestedOverlay" header="Select inside a dialog" width="480px">
   <div class="flex flex-col gap-3">
     <p class="text-sm">
-      Type below, open the select, then press Escape ONCE. The dropdown closes; this dialog — and
-      your text — must survive. Press Escape again to close the dialog.
+      Type below, open the select, then press Escape ONCE. The dropdown closes; this dialog - and
+      your text - must survive. Press Escape again to close the dialog.
     </p>
     <ui-text-field id="lab-nested-text" [(value)]="nestedText" data-lab="dlg-nested-text" />
     <ui-select-field
@@ -127,7 +127,7 @@
 </ui-dialog>
 
 <ui-dialog [(open)]="responsive" header="Responsive dialog" width="80vw" maxWidth="1200px">
-  <p class="text-sm">80vw, capped at 1200px — attach-load-dialog's shape.</p>
+  <p class="text-sm">80vw, capped at 1200px - attach-load-dialog's shape.</p>
 </ui-dialog>
 
 <ui-dialog
@@ -193,7 +193,7 @@
   (opened)="note('opened')"
   (closed)="onPrefilledClosed()"
 >
-  <label class="text-sm" for="lab-dlg-name">Name — must be prefilled on open</label>
+  <label class="text-sm" for="lab-dlg-name">Name - must be prefilled on open</label>
   <input
     id="lab-dlg-name"
     data-lab="dlg-name"

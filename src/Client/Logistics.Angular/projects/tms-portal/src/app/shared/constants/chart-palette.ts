@@ -1,5 +1,5 @@
 /**
- * Chart palette — single source of truth for chart colors across the TMS portal.
+ * Chart palette - single source of truth for chart colors across the TMS portal.
  *
  * All chart-options files (loads, drivers, financials, payroll) and chart components
  * (daily-gross-chart, gross-barchart) should source colors from here, not from
@@ -23,9 +23,9 @@ export interface ChartPalette {
   titleColor: string;
   /** Brand primary chart color (line/bar default) */
   primaryColor: string;
-  /** Gradient stop for primary fill (top — most opaque) */
+  /** Gradient stop for primary fill (top - most opaque) */
   primaryColorGradientStart: string;
-  /** Gradient stop for primary fill (bottom — most transparent) */
+  /** Gradient stop for primary fill (bottom - most transparent) */
   primaryColorGradientEnd: string;
 }
 
@@ -37,7 +37,7 @@ export const CHART_PRIMARY_COLOR_LIGHT = "#0891b2";
 export const CHART_PRIMARY_COLOR_DARK = "#06b6d4";
 
 /**
- * Categorical palette — used for multi-series charts (loads breakdown, drivers, etc.).
+ * Categorical palette - used for multi-series charts (loads breakdown, drivers, etc.).
  * Aligned with status tokens so chart slices match adjacent status badges.
  * Order: info, success, warning, pickedup, danger, completed, orange, neutral.
  */

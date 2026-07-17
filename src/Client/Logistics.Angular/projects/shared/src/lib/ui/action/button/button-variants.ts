@@ -22,11 +22,11 @@ export type UiButtonSize = "sm" | "md" | "lg";
  *
  * TWO RULES ABOUT ARBITRARY PROPERTIES, and both are load-bearing:
  *   1. A cell that needs a CSS variable writes the bracketed property:value form
- *      (`[background-color:var(…)]`), never a bg-/text- utility wrapping a bare `var()` — Tailwind
+ *      (`[background-color:var(…)]`), never a bg-/text- utility wrapping a bare `var()` - Tailwind
  *      has to infer the target property of an arbitrary value, and for a bare `var()` that is
  *      ambiguous (a background could be colour or image), so the declaration may not be emitted.
  *   2. But an arbitrary property lands in its OWN tailwind-merge class group, so it survives the
- *      merge alongside a conflicting `bg-*` / `border-*` utility instead of beating it — leaving
+ *      merge alongside a conflicting `bg-*` / `border-*` utility instead of beating it - leaving
  *      stylesheet source order to pick the winner. So a cell that has to OVERRIDE a named utility
  *      coming from BASE (its transparent border, say) must itself be spelled as a named utility.
  *
@@ -37,19 +37,19 @@ export type UiButtonSize = "sm" | "md" | "lg";
 /**
  * The intent x appearance matrix, fully enumerated. The `Record<UiButtonIntent, Record<...>>` type is
  * the point: a missing cell is a compile error. It has to be, because the failure is otherwise
- * silent — an unknown Tailwind token emits no CSS and no warning, so a hole renders as an unstyled
+ * silent - an unknown Tailwind token emits no CSS and no warning, so a hole renders as an unstyled
  * button that nothing catches.
  *
  * Two product decisions that must not be "corrected" back to shadcn defaults: danger/solid is SOLID
  * red (shadcn's destructive is a soft tint) and `success` keeps green (shadcn has no success intent).
- * These sit on money-moving actions — payroll, invoices, refunds — where the colour carries meaning.
+ * These sit on money-moving actions - payroll, invoices, refunds - where the colour carries meaning.
  */
 export const INTENT_APPEARANCE: Record<UiButtonIntent, Record<UiButtonAppearance, string>> = {
   /**
    * The only intent that resolves through `--ui-btn-*` indirection rather than straight to a semantic
    * token: TMS paints its primary buttons with a gradient + heavier weight, the other apps run flat.
    * Each app supplies the variables (flat defaults in shared theme.css, the gradient in
-   * tms-portal/src/styles.css). The gradient rides on `background-image` — a `linear-gradient()` is
+   * tms-portal/src/styles.css). The gradient rides on `background-image` - a `linear-gradient()` is
    * not a valid `background-color`, so no single background utility could carry it. Only `solid`
    * reads the vars, which is what keeps the gradient off outlined/text/link.
    */
@@ -88,7 +88,7 @@ export const INTENT_APPEARANCE: Record<UiButtonIntent, Record<UiButtonAppearance
     link: "text-info bg-transparent underline-offset-4 hover:underline",
   },
 
-  /** The intent is `warn`; the TOKEN is `--warning`. The two spellings differ — keep both. */
+  /** The intent is `warn`; the TOKEN is `--warning`. The two spellings differ - keep both. */
   warn: {
     solid: "bg-warning [color:var(--ui-btn-on-solid)] hover:bg-warning/90",
     outlined: "border-warning text-warning bg-transparent hover:bg-warning/10",
@@ -168,7 +168,7 @@ export interface UiButtonClassOptions {
 }
 
 /**
- * The whole class string for the INNER `<button>`. Argument order is the precedence order — twMerge
+ * The whole class string for the INNER `<button>`. Argument order is the precedence order - twMerge
  * lets a later group beat an earlier one, so the intent cell beats BASE, the icon-only compound beats
  * the size cell, and the call site's `extra` beats everything.
  */

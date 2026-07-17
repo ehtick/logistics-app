@@ -213,7 +213,7 @@ export const appRoutes: Routes = [
   },
   {
     // Dev-only component gallery. `canMatch` (not `canActivate`) so a production build never even
-    // resolves the route — it falls through to the `**` redirect. No auth guard and no feature
+    // resolves the route - it falls through to the `**` redirect. No auth guard and no feature
     // guard on purpose: the lab renders from local fixtures and must work signed-out.
     path: "ui-lab",
     canMatch: [() => isDevMode()],

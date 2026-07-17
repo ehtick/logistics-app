@@ -10,7 +10,7 @@ namespace Logistics.Infrastructure.Integrations.FuelCards.Providers;
 
 /// <summary>
 /// Shared plumbing for fuel card providers that authenticate with a long-lived bearer API key.
-/// Subclasses supply the base URL, a credential-probe URL, and the transaction fetch/mapping —
+/// Subclasses supply the base URL, a credential-probe URL, and the transaction fetch/mapping -
 /// the parts that genuinely differ between providers.
 /// </summary>
 /// <typeparam name="TProbeResponse">

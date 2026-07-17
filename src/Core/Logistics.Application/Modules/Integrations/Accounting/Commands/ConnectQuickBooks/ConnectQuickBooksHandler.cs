@@ -58,7 +58,7 @@ internal sealed class ConnectQuickBooksHandler(
     /// <summary>
     ///     Pick sensible default QBO accounts (a bank/asset account for payments and an expense
     ///     account for expense lines) from the company's Chart of Accounts, so expense pushes
-    ///     have the required AccountRefs. Best-effort — leaves them null if none can be resolved.
+    ///     have the required AccountRefs. Best-effort - leaves them null if none can be resolved.
     /// </summary>
     private async Task ResolveDefaultAccountsAsync(
         IAccountingProviderService provider, AccountingProviderConfiguration config, CancellationToken ct)

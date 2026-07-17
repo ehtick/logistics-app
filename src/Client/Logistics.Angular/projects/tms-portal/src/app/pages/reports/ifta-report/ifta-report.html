@@ -35,7 +35,7 @@
 } @else if (report(); as r) {
   @if (r.isClosed) {
     <ui-alert intent="info" class="mb-4 block" title="Closed quarter">
-      This quarter was closed on {{ r.closedAt | slice: 0 : 10 }} — figures are frozen for filing
+      This quarter was closed on {{ r.closedAt | slice: 0 : 10 }} - figures are frozen for filing
       and audit.
     </ui-alert>
   }
@@ -107,7 +107,11 @@
               }
             </td>
             <td [class.text-success]="row.taxDue < 0">
-              {{ row.taxDue !== null && row.taxDue !== undefined ? (row.taxDue | number: "1.2-2") : "—" }}
+              {{
+                row.taxDue !== null && row.taxDue !== undefined
+                  ? (row.taxDue | number: "1.2-2")
+                  : "-"
+              }}
             </td>
           </tr>
         </ng-template>

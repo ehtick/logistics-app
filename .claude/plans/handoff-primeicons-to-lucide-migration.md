@@ -4,11 +4,11 @@
 
 ## Why we're doing this
 
-PrimeIcons (`primeicons` v7) is effectively unmaintained — last meaningful release was ~2 years ago, and the ~250-icon set keeps causing coverage gaps when adding new features. Lucide ships 1500+ icons with active development and tree-shaking.
+PrimeIcons (`primeicons` v7) is effectively unmaintained - last meaningful release was ~2 years ago, and the ~250-icon set keeps causing coverage gaps when adding new features. Lucide ships 1500+ icons with active development and tree-shaking.
 
 ## Approach (validated)
 
-**Option B — Shared base + portal-specific extensions.** Each portal calls `provideLucideIcons(...BASE_LUCIDE_ICONS, ...PORTAL_LUCIDE_ICONS)` in its `app.config.ts`. `BASE_LUCIDE_ICONS` lives in `@logistics/shared` and contains foundational icons that the shared lib relies on plus icons every portal needs (chevrons, x, plus, search, arrows, log-out, trash, etc.). Portal-specific lists only contain icons unique to that portal.
+**Option B - Shared base + portal-specific extensions.** Each portal calls `provideLucideIcons(...BASE_LUCIDE_ICONS, ...PORTAL_LUCIDE_ICONS)` in its `app.config.ts`. `BASE_LUCIDE_ICONS` lives in `@logistics/shared` and contains foundational icons that the shared lib relies on plus icons every portal needs (chevrons, x, plus, search, arrows, log-out, trash, etc.). Portal-specific lists only contain icons unique to that portal.
 
 Trade-off chosen: a tiny bit of indirection in exchange for guaranteed registration of shared-lib icons across all portals (a missing registration is a silent broken-icon at runtime, which is the worst failure mode).
 
@@ -17,25 +17,25 @@ Trade-off chosen: a tiny bit of indirection in exchange for guaranteed registrat
 ### Foundation (committed in spike)
 
 - **`@lucide/angular@1.14.0`** added to root `package.json` / `bun.lock`
-- **`projects/shared/src/lib/icons/lucide-icons.ts`** — `BASE_LUCIDE_ICONS` array (16 icons): arrow-left, chevron-{up,down,left,right}, circle-plus, ellipsis-vertical, external-link, file-text, log-out, plus, refresh-cw, search, trash-2, triangle-alert, x
-- **`projects/shared/src/public-api.ts`** — exports `BASE_LUCIDE_ICONS`
+- **`projects/shared/src/lib/icons/lucide-icons.ts`** - `BASE_LUCIDE_ICONS` array (16 icons): arrow-left, chevron-{up,down,left,right}, circle-plus, ellipsis-vertical, external-link, file-text, log-out, plus, refresh-cw, search, trash-2, triangle-alert, x
+- **`projects/shared/src/public-api.ts`** - exports `BASE_LUCIDE_ICONS`
 
 ### TMS portal (sidebar only)
 
-- **`projects/tms-portal/src/app/shared/icons/lucide-icons.ts`** — `TMS_LUCIDE_ICONS` (18 icons unique to TMS)
-- **`app.config.ts`** — wired up
+- **`projects/tms-portal/src/app/shared/icons/lucide-icons.ts`** - `TMS_LUCIDE_ICONS` (18 icons unique to TMS)
+- **`app.config.ts`** - wired up
 - **Sidebar migrated**: `sidebar-items.ts`, `nav-menu/nav-menu.{html,ts,css}`, `sidebar/favorites-bar/favorites-bar.{html,ts}`
 
 ### Admin portal (sidebar only)
 
-- **`projects/admin-portal/src/app/shared/icons/lucide-icons.ts`** — `ADMIN_LUCIDE_ICONS` (10 icons)
-- **`app.config.ts`** — wired up
+- **`projects/admin-portal/src/app/shared/icons/lucide-icons.ts`** - `ADMIN_LUCIDE_ICONS` (10 icons)
+- **`app.config.ts`** - wired up
 - **Sidebar migrated**: `sidebar-items.ts`, `sidebar/sidebar.{html,ts}` (including a `<p-button icon=>` → `pTemplate="icon"` conversion)
 
 ### Build status (last verified)
 
-- `bun run build:tms` — clean (8.6s)
-- `bun run build:admin` — clean (6.6s)
+- `bun run build:tms` - clean (8.6s)
+- `bun run build:admin` - clean (6.6s)
 
 ## What's left
 
@@ -64,7 +64,7 @@ Roughly **600 occurrences across ~250 files**. By portal:
 <i class="pi pi-trash mb-4 text-6xl text-red-500"></i>
 → <svg lucideIcon="trash-2" class="mb-4 size-12 text-red-500"></svg>
 
-<!-- 4. PrimeNG component icon input — STRUCTURAL change -->
+<!-- 4. PrimeNG component icon input - STRUCTURAL change -->
 <p-button label="Save" icon="pi pi-save" (onClick)="save()" />
 →
 <p-button label="Save" (onClick)="save()">
@@ -102,7 +102,7 @@ When `nav-icon` / similar CSS classes use `font-size` to size, swap them to `wid
 
 ## Icon name mapping (canonical, hand-curated)
 
-Use this as the source of truth. **Don't auto-generate** — Lucide names don't 1:1 map from kebab-case PrimeIcon names (e.g. `pi-cog` ≠ `cog`, it's `settings`).
+Use this as the source of truth. **Don't auto-generate** - Lucide names don't 1:1 map from kebab-case PrimeIcon names (e.g. `pi-cog` ≠ `cog`, it's `settings`).
 
 ```json
 {
@@ -243,40 +243,40 @@ Then `pi pi-spin pi-spinner` → `<svg lucideIcon="loader-circle" class="icon-sp
 
 ## Suggested execution plan
 
-### Stage 1 — Codemod script (~half a day)
+### Stage 1 - Codemod script (~half a day)
 
 Build `scripts/migrate-icons/migrate.ts` (Node + `ts-morph` for TS AST work):
 
 1. Load `icon-map.json` (the table above). Fail loudly if any used `pi-X` is missing.
-2. Walk `projects/{tms-portal,admin-portal,customer-portal,website,shared}/src/**/*.{html,ts}` — skip `lucide-icons.ts` and the already-migrated sidebar files.
+2. Walk `projects/{tms-portal,admin-portal,customer-portal,website,shared}/src/**/*.{html,ts}` - skip `lucide-icons.ts` and the already-migrated sidebar files.
 3. Apply the 4 safe transforms above.
 4. Per portal, collect every Lucide icon name that ended up in HTML/TS → emit `{portal}/shared/icons/lucide-icons.generated.ts` for human review/merge into the existing portal icon list.
-5. For each unsafe site (PrimeNG `<p-button icon=>`, `<p-inputicon class=>`, `<button class="pi pi-X">` icon-as-button, `\`pi pi-${name}\``template strings), don't touch — append to`report.md`with`file:line:col` and the matched line.
+5. For each unsafe site (PrimeNG `<p-button icon=>`, `<p-inputicon class=>`, `<button class="pi pi-X">` icon-as-button, `\`pi pi-${name}\``template strings), don't touch - append to`report.md`with`file:line:col` and the matched line.
 6. For each component whose template now uses `lucideIcon`, add `LucideDynamicIcon` to the `imports: []` array via ts-morph, plus the `import` statement.
 7. Run with `--dry-run` first; review the diff; then `--write`.
 
-### Stage 2 — Manual review pass (~half a day)
+### Stage 2 - Manual review pass (~half a day)
 
 Work through `report.md`:
 
-- **PrimeNG `<p-button icon=>`** (~50+ sites) — convert to `pTemplate="icon"` template. The pattern is in `admin-portal/.../sidebar.html` lines 41-50.
-- **`<p-inputicon class="pi pi-search">`** (~handful) — PrimeNG-specific; check PrimeNG 21 docs for the equivalent (likely `<p-inputicon><svg lucideIcon="search"></svg></p-inputicon>` or `iconClass`).
-- **`<button class="pi pi-times ...">`** (icon-as-button, a few in `favorites-bar.html` already done) — split into `<button><svg></svg></button>`.
-- **`\`pi pi-${name}\`` template strings** in `action-menu.ts`, `badge.ts`, `empty-state.ts` — these are shared primitives that accept an icon-name input. Their API needs to change from "PrimeIcons name suffix" to "Lucide name". Single-place change but it cascades to every consumer of those primitives. Check `feature-map.md` for usage.
-- **`toast.service.ts`** hardcoded `pi pi-exclamation-triangle` (line 90) — swap to `lucide:triangle-alert` or whatever convention PrimeNG's `MessageService` icon field accepts (it's a class string, so likely needs the `pTemplate` approach in the toast template, not the service).
+- **PrimeNG `<p-button icon=>`** (~50+ sites) - convert to `pTemplate="icon"` template. The pattern is in `admin-portal/.../sidebar.html` lines 41-50.
+- **`<p-inputicon class="pi pi-search">`** (~handful) - PrimeNG-specific; check PrimeNG 21 docs for the equivalent (likely `<p-inputicon><svg lucideIcon="search"></svg></p-inputicon>` or `iconClass`).
+- **`<button class="pi pi-times ...">`** (icon-as-button, a few in `favorites-bar.html` already done) - split into `<button><svg></svg></button>`.
+- **`\`pi pi-${name}\`` template strings** in `action-menu.ts`, `badge.ts`, `empty-state.ts` - these are shared primitives that accept an icon-name input. Their API needs to change from "PrimeIcons name suffix" to "Lucide name". Single-place change but it cascades to every consumer of those primitives. Check `feature-map.md` for usage.
+- **`toast.service.ts`** hardcoded `pi pi-exclamation-triangle` (line 90) - swap to `lucide:triangle-alert` or whatever convention PrimeNG's `MessageService` icon field accepts (it's a class string, so likely needs the `pTemplate` approach in the toast template, not the service).
 
-### Stage 3 — CSS sizing pass (~1-2 hours)
+### Stage 3 - CSS sizing pass (~1-2 hours)
 
 Grep for `text-Xrem` and `text-{xs,sm,base,lg,xl,...}` on icon elements and apply the conversion table above. Most cases the codemod can handle if the script is told which Tailwind text-classes commonly appear next to `pi pi-*`.
 
-### Stage 4 — Cleanup (~30 min)
+### Stage 4 - Cleanup (~30 min)
 
 - Remove `primeicons/primeicons.css` import from 4 `styles.css` files: `tms-portal`, `admin-portal`, `customer-portal`, `website`
 - Remove `"primeicons": "^7.0.0"` from `package.json`
 - `bun install` + `bun run build:all` to verify no PrimeIcons class references remain
-- Verify PrimeNG's internal icons (paginator chevrons, dropdown arrows, datepicker arrows) still work — PrimeNG 17+ uses inline SVG for these so removing PrimeIcons CSS shouldn't break them, but **smoke-test the data tables, paginator, and dropdowns** specifically.
+- Verify PrimeNG's internal icons (paginator chevrons, dropdown arrows, datepicker arrows) still work - PrimeNG 17+ uses inline SVG for these so removing PrimeIcons CSS shouldn't break them, but **smoke-test the data tables, paginator, and dropdowns** specifically.
 
-### Stage 5 — Visual QA (~1-2 hours)
+### Stage 5 - Visual QA (~1-2 hours)
 
 - TMS: loads list, load detail, sidebar, command palette, AI dispatch
 - Admin: tenants list, blog post editor, plans
@@ -287,7 +287,7 @@ Look for: blank squares (icon name missing from registration), wrong-sized icons
 
 ## Total estimated time
 
-**~1.5 days end-to-end** if done sequentially. Stage 1 is the high-value piece — it eliminates ~70% of mechanical work.
+**~1.5 days end-to-end** if done sequentially. Stage 1 is the high-value piece - it eliminates ~70% of mechanical work.
 
 ## Reference files (already migrated, study these for patterns)
 
@@ -300,10 +300,10 @@ Look for: blank squares (icon name missing from registration), wrong-sized icons
 
 1. **`LucideIcon` is a TS interface, not a directive.** The runtime directive is `LucideDynamicIcon`. Importing `LucideIcon` and putting it in `imports: []` produces the diagnostic "Value could not be determined statically." Always import `LucideDynamicIcon`.
 
-2. **`provideLucideIcons(...)` accepts varargs**, registers under the `LUCIDE_ICONS` multi-provider token. Stacked spreads (`...BASE, ...PORTAL`) merge cleanly — don't worry about double-registering.
+2. **`provideLucideIcons(...)` accepts varargs**, registers under the `LUCIDE_ICONS` multi-provider token. Stacked spreads (`...BASE, ...PORTAL`) merge cleanly - don't worry about double-registering.
 
-3. **The shared lib hasn't migrated yet.** `BASE_LUCIDE_ICONS` is forward-looking — it contains icons the shared lib _will need_ once its components migrate (toast, error-state, etc.). Today, those components still use PrimeIcons internally. Don't remove `primeicons` from `package.json` until the shared lib pass is done in Stage 2.
+3. **The shared lib hasn't migrated yet.** `BASE_LUCIDE_ICONS` is forward-looking - it contains icons the shared lib _will need_ once its components migrate (toast, error-state, etc.). Today, those components still use PrimeIcons internally. Don't remove `primeicons` from `package.json` until the shared lib pass is done in Stage 2.
 
-4. **PrimeNG's own internal chevrons/arrows** (paginator, dropdown, datepicker) are inline SVG since PrimeNG 17, NOT PrimeIcons. Removing `primeicons.css` shouldn't break them — but smoke-test in Stage 4.
+4. **PrimeNG's own internal chevrons/arrows** (paginator, dropdown, datepicker) are inline SVG since PrimeNG 17, NOT PrimeIcons. Removing `primeicons.css` shouldn't break them - but smoke-test in Stage 4.
 
-5. **Tree-shaking works.** Each portal only ships the icons in its registered list — no full icon-set import. The bundle-size check in Stage 4 should show TMS dropping a few hundred KB once `primeicons.css` (~200KB raw) is gone.
+5. **Tree-shaking works.** Each portal only ships the icons in its registered list - no full icon-set import. The bundle-size check in Stage 4 should show TMS dropping a few hundred KB once `primeicons.css` (~200KB raw) is gone.

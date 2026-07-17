@@ -9,7 +9,7 @@ namespace Logistics.Infrastructure.Integrations.Common;
 /// card, ELD). These wrap the "send + status check + JSON deserialise + log on failure" pattern
 /// so provider services stay focused on URL composition and DTO mapping.
 ///
-/// Note the contract: these never throw — a failure is logged and returns <c>default</c>. Push
+/// Note the contract: these never throw - a failure is logged and returns <c>default</c>. Push
 /// paths that must surface an error to the caller (e.g. the QuickBooks helpers in
 /// Integrations.Accounting) deliberately do NOT belong here.
 /// </summary>

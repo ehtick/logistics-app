@@ -61,8 +61,8 @@ public class RateTableTests
     }
 
     [Theory]
-    [InlineData("US")]   // not in 'other' table — handled by UsSalesTaxRates
-    [InlineData("DE")]   // EU member — handled by EuVatRates
+    [InlineData("US")]   // not in 'other' table - handled by UsSalesTaxRates
+    [InlineData("DE")]   // EU member - handled by EuVatRates
     [InlineData("XX")]
     [InlineData("")]
     [InlineData(null)]

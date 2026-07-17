@@ -9,7 +9,7 @@ namespace Logistics.API.Jobs;
 
 /// <summary>
 ///     Daily job that snapshots the previous IFTA quarter for tenants with the IFTA feature
-///     (idempotent — a quarter is snapshotted once, then served immutably) and purges GPS
+///     (idempotent - a quarter is snapshotted once, then served immutably) and purges GPS
 ///     breadcrumbs past the 4-year audit window.
 /// </summary>
 public class IftaQuarterCloseJob(

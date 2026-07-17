@@ -33,7 +33,7 @@ import { NgControl } from "@angular/forms";
 import { form, FormField, required, type FormValueControl } from "@angular/forms/signals";
 
 // ---------------------------------------------------------------------------
-// Test-double controls — pure FormValueControl implementations, nothing else.
+// Test-double controls - pure FormValueControl implementations, nothing else.
 // ---------------------------------------------------------------------------
 
 /** A string control implementing ONLY `FormValueControl<string>`. No shims of any kind. */
@@ -106,7 +106,7 @@ function configure(): void {
 // Claims
 // ---------------------------------------------------------------------------
 
-describe("FormValueControl — the contract every ui-*-field wrapper implements", () => {
+describe("FormValueControl - the contract every ui-*-field wrapper implements", () => {
   beforeEach(() => configure());
 
   it("A: a FormValueControl-only component two-way syncs with [formField]", async () => {

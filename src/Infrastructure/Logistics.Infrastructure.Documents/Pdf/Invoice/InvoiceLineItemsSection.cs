@@ -15,7 +15,7 @@ namespace Logistics.Infrastructure.Documents.Pdf.Invoice;
 internal static class InvoiceLineItemsSection
 {
     private const string ReverseChargeNotice =
-        "Reverse charge — VAT to be accounted for by the recipient " +
+        "Reverse charge - VAT to be accounted for by the recipient " +
         "(Article 196, Council Directive 2006/112/EC).";
 
     public static void Render(IContainer container, LoadInvoice invoice, string taxLabel)
@@ -112,7 +112,7 @@ internal static class InvoiceLineItemsSection
         table.Cell().Element(PdfStyles.Cell).AlignRight().Text(PdfFormatting.Money(amount, currency));
         if (showTax)
         {
-            table.Cell().Element(PdfStyles.Cell).AlignRight().Text("—");
+            table.Cell().Element(PdfStyles.Cell).AlignRight().Text("-");
             table.Cell().Element(PdfStyles.Cell).AlignRight().Text(PdfFormatting.Money(0m, currency));
             table.Cell().Element(PdfStyles.Cell).AlignRight().Text(PdfFormatting.Money(amount, currency));
         }

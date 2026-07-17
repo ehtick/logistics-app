@@ -8,7 +8,7 @@ export type UiBadgeSize = "sm" | "md" | "lg";
  * The tone table, shared with `<ui-count-badge>` (same seven colours, different shape).
  *
  * `Record<UiBadgeIntent, string>` is exhaustive on purpose: a missing cell is a compile error,
- * because the failure is otherwise silent — an unknown Tailwind token emits no CSS and no warning,
+ * because the failure is otherwise silent - an unknown Tailwind token emits no CSS and no warning,
  * so a hole would render `severity="danger"` as a transparent, unstyled chip.
  *
  * Spell every cell as a NAMED utility, never an arbitrary property (`[background-color:var(…)]`): an
@@ -26,7 +26,7 @@ export const TONE_CLASSES: Record<UiBadgeIntent, string> = {
 
   info: "bg-info text-[var(--inverse)]",
 
-  /** The tone is `warn`; the TOKEN is `--warning`. They differ — keep both. */
+  /** The tone is `warn`; the TOKEN is `--warning`. They differ - keep both. */
   warn: "bg-warning text-[var(--inverse)]",
 
   danger: "bg-danger text-[var(--inverse)]",
@@ -45,7 +45,7 @@ export const badgeVariants = cva(
         lg: "px-4 py-2 text-lg font-semibold",
       },
       /**
-       * NOT `rounded-xl` — that utility is a different size. `--ui-radius-*` are the shared chip
+       * NOT `rounded-xl` - that utility is a different size. `--ui-radius-*` are the shared chip
        * radii, also read by ui-progress and ui-skeleton.
        */
       rounded: {

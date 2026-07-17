@@ -9,22 +9,22 @@ The AI dispatch agent supports multiple LLM providers via the `ILlmProvider` ada
 
 ## Decide the path
 
-- **New OpenAI-compatible provider** (DeepSeek-style): no SDK code needed — just a new `LlmProvider` enum value and config. Skip step 3.
+- **New OpenAI-compatible provider** (DeepSeek-style): no SDK code needed - just a new `LlmProvider` enum value and config. Skip step 3.
 - **New custom-SDK provider** (e.g., Gemini, Mistral): create a new `ILlmProvider` implementation in step 3.
 - **New model from an existing provider** (e.g., new Claude version): only steps 4–6 needed.
 
 > The dispatch model is **global** (admin-selected). There is no per-tenant model selection and no
 > per-plan tier gating. The admin dropdown is populated automatically from `LlmModelCatalog`, so adding a
-> model needs **no UI change** — just the catalog + pricing.
+> model needs **no UI change** - just the catalog + pricing.
 
 ## Files that must change (full provider)
 
-1. `src/Core/Logistics.Domain.Primitives/Enums/Llm/LlmProvider.cs` — add enum value
-2. `src/Infrastructure/Logistics.Infrastructure.AI/Options/LlmOptions.cs` — provider config section
-3. `src/Infrastructure/Logistics.Infrastructure.AI/Providers/{X}LlmProvider.cs` — only for non-OpenAI-compatible
-4. `src/Infrastructure/Logistics.Infrastructure.AI/Providers/LlmProviderFactory.cs` — resolution case
-5. `src/Infrastructure/Logistics.Infrastructure.AI/Services/LlmPricing.cs` — pricing, multiplier, tier, billing units
-6. `src/Core/Logistics.Application.Abstractions/AiDispatch/LlmModelCatalog.cs` — add the model `{ Id, DisplayName, Provider }` (single source for the admin dropdown)
+1. `src/Core/Logistics.Domain.Primitives/Enums/Llm/LlmProvider.cs` - add enum value
+2. `src/Infrastructure/Logistics.Infrastructure.AI/Options/LlmOptions.cs` - provider config section
+3. `src/Infrastructure/Logistics.Infrastructure.AI/Providers/{X}LlmProvider.cs` - only for non-OpenAI-compatible
+4. `src/Infrastructure/Logistics.Infrastructure.AI/Providers/LlmProviderFactory.cs` - resolution case
+5. `src/Infrastructure/Logistics.Infrastructure.AI/Services/LlmPricing.cs` - pricing, multiplier, tier, billing units
+6. `src/Core/Logistics.Application.Abstractions/AiDispatch/LlmModelCatalog.cs` - add the model `{ Id, DisplayName, Provider }` (single source for the admin dropdown)
 
 ## Step-by-step
 
@@ -73,7 +73,7 @@ API key passed via env var: `Llm__Providers__NewProvider__ApiKey`.
 
 ### 3. (Custom SDK only) Create `ILlmProvider` implementation
 
-If the provider is OpenAI-compatible (most modern providers are), **skip this step** — `OpenAiLlmProvider` handles it via `BaseUrl`.
+If the provider is OpenAI-compatible (most modern providers are), **skip this step** - `OpenAiLlmProvider` handles it via `BaseUrl`.
 
 If it requires a custom SDK, add `Providers/NewLlmProvider.cs`:
 
@@ -83,7 +83,7 @@ internal sealed class NewLlmProvider(IOptions<LlmProviderOptions> options) : ILl
     public async Task<LlmResponse> SendMessageAsync(LlmRequest request, CancellationToken ct)
     {
         // Translate LlmRequest → provider SDK request
-        // Translate provider response → LlmResponse (LlmTypes only — no SDK types leak out)
+        // Translate provider response → LlmResponse (LlmTypes only - no SDK types leak out)
     }
 }
 ```
@@ -132,7 +132,7 @@ public static int GetOverageBillingUnits(string model) => model switch
 };
 ```
 
-Decide the cost tier (1× / 5× / 10×), then keep billing units in step (1 / 2 / 4 at $0.20/unit). The tier only affects quota cost — it does **not** gate which plans can use the model (the model is global).
+Decide the cost tier (1× / 5× / 10×), then keep billing units in step (1 / 2 / 4 at $0.20/unit). The tier only affects quota cost - it does **not** gate which plans can use the model (the model is global).
 
 ### 6. Add the model to `LlmModelCatalog`
 
@@ -147,7 +147,7 @@ public static readonly IReadOnlyList<LlmModelInfo> Models =
 ```
 
 This is the **single source** for the admin AI Settings dropdown (`GET /ai/settings`) and for validating the
-selected model in `UpdateAiSettingsCommand`. The admin UI populates automatically — no frontend change.
+selected model in `UpdateAiSettingsCommand`. The admin UI populates automatically - no frontend change.
 
 ## Verification checklist
 
@@ -164,10 +164,10 @@ selected model in `UpdateAiSettingsCommand`. The admin UI populates automaticall
 
 - **`GetMultiplier` and `GetOverageBillingUnits` out of sync**: a Premium model with multiplier=5 but billing=1 underbills overages.
 - **`LlmModelCatalog` id ≠ `LlmPricing` key**: the catalog offers a model the pricing map doesn't know, so it falls back to default pricing/multiplier.
-- **Forgetting `BaseUrl`** for OpenAI-compatible providers — `OpenAiLlmProvider` defaults to OpenAI's endpoint and 401s.
+- **Forgetting `BaseUrl`** for OpenAI-compatible providers - `OpenAiLlmProvider` defaults to OpenAI's endpoint and 401s.
 - **SDK types leaking**: importing the provider SDK in any file other than `Providers/{X}LlmProvider.cs` breaks the abstraction.
 
 ## Related
 
-- `.claude/rules/backend/ai-agent.md` — multi-provider architecture overview
-- `docs/ai-dispatch.md` — agent architecture
+- `.claude/rules/backend/ai-agent.md` - multi-provider architecture overview
+- `docs/ai-dispatch.md` - agent architecture

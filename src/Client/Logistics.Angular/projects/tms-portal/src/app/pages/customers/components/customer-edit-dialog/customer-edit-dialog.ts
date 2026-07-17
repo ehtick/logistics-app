@@ -124,7 +124,7 @@ export class CustomerEditDialog {
     },
   );
 
-  /** True when the customer's billing country is an EU member — drives the
+  /** True when the customer's billing country is an EU member - drives the
    *  Tax-ID required hint + validator. */
   protected readonly customerIsEu = computed(() => isEuCountry(this.model().address?.country));
 

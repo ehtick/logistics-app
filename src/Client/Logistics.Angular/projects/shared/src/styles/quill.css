@@ -1,5 +1,5 @@
 /*
- * Quill (snow theme) — the stylesheet for `ui-editor`: quill's structure, our colours.
+ * Quill (snow theme) - the stylesheet for `ui-editor`: quill's structure, our colours.
  *
  * AN APP THAT RENDERS <ui-editor> MUST IMPORT THIS FILE, or quill's toolbar has no styling at all and
  * its `<select>` pickers expand into raw option lists (a 5118px toolbar). `UiEditor` probes for the
@@ -9,8 +9,8 @@
  * ships an editor) and by tms's `development` config (for /ui-lab, which is dev-only).
  *
  * Quill's own CSS is a self-contained LIGHT theme (hardcoded `#ccc` / `#444` / `#fff` / `#06c`), so
- * shipped raw it stays light while the app goes dark. We keep its structure — toolbar layout, icon
- * geometry, picker positioning — and re-key only the colour surface to the theme tokens, so both
+ * shipped raw it stays light while the app goes dark. We keep its structure - toolbar layout, icon
+ * geometry, picker positioning - and re-key only the colour surface to the theme tokens, so both
  * themes fall out for free.
  */
 

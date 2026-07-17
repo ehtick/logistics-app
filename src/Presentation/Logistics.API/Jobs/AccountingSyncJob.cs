@@ -235,7 +235,7 @@ public class AccountingSyncJob(
                 TxnDate = expense.ExpenseDate,
                 Description = string.IsNullOrEmpty(expense.VendorName)
                     ? expense.Notes
-                    : $"{expense.VendorName}{(string.IsNullOrEmpty(expense.Notes) ? "" : $" — {expense.Notes}")}"
+                    : $"{expense.VendorName}{(string.IsNullOrEmpty(expense.Notes) ? "" : $" - {expense.Notes}")}"
             };
 
             var hash = Hash(expense.Number.ToString(CultureInfo.InvariantCulture),

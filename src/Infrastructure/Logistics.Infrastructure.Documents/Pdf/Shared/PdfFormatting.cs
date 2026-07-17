@@ -13,9 +13,9 @@ internal static class PdfFormatting
     public static string Money(decimal amount, string currency) =>
         $"{amount.ToString("N2", CultureInfo.InvariantCulture)} {currency}";
 
-    /// <summary>"19%", "21.5%", or "—" when the rate is zero.</summary>
+    /// <summary>"19%", "21.5%", or "-" when the rate is zero.</summary>
     public static string Rate(decimal percent) =>
-        percent <= 0m ? "—" : percent.ToString("0.##", CultureInfo.InvariantCulture) + "%";
+        percent <= 0m ? "-" : percent.ToString("0.##", CultureInfo.InvariantCulture) + "%";
 
     /// <summary>"Amsterdam, NH 1011 AB, NL" or "Amsterdam 1011 AB, NL" when state is missing.</summary>
     public static string CityLine(Address address)

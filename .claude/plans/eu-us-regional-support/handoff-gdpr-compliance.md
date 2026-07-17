@@ -1,6 +1,6 @@
-# Handoff: GDPR Compliance — Data Export, Consent, Retention
+# Handoff: GDPR Compliance - Data Export, Consent, Retention
 
-> **Status:** DONE (2026-05-09). Implemented across 14 commits ending at `a5ebed24`. See feature-map row "Privacy (GDPR)" under Compliance & safety. Tests for handlers/jobs deferred — see "Tests" section below.
+> **Status:** DONE (2026-05-09). Implemented across 14 commits ending at `a5ebed24`. See feature-map row "Privacy (GDPR)" under Compliance & safety. Tests for handlers/jobs deferred - see "Tests" section below.
 >
 > **Priority:** HIGH (legal blocker for EU customer data). **Effort:** M (3–5 days).
 >
@@ -10,22 +10,22 @@
 
 - **Position in overall order:** 3rd
 - **Depends on:** Nothing. Mostly orthogonal to the rest.
-- **Unblocks:** Legal sign-off for EU launch. The cookie banner UX leans on plan #6 ([i18n](handoff-i18n-multi-language.md)) for translation — implement banner now in English, internationalize copy when #6 lands.
+- **Unblocks:** Legal sign-off for EU launch. The cookie banner UX leans on plan #6 ([i18n](handoff-i18n-multi-language.md)) for translation - implement banner now in English, internationalize copy when #6 lands.
 - **Why third:** Can run in parallel with plans #1 / #2 (different code paths). Putting it before any user-facing EU traffic ships is non-negotiable; doing it third lets it land at the same time as billing readiness.
 
 ## Why now
 
 - GDPR Articles 15 (right of access), 17 (erasure), 20 (portability) require user-level not just tenant-level operations
 - ePrivacy Directive requires consent for non-essential cookies on the website / customer portal
-- Article 5(1)(e) requires data retention limits — tracking pings, audit logs, dispatch sessions accumulate forever today
+- Article 5(1)(e) requires data retention limits - tracking pings, audit logs, dispatch sessions accumulate forever today
 
 ## Current state
 
-- [DeleteTenantHandler.cs](../../src/Core/Logistics.Application/Commands/Tenant/DeleteTenant/DeleteTenantHandler.cs) — drops DB + Stripe customer (good for tenant deletion)
+- [DeleteTenantHandler.cs](../../src/Core/Logistics.Application/Commands/Tenant/DeleteTenant/DeleteTenantHandler.cs) - drops DB + Stripe customer (good for tenant deletion)
 - No `User.DeletionRequestedAt` / soft-delete flow
-- [website](../../src/Client/Logistics.Angular/projects/website/) — no consent banner, presumably uses analytics/tracking pixels
-- [Logistics.Domain/Entities/](../../src/Core/Logistics.Domain/Entities/) — many entities have `CreatedAt` but no `RetainUntil`
-- ImpersonationAuditLog and audit trails — verify retention
+- [website](../../src/Client/Logistics.Angular/projects/website/) - no consent banner, presumably uses analytics/tracking pixels
+- [Logistics.Domain/Entities/](../../src/Core/Logistics.Domain/Entities/) - many entities have `CreatedAt` but no `RetainUntil`
+- ImpersonationAuditLog and audit trails - verify retention
 
 ## Backend
 
@@ -45,9 +45,9 @@
 - New service contract `IDataExportService.GenerateExportAsync(Guid userId, CancellationToken)` → produces a ZIP with per-category JSON files + uploaded documents
 - New `Commands/Privacy/RequestDataExport`, `Commands/Privacy/RequestDataDeletion`, `Commands/Privacy/CancelDataDeletion`, `Commands/Privacy/RecordConsent`
 - New `Queries/Privacy/GetDataExportRequestQuery`, `GetConsentHistoryQuery`
-- Background job `Jobs/DataExportJob` (Hangfire) — picks up Pending exports, generates ZIP, stores in blob, emails user a signed link
-- Background job `Jobs/DataDeletionJob` — runs daily, processes deletion requests past their grace period, anonymizes (don't hard-delete operational records — replace name/email/phone with `[deleted]`, keep referential integrity for invoices/loads)
-- Background job `Jobs/DataRetentionJob` — daily, purges:
+- Background job `Jobs/DataExportJob` (Hangfire) - picks up Pending exports, generates ZIP, stores in blob, emails user a signed link
+- Background job `Jobs/DataDeletionJob` - runs daily, processes deletion requests past their grace period, anonymizes (don't hard-delete operational records - replace name/email/phone with `[deleted]`, keep referential integrity for invoices/loads)
+- Background job `Jobs/DataRetentionJob` - daily, purges:
   - Tracking pings older than 90 days
   - Notifications older than 1 year (already-read)
   - Dispatch session transcripts older than 2 years
@@ -61,23 +61,23 @@
   - Uses `IBlobStorageService` to upload the ZIP under `data-exports/{userId}/{requestId}.zip`
   - Generates signed URL with 7-day expiry
 - Email template (Fluid) `data-export-ready.liquid`
-- `IDataAnonymizer` — replaces PII while keeping FK integrity; tested per entity
+- `IDataAnonymizer` - replaces PII while keeping FK integrity; tested per entity
 
 ### Persistence / migration
 
 - Tenant DB migration: new tables `DataExportRequests`, `DataDeletionRequests`, `ConsentRecords`; add columns to `User`
 - Add `RetainUntil` (nullable DateTime) to: `Notification`, `TripTracking` (or whatever tracking entity exists), `AiDispatchSession`
-- Add `TenantSettings.RetentionDays` complex sub-record (TrackingDays, NotificationDays, etc.) — default values
+- Add `TenantSettings.RetentionDays` complex sub-record (TrackingDays, NotificationDays, etc.) - default values
 
 ## API
 
 - New `PrivacyController`:
   - `POST /api/privacy/export` (auth: any user, rate-limited 1/day)
-  - `GET /api/privacy/export/{id}` — status + signed download link
-  - `POST /api/privacy/delete` — schedules deletion
-  - `DELETE /api/privacy/delete/{id}` — cancel within grace period
-  - `POST /api/privacy/consent` — anonymous endpoint for cookie banner (no auth, validates IP rate limit)
-  - `GET /api/privacy/consent/history` — auth required
+  - `GET /api/privacy/export/{id}` - status + signed download link
+  - `POST /api/privacy/delete` - schedules deletion
+  - `DELETE /api/privacy/delete/{id}` - cancel within grace period
+  - `POST /api/privacy/consent` - anonymous endpoint for cookie banner (no auth, validates IP rate limit)
+  - `GET /api/privacy/consent/history` - auth required
 - Run `bun run gen:api`
 
 ## Frontend (Angular)
@@ -88,12 +88,12 @@
   - Categories: Strictly necessary (always on), Functional, Analytics, Marketing
   - Stores accepted state in localStorage AND sends to `/api/privacy/consent`
   - Reads `Do-Not-Track` header and pre-disables analytics
-- `services/consent.service.ts` — exposes `hasConsent(category)`; analytics service must check before initializing
+- `services/consent.service.ts` - exposes `hasConsent(category)`; analytics service must check before initializing
 - New `<ui-privacy-settings>` component used by all portals' user-settings pages
 
 ### Website + Customer portal
 
-- Add `<ui-cookie-banner>` to root layout — fires on first visit, persists choice
+- Add `<ui-cookie-banner>` to root layout - fires on first visit, persists choice
 - Add `/privacy-policy` and `/cookies` pages (content as placeholder; legal copy provided by lawyers)
 - Wrap analytics initialization (Mapbox events, any GA-equivalent) in consent check
 
@@ -106,18 +106,18 @@
 
 ### Admin portal
 
-- New page `pages/data-requests/` — superadmin view of all pending exports/deletions with manual override
-- `pages/tenants/[id]/` — show retention policy config
+- New page `pages/data-requests/` - superadmin view of all pending exports/deletions with manual override
+- `pages/tenants/[id]/` - show retention policy config
 
 ## Mobile (driver app)
 
-- New screen `screens/PrivacyScreen.kt` — same export/delete buttons as web
+- New screen `screens/PrivacyScreen.kt` - same export/delete buttons as web
 - Cookie banner not applicable (native app), but record consent for analytics on first launch
 
 ## Tests
 
 - Application tests: each privacy command + retention job
-- Anonymizer tests per entity — PII gone, FKs intact, invoice totals unchanged
+- Anonymizer tests per entity - PII gone, FKs intact, invoice totals unchanged
 - E2E: cookie banner workflow (accept analytics → cookie set → reject → cookie cleared)
 
 ## Acceptance criteria

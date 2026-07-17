@@ -1,12 +1,12 @@
 # Handoff: Multi-Language i18n (Angular + Mobile)
 
-> **Priority:** MEDIUM (do BEFORE adding more pages — touches every component). **Effort:** L (~1 week scaffold + ongoing translation work).
+> **Priority:** MEDIUM (do BEFORE adding more pages - touches every component). **Effort:** L (~1 week scaffold + ongoing translation work).
 >
 > All Angular labels are hardcoded English. The mobile driver app already declares a `Language` enum (`en`/`ru`/`uz`) in [Settings.kt](../../src/Client/Logistics.DriverApp/composeApp/src/commonMain/kotlin/com/logisticsx/driver/model/Settings.kt) but only one `strings.xml` exists. We need a real i18n pipeline before the codebase grows further.
 
 ## Status
 
-**Foundation landed 2026-05-09** — the plumbing below is in place so any new component can reach for `{{ 'key' | translate }}` without further setup. **No existing English strings have been replaced**; that work proceeds gradually.
+**Foundation landed 2026-05-09** - the plumbing below is in place so any new component can reach for `{{ 'key' | translate }}` without further setup. **No existing English strings have been replaced**; that work proceeds gradually.
 
 What landed:
 
@@ -18,7 +18,7 @@ What landed:
 
 What is **deferred** to the gradual phase:
 
-- Replacing English literals in templates with `| translate` — every existing component still ships in English.
+- Replacing English literals in templates with `| translate` - every existing component still ships in English.
 - Email templates (Liquid) and the `InvoicePdfService` `IStringLocalizer` extraction.
 - A `PUT /api/users/me/preferred-language` endpoint plus client persistence in `I18nService.setLanguage`.
 - Admin portal and website portal wiring (only TMS + Customer are wired today).
@@ -32,39 +32,39 @@ Treat the rest of this plan as the gradual-phase backlog.
 
 - **Position in overall order:** 4th
 - **Depends on:** Nothing technical. Best done after plans #1–#3 to avoid translating strings that are about to be rewritten.
-- **Unblocks:** Plan #4 ([tachograph HOS](handoff-eu-tachograph-hos.md)) — HOS labels need translation. Plan #7 ([driver licensing](handoff-driver-licensing-and-adr.md)) — license-class labels are region-specific and benefit from localization. Plan #10 ([address forms](handoff-region-aware-address-and-tenant-fields.md)) — country / state labels.
+- **Unblocks:** Plan #4 ([tachograph HOS](handoff-eu-tachograph-hos.md)) - HOS labels need translation. Plan #7 ([driver licensing](handoff-driver-licensing-and-adr.md)) - license-class labels are region-specific and benefit from localization. Plan #10 ([address forms](handoff-region-aware-address-and-tenant-fields.md)) - country / state labels.
 - **Why fourth:** Every plan after this one adds new UI strings. Doing i18n first means new code is born translated; doing it later means a second pass through every changed component.
 
 ## Why now
 
 - Frontend has ~250 Angular component files; the longer we wait the more strings need extracting
 - Mobile already promised `ru` and `uz` to users via the enum but doesn't deliver translations
-- Date/number formatting is partially solved by [LocalizationService](../../src/Client/Logistics.Angular/projects/shared/src/lib/services/localization.service.ts) — translations are the missing piece
+- Date/number formatting is partially solved by [LocalizationService](../../src/Client/Logistics.Angular/projects/shared/src/lib/services/localization.service.ts) - translations are the missing piece
 
 ## Decision: which i18n library
 
-- **Angular**: Use **`@ngx-translate/core`** (runtime translation, JSON files, supports lazy-loading per portal). Avoid Angular's built-in `@angular/localize` — requires a separate build per locale, hostile to multi-tenant runtime switching by `TenantSettings.Language`
+- **Angular**: Use **`@ngx-translate/core`** (runtime translation, JSON files, supports lazy-loading per portal). Avoid Angular's built-in `@angular/localize` - requires a separate build per locale, hostile to multi-tenant runtime switching by `TenantSettings.Language`
 - **Mobile (KMP)**: Use Compose Multiplatform's `stringResource` + `composeResources/values-{lang}/strings.xml` (Android-style resource folders work in CMP)
 
 ## Current state
 
-- Angular `LocalizationService` already provides currency / unit / date format mapping — extend it, don't replace
-- No `TenantSettings.Language` field yet — must add (or reuse `Region` for now and refine later)
-- Mobile `Language` enum: `ENGLISH`, `RUSSIAN`, `UZBEK` — Russian and Uzbek implies the user already serves CIS markets; English is the only one with strings today
-- A few hardcoded strings already use `i18n` attribute (look for `i18n="..."` in templates) — those are stale and need removal
+- Angular `LocalizationService` already provides currency / unit / date format mapping - extend it, don't replace
+- No `TenantSettings.Language` field yet - must add (or reuse `Region` for now and refine later)
+- Mobile `Language` enum: `ENGLISH`, `RUSSIAN`, `UZBEK` - Russian and Uzbek implies the user already serves CIS markets; English is the only one with strings today
+- A few hardcoded strings already use `i18n` attribute (look for `i18n="..."` in templates) - those are stale and need removal
 
 ## Backend
 
 ### Domain
 
-- Add `TenantSettings.Language` (string ISO 639-1 code, default `"en"`) — ([TenantSettings.cs](../../src/Core/Logistics.Domain.Primitives/ValueObjects/TenantSettings.cs))
-- Add `User.PreferredLanguage` (string?, nullable — falls back to tenant default if null)
+- Add `TenantSettings.Language` (string ISO 639-1 code, default `"en"`) - ([TenantSettings.cs](../../src/Core/Logistics.Domain.Primitives/ValueObjects/TenantSettings.cs))
+- Add `User.PreferredLanguage` (string?, nullable - falls back to tenant default if null)
 
 ### Application / Infrastructure
 
-- No change to handlers — language is a presentation concern; only emails/PDFs need it server-side
-- [Email templates (Fluid)](../../src/Infrastructure/Logistics.Infrastructure.Communications/Email/) — duplicate templates per language: `welcome.en.liquid`, `welcome.de.liquid`, etc. Email service picks template by user's language
-- [InvoicePdfService](../../src/Infrastructure/Logistics.Infrastructure.Documents/Pdf/InvoicePdfService.cs) — extract its hardcoded English strings into a `Resources.{lang}.resx` and use `IStringLocalizer<InvoicePdfService>`
+- No change to handlers - language is a presentation concern; only emails/PDFs need it server-side
+- [Email templates (Fluid)](../../src/Infrastructure/Logistics.Infrastructure.Communications/Email/) - duplicate templates per language: `welcome.en.liquid`, `welcome.de.liquid`, etc. Email service picks template by user's language
+- [InvoicePdfService](../../src/Infrastructure/Logistics.Infrastructure.Documents/Pdf/InvoicePdfService.cs) - extract its hardcoded English strings into a `Resources.{lang}.resx` and use `IStringLocalizer<InvoicePdfService>`
 
 ### Persistence / migration
 
@@ -74,7 +74,7 @@ Treat the rest of this plan as the gradual-phase backlog.
 ## API
 
 - `TenantSettingsDto` add `Language`; `UserDto` add `PreferredLanguage`
-- New `GET /api/i18n/translations/{lang}` — returns merged JSON of all keys for that language. The frontend caches this and rehydrates on language change. (Backend reads from a static folder, not the DB — translations are part of the build artifact.)
+- New `GET /api/i18n/translations/{lang}` - returns merged JSON of all keys for that language. The frontend caches this and rehydrates on language change. (Backend reads from a static folder, not the DB - translations are part of the build artifact.)
 - Run `bun run gen:api`
 
 ## Frontend (Angular)
@@ -87,7 +87,7 @@ Treat the rest of this plan as the gradual-phase backlog.
   - On app start: reads `TenantSettings.Language` from auth payload, sets active language
   - Exposes `setLanguage(code)` that persists to `User.PreferredLanguage` via API
 - Update `LocalizationService`:
-  - Add `getLocale()` returning BCP47 code (e.g., `de-DE`) — combine `Language` + `Country`
+  - Add `getLocale()` returning BCP47 code (e.g., `de-DE`) - combine `Language` + `Country`
   - Use that locale in `Intl.NumberFormat` / `Intl.DateTimeFormat` calls
 - New `<ui-language-picker>` component
 - Translation file structure:
@@ -109,7 +109,7 @@ Treat the rest of this plan as the gradual-phase backlog.
     en.json
   ```
 
-- Build script `bun run i18n:extract` — uses `ngx-translate-extract` to scan templates and merge new keys into JSON files
+- Build script `bun run i18n:extract` - uses `ngx-translate-extract` to scan templates and merge new keys into JSON files
 
 ### Per portal
 
@@ -119,16 +119,16 @@ Treat the rest of this plan as the gradual-phase backlog.
 
 ### Migration approach (avoid big bang)
 
-1. ~~Set up infrastructure + scaffolding (1–2 days)~~ — done 2026-05-09
-2. Migrate **shared lib** first — every portal benefits immediately
-3. Migrate TMS portal pages incrementally — newest pages first
+1. ~~Set up infrastructure + scaffolding (1–2 days)~~ - done 2026-05-09
+2. Migrate **shared lib** first - every portal benefits immediately
+3. Migrate TMS portal pages incrementally - newest pages first
 4. Migrate customer portal + admin portal + website (admin and website still need `provideTranslateService` wiring before string extraction)
 5. Remove all hardcoded strings; CI step fails if a template contains a literal `>Some Text<` outside specific allowlist
 
 ### Translation memory
 
 - Set up `bun run i18n:extract` to populate keys
-- Use a translation service (Crowdin / Lokalise) — both have GitHub integration that opens PRs with translations; cheap for an MVP
+- Use a translation service (Crowdin / Lokalise) - both have GitHub integration that opens PRs with translations; cheap for an MVP
 - Keep en.json as source of truth in repo
 
 ## Mobile (driver app)
@@ -136,7 +136,7 @@ Treat the rest of this plan as the gradual-phase backlog.
 - Move all strings from inline composables into `composeResources/values/strings.xml`
 - Add `composeResources/values-ru/strings.xml`, `values-uz/strings.xml`, and EU languages we need (`values-de`, `values-fr`, `values-pl`)
 - Use `stringResource(Res.string.key)` everywhere
-- `viewmodel/SettingsViewModel.kt` — change language → recompose with new locale (`Locale.setDefault` on Android side via `actual`)
+- `viewmodel/SettingsViewModel.kt` - change language → recompose with new locale (`Locale.setDefault` on Android side via `actual`)
 - For date/number/currency formatting: extend the existing `expect/actual` `formatCurrency`/`formatDistance` helpers to be locale-aware
 - HOS / load detail screens are highest priority (drivers see them constantly)
 

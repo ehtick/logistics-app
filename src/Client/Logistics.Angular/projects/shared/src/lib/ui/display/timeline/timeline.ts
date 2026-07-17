@@ -8,7 +8,7 @@ export class UiTimelineContent {
 }
 
 /**
- * The dot for one event: `<ng-template uiTimelineMarker let-event>…</ng-template>`. Optional — a
+ * The dot for one event: `<ng-template uiTimelineMarker let-event>…</ng-template>`. Optional - a
  * themed default dot is drawn when it is absent.
  */
 @Directive({ selector: "[uiTimelineMarker]" })
@@ -24,7 +24,7 @@ export class UiTimelineMarker {
  * coloured, per-event-type icons, and dropping it would silently replace them with a plain dot.
  *
  * This markup renders no spacer on the empty side (so nothing needs hiding at the call site) and the
- * content column carries `flex-1` itself — the call sites need no timeline CSS of their own.
+ * content column carries `flex-1` itself - the call sites need no timeline CSS of their own.
  */
 @Component({
   selector: "ui-timeline",

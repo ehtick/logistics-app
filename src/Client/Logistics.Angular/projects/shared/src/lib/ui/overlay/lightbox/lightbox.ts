@@ -12,17 +12,17 @@ export interface UiLightboxImage {
 }
 
 /**
- * Fullscreen photo viewer. Replaces `<p-galleria>` — one call site, the condition-report photo strip.
+ * Fullscreen photo viewer. Replaces `<p-galleria>` - one call site, the condition-report photo strip.
  *
  * Built on `ui-dialog` rather than hand-rolled, so it inherits the overlay, the backdrop, the focus
- * trap, and — the part that matters — the Escape arbitration in `internal/overlay-stack.ts`. A
+ * trap, and - the part that matters - the Escape arbitration in `internal/overlay-stack.ts`. A
  * lightbox that swallowed Escape from a dropdown stacked above it would be the same bug that guard
  * exists to prevent.
  *
  * Keyboard: Left/Right (and Home/End) move between photos; Escape closes, via `ui-dialog`.
  *
  * `circular` wraps past the ends, matching the `[circular]="true"` the call site passed. With one
- * photo the navigators hide themselves — there is nowhere to go.
+ * photo the navigators hide themselves - there is nowhere to go.
  */
 @Component({
   selector: "ui-lightbox",
@@ -30,7 +30,7 @@ export interface UiLightboxImage {
   imports: [UiDialog, UiButton, Icon],
   host: {
     // Arrow keys are read from the document because the dialog's panel is portalled into the CDK
-    // overlay container — a host-scoped listener would never see the key. Guarded on `open()` so a
+    // overlay container - a host-scoped listener would never see the key. Guarded on `open()` so a
     // closed lightbox does not eat arrow keys from the page behind it.
     "(document:keydown)": "onKeydown($event)",
   },

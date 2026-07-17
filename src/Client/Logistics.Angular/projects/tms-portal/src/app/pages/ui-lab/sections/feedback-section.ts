@@ -52,7 +52,7 @@ export class UiLabFeedbackSection {
 
   /**
    * The second axis is `rounded`, not the old `variant`. `variant="outlined"` never rendered an
-   * outline — the old template mapped it straight onto p-tag's `[rounded]`, so it drew a rounded
+   * outline - the old template mapped it straight onto p-tag's `[rounded]`, so it drew a rounded
    * SOLID tag. The lab was faithfully displaying a lie. This axis is the thing that was actually
    * happening, under its real name.
    */
@@ -85,5 +85,5 @@ export class UiLabFeedbackSection {
   /** Flipped by the dismiss button so the dismissible alert's output is actually driveable. */
   protected readonly alertDismissed = signal(false);
 
-  protected readonly lastAction = signal("—");
+  protected readonly lastAction = signal("-");
 }

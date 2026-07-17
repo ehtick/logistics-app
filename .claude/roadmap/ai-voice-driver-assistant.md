@@ -1,7 +1,7 @@
 # Voice Driver Assistant (mobile)
 
 - **Status**: Planned
-- **Priority**: P2 — long bet; every competitor's driver app is forms, drivers hate typing. Voice DVIR alone demos unbelievably well
+- **Priority**: P2 - long bet; every competitor's driver app is forms, drivers hate typing. Voice DVIR alone demos unbelievably well
 - **Effort**: XL
 - **Category**: AI differentiation / mobile
 
@@ -13,8 +13,8 @@ drivers already hold.
 
 ## What to build
 
-- Driver-scoped agent: same loop, restricted tool set (my HOS via `GetDriverHosTool` pattern, my current/next assignment, submit DVIR, send message to dispatch). Tools must enforce driver identity — never tenant-wide reads.
-- Speech: on-device STT/TTS in the KMP app (`src/Client/Logistics.DriverApp/`) — platform APIs first (Android SpeechRecognizer / iOS Speech), streaming ASR later.
+- Driver-scoped agent: same loop, restricted tool set (my HOS via `GetDriverHosTool` pattern, my current/next assignment, submit DVIR, send message to dispatch). Tools must enforce driver identity - never tenant-wide reads.
+- Speech: on-device STT/TTS in the KMP app (`src/Client/Logistics.DriverApp/`) - platform APIs first (Android SpeechRecognizer / iOS Speech), streaming ASR later.
 - Voice DVIR: conversational walk-through mapping speech to `DvirReport`/`DvirDefect` fields; confirm summary before submit.
 - Hands-free/CDL compliance: audio-first UX, large single-tap trigger, never require reading while driving.
 - Quota: driver sessions metered like dispatch sessions (`AiQuotaService`).

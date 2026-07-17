@@ -27,7 +27,7 @@ const formatOne = (date: Date | null): string =>
  * Date range picker with preset buttons in the calendar footer. The app's only range-capable date
  * control; `ui-date-field` is deliberately single-date.
  *
- * `datesChange` only fires once both ends are picked — call sites push it straight into a filter and
+ * `datesChange` only fires once both ends are picked - call sites push it straight into a filter and
  * refetch, so a half-picked range must stay silent.
  *
  * @example

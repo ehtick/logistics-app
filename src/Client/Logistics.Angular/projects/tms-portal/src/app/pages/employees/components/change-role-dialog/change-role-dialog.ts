@@ -34,7 +34,7 @@ export class ChangeRoleDialog {
   protected readonly model = signal({ ...EMPTY });
 
   /**
-   * An empty `role` on submit runs `onInvalid`, which shows the "select a role" toast — this dialog
+   * An empty `role` on submit runs `onInvalid`, which shows the "select a role" toast - this dialog
    * has no inline `ui-form-field` error slot to surface the error otherwise.
    */
   protected readonly form = form(

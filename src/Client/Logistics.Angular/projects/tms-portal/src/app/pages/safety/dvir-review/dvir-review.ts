@@ -59,7 +59,7 @@ export class DvirReviewPage implements OnInit {
   protected readonly form = form(
     this.model,
     () => {
-      // No validation rules — DVIR review fields are all optional.
+      // No validation rules - DVIR review fields are all optional.
     },
     {
       submission: {

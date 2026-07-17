@@ -32,7 +32,7 @@ export class MapContainer {
   /** Message for empty state */
   public readonly emptyMessage = input("Location data is not available.");
 
-  /** Icon for the empty state. A typed lucide `IconName` — an unregistered name renders blank. */
+  /** Icon for the empty state. A typed lucide `IconName` - an unregistered name renders blank. */
   public readonly emptyIcon = input<IconName>("map");
 
   /** Action button label for empty state */

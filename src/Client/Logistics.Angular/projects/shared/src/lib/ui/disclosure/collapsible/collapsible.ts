@@ -11,11 +11,11 @@ import {
  * truck-hazmat-section ×1). Every one of them is `legend` + `[toggleable]` + `[collapsed]`, so this is
  * BEHAVIOURAL, not cosmetic.
  *
- * THE CONTENT IS HIDDEN, NEVER DESTROYED — and that is the whole ballgame.
+ * THE CONTENT IS HIDDEN, NEVER DESTROYED - and that is the whole ballgame.
  * All four load-form sections and the hazmat section wrap SIGNAL-FORMS FIELDS. p-fieldset keeps its
  * content container in the DOM when collapsed (it animates height; there is no `*ngIf` on it), so
  * those fields stay registered with the form and keep contributing their validity. Swap in an `@if`
- * and a collapsed "Schedule" section silently drops `requestedPickupDate` out of the form — the load
+ * and a collapsed "Schedule" section silently drops `requestedPickupDate` out of the form - the load
  * saves without it, and nothing anywhere goes red.
  *
  * `HlmCollapsibleContent` behaves the same way: `data-[state=closed]:hidden` is `display: none`, and
@@ -25,7 +25,7 @@ import {
  * `[collapsed]` IS A SEED, NOT A CONTROLLED PROP. p-fieldset takes `collapsed` as a plain `@Input`
  * with a setter over private `_collapsed` state, so Angular only writes it when the bound EXPRESSION
  * changes value. A user's manual toggle therefore sticks until the expression itself changes. The four
- * one-way call sites — `[collapsed]="true"`, `[collapsed]="!model().isHazmat"` — depend on that: made
+ * one-way call sites - `[collapsed]="true"`, `[collapsed]="!model().isHazmat"` - depend on that: made
  * a controlled prop instead, the section would snap shut again on the very next change detection and
  * the user could never open it. A `model()` reproduces the p-fieldset behaviour exactly.
  */

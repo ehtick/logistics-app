@@ -9,20 +9,20 @@ Adds a new tool that the AI dispatch agent can call. Tools are auto-discovered v
 
 ## Files that must change
 
-1. **`src/Infrastructure/Logistics.Infrastructure.AI/Tools/{ToolName}Tool.cs`** — the tool implementation
-2. **`src/Infrastructure/Logistics.Infrastructure.AI/Services/AiDispatchToolRegistry.cs`** — JSON schema + description for the LLM
-3. **`src/Infrastructure/Logistics.Infrastructure.AI/Registrar.cs`** — DI registration
-4. **`src/Infrastructure/Logistics.Infrastructure.AI/Services/AiDispatchDecisionProcessor.cs`** — only if write tool, add name to `WriteTools` HashSet
-5. **`test/Logistics.Infrastructure.AI.Tests/Tools/{ToolName}ToolTests.cs`** — unit test
+1. **`src/Infrastructure/Logistics.Infrastructure.AI/Tools/{ToolName}Tool.cs`** - the tool implementation
+2. **`src/Infrastructure/Logistics.Infrastructure.AI/Services/AiDispatchToolRegistry.cs`** - JSON schema + description for the LLM
+3. **`src/Infrastructure/Logistics.Infrastructure.AI/Registrar.cs`** - DI registration
+4. **`src/Infrastructure/Logistics.Infrastructure.AI/Services/AiDispatchDecisionProcessor.cs`** - only if write tool, add name to `WriteTools` HashSet
+5. **`test/Logistics.Infrastructure.AI.Tests/Tools/{ToolName}ToolTests.cs`** - unit test
 
 ## Step-by-step
 
 ### 1. Decide read vs write
 
-- **Read tool**: pure query — runs immediately in both Autonomous and HumanInTheLoop modes. Examples: `get_unassigned_loads`, `check_hos_feasibility`.
+- **Read tool**: pure query - runs immediately in both Autonomous and HumanInTheLoop modes. Examples: `get_unassigned_loads`, `check_hos_feasibility`.
 - **Write tool**: mutates state (assigns load, dispatches trip, books from load board). In HumanInTheLoop mode it creates a `Suggested` decision; in Autonomous mode it executes immediately.
 
-If write tool, you **must** add the tool name to `WriteTools` HashSet in step 4 — missing this step breaks HumanInTheLoop approvals silently.
+If write tool, you **must** add the tool name to `WriteTools` HashSet in step 4 - missing this step breaks HumanInTheLoop approvals silently.
 
 ### 2. Create the tool class
 
@@ -48,7 +48,7 @@ internal sealed class GetSomethingTool(ITenantUnitOfWork tenantUow) : IAiDispatc
         // 2. Do the work via tenantUow / mediator / domain services
         // Inject IMediator if you need to dispatch a command/query
 
-        // 3. Return JSON string. Keep payloads compact — every byte costs LLM tokens.
+        // 3. Return JSON string. Keep payloads compact - every byte costs LLM tokens.
         return JsonSerializer.Serialize(new { /* fields */ });
     }
 }
@@ -58,13 +58,13 @@ Conventions:
 
 - `internal sealed class` with primary-constructor DI
 - Tool name in `snake_case`, matching `Name` property
-- Always return JSON string, never throw — surface errors as `{ error = "..." }`
-- Inject the smallest dependency you need (`ITenantUnitOfWork`, `IMediator`, `IGeocodingService`, etc.) — tools are `Scoped`
+- Always return JSON string, never throw - surface errors as `{ error = "..." }`
+- Inject the smallest dependency you need (`ITenantUnitOfWork`, `IMediator`, `IGeocodingService`, etc.) - tools are `Scoped`
 - For write tools that map to existing commands, dispatch via `IMediator.Send(new XCommand(...), ct)`
 
 ### 3. Add the schema definition
 
-In `AiDispatchToolRegistry.cs`, append to the `Tools` list. The JSON schema is what the LLM sees — descriptions matter:
+In `AiDispatchToolRegistry.cs`, append to the `Tools` list. The JSON schema is what the LLM sees - descriptions matter:
 
 ```csharp
 new("get_something",
@@ -148,11 +148,11 @@ Before reporting done:
 
 - **Missing `WriteTools` registration**: Tool runs in Autonomous mode but is silently auto-executed in HumanInTheLoop instead of creating a `Suggested` decision.
 - **Throwing instead of returning `{error}`**: The agent loop catches exceptions but the agent loses the context of what went wrong.
-- **Verbose tool names or descriptions**: Every tool definition is sent on every API call — keep descriptions tight.
+- **Verbose tool names or descriptions**: Every tool definition is sent on every API call - keep descriptions tight.
 - **Not registering in `Registrar.cs`**: `AiDispatchToolExecutor.toolMap` is built from DI; an unregistered tool is invisible at runtime.
 
 ## Related
 
-- `.claude/rules/backend/ai-agent.md` — overall AI agent conventions
-- `docs/ai-dispatch.md` — agent architecture
+- `.claude/rules/backend/ai-agent.md` - overall AI agent conventions
+- `docs/ai-dispatch.md` - agent architecture
 - `feature-map.md` → AI dispatch row

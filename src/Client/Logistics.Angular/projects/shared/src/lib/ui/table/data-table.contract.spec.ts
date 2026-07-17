@@ -19,7 +19,7 @@ import { UiTableRowDirectives } from "./table-row-directives";
 interface Row {
   id: number;
   name: string;
-  /** Numeric-ish strings — what a "Load #" / "Truck #" column actually holds. */
+  /** Numeric-ish strings - what a "Load #" / "Truck #" column actually holds. */
   code: string;
   customer: { name: string };
 }
@@ -74,7 +74,7 @@ class HostLazy {
 /**
  * Client-side table: no `lazy`, so the table owns sorting and slicing itself.
  *
- * `[first]` and `[totalRecords]` are bound though the table defaults both — these fixtures pin the
+ * `[first]` and `[totalRecords]` are bound though the table defaults both - these fixtures pin the
  * paging engine (slice by `first`/`rows`), so they state their inputs rather than lean on a default
  * they are not the ones testing.
  */
@@ -204,7 +204,7 @@ function rowCheckboxes(fixture: ComponentFixture<unknown>): HTMLInputElement[] {
   return Array.from(el(fixture).querySelectorAll("tbody tr input[type=checkbox]"));
 }
 
-describe("<ui-data-table> — the table engine contract", () => {
+describe("<ui-data-table> - the table engine contract", () => {
   beforeAll(() => {
     // Test-environment gap, not table behaviour: the paginator's page-size overlay reads
     // `document.defaultView.matchMedia`, which the DOM shim does not implement.
@@ -244,12 +244,12 @@ describe("<ui-data-table> — the table engine contract", () => {
       expect(event.rows).toBe(10);
     });
 
-    it("the initial lazy request carries NO sort at all — sortOrder is undefined, not 1", async () => {
+    it("the initial lazy request carries NO sort at all - sortOrder is undefined, not 1", async () => {
       // Harmless on the wire: `formatSortField()` returns "" when there is no `sortField`, so the
       // initial `OrderBy` comes entirely from each store's `defaultSortField` ("-CreatedAt" = DESC,
       // "Email" = ASC). But emitting a nominal `1` instead would change what `createListStore`
       // stores in `state.sortOrder` (its `event.sortOrder ?? -1` fallback) while leaving the request
-      // identical — a silent divergence between what the store thinks it asked for and what it did.
+      // identical - a silent divergence between what the store thinks it asked for and what it did.
       const fixture = TestBed.createComponent(HostLazy);
       await settle(fixture);
 
@@ -297,7 +297,7 @@ describe("<ui-data-table> — the table engine contract", () => {
       expect(fixture.componentInstance.events[0].sortOrder).toBe(-1);
     });
 
-    it("moving to a DIFFERENT column restarts at ascending — it does not inherit the old order", async () => {
+    it("moving to a DIFFERENT column restarts at ascending - it does not inherit the old order", async () => {
       const fixture = TestBed.createComponent(HostLazy);
       await settle(fixture);
 
@@ -307,7 +307,7 @@ describe("<ui-data-table> — the table engine contract", () => {
       await settle(fixture);
       fixture.componentInstance.events.length = 0;
 
-      sortHeader(fixture, 1).click(); // Code — a fresh column
+      sortHeader(fixture, 1).click(); // Code - a fresh column
       await settle(fixture);
 
       expect(fixture.componentInstance.events[0].sortField).toBe("Code");
@@ -382,7 +382,7 @@ describe("<ui-data-table> — the table engine contract", () => {
       // `UiDataTable` must provide `UiTableState` on its own host node: the projected `#header` /
       // `#body` templates are declared in the consumer, so the row directives inside them resolve
       // DI against the CONSUMER's injector, where the state is otherwise invisible. Without that
-      // provider they throw NG0201 at construction, which takes the whole table's render down — so
+      // provider they throw NG0201 at construction, which takes the whole table's render down - so
       // this asserts on the DOM, not the injector.
       const fixture = TestBed.createComponent(HostSelection);
       await settle(fixture); // Throws NG0201 here if either provider is missing.
@@ -438,7 +438,7 @@ describe("<ui-data-table> — the table engine contract", () => {
       expect(host.selected()).toEqual([]);
     });
 
-    it("a PARTIAL selection renders the select-all checkbox UNCHECKED — there is no tri-state", async () => {
+    it("a PARTIAL selection renders the select-all checkbox UNCHECKED - there is no tri-state", async () => {
       // Deliberate: the checkbox is plain binary, checked only when every row is selected. Adding
       // an indeterminate/mixed rendering would be a behaviour change, not a bug fix.
       const fixture = TestBed.createComponent(HostSelection);
@@ -446,7 +446,7 @@ describe("<ui-data-table> — the table engine contract", () => {
       host.selected.set([host.data()[0]]);
       await settle(fixture);
 
-      // The selection really is partial — row 0 is checked, row 1 is not…
+      // The selection really is partial - row 0 is checked, row 1 is not…
       expect(rowCheckboxes(fixture)[0].checked).toBe(true);
       expect(rowCheckboxes(fixture)[1].checked).toBe(false);
 
@@ -457,7 +457,7 @@ describe("<ui-data-table> — the table engine contract", () => {
       expect(header.getAttribute("aria-checked")).not.toBe("mixed");
     });
 
-    it("row checkboxes ADD to the selection one row at a time — they never replace it", async () => {
+    it("row checkboxes ADD to the selection one row at a time - they never replace it", async () => {
       const fixture = TestBed.createComponent(HostSelection);
       const host = fixture.componentInstance;
       await settle(fixture);
@@ -513,7 +513,7 @@ describe("<ui-data-table> — the table engine contract", () => {
 
     it("sorts numeric-ish STRINGS lexicographically, so '10' and '100' come BEFORE '9'", async () => {
       // String cells are compared with `localeCompare`, which is not numeric-aware. Making it
-      // numeric-aware would visibly change every client-sorted string column — a separate decision.
+      // numeric-aware would visibly change every client-sorted string column - a separate decision.
       const fixture = TestBed.createComponent(HostClient);
       fixture.componentInstance.data.set([
         { id: 1, name: "n", code: "9", customer: { name: "C1" } },
@@ -528,7 +528,7 @@ describe("<ui-data-table> — the table engine contract", () => {
       expect(renderedColumn(fixture)).toEqual(["10", "100", "9"]);
     });
 
-    it("sorts real NUMBERS numerically — the wart above is specific to strings", async () => {
+    it("sorts real NUMBERS numerically - the wart above is specific to strings", async () => {
       const fixture = TestBed.createComponent(HostClient);
       fixture.componentInstance.data.set([
         { id: 1, name: "n", code: 9 as unknown as string, customer: { name: "C1" } },

@@ -152,7 +152,7 @@ public class LlmPdfDataExtractorTests
 
     private static MemoryStream ImageOnlyPdf()
     {
-        // A page with no text content — PdfPig extracts nothing, forcing the vision fallback.
+        // A page with no text content - PdfPig extracts nothing, forcing the vision fallback.
         var bytes = Document.Create(c => c.Page(p =>
         {
             p.Margin(20);

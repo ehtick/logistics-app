@@ -66,7 +66,7 @@ export class UiTextField implements FormValueControl<string> {
 
   /**
    * Signal Forms drives `invalid` from form creation, so a required, untouched field would render
-   * as invalid on page load. Reveal it only once the user has interacted — the same rule
+   * as invalid on page load. Reveal it only once the user has interacted - the same rule
    * `ui-form-field` uses for its inline error message.
    */
   protected readonly showInvalid = computed(

@@ -11,7 +11,7 @@ public record QuickBooksOptions
     public string? ClientId { get; set; }
     public string? ClientSecret { get; set; }
 
-    /// <summary>"sandbox" or "production" — selects the QBO API base URLs.</summary>
+    /// <summary>"sandbox" or "production" - selects the QBO API base URLs.</summary>
     public string Environment { get; set; } = "sandbox";
 
     /// <summary>OAuth2 redirect URI registered with Intuit; must match the callback endpoint.</summary>

@@ -9,7 +9,7 @@ import { LoadStatusTag } from "../../tags/load-status-tag/load-status-tag";
  * Component for searching and selecting loads.
  * It uses an autocomplete input to provide suggestions based on user input.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  */
 @Component({
   selector: "app-search-load",
@@ -42,7 +42,7 @@ export class SearchLoad implements FormValueControl<LoadDto | null> {
   constructor() {
     // A parent form may write a bare load id (string) as the value instead of a
     // `LoadDto`. Normalise it by fetching the full load and writing it back.
-    // (Selecting a load yields an object; clearing yields null — neither is a
+    // (Selecting a load yields an object; clearing yields null - neither is a
     // string, so this only reacts to id-shaped writes and never loops.)
     effect(() => {
       const current = this.value() as LoadDto | string | null;

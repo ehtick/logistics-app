@@ -34,7 +34,7 @@ interface QuillLike {
  * Implements `FormValueControl<string>` and nothing else, never a legacy `ControlValueAccessor`:
  * `[formField]="form.content"` binds straight to `value`.
  *
- * Quill is loaded lazily (`await import("quill")`) when the component renders — it is ~43KB min+gzip
+ * Quill is loaded lazily (`await import("quill")`) when the component renders - it is ~43KB min+gzip
  * for one admin page, so a static import would land in admin's initial bundle for everyone. Two
  * consequences the code has to handle: `value` can be set before quill exists (held in a signal and
  * flushed by `syncIntoQuill` once it resolves), and the component can be destroyed mid-`import()`
@@ -64,7 +64,7 @@ export class UiEditor implements FormValueControl<string> {
   public readonly id = input<string>("");
   public readonly placeholder = input<string>("");
 
-  /** Height of the editable area only — the toolbar stacks above it and adds its own height. */
+  /** Height of the editable area only - the toolbar stacks above it and adds its own height. */
   public readonly contentHeight = input<string>("320px");
 
   protected readonly showInvalid = computed(
@@ -150,7 +150,7 @@ export class UiEditor implements FormValueControl<string> {
    * Quill's stylesheet is global (`shared/src/styles/quill.css`): at 24.6kB it blows the
    * `anyComponentStyle` budget, so it cannot travel with the component and each app must import it.
    * When an app forgets, quill's `<select>` pickers expand into raw option lists and the toolbar
-   * renders thousands of pixels tall — a symptom that does not point at a missing stylesheet.
+   * renders thousands of pixels tall - a symptom that does not point at a missing stylesheet.
    */
   private assertStylesheetLoaded(): void {
     if (!isDevMode()) {

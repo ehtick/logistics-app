@@ -1,15 +1,15 @@
 /**
- * The `/ui-lab` table fixture. Local data only — the lab never talks to the API.
+ * The `/ui-lab` table fixture. Local data only - the lab never talks to the API.
  *
  * The shape is chosen to reproduce, on screen, the table bugs that a build and a unit-test run
  * both stay green through:
  *
  * - `customer.name` is a **dotted path**, so `<th uiSortHeader="customer.name">` proves the field
  *   resolver walks nested objects (a re-implementation that does `row[field]` renders blanks).
- * - `driver` holds both `null` and `undefined`, so a sorted column has holes — a comparator that
+ * - `driver` holds both `null` and `undefined`, so a sorted column has holes - a comparator that
  *   dereferences them throws, and one that stringifies them sorts `"null"` in among the names.
  * - `code` holds numeric-looking **strings**, including "9", "10" and "100". A naive `a < b` (or
- *   `localeCompare`) comparator orders those "10", "100", "9" — which is what S11 must not do.
+ *   `localeCompare`) comparator orders those "10", "100", "9" - which is what S11 must not do.
  */
 export interface LabShipment {
   readonly id: string;
@@ -24,7 +24,7 @@ export interface LabShipment {
   readonly pickup: Date;
 }
 
-/** 1…51 — gives us the adjacent "9" / "10" pair that lexicographic sorting inverts. */
+/** 1…51 - gives us the adjacent "9" / "10" pair that lexicographic sorting inverts. */
 const SEQUENTIAL_REFS: readonly number[] = Array.from({ length: 51 }, (_, i) => i + 1);
 
 /** Wider magnitudes so "100" and "1000" also land between the single digits under a bad sort. */
@@ -86,5 +86,5 @@ export const LAB_SHIPMENTS: readonly LabShipment[] = REF_NUMBERS.map((ref, index
   pickup: new Date(Date.UTC(2026, 0, 5 + index)),
 }));
 
-/** A short slice for the selection table — small enough that "select all" is verifiable by eye. */
+/** A short slice for the selection table - small enough that "select all" is verifiable by eye. */
 export const LAB_SELECTABLE_SHIPMENTS: readonly LabShipment[] = LAB_SHIPMENTS.slice(0, 8);

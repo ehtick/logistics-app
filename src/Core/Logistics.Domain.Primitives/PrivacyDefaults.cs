@@ -13,7 +13,7 @@ public static class PrivacyDefaults
 
     /// <summary>
     /// Lifetime of an individual signed download URL. Regenerated on demand from
-    /// the portal — emails link back to the portal, never to a long-lived URL.
+    /// the portal - emails link back to the portal, never to a long-lived URL.
     /// </summary>
     public static readonly TimeSpan ExportSignedUrlLifetime = TimeSpan.FromHours(1);
 

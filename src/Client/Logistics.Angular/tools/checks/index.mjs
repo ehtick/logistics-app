@@ -3,7 +3,7 @@
  * Every gate in tools/checks/, in one process. What `bun run check` and CI call.
  *
  * DISCOVERED, not enumerated: any file here exporting `check` runs. The list used to live in three
- * places (a `check:*` script, the `check` chain, a CI step) — two lists too many, and a gate that
+ * places (a `check:*` script, the `check` chain, a CI step) - two lists too many, and a gate that
  * lands in one but not the workflow runs green on every machine except the one that matters.
  *
  * Runs all gates before exiting rather than bailing on the first red.
@@ -26,7 +26,7 @@ let ok = true;
 for (const gate of gates) {
   const { check } = await import(pathToFileURL(path.join(dir, gate)).href);
   if (!check) {
-    console.warn(`\n  SKIP — ${gate} exports no \`check\`.`);
+    console.warn(`\n  SKIP - ${gate} exports no \`check\`.`);
     continue;
   }
   const passed = selfTest ? check.selfTest() : check.run().ok;

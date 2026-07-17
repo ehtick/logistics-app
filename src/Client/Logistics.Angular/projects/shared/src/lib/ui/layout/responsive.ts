@@ -7,7 +7,7 @@
  * IMPORTANT: Tailwind v4's JIT scanner only detects class names that appear as
  * literal strings in source. When defining the per-breakpoint class tables a
  * component passes to `resolveResponsive`, every class string must be written
- * out literally (e.g. `"md:flex-row"`) — runtime concatenation will not work.
+ * out literally (e.g. `"md:flex-row"`) - runtime concatenation will not work.
  */
 
 export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";

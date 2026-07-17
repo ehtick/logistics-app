@@ -117,7 +117,7 @@ export class DriverLicenseEditDialog {
       maxLength(p.licenseNumber, 64, {
         message: "License number cannot exceed 64 characters.",
       });
-      // License number is immutable on update — disable the control declaratively.
+      // License number is immutable on update - disable the control declaratively.
       disabled(p.licenseNumber, { when: () => this.mode() === "update" });
 
       required(p.licenseClass, { message: "License class is required." });

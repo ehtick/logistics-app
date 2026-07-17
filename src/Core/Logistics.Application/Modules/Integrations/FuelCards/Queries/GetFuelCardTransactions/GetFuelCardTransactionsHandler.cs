@@ -57,7 +57,7 @@ internal sealed class GetFuelCardTransactionsHandler(ITenantUnitOfWork tenantUow
     }
 
     /// <summary>
-    /// One query for the whole page — reading Truck.Number off each row would lazy-load per row.
+    /// One query for the whole page - reading Truck.Number off each row would lazy-load per row.
     /// </summary>
     private async Task<Dictionary<Guid, string>> GetTruckNumbersAsync(
         IEnumerable<Guid?> truckIds,

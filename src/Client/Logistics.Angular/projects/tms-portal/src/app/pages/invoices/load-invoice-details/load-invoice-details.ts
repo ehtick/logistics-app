@@ -66,7 +66,7 @@ export class LoadInvoiceDetails implements OnInit {
   /** Region-aware label: "VAT" / "Sales Tax" / "Tax". */
   protected readonly taxLabel = computed(() => this.localization.getTaxLabel());
 
-  /** True when there is any tax to display — drives the Rate / Tax columns. */
+  /** True when there is any tax to display - drives the Rate / Tax columns. */
   protected readonly hasTax = computed(() => {
     const inv = this.invoice();
     if (!inv) return false;

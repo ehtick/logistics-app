@@ -169,7 +169,7 @@ export function createListStore<T, P extends ListQueryParams = ListQueryParams>(
          * Sets additional filters and reloads from page 1.
          *
          * Pass `{ reload: false }` to seed filters before the table issues its own initial
-         * lazy-load — otherwise the page fires two identical requests on mount.
+         * lazy-load - otherwise the page fires two identical requests on mount.
          */
         setFilters(filters: Record<string, unknown>, options?: { reload?: boolean }): void {
           patchState(store, { filters: { ...store.filters(), ...filters }, page: 1, first: 0 });

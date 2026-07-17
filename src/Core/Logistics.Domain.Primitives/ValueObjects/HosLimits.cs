@@ -3,7 +3,7 @@ namespace Logistics.Domain.Primitives.ValueObjects;
 /// <summary>
 /// Display-only regulatory ceilings for the active HOS rule set. Returned by
 /// <c>GET /api/eld/rules/limits</c> so the UI can render thresholds and percentages.
-/// Never used to compute or override violations — those come from the certified
+/// Never used to compute or override violations - those come from the certified
 /// ELD or tachograph device via its provider API.
 /// </summary>
 public record HosLimits(

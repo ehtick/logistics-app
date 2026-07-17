@@ -8,13 +8,13 @@ import { UiTableState } from "./table-state";
  *
  * Injects the enclosing table's {@link UiTableState}. That works from inside a CONSUMER's
  * `<ng-template #header>` because the template is declared as a child node of the
- * `<ui-data-table>` element and an embedded view's injector is parented at its DECLARATION node —
+ * `<ui-data-table>` element and an embedded view's injector is parented at its DECLARATION node -
  * so a nested table's headers resolve the nested state, not the outer one.
  *
  * The field is a static attribute (`uiSortHeader="Name"`), which is how all ~50 call sites use it:
  * sort fields are column names, not expressions.
  *
- * ⚠ **It renders its own arrow.** Nothing else supplies one — and a sort header with no arrow
+ * ⚠ **It renders its own arrow.** Nothing else supplies one - and a sort header with no arrow
  * passes every test and every code review while looking broken to every user.
  *
  * @example
@@ -53,7 +53,7 @@ export class UiSortHeader {
 
   protected readonly ascending = computed(() => this.sorted() && (this.state.sortOrder() ?? 1) > 0);
 
-  /** The unsorted `chevrons-up-down` is the DEFAULT state of every sortable header — a blank arrow here reads as broken to every user. */
+  /** The unsorted `chevrons-up-down` is the DEFAULT state of every sortable header - a blank arrow here reads as broken to every user. */
   protected readonly sortIcon = computed<IconName>(() => {
     if (!this.sorted()) {
       return "chevrons-up-down";

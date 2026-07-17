@@ -79,7 +79,7 @@ function parseAddress(value: Address | null): AddressParts {
 /**
  * Composite address editor.
  *
- * Implements `FormValueControl<Address | null>` only, never a legacy `ControlValueAccessor` — see
+ * Implements `FormValueControl<Address | null>` only, never a legacy `ControlValueAccessor` - see
  * `text-field.ts` for the bridge contract. The sub-fields are plain signals, not a nested form: each
  * edit recomposes an `Address` and pushes it through `value`, but only once every required part is
  * present, so an incomplete address is never emitted.
@@ -172,7 +172,7 @@ export class AddressForm implements FormValueControl<Address | null> {
 
   /**
    * A country change also clears the state when the input mode flips between a fixed option list and
-   * free text — a stale value is meaningless in the other mode.
+   * free text - a stale value is meaningless in the other mode.
    */
   protected onCountrySelect(newCountry: string): void {
     this.parts.update((parts) => {

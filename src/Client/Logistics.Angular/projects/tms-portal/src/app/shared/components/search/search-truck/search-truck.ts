@@ -19,7 +19,7 @@ import { UiAutocompleteField } from "@logistics/shared/ui";
  * This component uses an autocomplete input to allow users to search for trucks by name or number.
  * Its value is always a TruckDto; pass `[truckId]` to seed it from a bare ID.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  */
 @Component({
   selector: "app-search-truck",

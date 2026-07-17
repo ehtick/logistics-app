@@ -109,7 +109,7 @@ MAPBOX_TOKEN="pk.xxx"
 ### Database Migrator (run separately)
 
 These are read by `Logistics.DbMigrator`, not the API container. The migrator is not part
-of the production stack — run it manually (or via `deploy/docker-compose.dev.yml` locally)
+of the production stack - run it manually (or via `deploy/docker-compose.dev.yml` locally)
 to apply migrations and seed the super-admin account. The local dev infra lives in `deploy/docker-compose.dev.yml`.
 
 ```bash

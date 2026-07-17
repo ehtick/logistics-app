@@ -12,7 +12,7 @@ public interface IDispatchEligibilityService : IApplicationService
     /// <summary>
     /// Checks whether the supplied truck (and optionally a specific driver) is eligible to
     /// carry the given load. Returns an <see cref="EligibilityResult"/> with structured
-    /// reason codes — never throws on business-rule violations.
+    /// reason codes - never throws on business-rule violations.
     /// </summary>
     /// <param name="truckId">Truck under consideration.</param>
     /// <param name="loadId">Target load.</param>

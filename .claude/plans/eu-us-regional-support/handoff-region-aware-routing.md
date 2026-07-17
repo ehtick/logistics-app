@@ -9,7 +9,7 @@
 ## Sequencing
 
 - **Position in overall order:** 12th (last)
-- **Depends on:** Plan #10 ([region-aware addresses](handoff-region-aware-address-and-tenant-fields.md)) — `<ui-address-form>` is the natural place to wire region-biased autocomplete.
+- **Depends on:** Plan #10 ([region-aware addresses](handoff-region-aware-address-and-tenant-fields.md)) - `<ui-address-form>` is the natural place to wire region-biased autocomplete.
 - **Unblocks:** Nothing.
 - **Why last:** Pure polish. Mapbox already works globally; this is just better defaults. Land any time after #10; safe to defer indefinitely.
 
@@ -20,21 +20,21 @@
 
 ## Current state
 
-- [Routing/Geocoding/MapboxGeocodingService.cs](../../src/Infrastructure/Logistics.Infrastructure.Routing/Geocoding/MapboxGeocodingService.cs) — does not pass `country` parameter
-- Route optimization (Mapbox Matrix) — global; no change needed
+- [Routing/Geocoding/MapboxGeocodingService.cs](../../src/Infrastructure/Logistics.Infrastructure.Routing/Geocoding/MapboxGeocodingService.cs) - does not pass `country` parameter
+- Route optimization (Mapbox Matrix) - global; no change needed
 - No alternative geocoding provider configured
 
 ## Backend
 
 ### Application
 
-- `IGeocodingService.SearchAsync(query, country?, language?, CancellationToken)` — add optional country bias
+- `IGeocodingService.SearchAsync(query, country?, language?, CancellationToken)` - add optional country bias
 - Existing handlers that call geocoding should pass `tenant.Settings.Region` → list of countries (US tenant biases to US/CA/MX; EU tenant biases to EU country list)
 - Add `language` param for localized place names (English vs. German names of cities)
 
 ### Infrastructure
 
-- Mapbox forward geocoding endpoint accepts `country=DE,FR,NL,...` — wire it through
+- Mapbox forward geocoding endpoint accepts `country=DE,FR,NL,...` - wire it through
 - Optional new `GoogleGeocodingService` implementation (if a customer needs it):
   - Same `IGeocodingService` interface
   - Selected via `Geocoding:Provider = mapbox | google`
@@ -53,15 +53,15 @@
 
 ### Shared
 
-- Existing geocoding service ([projects/shared/src/lib/services/](../../src/Client/Logistics.Angular/projects/shared/src/lib/services/)) — pass tenant region/language to backend search calls
-- `<ui-address-autocomplete>` (or whatever exists) — already biases to user country; just make sure the query passes through
+- Existing geocoding service ([projects/shared/src/lib/services/](../../src/Client/Logistics.Angular/projects/shared/src/lib/services/)) - pass tenant region/language to backend search calls
+- `<ui-address-autocomplete>` (or whatever exists) - already biases to user country; just make sure the query passes through
 
 ### Maps
 
 - Mapbox map default center / zoom should follow tenant region:
   - US tenant → center on continental US (lat ~39, lng ~-98, zoom 4)
   - EU tenant → center on Central Europe (lat ~50, lng ~10, zoom 4)
-- Tracking pages, dispatch map, customer-portal map — extract default into a single config keyed off region
+- Tracking pages, dispatch map, customer-portal map - extract default into a single config keyed off region
 
 ## Mobile
 

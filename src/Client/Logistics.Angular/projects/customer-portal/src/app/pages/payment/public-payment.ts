@@ -60,10 +60,10 @@ export class PublicPayment {
   protected readonly paymentSuccess = signal(false);
   protected readonly paymentAmount = signal<number | null>(null);
 
-  /** Currency reported by the invoice — drives the currency input + formatting. */
+  /** Currency reported by the invoice - drives the currency input + formatting. */
   protected readonly currency = computed(() => this.invoice()?.total?.currency ?? "USD");
 
-  /** True when the invoice carries any tax — drives the Rate% / Tax columns + breakdown row. */
+  /** True when the invoice carries any tax - drives the Rate% / Tax columns + breakdown row. */
   protected readonly hasTax = computed(() => {
     const inv = this.invoice();
     if (!inv) return false;
@@ -94,7 +94,7 @@ export class PublicPayment {
       }
     });
 
-    // Detect Stripe Checkout return — the success URL is configured to point back here with
+    // Detect Stripe Checkout return - the success URL is configured to point back here with
     // ?paid=1, so flip into the success state without an extra round-trip to the API.
     effect(() => {
       const params = new URLSearchParams(window.location.search);

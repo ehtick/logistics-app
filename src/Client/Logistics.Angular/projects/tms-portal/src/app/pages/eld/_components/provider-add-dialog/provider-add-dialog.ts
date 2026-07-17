@@ -14,7 +14,7 @@ import {
 import { ELD_PROVIDER_OPTIONS } from "../eld.constants";
 
 // `providerType` is nullable because `ui-select-field` is a `FormValueControl<T | null>` and
-// `[formField]` value types are invariant — a non-nullable `EldProviderType` would not bind.
+// `[formField]` value types are invariant - a non-nullable `EldProviderType` would not bind.
 const EMPTY = {
   providerType: "demo" as EldProviderType | null,
   apiKey: "",

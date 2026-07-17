@@ -7,7 +7,7 @@ paths:
 
 ## Single Responsibility
 
-- Split a file when it has more than one clear responsibility — not just because it crossed a line count.
+- Split a file when it has more than one clear responsibility - not just because it crossed a line count.
 - Line counts are a smell, not a verdict. Cohesive long files are fine; tangled short ones aren't.
 
 ## Lines of Code (soft targets / refactor thresholds)
@@ -22,7 +22,7 @@ paths:
 | C# handlers / controllers / services      | 150–300 | 400+        |
 | Kotlin classes                            | 150–300 | 400+        |
 
-Generated files (`api.ts`, EF migrations, OpenAPI clients) — **ignore these rules**.
+Generated files (`api.ts`, EF migrations, OpenAPI clients) - **ignore these rules**.
 
 ## How to Split
 

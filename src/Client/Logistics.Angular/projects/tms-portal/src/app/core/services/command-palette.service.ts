@@ -7,7 +7,7 @@ export interface SearchableItem {
   id: string;
   label: string;
   section: string;
-  /** Canonical `<ui-icon name>` — the palette renders it through `<ui-icon>`, not a class string. */
+  /** Canonical `<ui-icon name>` - the palette renders it through `<ui-icon>`, not a class string. */
   icon?: IconName;
   route?: string;
   type: "page" | "action" | "recent";

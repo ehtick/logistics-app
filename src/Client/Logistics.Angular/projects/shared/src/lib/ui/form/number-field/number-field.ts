@@ -20,10 +20,10 @@ export type NumberFieldMode = "decimal" | "currency";
  * and `ui-unit-field`: set `mode="currency"` with a `currency` code for money, or a
  * `prefixLabel` / `suffixLabel` addon for unit inputs.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  *
  * Formatting is applied on blur (via `Intl.NumberFormat`) and the raw number is shown while
- * editing — a small, deliberate simplification of `p-inputnumber`'s live caret formatting.
+ * editing - a small, deliberate simplification of `p-inputnumber`'s live caret formatting.
  *
  * @example
  * <ui-form-field label="Rate" for="rate" [required]="true">

@@ -12,7 +12,7 @@ public record DataExportRequestDto
     public string? ErrorMessage { get; set; }
 
     /// <summary>
-    /// Short-lived signed URL — only set when <see cref="Status"/> is Ready and the
+    /// Short-lived signed URL - only set when <see cref="Status"/> is Ready and the
     /// caller is authorized to download. Regenerated each time the request is fetched.
     /// </summary>
     public string? DownloadUrl { get; set; }

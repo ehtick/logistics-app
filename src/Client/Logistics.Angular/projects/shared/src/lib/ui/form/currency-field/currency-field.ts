@@ -12,10 +12,10 @@ import { focusFirstControl } from "../focus-control";
 import { UiNumberField } from "../number-field/number-field";
 
 /**
- * A currency-prefixed number field — a thin `ui-number-field` configured with a currency addon
+ * A currency-prefixed number field - a thin `ui-number-field` configured with a currency addon
  * and two fraction digits.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  * `[formField]` binds this wrapper; the inner `ui-number-field` is driven by a plain two-way
  * `[(value)]`, so there is no dual-binding conflict.
  */

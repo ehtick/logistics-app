@@ -10,11 +10,11 @@ import { tabKey, type UiTabValue } from "./tab-value";
  * The five-element shape (`ui-tabs` / `ui-tab-list` / `ui-tab` / `ui-tab-panels` / `ui-tab-panel`)
  * mirrors `<p-tabs>`'s, so every call site is a tag rename with `[value]` left alone.
  *
- * THE NUMBER/STRING TRAP — why `value` is normalised rather than forwarded.
+ * THE NUMBER/STRING TRAP - why `value` is normalised rather than forwarded.
  * `BrnTabs` selects by strict identity against each trigger's key (`$activeTab() === triggerFor()`),
  * and those keys are strings. Five of the seven call sites hold `signal(0)` and bind a NUMBER. Passed
  * through raw, `0 === "0"` is false for every trigger, so no tab is selected and the panel area
- * renders blank — no error, green build. `tabKey()` normalises on the way in. (`ui-tab` and
+ * renders blank - no error, green build. `tabKey()` normalises on the way in. (`ui-tab` and
  * `ui-tab-panel` instead take their key as a plain string attribute, because a `hostDirective` input
  * cannot be transformed on its way to brain's required `string` input.)
  *
@@ -22,11 +22,11 @@ import { tabKey, type UiTabValue } from "./tab-value";
  * `if (typeof index === "number") this.activeTab.set(index)`. Emit a string there and the tab never
  * changes, again silently. So `valueChange` re-emits in the caller's own type.
  *
- * CONTROLLED **AND** UNCONTROLLED — both call-site shapes must keep working.
+ * CONTROLLED **AND** UNCONTROLLED - both call-site shapes must keep working.
  * Two call sites (`accident-detail`, `mcp-integration-guide`) pass a static `value` and bind NO
  * `(valueChange)`; their tabs must still switch on click. So `BrnTabs` owns the active tab and `value`
- * only *seeds* it: the sync effect below depends solely on `value()`, so a user click — which moves
- * `BrnTabs.activeTab` but not `value` — cannot retrigger it and snap the tab back. Reading `activeTab`
+ * only *seeds* it: the sync effect below depends solely on `value()`, so a user click - which moves
+ * `BrnTabs.activeTab` but not `value` - cannot retrigger it and snap the tab back. Reading `activeTab`
  * inside that effect would have created exactly that loop and frozen those two pages on tab one.
  *
  * `BrnTabs` is host-directived HERE, on `<ui-tabs>` itself, rather than placed on a `<div>` in the

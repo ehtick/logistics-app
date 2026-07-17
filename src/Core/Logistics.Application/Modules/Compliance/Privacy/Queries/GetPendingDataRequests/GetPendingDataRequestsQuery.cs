@@ -4,7 +4,7 @@ using Logistics.Shared.Models;
 namespace Logistics.Application.Modules.Compliance.Privacy.Queries;
 
 /// <summary>
-/// Admin-only — list pending exports and deletion requests across all tenants.
+/// Admin-only - list pending exports and deletion requests across all tenants.
 /// </summary>
 public class GetPendingDataRequestsQuery : IQuery<Result<PendingDataRequestsDto>>
 {

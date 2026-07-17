@@ -110,7 +110,7 @@ export class LocalizationService {
 
   /**
    * Gets the date-picker format string, in the syntax `ui-date-field`'s `dateFormat` input
-   * expects — which differs from the Angular date pipe (lowercase, single chars).
+   * expects - which differs from the Angular date pipe (lowercase, single chars).
    * @returns picker-compatible pattern
    */
   getPickerDateFormat(): string {
@@ -333,7 +333,7 @@ export class LocalizationService {
    */
   formatHosDuration(minutes: number | null | undefined): string {
     if (minutes == null) {
-      return "—";
+      return "-";
     }
     const total = Math.max(0, Math.trunc(minutes));
     const h = Math.trunc(total / 60);
@@ -347,7 +347,7 @@ export class LocalizationService {
    */
   formatTaxRate(percent: number | null | undefined): string {
     if (percent == null || percent <= 0) {
-      return "—";
+      return "-";
     }
     const locale = this.getLocale() ?? "en-US";
     const formatted = new Intl.NumberFormat(locale, {

@@ -1,13 +1,13 @@
 /**
- * `[uiTooltip]`'s contract. Each of these fails silently — build, lint and every other spec stay green
+ * `[uiTooltip]`'s contract. Each of these fails silently - build, lint and every other spec stay green
  * while the tooltip is broken or inaccessible:
  *
  *   1. Opens on keyboard focus through the `<ui-button>` wrapper (`focus` does not bubble, so a
  *      listener on the wrapper never fires for the inner `<button>`).
- *   2. `aria-describedby` lands on the inner `<button>` — a description on a non-focusable node is
+ *   2. `aria-describedby` lands on the inner `<button>` - a description on a non-focusable node is
  *      never read out.
  *   3. The accessible name survives; a tooltip is a description, not a name.
- *   4. It closes — on mouseleave, blur, Escape and scroll.
+ *   4. It closes - on mouseleave, blur, Escape and scroll.
  *   5. Empty / whitespace / undefined text renders nothing, not an empty box.
  *   6. The default position is `right`.
  */
@@ -43,7 +43,7 @@ describe("UiTooltip", () => {
   let host: TestHost;
 
   beforeEach(() => {
-    // Only setTimeout is faked — faking more interferes with zoneless change detection.
+    // Only setTimeout is faked - faking more interferes with zoneless change detection.
     vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     TestBed.configureTestingModule({
       imports: [TestHost],
@@ -58,7 +58,7 @@ describe("UiTooltip", () => {
     vi.useRealTimers();
   });
 
-  /** The `<ui-button>` wrapper element — not the focusable node. */
+  /** The `<ui-button>` wrapper element - not the focusable node. */
   const wrapper = (): HTMLElement => fixture.nativeElement.querySelector("ui-button");
   /** The real `<button>` the browser actually focuses, inside the wrapper. */
   const innerButton = (): HTMLElement => wrapper().querySelector("button")!;
@@ -141,7 +141,7 @@ describe("UiTooltip", () => {
   });
 
   /**
-   * (4) Scroll events do not bubble, and this app never scrolls the window — pages scroll inside
+   * (4) Scroll events do not bubble, and this app never scrolls the window - pages scroll inside
    * `div.overflow-y-auto` or the sidebar nav. A window-scroll listener therefore never fires here, and
    * the overlay's `noop()` scroll strategy will not reposition either, so the tooltip is left stranded
    * away from its host. Hence: dispatch from a non-window element, as a real scroll container does.
@@ -153,7 +153,7 @@ describe("UiTooltip", () => {
     open(wrapper(), "focusin");
     expect(tooltip()).not.toBeNull();
 
-    // `bubbles: false` is the point — a real scroll event does not bubble, which is why a
+    // `bubbles: false` is the point - a real scroll event does not bubble, which is why a
     // bubble-phase or window listener misses it.
     scroller.dispatchEvent(new Event("scroll", { bubbles: false }));
     fixture.detectChanges();

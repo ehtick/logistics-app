@@ -5,16 +5,16 @@ description: Add a new external webhook receiver (Stripe, ELD, custom integratio
 
 # Add a Webhook Handler
 
-Inbound webhooks from external services (Stripe, Samsara, Motive, etc.) terminate at `WebhookController` and dispatch into the application layer via MediatR commands. Webhook handlers are **security-sensitive** — every checklist item below exists because something broke when it was missed.
+Inbound webhooks from external services (Stripe, Samsara, Motive, etc.) terminate at `WebhookController` and dispatch into the application layer via MediatR commands. Webhook handlers are **security-sensitive** - every checklist item below exists because something broke when it was missed.
 
 ## Files that must change
 
-1. `src/Presentation/Logistics.API/Controllers/WebhookController.cs` — endpoint route (`[Route("webhooks")]`)
-2. `src/Core/Logistics.Application/Modules/{Module}/{Feature}/Commands/Process{Provider}Webhook/` — command + handler (Stripe lives in `Modules/Integrations/Webhooks/Commands/`, ELD in `Modules/Compliance/Eld/Commands/`)
-3. `src/Infrastructure/Logistics.Infrastructure.{Module}/{Provider}/{Provider}WebhookService.cs` — signature validation (use `WebhookSignature.VerifyHmacSha256`)
-4. `appsettings.json` — webhook secret config (matched by env var, never committed)
-5. `…/Process{Provider}Webhook/Process{Provider}WebhookValidator.cs` — schema validation (skip if the only rule is `Id NotEmpty`)
-6. Tests — at minimum: bad signature returns 400, replay returns 200 idempotent
+1. `src/Presentation/Logistics.API/Controllers/WebhookController.cs` - endpoint route (`[Route("webhooks")]`)
+2. `src/Core/Logistics.Application/Modules/{Module}/{Feature}/Commands/Process{Provider}Webhook/` - command + handler (Stripe lives in `Modules/Integrations/Webhooks/Commands/`, ELD in `Modules/Compliance/Eld/Commands/`)
+3. `src/Infrastructure/Logistics.Infrastructure.{Module}/{Provider}/{Provider}WebhookService.cs` - signature validation (use `WebhookSignature.VerifyHmacSha256`)
+4. `appsettings.json` - webhook secret config (matched by env var, never committed)
+5. `…/Process{Provider}Webhook/Process{Provider}WebhookValidator.cs` - schema validation (skip if the only rule is `Id NotEmpty`)
+6. Tests - at minimum: bad signature returns 400, replay returns 200 idempotent
 
 ## Step-by-step
 
@@ -28,7 +28,7 @@ Most providers use HMAC of the raw body with a shared secret, sent in a header:
 | Samsara  | `X-Samsara-Signature` | HMAC-SHA256                |
 | Motive   | `X-Motive-Signature`  | HMAC-SHA256                |
 
-For a new provider, find their signature spec in their docs **before** writing any code. If they don't sign webhooks, push back — unsigned webhooks are spoofable and should not be wired in without an alternative (mutual TLS, allowlisted source IPs).
+For a new provider, find their signature spec in their docs **before** writing any code. If they don't sign webhooks, push back - unsigned webhooks are spoofable and should not be wired in without an alternative (mutual TLS, allowlisted source IPs).
 
 ### 2. Read the raw body
 
@@ -54,12 +54,12 @@ public async Task<IActionResult> Provider(CancellationToken ct)
 }
 ```
 
-`[AllowAnonymous]` is correct here — the signature replaces auth.
+`[AllowAnonymous]` is correct here - the signature replaces auth.
 
 ### 3. Verify signature in the service layer
 
 Do **not** hand-roll HMAC + comparison. Use `WebhookSignature.VerifyHmacSha256` from
-`Logistics.Infrastructure.Integrations.Common` — it computes the lowercase-hex HMAC-SHA256 of the raw body and
+`Logistics.Infrastructure.Integrations.Common` - it computes the lowercase-hex HMAC-SHA256 of the raw body and
 compares with `CryptographicOperations.FixedTimeEquals`, and it **fails closed** (returns `false` when either the
 secret or the signature is missing).
 
@@ -73,11 +73,11 @@ internal sealed class ProviderWebhookService(IOptions<ProviderOptions> options)
 }
 ```
 
-Never compare signatures with `==` or `string.Equals` — they leak timing information and enable forgery. If a
+Never compare signatures with `==` or `string.Equals` - they leak timing information and enable forgery. If a
 provider signs with a scheme the helper doesn't cover (e.g. a timestamped envelope), extend the helper rather
 than open-coding a compare.
 
-For Stripe specifically, use `EventUtility.ConstructEvent(rawBody, signature, secret)` from the Stripe SDK — it
+For Stripe specifically, use `EventUtility.ConstructEvent(rawBody, signature, secret)` from the Stripe SDK - it
 handles timestamp tolerance and constant-time compare for you.
 
 ### 4. Handler: validate, idempotency, dispatch
@@ -118,7 +118,7 @@ internal sealed class ProviderWebhookHandler(
         if (alreadyProcessed is not null)
         {
             logger.LogInformation("Duplicate {Provider} webhook '{EventKey}' ignored", provider, eventKey);
-            return Result.Ok();   // 200 — provider stops retrying
+            return Result.Ok();   // 200 - provider stops retrying
         }
 
         // 4. Do the work by event type, then persist tenant changes
@@ -146,8 +146,8 @@ internal sealed class ProviderWebhookHandler(
 
 Order matters:
 
-1. **Signature first** — never parse untrusted bytes before verification.
-2. **Then idempotency** — same `(Provider, EventKey)` arriving twice is a no-op returning 200.
+1. **Signature first** - never parse untrusted bytes before verification.
+2. **Then idempotency** - same `(Provider, EventKey)` arriving twice is a no-op returning 200.
 3. **Dispatch** by event type; unknown event types should log and return 200, not crash.
 4. **Record the event key** after the work so a retry short-circuits. The unique `(Provider, EventKey)` index is the backstop if two deliveries race.
 
@@ -191,7 +191,7 @@ public class ProviderWebhookHandlerTests
 ## Verification checklist
 
 - [ ] Endpoint added to `WebhookController` with `[AllowAnonymous]` and raw-body reading
-- [ ] Signature verified with `WebhookSignature.VerifyHmacSha256` (or provider SDK's verify) — fails closed
+- [ ] Signature verified with `WebhookSignature.VerifyHmacSha256` (or provider SDK's verify) - fails closed
 - [ ] Signature verified **before** payload parsing
 - [ ] Idempotency via `ProcessedWebhookEvent` `(Provider, EventKey)`; `EventKey` = provider event id, else SHA-256 body hash
 - [ ] Event key recorded in the master-DB ledger after the work runs
@@ -203,12 +203,12 @@ public class ProviderWebhookHandlerTests
 
 ## Common mistakes
 
-- **Parsing JSON before verifying signature** — opens an attack surface for malformed-payload exploits.
-- **Using `==` to compare signatures** — timing attacks let attackers forge valid signatures one byte at a time.
-- **No idempotency** — providers retry on 5xx, you double-charge / double-create.
-- **Returning non-200 for unknown event types** — provider keeps retrying forever.
-- **Logging the raw body at INFO** — webhooks often contain PII (emails, names). Use DEBUG and scrub.
-- **Storing the secret in appsettings.json** — it ends up in git history. Always env var or Key Vault.
+- **Parsing JSON before verifying signature** - opens an attack surface for malformed-payload exploits.
+- **Using `==` to compare signatures** - timing attacks let attackers forge valid signatures one byte at a time.
+- **No idempotency** - providers retry on 5xx, you double-charge / double-create.
+- **Returning non-200 for unknown event types** - provider keeps retrying forever.
+- **Logging the raw body at INFO** - webhooks often contain PII (emails, names). Use DEBUG and scrub.
+- **Storing the secret in appsettings.json** - it ends up in git history. Always env var or Key Vault.
 
 ## Provider-specific notes
 
@@ -220,7 +220,7 @@ Use the Stripe SDK's built-in verifier. It validates both signature and timestam
 var stripeEvent = EventUtility.ConstructEvent(rawBody, stripeSignatureHeader, webhookSecret);
 ```
 
-Stripe events have unique `id` fields — perfect for idempotency keys. Mount the endpoint at `/webhooks/stripe` (existing convention).
+Stripe events have unique `id` fields - perfect for idempotency keys. Mount the endpoint at `/webhooks/stripe` (existing convention).
 
 ### Samsara / Motive (ELD)
 
@@ -234,10 +234,10 @@ When the handler needs to fetch more from the provider's API, use `TryGetFromJso
 var trip = await httpClient.TryGetFromJsonAsync<TripResponse>(url, logger, "fetch trip", ct: ct);
 ```
 
-It logs and returns `default` on a non-success status, network error, or parse failure, so it never throws. Push paths that must surface an error to the caller are the exception — see the QuickBooks helpers in `Integrations.Accounting`, which throw on purpose.
+It logs and returns `default` on a non-success status, network error, or parse failure, so it never throws. Push paths that must surface an error to the caller are the exception - see the QuickBooks helpers in `Integrations.Accounting`, which throw on purpose.
 
 ## Related
 
-- `.claude/rules/backend/security.md` — webhook signature validation rule
+- `.claude/rules/backend/security.md` - webhook signature validation rule
 - `feature-map.md` → Operations / Financial / Compliance for the feature being webhooked
-- `WebhookController.cs` — existing endpoints to copy from
+- `WebhookController.cs` - existing endpoints to copy from

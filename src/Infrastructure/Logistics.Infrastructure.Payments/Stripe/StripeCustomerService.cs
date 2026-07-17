@@ -55,7 +55,7 @@ internal sealed class StripeCustomerService(ILogger<StripeCustomerService> logge
 
     /// <summary>
     /// Stripe's <c>tax_id_data</c> only exists on customer creation. Updates go through
-    /// the dedicated <c>/tax_ids</c> endpoint, which we don't currently expose — VAT changes
+    /// the dedicated <c>/tax_ids</c> endpoint, which we don't currently expose - VAT changes
     /// after onboarding require a manual reconciliation.
     /// </summary>
     private static List<CustomerTaxIdDataOptions>? BuildTaxIdData(Tenant tenant)

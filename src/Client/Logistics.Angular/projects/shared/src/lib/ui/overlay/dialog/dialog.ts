@@ -36,7 +36,7 @@ const MIN_RESIZE_HEIGHT = 140;
  *
  * 1. `descendants: false` on the content queries. `contentChild()` defaults to true, so a nested
  *    `ui-accordion` / `ui-data-table`'s own `#header` / `#content` templates would satisfy the
- *    DIALOG's queries — it would render the accordion's header as its title.
+ *    DIALOG's queries - it would render the accordion's header as its title.
  *
  * 2. `disableClose: true` plus our own Escape handler, rather than `[disableClose]="!closable()"`.
  *    Brain gates Escape and backdrop-click on that one flag, and its backdrop click is otherwise
@@ -100,12 +100,12 @@ export class UiDialog {
 
   /**
    * Two events, not brain's single `stateChanged`: that fires on both transitions, so folding them
-   * together would run every close handler on open as well — and most of them reset the form.
+   * together would run every close handler on open as well - and most of them reset the form.
    */
   public readonly opened = output<void>();
   public readonly closed = output<void>();
 
-  /* `descendants: false` is load-bearing — see the class comment. */
+  /* `descendants: false` is load-bearing - see the class comment. */
   protected readonly headerTpl = contentChild<TemplateRef<unknown>>("header", {
     descendants: false,
   });
@@ -141,7 +141,7 @@ export class UiDialog {
 
   constructor() {
     // A media query cannot be an inline style, so `breakpoints` compiles to a stylesheet scoped by the
-    // panel id. It must out-rank the inline width — hence `!important`.
+    // panel id. It must out-rank the inline width - hence `!important`.
     effect((onCleanup) => {
       const breakpoints = this.breakpoints();
       if (!breakpoints) return;
@@ -168,7 +168,7 @@ export class UiDialog {
     }
 
     // A close can originate inside the overlay (the X, Escape), not only from the caller flipping
-    // `open`, so push the state back out before announcing it — that is what makes `[(open)]` work.
+    // `open`, so push the state back out before announcing it - that is what makes `[(open)]` work.
     this.resizedWidth.set(null);
     this.resizedHeight.set(null);
     this.open.set(false);
@@ -177,7 +177,7 @@ export class UiDialog {
 
   /**
    * `isTopmostOverlay` is not optional: a dropdown opened inside this dialog is its own stacked CDK
-   * overlay, and its Escape must not reach us — otherwise one Escape dismisses the dropdown and
+   * overlay, and its Escape must not reach us - otherwise one Escape dismisses the dropdown and
    * discards the form underneath it.
    */
   protected onEscape(): void {

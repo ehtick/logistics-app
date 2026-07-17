@@ -77,7 +77,7 @@ internal sealed class FuelCardSyncService(
                 .GroupBy(c => c.ExternalCardId)
                 .ToDictionary(g => g.Key, g => g.First());
 
-            // DistinctBy guards against providers repeating a transaction within one batch —
+            // DistinctBy guards against providers repeating a transaction within one batch -
             // a duplicate would violate the unique (provider, external ID) index on save.
             foreach (var data in transactions
                          .DistinctBy(t => t.ExternalTransactionId)

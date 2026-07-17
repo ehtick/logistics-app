@@ -7,7 +7,7 @@ export type UiSkeletonShape = "rect" | "circle";
  * The loading placeholder.
  *
  * Helm's skeleton (four utility classes) is inlined below rather than composed in. The styled box has
- * to BE the host, or call sites' `class=` would restyle a wrapper instead of the grey box — but
+ * to BE the host, or call sites' `class=` would restyle a wrapper instead of the grey box - but
  * `hostDirectives: [HlmSkeleton]` fails ng-packagr's NG3001, since a host directive is public API and
  * would force the deliberately-private `HlmSkeleton` to be re-exported from `@logistics/shared/ui`.
  *
@@ -29,7 +29,7 @@ export class Skeleton {
   public readonly shape = input<UiSkeletonShape>("rect");
 
   /**
-   * One length for BOTH axes, for `shape="circle"` — a circle whose width and height disagree is an
+   * One length for BOTH axes, for `shape="circle"` - a circle whose width and height disagree is an
    * ellipse.
    */
   public readonly size = input<string | null>(null);

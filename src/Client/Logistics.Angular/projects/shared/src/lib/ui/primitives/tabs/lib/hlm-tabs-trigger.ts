@@ -8,7 +8,7 @@ import { classes } from "../../utils";
  *
  * Why `ui-tab` cannot simply `hostDirectives: [HlmTabsTrigger]`: a Helm directive used as a host
  * directive on an exported component becomes part of that component's public API, and ng-packagr then
- * demands the private primitive be re-exported from `@logistics/shared/ui` (NG3001 — the same wall
+ * demands the private primitive be re-exported from `@logistics/shared/ui` (NG3001 - the same wall
  * `ui-skeleton` and `ui-progress` hit). A `const` carries no such constraint, so `ui-tab` host-directives
  * brain's `BrnTabsTrigger` (external, already public) and applies these classes.
  *

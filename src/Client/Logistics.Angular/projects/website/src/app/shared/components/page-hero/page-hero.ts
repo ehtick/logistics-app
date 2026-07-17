@@ -19,7 +19,7 @@ export class PageHero {
   public readonly accentLine = input<string>();
   public readonly description = input.required<string>();
   public readonly ctaLabel = input<string>();
-  /** Trailing glyph on the CTA. Feeds `<ui-button [iconEnd]>`, so it is typed — the old
+  /** Trailing glyph on the CTA. Feeds `<ui-button [iconEnd]>`, so it is typed - the old
    *  `'pi ' + ctaIcon()` class-string concatenation is gone with the p-button. */
   public readonly ctaIcon = input<IconName>();
   public readonly stats = input<StatItem[]>();

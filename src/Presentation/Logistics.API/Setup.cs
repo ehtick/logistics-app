@@ -88,7 +88,7 @@ internal static class Setup
         // Real health probe: master DB connectivity (composes with AddHealthChecks() in LogisticsHost).
         services.AddHealthChecks().AddDbContextCheck<MasterDbContext>("master-db");
 
-        // Registered here (not the shared persistence builder) since it needs Data Protection —
+        // Registered here (not the shared persistence builder) since it needs Data Protection -
         // keeps hosts without it, e.g. the DB migrator, constructible.
         services.AddScoped<IOAuthStateProtector, OAuthStateProtector>();
 

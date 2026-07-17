@@ -117,7 +117,7 @@ internal sealed class SafetyReportHandler(ISafetyReportReader reader)
                 facts.BehaviorByTypeAndMonth.Select(r => (r.Year, r.Month, r.Count)),
                 startDate, endDate),
 
-            // Top offenders — merged behavior + accident counts per driver, defects + accidents per truck
+            // Top offenders - merged behavior + accident counts per driver, defects + accidents per truck
             TopDriversByEvents = facts.TopBehaviorByDriver
                 .Select(r => new SafetyDriverSummaryDto
                 {

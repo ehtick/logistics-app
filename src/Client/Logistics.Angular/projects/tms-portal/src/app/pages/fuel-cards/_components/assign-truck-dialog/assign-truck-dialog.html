@@ -12,7 +12,7 @@
         <ui-typography variant="body">
           <span class="font-medium">{{ txn.merchantName || "Unknown merchant" }}</span>
           @if (txn.merchantCity) {
-            <span class="text-muted-foreground">— {{ txn.merchantCity }}</span>
+            <span class="text-muted-foreground">- {{ txn.merchantCity }}</span>
           }
         </ui-typography>
         <ui-typography variant="body" color="secondary">

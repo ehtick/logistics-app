@@ -13,7 +13,7 @@ namespace Logistics.Infrastructure.Integrations.FuelCards.Providers;
 
 /// <summary>
 /// Demo fuel card provider for development and demos. Generates deterministic transactions
-/// keyed by (truck, day) — external IDs are stable so re-syncs are no-ops, ~80% of
+/// keyed by (truck, day) - external IDs are stable so re-syncs are no-ops, ~80% of
 /// transactions carry a real tenant truck number (auto-match), the rest an unknown unit
 /// number so the review queue demos non-empty.
 /// </summary>

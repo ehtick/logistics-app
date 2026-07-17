@@ -1,7 +1,7 @@
 # AI Preference Flywheel (learn from approve/reject)
 
 - **Status**: Planned
-- **Priority**: P1 — top-pick differentiator: labeled training data already accumulates in every tenant DB and is currently ignored
+- **Priority**: P1 - top-pick differentiator: labeled training data already accumulates in every tenant DB and is currently ignored
 - **Effort**: M
 - **Category**: AI differentiation
 
@@ -9,7 +9,7 @@
 
 Every `AiDispatchDecision` carries an approve/reject outcome (+ rejection reason), yet session 100
 is no smarter than session 1. Distilling this history into per-tenant dispatch policy makes the agent
-demonstrably improve weekly — no TMS competitor has a learning dispatcher, and the accumulated policy
+demonstrably improve weekly - no TMS competitor has a learning dispatcher, and the accumulated policy
 becomes switching-cost moat.
 
 ## What to build

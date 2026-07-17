@@ -40,7 +40,7 @@
               <td>
                 <ui-badge [severity]="statusSeverity(row.status)" [value]="row.status" />
               </td>
-              <td>{{ row.expiresAt ? (row.expiresAt | date: "medium") : "—" }}</td>
+              <td>{{ row.expiresAt ? (row.expiresAt | date: "medium") : "-" }}</td>
               <td class="text-right">
                 @if (row.status === "ready") {
                   <ui-button
@@ -66,7 +66,7 @@
       <ng-template #subtitle>
         Account deletion is irreversible after a 30-day grace period. Operational and financial
         records (loads, invoices, payments, audit logs) stay intact for legal and accounting
-        compliance — only your name, email, and phone are replaced with placeholders.
+        compliance - only your name, email, and phone are replaced with placeholders.
       </ng-template>
 
       @if (pendingDeletion(); as pending) {

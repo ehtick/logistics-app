@@ -7,7 +7,7 @@ using QuestPDF.Infrastructure;
 namespace Logistics.Infrastructure.Documents.Pdf.Shared;
 
 /// <summary>
-/// Renders the "Payment History" panel — a table of paid <see cref="Payment"/>s with date,
+/// Renders the "Payment History" panel - a table of paid <see cref="Payment"/>s with date,
 /// reference, and amount. Returns silently when there are no paid payments.
 /// </summary>
 internal static class PaymentHistoryTable

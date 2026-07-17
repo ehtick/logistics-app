@@ -19,7 +19,7 @@ internal sealed class IftaTaxRateEntityConfiguration : IEntityTypeConfiguration<
         builder.Property(r => r.RatePerGallon).HasPrecision(8, 4);
         builder.Property(r => r.SurchargeRatePerGallon).HasPrecision(8, 4);
 
-        // Row identity (year, quarter, jurisdiction) is enforced by the seeder/upsert —
+        // Row identity (year, quarter, jurisdiction) is enforced by the seeder/upsert -
         // complex-type members can't participate in a unique index.
         builder.HasIndex(r => new { r.Year, r.Quarter });
     }

@@ -11,7 +11,7 @@ const SELECTABLE_ROW_ATTR = "data-ui-selectable-row";
  * row is tabbable (0); once there is a selection only the anchor row is, and the rest go to -1, so
  * Tab lands back where the user left off instead of walking the whole table.
  *
- * Arrow/Home/End move focus by walking sibling rows in the DOM — not by index into the data —
+ * Arrow/Home/End move focus by walking sibling rows in the DOM - not by index into the data -
  * which is what keeps it correct when a table renders extra `<tr>`s (an expanded detail row, an
  * empty-state row) between the selectable ones.
  *
@@ -120,7 +120,7 @@ export class UiSelectableRow<T = unknown> {
 
 /**
  * Expands / collapses a row's detail row. Applied to the trigger (a `<ui-button>` in trips-list),
- * not to the `<tr>` — click bubbles to the host either way.
+ * not to the `<tr>` - click bubbles to the host either way.
  */
 @Directive({
   selector: "[uiRowToggler]",
@@ -179,7 +179,7 @@ export class UiTableCheckbox<T = unknown> {
 /**
  * The select-all checkbox.
  *
- * ⚠ It REPLACES the selection with the table's rows — it does not merge, so anything selected on
+ * ⚠ It REPLACES the selection with the table's rows - it does not merge, so anything selected on
  * another page is discarded. And it is strictly BINARY: a partial selection renders it UNCHECKED,
  * with no indeterminate state. Both are counter-intuitive, both are what ships, and both are
  * pinned by the contract spec. Do not "improve" either into a tri-state.
@@ -213,7 +213,7 @@ export class UiTableHeaderCheckbox {
 
 /**
  * Row-level behaviours for `<ui-data-table>`. A const array, not an NgModule, so it drops straight
- * into a standalone component's `imports` — which is how every call site already lists it.
+ * into a standalone component's `imports` - which is how every call site already lists it.
  */
 export const UiTableRowDirectives = [
   UiSelectableRow,

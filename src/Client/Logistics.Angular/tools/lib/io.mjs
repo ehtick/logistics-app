@@ -1,5 +1,5 @@
 /**
- * io.mjs — filesystem helpers shared by the tools.
+ * io.mjs - filesystem helpers shared by the tools.
  *
  * LINE ENDINGS ARE LOAD-BEARING. This repo is Windows with `core.autocrlf=true` and a `.gitattributes`
  * of `* text=auto eol=lf`, so files sit CRLF in the working tree but LF in the index. A tool that reads
@@ -13,7 +13,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-/** Angular workspace root (…/src/Client/Logistics.Angular) — this file lives at tools/lib/. */
+/** Angular workspace root (…/src/Client/Logistics.Angular) - this file lives at tools/lib/. */
 export const WORKSPACE_ROOT = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "../..");
 
 /** Read a file as text with line endings normalized to LF. */
@@ -43,7 +43,7 @@ export function writeText(file, contents) {
  *
  * `--cached --others --exclude-standard` = tracked files PLUS untracked-but-not-ignored ones. The
  * `--others` half is load-bearing: a plain `git ls-files` sees only TRACKED files, so every file a
- * change CREATES is invisible to every checker until it is committed — and the gates then run green
+ * change CREATES is invisible to every checker until it is committed - and the gates then run green
  * over precisely the newest, least-reviewed code. A checker that cannot see the thing it checks
  * confirms only its own blind spots.
  *

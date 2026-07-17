@@ -3,7 +3,7 @@
 // Each anchor references a real public type from the target assembly's Registrar
 // (touching them is enough to pull the assembly in).
 //
-// Adding a new infrastructure project? Add its anchor to AllInfrastructure below — the
+// Adding a new infrastructure project? Add its anchor to AllInfrastructure below - the
 // ArchLoader architecture and the boundary Theory both derive from that one array.
 
 using ArchUnitNET.Loader;

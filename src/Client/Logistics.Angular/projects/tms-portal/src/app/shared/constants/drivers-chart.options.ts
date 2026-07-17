@@ -1,4 +1,4 @@
-// Drivers chart configs — sourced from `chart-palette.ts`
+// Drivers chart configs - sourced from `chart-palette.ts`
 import { CHART_CATEGORICAL, getChartPalette } from "./chart-palette";
 
 /**

@@ -10,9 +10,9 @@ import { UiTableState } from "./table-state";
  *
  * Built on Helm's PRESENTATIONAL pagination directives (`hlmPagination` / `hlmPaginationContent` /
  * `hlmPaginationItem`) plus `buttonVariants`. The `hlm-numbered-pagination` and
- * `hlm-pagination-link` / `-previous` / `-next` / `-ellipsis` leaves were vendored but never used —
+ * `hlm-pagination-link` / `-previous` / `-next` / `-ellipsis` leaves were vendored but never used -
  * this component pages by STATE, not by URL, and those leaves render `<a>` elements via a
- * `RouterLink` host directive — so they were removed from the vendored primitive. This component
+ * `RouterLink` host directive - so they were removed from the vendored primitive. This component
  * borrows their look (`buttonVariants`) without their routing.
  */
 @Component({
@@ -25,7 +25,7 @@ export class UiTablePaginator {
   private readonly state = inject(UiTableState);
 
   /**
-   * Page-size choices. Rendered ONLY when a consumer passes them — matching `<p-paginator>`'s
+   * Page-size choices. Rendered ONLY when a consumer passes them - matching `<p-paginator>`'s
    * `*ngIf="rowsPerPageOptions"`. It is [10, 25, 50] at all 41 sites that bind it, but it is NOT
    * hardcoded: ~50 tables bind nothing and must keep showing NO page-size control. (It would also
    * break the contract spec, whose client host runs `rows = 2`: a page-size trigger is itself a

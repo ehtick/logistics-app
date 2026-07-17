@@ -10,7 +10,7 @@ using Logistics.Shared.Identity.Roles;
 namespace Logistics.DbMigrator.Seeders.FakeData;
 
 /// <summary>
-/// Seeds sample load condition reports (cargo inspection — pickup/delivery).
+/// Seeds sample load condition reports (cargo inspection - pickup/delivery).
 /// Defects are drawn from the per-load-type catalog so vehicle loads get
 /// vehicle-part defects, container loads get container-part defects, and
 /// generic freight loads get generic-part defects.

@@ -100,7 +100,7 @@ val topLevelRoutes: Set<NavKey> = setOf(
  *
  * On non-Android (iOS) targets there is no reflection-based overload, so every [NavKey] subtype
  * must be registered here for the back stack to survive process death / configuration changes.
- * Add new routes to this list when you add them above — an unregistered route crashes on save.
+ * Add new routes to this list when you add them above - an unregistered route crashes on save.
  */
 val navSavedStateConfiguration: SavedStateConfiguration = SavedStateConfiguration {
     serializersModule = SerializersModule {

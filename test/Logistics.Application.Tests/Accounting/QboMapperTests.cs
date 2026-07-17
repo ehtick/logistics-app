@@ -133,7 +133,7 @@ public class QboMapperTests
             Amount = 250.55m,
             CurrencyCode = "USD",
             TxnDate = new DateTime(2026, 7, 1, 0, 0, 0, DateTimeKind.Utc),
-            Description = "Pilot — fuel"
+            Description = "Pilot - fuel"
         };
 
         var result = QboMapper.MapPurchase(payload, null, null);

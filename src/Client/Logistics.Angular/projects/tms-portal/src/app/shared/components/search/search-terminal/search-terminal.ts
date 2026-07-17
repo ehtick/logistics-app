@@ -7,7 +7,7 @@ import { UiAutocompleteField } from "@logistics/shared/ui";
 /**
  * Terminal search autocomplete.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  */
 @Component({
   selector: "app-search-terminal",

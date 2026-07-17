@@ -7,7 +7,7 @@ namespace Logistics.Infrastructure.Documents.Pdf.Shared;
 
 /// <summary>
 /// Renders the tenant's letterhead block (name, address, phone, billing email, regulatory IDs).
-/// Set <paramref name="includeTaxIds"/> to surface VAT / EORI / MC numbers — useful on invoices,
+/// Set <paramref name="includeTaxIds"/> to surface VAT / EORI / MC numbers - useful on invoices,
 /// noise on internal pay stubs.
 /// </summary>
 internal static class CompanyInfoColumn

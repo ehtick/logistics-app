@@ -90,7 +90,7 @@ fun LocationDisclosureScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     SubmitButton(
-                        text = "I understand — continue",
+                        text = "I understand  continue",
                         onClick = { triggerPermission = true },
                         isLoading = false,
                         enabled = true

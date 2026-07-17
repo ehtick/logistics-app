@@ -121,7 +121,7 @@ public class PreviewTaxCalculationToolTests
                 BaseAmount = 200m,
                 TaxAmount = 38m,
                 Jurisdiction = new TaxJurisdictionDto { CountryCode = "DE" },
-                Description = "VAT 19% — DE"
+                Description = "VAT 19% - DE"
             }]
         };
 
@@ -185,7 +185,7 @@ public class PreviewTaxCalculationToolTests
                 BaseAmount = 100m,
                 TaxAmount = 0m,
                 Jurisdiction = new TaxJurisdictionDto { CountryCode = "FR" },
-                Description = "Reverse charge — VAT to be accounted by recipient"
+                Description = "Reverse charge - VAT to be accounted by recipient"
             }]
         };
 

@@ -107,7 +107,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // Compose Multiplatform (direct artifacts — 'compose.X' shortcuts deprecated in 1.11)
+            // Compose Multiplatform (direct artifacts - 'compose.X' shortcuts deprecated in 1.11)
             implementation(libs.bundles.compose)
             implementation(libs.compose.material.icons.extended)
 

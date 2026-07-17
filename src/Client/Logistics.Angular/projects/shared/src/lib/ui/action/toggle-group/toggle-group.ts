@@ -18,10 +18,10 @@ export interface UiToggleOption<V extends string = string> {
  *
  * Selection is mandatory: this component never emits `null`. Every call site's handler is typed
  * non-nullable, so a deselect would break them. `valueChange` is typed `V`, and the Helm group is
- * pinned to `[nullable]="false"` — worth doing explicitly, because `BrnToggleGroup.nullable` defaults
+ * pinned to `[nullable]="false"` - worth doing explicitly, because `BrnToggleGroup.nullable` defaults
  * to `true` and would otherwise emit `null` when the active segment is clicked again.
  *
- * `value` still accepts `null` — "nothing selected yet" is a legitimate input state, just not one the
+ * `value` still accepts `null` - "nothing selected yet" is a legitimate input state, just not one the
  * user can navigate back to.
  */
 @Component({
@@ -35,7 +35,7 @@ export class UiToggleGroup<V extends string = string> {
   /** The selected value. `null` means "nothing selected yet". */
   public readonly value = input<V | null>(null);
 
-  /** Never emits `null` — see the class note. */
+  /** Never emits `null` - see the class note. */
   public readonly valueChange = output<V>();
 
   /** Render the glyph only, with the label moved to a tooltip + `aria-label`. */

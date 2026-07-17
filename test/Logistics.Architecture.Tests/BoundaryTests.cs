@@ -9,7 +9,7 @@ namespace Logistics.Architecture.Tests;
 /// Layering rules over compiled assemblies, expressed in ArchUnitNET.
 ///
 /// Internal cross-assembly checks use <c>ResideInAssembly(Assembly)</c>, which compares
-/// by Assembly identity — so <c>Logistics.Application</c> and
+/// by Assembly identity - so <c>Logistics.Application</c> and
 /// <c>Logistics.Application.Abstractions</c> are cleanly separated (unlike NetArchTest's
 /// prefix matching, which forced us into reflection workarounds).
 ///
@@ -111,7 +111,7 @@ public class BoundaryTests
 
     /// <summary>
     /// Derived from AssemblyAnchors.AllInfrastructure, so a new infrastructure project is covered
-    /// by this rule as soon as it has an anchor — no separate list to remember here.
+    /// by this rule as soon as it has an anchor - no separate list to remember here.
     /// </summary>
     public static TheoryData<string> InfrastructureAssemblies
     {

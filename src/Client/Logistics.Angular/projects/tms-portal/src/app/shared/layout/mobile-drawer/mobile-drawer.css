@@ -2,7 +2,7 @@
  * The old `:host ::ng-deep .p-drawer-*` block is GONE, and it had to go rather than be renamed.
  *
  * `<ui-drawer>` portals its panel into a CDK overlay at the document body. That panel is therefore no
- * longer a DESCENDANT of this host, so `:host ::ng-deep …` selects nothing at all — renaming the
+ * longer a DESCENDANT of this host, so `:host ::ng-deep …` selects nothing at all - renaming the
  * `.p-drawer-*` classes to their new equivalents would have produced a rule that still matched
  * nothing, silently. (Same shape as the S5 lesson: an element-selector rule stops matching the moment
  * the tag is renamed, and says nothing about it.)

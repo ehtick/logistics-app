@@ -2,7 +2,7 @@
  * `ui-badge`'s contract. Each item below would ship a visibly wrong chip while staying green through
  * the build, the lint and every other spec:
  *
- *   1. the tone table has a cell for every tone — a hole emits no CSS and no warning.
+ *   1. the tone table has a cell for every tone - a hole emits no CSS and no warning.
  *   2. the `severity` default is "info", not "primary". Nothing else asserts it.
  *   3. every cell paints BOTH a background and a foreground; a background with no text colour is
  *      unreadable, and it is the natural way to typo one of these.
@@ -92,7 +92,7 @@ describe("ui-badge", () => {
       }
     });
 
-    it("resolves every colour through a token — no hex, no rgb(), no named colour", () => {
+    it("resolves every colour through a token - no hex, no rgb(), no named colour", () => {
       for (const tone of UI_BADGE_INTENTS) {
         expect(TONE_CLASSES[tone]).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i);
       }
@@ -100,10 +100,10 @@ describe("ui-badge", () => {
 
     /**
      * The merge trap, pinned. An arbitrary PROPERTY is its own tailwind-merge class group, so it does
-     * NOT dedupe against a call site's `bg-*` — both survive and source order decides. Reintroducing
+     * NOT dedupe against a call site's `bg-*` - both survive and source order decides. Reintroducing
      * one would silently break the contract test 4 asserts.
      */
-    it("spells every cell as a NAMED utility — never as an arbitrary property", () => {
+    it("spells every cell as a NAMED utility - never as an arbitrary property", () => {
       for (const tone of UI_BADGE_INTENTS) {
         expect(TONE_CLASSES[tone], `"${tone}" uses an arbitrary property`).not.toMatch(
           /\[(background-color|color):/,
@@ -113,7 +113,7 @@ describe("ui-badge", () => {
   });
 
   // 2.
-  it('defaults `severity` to "info" — NOT "primary"', () => {
+  it('defaults `severity` to "info" - NOT "primary"', () => {
     fixture.detectChanges();
     expect(el().className).toContain("bg-info");
     expect(el().className).not.toContain("bg-primary");
@@ -126,7 +126,7 @@ describe("ui-badge", () => {
   });
 
   // 4. twMerge, not stylesheet order.
-  it("lets the call site's `class` BEAT the size cell — the md font-size is dropped, not outranked", () => {
+  it("lets the call site's `class` BEAT the size cell - the md font-size is dropped, not outranked", () => {
     const f = TestBed.createComponent(HostBadgeClass);
     f.detectChanges();
     const cls = (f.nativeElement.querySelector("ui-badge") as HTMLElement).className;

@@ -85,7 +85,7 @@ export class TruckExpenseForm implements OnInit {
       required(p.category, { message: "Category is required." });
       min(p.odometerReading, 0, { message: "Odometer reading cannot be negative." });
       min(p.quantity, 0, { message: "Quantity cannot be negative." });
-      // Truck is fixed once the expense exists — disable it when editing.
+      // Truck is fixed once the expense exists - disable it when editing.
       disabled(p.truckId, { when: () => this.mode() === "edit" });
     },
     {

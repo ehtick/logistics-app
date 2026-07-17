@@ -51,7 +51,7 @@ interface DashboardSettings {
 }
 
 const DEFAULT_PANELS: DashboardPanelConfig[] = [
-  // KPI Cards Row (y=0) — universal panels
+  // KPI Cards Row (y=0) - universal panels
   {
     id: "kpi-weekly-gross",
     label: "Weekly Gross",
@@ -92,7 +92,7 @@ const DEFAULT_PANELS: DashboardPanelConfig[] = [
     minItemCols: 2,
     minItemRows: 1,
   },
-  // Owner panels (y=2) — only visible to Owner with `dashboard` feature enabled
+  // Owner panels (y=2) - only visible to Owner with `dashboard` feature enabled
   {
     id: "attention-panel",
     label: "Attention",
@@ -228,7 +228,7 @@ export class DashboardSettingsService {
     this.persistSettings();
   }
 
-  /** Clear any persisted layout — call on logout to avoid leaking layout to next user. */
+  /** Clear any persisted layout - call on logout to avoid leaking layout to next user. */
   public clearPersistedSettings(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(DASHBOARD_SETTINGS_KEY);

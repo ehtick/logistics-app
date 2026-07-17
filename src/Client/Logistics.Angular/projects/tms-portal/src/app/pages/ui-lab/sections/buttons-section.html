@@ -51,7 +51,7 @@
        That is a real visual change to ~370 buttons and it has not been ruled on.
 
        The flat look is reproduced instead by resetting the three `--ui-btn-primary-*` variables to
-       the defaults shared/theme.css already ships (image:none, weight:500) — which is precisely what
+       the defaults shared/theme.css already ships (image:none, weight:500) - which is precisely what
        deleting the `:root` block at the bottom of tms-portal/src/styles.css would do globally.
 
        Left = flat (what ~370 TMS buttons render today). Right = gradient (what ships now).
@@ -68,14 +68,14 @@
     >
       <ui-button label="Save" icon="check" />
       <ui-typography variant="body-sm" color="muted">
-        flat — what ~370 TMS buttons look like today
+        flat - what ~370 TMS buttons look like today
       </ui-typography>
     </div>
 
     <div class="flex flex-col items-start gap-1" data-lab="primary-gradient">
       <ui-button label="Save" icon="check" />
       <ui-typography variant="body-sm" color="muted">
-        gradient — the preset's look, now the default for every primary
+        gradient - the preset's look, now the default for every primary
       </ui-typography>
     </div>
   </div>
@@ -88,7 +88,7 @@
   <div class="border-default mt-2 grid gap-6 rounded-lg border p-4 md:grid-cols-2 xl:grid-cols-3">
     <div class="flex flex-col gap-2" data-lab="icon-only">
       <ui-typography variant="body-sm" color="muted">
-        icon-only — square, named only by
+        icon-only - square, named only by
         <code>ariaLabel</code>
       </ui-typography>
       <div class="flex items-center gap-2">
@@ -101,7 +101,7 @@
 
     <div class="flex flex-col gap-2" data-lab="loading">
       <ui-typography variant="body-sm" color="muted">
-        loading — swaps the glyph for a spinner AND disables. One place, not 100.
+        loading - swaps the glyph for a spinner AND disables. One place, not 100.
       </ui-typography>
       <div class="flex items-center gap-2">
         <ui-button label="Save" icon="check" [loading]="busy()" (click)="toggleBusy()" />
@@ -120,7 +120,7 @@
     </div>
 
     <div class="flex flex-col gap-2" data-lab="rounded">
-      <ui-typography variant="body-sm" color="muted">rounded — 63 sites</ui-typography>
+      <ui-typography variant="body-sm" color="muted">rounded - 63 sites</ui-typography>
       <div class="flex items-center gap-2">
         <ui-button label="Rounded" [rounded]="true" />
         <ui-button label="Rounded" intent="secondary" appearance="outlined" [rounded]="true" />
@@ -130,7 +130,7 @@
 
     <div class="flex flex-col gap-2" data-lab="icon-end">
       <ui-typography variant="body-sm" color="muted">
-        iconEnd — replaces
+        iconEnd - replaces
         <code>iconPos="right"</code>
         (16 sites)
       </ui-typography>
@@ -142,7 +142,7 @@
     </div>
 
     <div class="flex flex-col gap-2" data-lab="block">
-      <ui-typography variant="body-sm" color="muted">block — fills its container</ui-typography>
+      <ui-typography variant="body-sm" color="muted">block - fills its container</ui-typography>
       <ui-button label="Block button" [block]="true" />
       <ui-button label="Block, outlined" appearance="outlined" [block]="true" />
     </div>

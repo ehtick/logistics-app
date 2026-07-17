@@ -12,7 +12,7 @@ internal static class JurisdictionMapper
     /// <summary>
     /// Builds a jurisdiction from provider merchant fields. Providers often send only a
     /// state/province code; when the country is missing it is inferred (Canadian province
-    /// codes → CA, otherwise US — WEX/EFS/Comdata are North-America networks).
+    /// codes → CA, otherwise US - WEX/EFS/Comdata are North-America networks).
     /// </summary>
     public static TaxJurisdiction? FromMerchant(string? country, string? stateOrProvince)
     {

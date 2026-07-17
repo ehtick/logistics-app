@@ -5,7 +5,7 @@ import { UiButton, UiDialog, ValidatedForm } from "@logistics/shared/ui";
 /**
  * Dialog shell for connecting a third-party integration provider (ELD, load board, fuel cards).
  *
- * Owns everything those flows share — the dialog chrome, the `<form [formRoot]>` and its
+ * Owns everything those flows share - the dialog chrome, the `<form [formRoot]>` and its
  * `ValidatedForm` behaviour, the imperative submit, and the footer buttons. The fields differ per
  * integration and stay in the feature component, projected as content so they bind to that
  * component's typed form.

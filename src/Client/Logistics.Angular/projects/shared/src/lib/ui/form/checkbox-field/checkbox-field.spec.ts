@@ -10,7 +10,7 @@
  * Required-error note: a boolean field needs a "must be true" validator to be invalid while
  * `false`. Reactive Forms has a built-in one (`Validators.requiredTrue`). For Signal Forms,
  * `required()` treats `false` as empty (`isEmpty(false) === true` in @angular/forms/signals),
- * so `required(p.terms)` DOES report a `false` boolean as invalid — no custom validator needed.
+ * so `required(p.terms)` DOES report a `false` boolean as invalid - no custom validator needed.
  * The validator supplies the message; `ui-form-field` renders it verbatim (it no longer maps error
  * `kind`s to copy), so this fixture states "This field is required." explicitly.
  */
@@ -31,13 +31,13 @@ import { UiCheckboxField } from "./checkbox-field";
   `,
 })
 class HostSignalCheckbox {
-  /** Flips the schema's disabled rule — proves the wrapper REACTS, not just reads once. */
+  /** Flips the schema's disabled rule - proves the wrapper REACTS, not just reads once. */
   readonly lock = signal(false);
   readonly model = signal({ terms: false });
   readonly f = form(this.model, (p) => {
     // `required()` treats `false` as empty, so this makes an unchecked box invalid.
     required(p.terms, { message: "This field is required." });
-    // Reactive disabled rule — the shape every real form uses:
+    // Reactive disabled rule - the shape every real form uses:
     //   disabled(p.truckId, { when: () => this.mode() === "edit" })
     disabled(p.terms, { when: () => this.lock() });
   });
@@ -59,7 +59,7 @@ function toggle(fixture: ComponentFixture<unknown>): void {
   checkbox(fixture).click();
 }
 
-describe("UiCheckboxField — a FormValueControl<boolean>-only wrapper", () => {
+describe("UiCheckboxField - a FormValueControl<boolean>-only wrapper", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection()],
@@ -98,7 +98,7 @@ describe("UiCheckboxField — a FormValueControl<boolean>-only wrapper", () => {
       expect(fixture.componentInstance.model().terms).toBe(true);
     });
 
-    it("ui-form-field renders the required error once touched — with NO transitional code", async () => {
+    it("ui-form-field renders the required error once touched - with NO transitional code", async () => {
       const fixture = TestBed.createComponent(HostSignalCheckbox);
       await settle(fixture);
 
@@ -115,10 +115,10 @@ describe("UiCheckboxField — a FormValueControl<boolean>-only wrapper", () => {
      * `disabled(p.truckId, ...)` in the expense forms, tax-rates, timesheets, ...).
      *
      * It used to be covered ONLY by the legacy Reactive-Forms host ("propagates disabled state from
-     * the control"). That host was deleted, and the assertion went with it — leaving the
+     * the control"). That host was deleted, and the assertion went with it - leaving the
      * whole `disabled` dimension of all 10 wrappers untested. This is its Signal Forms twin.
      */
-    it("propagates the schema's disabled rule to the control — and reacts when it flips", async () => {
+    it("propagates the schema's disabled rule to the control - and reacts when it flips", async () => {
       const fixture = TestBed.createComponent(HostSignalCheckbox);
       await settle(fixture);
 

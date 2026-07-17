@@ -3,7 +3,7 @@
  * `toast` and a Helm-based `ui-confirm-dialog`.
  *
  * ~386 call sites across ~118 files must keep working with ZERO changes, so this spec asserts on
- * WHAT THE USER SEES AND WHAT GETS CALLED — never on a rendering library's API having been invoked.
+ * WHAT THE USER SEES AND WHAT GETS CALLED - never on a rendering library's API having been invoked.
  * The failure this guards against is silent and asymmetric:
  *   - dialog never opens AND `accept` is dropped  => "Delete" silently does nothing;
  *   - `accept` fires with no dialog               => it deletes WITHOUT ASKING.
@@ -12,7 +12,7 @@
  * Everything that knows which library renders these surfaces is quarantined in the block marked
  * `RENDERING-LAYER ADAPTER`: the host component, the DI providers, and four tiny readers that
  * translate "what the rendering layer did" back into our own vocabulary. A rendering-layer swap
- * should only ever need to touch that block — every `describe`/`it` body and every `expect(...)`
+ * should only ever need to touch that block - every `describe`/`it` body and every `expect(...)`
  * below asserts on OUR vocabulary, never the library's, which is the entire point.
  *
  * Keep it that way. If a future rendering swap seems to require changing an assertion, that is a
@@ -21,8 +21,8 @@
  * ===================================================================================
  *
  * NOT OBSERVABLE HERE (documented deliberately rather than asserted vacuously):
- *   - toast auto-dismiss after its duration — a real timer; out of scope for a contract spec.
- *   - toast stacking/position — pure CSS, invisible to jsdom.
+ *   - toast auto-dismiss after its duration - a real timer; out of scope for a contract spec.
+ *   - toast stacking/position - pure CSS, invisible to jsdom.
  */
 import { Dialog } from "@angular/cdk/dialog";
 import {
@@ -37,7 +37,7 @@ import { toastState } from "@spartan-ng/brain/sonner";
 import { UiToaster } from "../ui/overlay/toaster/toaster";
 import { ToastService, type ConfirmOptions } from "./toast.service";
 
-/** Our own vocabulary — independent of any UI library. */
+/** Our own vocabulary - independent of any UI library. */
 type Severity = "success" | "error" | "warning" | "info";
 type Intent = "default" | "danger" | "warning" | "success";
 
@@ -45,19 +45,19 @@ type Intent = "default" | "danger" | "warning" | "success";
 // ▼▼▼ EVERYTHING BETWEEN THESE MARKERS IS THE ONLY PART A RENDERING SWAP CHANGES ▼▼▼
 
 /**
- * Mirrors what every app's `app.html` renders — which is now just the toaster. The confirm dialog is
+ * Mirrors what every app's `app.html` renders - which is now just the toaster. The confirm dialog is
  * no longer a declarative surface: `ToastService` opens `ui-confirm-dialog` imperatively through
  * `HlmDialogService`, so there is nothing for a shell to render and no `key` to get wrong.
  *
  * The teardown below is NOT belt-and-braces; without it the suite is wrong in both directions:
  *   - `toastState` (brain/sonner) is a MODULE-GLOBAL signal store, not a DI singleton. It survives
  *     `TestBed.resetTestingModule()`, so a toast raised in one test is still in the store when the
- *     NEXT test mounts its toaster — and "renders nothing before anything is shown" would fail.
+ *     NEXT test mounts its toaster - and "renders nothing before anything is shown" would fail.
  *   - the dialog is a CDK overlay portaled to <body>, OUTSIDE the fixture, so `fixture.destroy()`
- *     does not take it down — and `afterEach`'s `expect(confirmSurface()).toBeNull()` would fail.
+ *     does not take it down - and `afterEach`'s `expect(confirmSurface()).toBeNull()` would fail.
  * The app needs neither (its shell outlives every toast, and a destroyed shell means the page is
  * gone); a test that reuses one document does. `closeAll()` closes with `undefined`, which by design
- * fires neither `accept` nor `reject` — so teardown can never forge a decision.
+ * fires neither `accept` nor `reject` - so teardown can never forge a decision.
  */
 @Component({
   selector: "ui-host-notification-surfaces",
@@ -73,26 +73,26 @@ class HostNotificationSurfaces {
       dialog.closeAll();
       toastState.reset();
 
-      // `fixture.destroy()` tears down the VIEW but leaves the root element's DOM in the document —
+      // `fixture.destroy()` tears down the VIEW but leaves the root element's DOM in the document -
       // TestBed only strips root elements at `resetTestingModule()`, i.e. in the NEXT test's
       // `beforeEach`. Sonner renders in place and (rightly) leaves lifetime to the framework, so the
       // surface detaches itself here, or `afterEach` would find the previous test's toast still
       // hanging off <body>.
       //
       // This cannot mask a real failure: it only removes THIS host's subtree. A toast that failed to
-      // render still fails `theToast()`, and the leaks that actually matter — the module-global
-      // `toastState` and the body-portaled CDK overlay — are undone above, by reset() and closeAll().
+      // render still fails `theToast()`, and the leaks that actually matter - the module-global
+      // `toastState` and the body-portaled CDK overlay - are undone above, by reset() and closeAll().
       host.remove();
     });
   }
 }
 
-/** brain/sonner's `toast` is imperative and `HlmDialogService` is `providedIn: 'root'` — nothing to provide. */
+/** brain/sonner's `toast` is imperative and `HlmDialogService` is `providedIn: 'root'` - nothing to provide. */
 const RENDERING_PROVIDERS: never[] = [];
 
 /**
  * The accept/reject button labels the rendering layer falls back to when the caller supplies none.
- * `confirmDelete` — i.e. most of the ~386 call sites — relies on these: they are
+ * `confirmDelete` - i.e. most of the ~386 call sites - relies on these: they are
  * `ToastService`'s own DEFAULT_ACCEPT_LABEL / DEFAULT_REJECT_LABEL.
  */
 const DEFAULT_ACCEPT_LABEL = "Yes";
@@ -130,7 +130,7 @@ function rendersIcon(host: Element): boolean {
 /** The "click outside the dialog" gesture. Returns false if there is no backdrop to click. */
 function clickBackdrop(): boolean {
   // CDK's backdrop is a SIBLING of the overlay pane, not an ancestor of the dialog, and it listens
-  // for `click` (not `mousedown`). It exists whenever `hasBackdrop` — i.e. always here — regardless
+  // for `click` (not `mousedown`). It exists whenever `hasBackdrop` - i.e. always here - regardless
   // of whether the dialog will actually act on it, which is what the negative control relies on.
   const backdrop = document.querySelector<HTMLElement>(".cdk-overlay-backdrop");
   if (!backdrop) return false;
@@ -159,7 +159,7 @@ function theToast(): HTMLElement {
 
 /**
  * The confirmation surface: an element carrying a dialog role that the user can actually see and
- * read. The visible-and-non-empty filter is NOT cosmetic — a dialog root can linger in the DOM
+ * read. The visible-and-non-empty filter is NOT cosmetic - a dialog root can linger in the DOM
  * (hidden, or left behind by a test that didn't tear down cleanly) carrying a static
  * `role="alertdialog"`, and matching on role alone would make every "the dialog opened" assertion
  * below pass vacuously.
@@ -190,7 +190,7 @@ function accessibleName(element: Element): string {
 }
 
 /**
- * Find a button BY ACCESSIBLE NAME — the way a user (or a screen reader, or Testing Library) finds
+ * Find a button BY ACCESSIBLE NAME - the way a user (or a screen reader, or Testing Library) finds
  * it. Deliberately not a CSS class selector: a class query is implementation coupling and would
  * break the moment the rendering layer changes, for the wrong reason.
  */
@@ -235,7 +235,7 @@ function pressEscape(): void {
   document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
 }
 
-describe("ToastService — the contract every call site depends on", () => {
+describe("ToastService - the contract every call site depends on", () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection(), ...RENDERING_PROVIDERS],
@@ -246,7 +246,7 @@ describe("ToastService — the contract every call site depends on", () => {
   });
 
   // Surfaces may be portaled out of the fixture root (the dialog portals into <body> via the CDK
-  // overlay container), so tear the host down explicitly — a dialog left open by one test must
+  // overlay container), so tear the host down explicitly - a dialog left open by one test must
   // not leak into the next.
   afterEach(() => {
     fixture.destroy();
@@ -321,7 +321,7 @@ describe("ToastService — the contract every call site depends on", () => {
     });
   });
 
-  describe("confirm() — the accept callback must never fire without the user accepting", () => {
+  describe("confirm() - the accept callback must never fire without the user accepting", () => {
     it("opens a surface with a dialog role, showing the header and the message", async () => {
       expect(confirmSurface()).toBeNull();
 
@@ -443,7 +443,7 @@ describe("ToastService — the contract every call site depends on", () => {
       expect(renderedIntent(buttonNamed(dialog, DEFAULT_REJECT_LABEL))).toBe("default");
     });
 
-    it("icon reaches the dialog body — and is absent when not asked for", async () => {
+    it("icon reaches the dialog body - and is absent when not asked for", async () => {
       await openConfirm({ message: "Proceed?", icon: "warning", accept: vi.fn() });
       expect(rendersIcon(theDialog())).toBe(true);
 
@@ -454,7 +454,7 @@ describe("ToastService — the contract every call site depends on", () => {
       expect(rendersIcon(theDialog())).toBe(false);
     });
 
-    it("acceptIcon / rejectIcon reach their buttons — and are absent when not asked for", async () => {
+    it("acceptIcon / rejectIcon reach their buttons - and are absent when not asked for", async () => {
       await openConfirm({
         message: "Cancel your subscription?",
         acceptLabel: "Yes, Cancel",
@@ -495,18 +495,18 @@ describe("ToastService — the contract every call site depends on", () => {
     });
 
     /**
-     * REGRESSION GUARD — this test used to assert the OPPOSITE, as a "characterization of today's
+     * REGRESSION GUARD - this test used to assert the OPPOSITE, as a "characterization of today's
      * behaviour", and today's behaviour was a bug.
      *
      * `ToastService.confirm` used to forward `closeOnEscape ?? false` on the belief that an
      * unspecified value coerced to false. It did not: every confirm dialog in the app actually
      * resolved `closeOnEscape` to TRUE regardless of what a call site passed, so Escape cancelled a
-     * delete confirmation everywhere — and `?? false` silently removed that from all 72
+     * delete confirmation everywhere - and `?? false` silently removed that from all 72
      * confirm()/confirmDelete() call sites.
      *
-     * The default is now `true`, restoring parity. Escape REJECTS — never accepts.
+     * The default is now `true`, restoring parity. Escape REJECTS - never accepts.
      */
-    it("by default Escape rejects and closes — closeOnEscape defaults to TRUE", async () => {
+    it("by default Escape rejects and closes - closeOnEscape defaults to TRUE", async () => {
       const accept = vi.fn();
       const reject = vi.fn();
 
@@ -520,7 +520,7 @@ describe("ToastService — the contract every call site depends on", () => {
     });
 
     /** The opt-OUT still works: a caller may explicitly refuse Escape. */
-    it("closeOnEscape: false — Escape does nothing, the dialog stays open, neither callback fires", async () => {
+    it("closeOnEscape: false - Escape does nothing, the dialog stays open, neither callback fires", async () => {
       const accept = vi.fn();
       const reject = vi.fn();
 
@@ -565,7 +565,7 @@ describe("ToastService — the contract every call site depends on", () => {
       expect(confirmSurface()).not.toBeNull();
     });
 
-    /** The exact option set `manage-subscription.ts` passes — every field at once. */
+    /** The exact option set `manage-subscription.ts` passes - every field at once. */
     it("survives the full manage-subscription option set", async () => {
       const accept = vi.fn();
 
@@ -604,7 +604,7 @@ describe("ToastService — the contract every call site depends on", () => {
     });
   });
 
-  describe("confirmDelete() — the ~200-call-site path where a silent failure destroys data", () => {
+  describe("confirmDelete() - the ~200-call-site path where a silent failure destroys data", () => {
     it("names the entity in the message and headers the dialog 'Confirm Delete'", async () => {
       toast.confirmDelete("customer", vi.fn());
       await settle();

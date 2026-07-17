@@ -3,7 +3,7 @@
   <ui-typography variant="body-sm" color="muted">
     57 local rows.
     <code>Code</code>
-    holds the strings "9", "10", "100" — sort it and read the first page.
+    holds the strings "9", "10", "100" - sort it and read the first page.
     <code>Customer</code>
     sorts through the dotted path
     <code>customer.name</code>
@@ -21,7 +21,7 @@
   </ui-typography>
   <div data-lab="table-client" class="mt-2">
     <!--
-      Binds NEITHER [first] NOR [totalRecords] — on purpose. A client-side table must work without
+      Binds NEITHER [first] NOR [totalRecords] - on purpose. A client-side table must work without
       them, exactly as the 14 client-paged templates in the app use it: `first` defaults to 0, and
       `totalRecords` falls back to `value().length`. If either default regresses, this table renders
       zero rows or a paginator reading "0 of 0", and the screenshot diff catches it.
@@ -55,7 +55,7 @@
             @if (row.driver) {
               {{ row.driver }}
             } @else {
-              <span class="text-muted-foreground">—</span>
+              <span class="text-muted-foreground">-</span>
             }
           </td>
           <td>{{ row.weightKg }}</td>
@@ -123,7 +123,7 @@
   </ui-typography>
   <ui-typography variant="body-sm" color="muted">
     All 57 rows, no paginator. The body must SCROLL INSIDE the 300px box with the header pinned to
-    the top of it — it must not simply grow and push this page down. A table that grows instead of
+    the top of it - it must not simply grow and push this page down. A table that grows instead of
     scrolling looks entirely fine in a screenshot, so scroll it and watch the header stay.
   </ui-typography>
   <div data-lab="table-scroll" class="border-default mt-2 rounded-md border">
@@ -146,7 +146,7 @@
             @if (row.driver) {
               {{ row.driver }}
             } @else {
-              <span class="text-muted-foreground">—</span>
+              <span class="text-muted-foreground">-</span>
             }
           </td>
           <td>{{ row.weightKg }}</td>

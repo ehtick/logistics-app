@@ -105,7 +105,7 @@ public class FileBlobStorageService(IOptions<FileBlobStorageOptions> options, IT
     }
 
     /// <summary>
-    /// FileBlobStorageService is intended for local development only — there is no
+    /// FileBlobStorageService is intended for local development only - there is no
     /// real signing infrastructure. Returns the same URL as <see cref="GetPublicUrl"/>;
     /// production deployments must use Azure or R2 for proper signed URLs.
     /// </summary>

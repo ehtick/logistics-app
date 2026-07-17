@@ -8,7 +8,7 @@ namespace Logistics.Application.Abstractions.BackgroundJobs;
 /// The command is dispatched through MediatR in a fresh DI scope, so its handler runs with
 /// its own <c>IUnitOfWork</c> instances.
 /// <para>
-/// Commands enqueued through this interface must be plain serialisable records — no
+/// Commands enqueued through this interface must be plain serialisable records - no
 /// <c>CancellationToken</c> fields, no non-serialisable dependencies. The job system will
 /// JSON-serialise the command and revive it on the worker.
 /// </para>

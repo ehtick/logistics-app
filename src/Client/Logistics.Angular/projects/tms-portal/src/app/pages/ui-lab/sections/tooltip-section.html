@@ -3,7 +3,7 @@
   <ui-typography variant="body-sm" color="muted">
     The
     <code>[uiTooltip]</code>
-    directive. Hover a host, then TAB to it — it must open both ways, and close on mouseout, blur
+    directive. Hover a host, then TAB to it - it must open both ways, and close on mouseout, blur
     and Escape.
   </ui-typography>
 
@@ -46,14 +46,14 @@
       <ui-button
         appearance="outlined"
         label="default"
-        uiTooltip="No position set — defaults to right"
+        uiTooltip="No position set - defaults to right"
         data-lab-position="default"
       />
     </div>
   </div>
 
   <!-- (3) An empty tooltip is NO tooltip. Click to blank the bound value, then hover: nothing may
-       appear — not an empty box. -->
+       appear - not an empty box. -->
   <div class="mt-6">
     <ui-typography variant="h3" tag="h3">Bound text, and the empty case</ui-typography>
     <div class="mt-3 flex flex-wrap items-center gap-3">
@@ -91,7 +91,7 @@
       <button
         type="button"
         class="border-default hover:bg-subtle rounded-md border px-3 py-1.5 text-sm"
-        uiTooltip="A native button — the host IS the focusable element"
+        uiTooltip="A native button - the host IS the focusable element"
         data-lab="tooltip-native-button"
       >
         native button
@@ -110,7 +110,7 @@
   </div>
 
   <!-- (5) A structured tooltip: route-badge interpolates tenant address data into markup, so a
-       TemplateRef is used instead of an innerHTML string — it keeps the layout while still
+       TemplateRef is used instead of an innerHTML string - it keeps the layout while still
        escaping the bindings. -->
   <div class="mt-6">
     <ui-typography variant="h3" tag="h3">

@@ -17,8 +17,8 @@ export const CONFIRM_ACCEPT = true;
 export const CONFIRM_REJECT = false;
 
 /**
- * What `ToastService.confirm()` hands the dialog. Every field is already resolved — the service maps
- * the semantic `ConfirmIcon` / `ConfirmSeverity` tokens to `IconName` / `UiButtonIntent` — so this
+ * What `ToastService.confirm()` hands the dialog. Every field is already resolved - the service maps
+ * the semantic `ConfirmIcon` / `ConfirmSeverity` tokens to `IconName` / `UiButtonIntent` - so this
  * component holds no mapping table.
  */
 export interface UiConfirmDialogContext {
@@ -37,7 +37,7 @@ export interface UiConfirmDialogContext {
 
 /**
  * The confirmation dialog behind `ToastService.confirm()` / `.confirmDelete()`. Most call sites are
- * deletes, so `CONFIRM_ACCEPT` is reachable from exactly one place — the accept button's click
+ * deletes, so `CONFIRM_ACCEPT` is reachable from exactly one place - the accept button's click
  * handler. A confirm that fails to open makes "Delete" do nothing; an accept that fires on its own
  * destroys data.
  *
@@ -65,7 +65,7 @@ export class UiConfirmDialog {
 
   constructor() {
     // Brain opens through `@angular/cdk/dialog` with CDK `disableClose: true`, so this is the raw
-    // backdrop click, ungated by brain's options — which is what lets us gate it ourselves.
+    // backdrop click, ungated by brain's options - which is what lets us gate it ourselves.
     inject(DialogRef)
       .backdropClick.pipe(takeUntilDestroyed())
       .subscribe(() => {

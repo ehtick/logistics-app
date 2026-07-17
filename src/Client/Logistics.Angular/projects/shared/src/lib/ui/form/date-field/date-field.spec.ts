@@ -9,8 +9,8 @@
  *
  * The inner spartan `hlm-date-picker` (brain calendar + `BrnPopover`) is driven with plain `[date]`
  * / `(dateChange)`; `uiDetachedControl` severs the ambient `NgControl`. Its calendar portals to a
- * CDK overlay outside the fixture, so a user pick is exercised at the same seam the calendar hits —
- * the picker's `updateDate` (which emits `dateChange`) — then we assert the OUTER control receives it.
+ * CDK overlay outside the fixture, so a user pick is exercised at the same seam the calendar hits -
+ * the picker's `updateDate` (which emits `dateChange`) - then we assert the OUTER control receives it.
  */
 import { Component, provideZonelessChangeDetection, signal, viewChild } from "@angular/core";
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
@@ -33,12 +33,12 @@ const INITIAL = new Date(2024, 0, 15); // Jan 15 2024
   `,
 })
 class HostSignalDate {
-  /** Flips the schema's disabled rule — proves the wrapper REACTS, not just reads once. */
+  /** Flips the schema's disabled rule - proves the wrapper REACTS, not just reads once. */
   readonly lock = signal(false);
   readonly model = signal<{ shipDate: Date | null }>({ shipDate: INITIAL });
   readonly f = form(this.model, (p) => {
     required(p.shipDate, { message: "This field is required." });
-    // Reactive disabled rule — the shape every real form uses:
+    // Reactive disabled rule - the shape every real form uses:
     //   disabled(p.truckId, { when: () => this.mode() === "edit" })
     disabled(p.shipDate, { when: () => this.lock() });
   });
@@ -57,12 +57,12 @@ function picker(fixture: ComponentFixture<unknown>): HlmDatePicker<Date> {
     .componentInstance as HlmDatePicker<Date>;
 }
 
-/** The native <input> the date field renders — what a user actually cannot focus when disabled. */
+/** The native <input> the date field renders - what a user actually cannot focus when disabled. */
 function nativeInput(fixture: ComponentFixture<unknown>): HTMLInputElement {
   return fixture.nativeElement.querySelector("input") as HTMLInputElement;
 }
 
-describe("UiDateField — a FormValueControl-only wrapper", () => {
+describe("UiDateField - a FormValueControl-only wrapper", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
   });
@@ -100,7 +100,7 @@ describe("UiDateField — a FormValueControl-only wrapper", () => {
       expect(fixture.componentInstance.model().shipDate?.getTime()).toBe(picked.getTime());
     });
 
-    it("ui-form-field renders the required error once touched — with NO transitional code", async () => {
+    it("ui-form-field renders the required error once touched - with NO transitional code", async () => {
       const fixture = TestBed.createComponent(HostSignalDate);
       await settle(fixture);
 
@@ -117,10 +117,10 @@ describe("UiDateField — a FormValueControl-only wrapper", () => {
      * `disabled(p.truckId, ...)` in the expense forms, tax-rates, timesheets, ...).
      *
      * It used to be covered ONLY by the legacy Reactive-Forms host ("propagates disabled state from
-     * the control"). That host was deleted, and the assertion went with it — leaving the
+     * the control"). That host was deleted, and the assertion went with it - leaving the
      * whole `disabled` dimension of all 10 wrappers untested. This is its Signal Forms twin.
      */
-    it("propagates the schema's disabled rule to the control — and reacts when it flips", async () => {
+    it("propagates the schema's disabled rule to the control - and reacts when it flips", async () => {
       const fixture = TestBed.createComponent(HostSignalDate);
       await settle(fixture);
 

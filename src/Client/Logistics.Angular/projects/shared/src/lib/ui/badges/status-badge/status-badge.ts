@@ -4,7 +4,7 @@ import { Badge } from "../badge/badge";
 import type { UiBadgeIntent } from "../badge/badge-intent";
 import { resolveStatusSeverity, type StatusKind } from "./severity-maps";
 
-/** Typed against `IconName` now that `ui-badge` renders a real `<ui-icon>` — an unknown key here is
+/** Typed against `IconName` now that `ui-badge` renders a real `<ui-icon>` - an unknown key here is
  *  a compile error rather than a chip with a blank square where its glyph should be. */
 const SEVERITY_DEFAULT_ICON: Partial<Record<UiBadgeIntent, IconName>> = {
   success: "circle-check",
@@ -32,7 +32,7 @@ export class StatusBadge {
   public readonly kind = input.required<StatusKind>();
 
   /**
-   * `IconName`, not `string` — `ui-badge` now renders a real `<ui-icon>`, whose name is a checked
+   * `IconName`, not `string` - `ui-badge` now renders a real `<ui-icon>`, whose name is a checked
    * union. `""` stays in the union on purpose: it is this component's documented "no icon at all"
    * escape hatch (see the class doc), and dropping it to tidy the type would silently delete a
    * public behaviour. It has no callers today, which is exactly why nothing would have caught it.

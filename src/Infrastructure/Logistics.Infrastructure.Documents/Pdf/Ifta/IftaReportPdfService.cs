@@ -37,13 +37,13 @@ public class IftaReportPdfService : IIftaReportPdfService
                         col.Item()
                             .Background(Colors.Orange.Lighten4)
                             .Padding(8)
-                            .Text("Some jurisdictions have no published tax rate for this quarter — their tax due is omitted. Add the missing rates before filing.")
+                            .Text("Some jurisdictions have no published tax rate for this quarter - their tax due is omitted. Add the missing rates before filing.")
                             .FontSize(8).FontColor(Colors.Orange.Darken3);
                     }
                 });
 
                 page.Footer().Element(c => PdfFooter.Render(c, tenant,
-                    "Generated for IFTA quarterly filing — verify against your base jurisdiction's return before submitting."));
+                    "Generated for IFTA quarterly filing - verify against your base jurisdiction's return before submitting."));
             });
         });
 

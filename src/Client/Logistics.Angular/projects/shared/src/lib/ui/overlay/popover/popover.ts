@@ -14,15 +14,15 @@ const POPOVER_POSITIONS: ConnectedPosition[] = [
  * A popover panel with arbitrary projected content. Replaces `<p-popover>` at the 4 TMS chrome sites:
  * the sidebar user menu, the favorites bar, the notification bell and the mobile drawer's user menu.
  *
- * All four drive it imperatively off a template ref — `(click)="userPopover.toggle($event)"` and
- * `(click)="…; userPopover.hide()"` — and the notification bell additionally holds a
+ * All four drive it imperatively off a template ref - `(click)="userPopover.toggle($event)"` and
+ * `(click)="…; userPopover.hide()"` - and the notification bell additionally holds a
  * `viewChild<UiPopover>` and calls `.toggle(event)` from TypeScript. So `toggle(event)` and `hide()`
  * are the contract, and the panel must anchor to whichever button was clicked. That is exactly what
  * `AnchoredOverlay` provides, and it is why this does NOT wrap `HlmPopoverTrigger`: brain's trigger
  * is `button[brnPopoverTrigger]`, it anchors the overlay to its own host, and nothing here has a host
  * to anchor to.
  *
- * The vendored `hlm-popover` primitives are consequently unused by this component — deliberately.
+ * The vendored `hlm-popover` primitives are consequently unused by this component - deliberately.
  * Their `*hlmPopoverPortal` structural directive is only load-bearing for brain's own trigger-driven
  * flow; we open and close the CDK overlay ourselves, and every close path is unit-visible in
  * `AnchoredOverlay` rather than implied by a directive that is easy to leave off.

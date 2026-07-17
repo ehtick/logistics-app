@@ -6,13 +6,13 @@
 
 ## Status
 
-- **Completed 2026-05-11** in commit `567b482b` — `feat(vin-decoder): add EU fallback via WMI + NHTSA composite chain`.
+- **Completed 2026-05-11** in commit `567b482b` - `feat(vin-decoder): add EU fallback via WMI + NHTSA composite chain`.
 - **Scope deviations from original plan** (intentional):
   - **WMI data source:** used NHTSA's `DecodeWMI/{prefix}` endpoint on demand instead of shipping a static ~3000-prefix JSON resource. Same upstream (NHTSA's WMI database is sourced from ISO 3779 and covers global manufacturers), one extra cheap HTTP call per decode, no embedded data to maintain. Connection pooling keeps it warm.
   - **Project structure:** VIN decoding moved out of `Logistics.Infrastructure.Documents` into a new dedicated `Logistics.Infrastructure.Vin` project, matching the per-module infrastructure convention (`Logistics.Infrastructure.AI`, `Logistics.Infrastructure.Tax`, etc.).
   - **DTO:** added both `CountryOfManufacture` and `Source` (the original plan only called for `Source`, but the acceptance criterion requires country exposure).
   - **EUCARIS / VindecoderEU:** deferred. Add when a paying EU tenant needs full-detail decode for EU VINs.
-  - **`VinDecoder` config block:** not added — both providers are always-on, no config needed yet. Re-introduce when EUCARIS lands.
+  - **`VinDecoder` config block:** not added - both providers are always-on, no config needed yet. Re-introduce when EUCARIS lands.
 - **Out-of-scope discovery:** the handoff said "Mobile N/A," but [`ConditionReportViewModel.decodeVin()`](../../src/Client/Logistics.DriverApp/composeApp/src/commonMain/kotlin) already calls the endpoint. Mobile benefits transparently from EU coverage; surfacing a source badge in the driver app is a follow-up if support requests it.
 - **Bonus refactor in same commit:** truck-form was over the template refactor threshold (374 lines); split into `truck-vin-field`, `truck-hazmat-section`, and `truck-form-tips` subcomponents. Also fixed a latent bug where `decodeVin()` never populated the form (`patch` object was empty before `patchValue`).
 
@@ -21,12 +21,12 @@
 - **Position in overall order:** 7th
 - **Depends on:** Nothing.
 - **Unblocks:** Nothing strictly. Improves the truck-create UX for EU tenants.
-- **Why seventh:** Self-contained, low-risk infrastructure change. Good "filler" between heavier plans — junior-friendly task or a 1-session quick win.
+- **Why seventh:** Self-contained, low-risk infrastructure change. Good "filler" between heavier plans - junior-friendly task or a 1-session quick win.
 
 ## Why now
 
 - EU tenants adding EU-built trucks (MAN, Scania, DAF, Volvo Trucks Europe, Iveco) get blank decoder results
-- Cheap to add a fallback chain — no commercial API needed for the basic case (WMI prefix decoding alone covers make + country of manufacture)
+- Cheap to add a fallback chain - no commercial API needed for the basic case (WMI prefix decoding alone covers make + country of manufacture)
 
 ## Current state
 
@@ -43,15 +43,15 @@
 ### Application
 
 - Confirm contract `IVinDecoderService.DecodeAsync(string vin, CancellationToken)` returns DTO with `Make`, `Model`, `Year`, `BodyClass`, `Manufacturer`, `Country`
-- Add property `Source` (string) to the response — populated with which decoder produced the result, useful for UI
+- Add property `Source` (string) to the response - populated with which decoder produced the result, useful for UI
 
 ### Infrastructure
 
 - Refactor to a chain-of-responsibility / provider list:
-  - `WmiPrefixDecoder` (always runs first, free, fast — decodes country + manufacturer from first 3 chars of VIN; static lookup table)
-  - `NhtsaVinDecoderService` (existing) — runs if WMI says US/CA/MX
-  - `EucarisVinDecoder` (new, optional) — paid commercial service; only if API key configured
-  - `VindecoderEuService` (new, optional) — alternative paid service
+  - `WmiPrefixDecoder` (always runs first, free, fast - decodes country + manufacturer from first 3 chars of VIN; static lookup table)
+  - `NhtsaVinDecoderService` (existing) - runs if WMI says US/CA/MX
+  - `EucarisVinDecoder` (new, optional) - paid commercial service; only if API key configured
+  - `VindecoderEuService` (new, optional) - alternative paid service
 - New `CompositeVinDecoderService : IVinDecoderService`:
   - Calls in order, merges results (WMI fills make/country, NHTSA/EUCARIS fills detail)
   - First successful detailed response wins after WMI
@@ -80,7 +80,7 @@
 
 ### TMS portal
 
-- `pages/trucks/truck-form/` — keep current "Decode VIN" button; show small badge "via WMI" / "via NHTSA" / "via EUCARIS" so user knows confidence level
+- `pages/trucks/truck-form/` - keep current "Decode VIN" button; show small badge "via WMI" / "via NHTSA" / "via EUCARIS" so user knows confidence level
 - If only WMI succeeded (no model/year), surface a hint that the user should fill model manually
 
 ### Mobile

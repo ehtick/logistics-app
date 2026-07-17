@@ -1,10 +1,10 @@
 /**
- * `ui-card`'s contract. Three things, each of which breaks silently — build, lint and every other
+ * `ui-card`'s contract. Three things, each of which breaks silently - build, lint and every other
  * spec stay green:
  *
  *   1. the `#header` / `#title` / `#subtitle` / `#footer` template slots are rendered at all;
  *   2. the `header` STRING renders in card-title, not card-header (different boxes, different
- *      padding — the header sits outside the body);
+ *      padding - the header sits outside the body);
  *   3. a call site's `class` reaches the host and beats the card's own.
  */
 import { NgTemplateOutlet } from "@angular/common";
@@ -19,7 +19,7 @@ import { TestBed, type ComponentFixture } from "@angular/core/testing";
 import { Card } from "./card";
 
 /**
- * The class-merge host must use a STATIC `class=` — the shape every call site writes. `classes()`
+ * The class-merge host must use a STATIC `class=` - the shape every call site writes. `classes()`
  * harvests the class attribute via `HostAttributeToken` at construction and twMerges it, so a static
  * class is genuinely merged (the card's own `rounded-[…]` is DROPPED, not merely outranked). A
  * `[class]` binding whose value changes after first render is appended by the MutationObserver
@@ -64,7 +64,7 @@ class HostCard {
 
 /**
  * A stand-in for `<ui-data-table>`: a child component that owns its own `#header` slot. This is the
- * shape the list pages write, and the only one that can catch a descending `contentChild` — the
+ * shape the list pages write, and the only one that can catch a descending `contentChild` - the
  * other tests place templates as DIRECT children, where both query kinds behave identically.
  */
 @Component({
@@ -144,7 +144,7 @@ describe("ui-card", () => {
       }
     });
 
-    it("keeps card-header OUTSIDE card-body — they have different padding", () => {
+    it("keeps card-header OUTSIDE card-body - they have different padding", () => {
       host.withHeaderTpl.set(true);
       fixture.detectChanges();
       expect(slot("body")?.contains(slot("header"))).toBe(false);
@@ -153,7 +153,7 @@ describe("ui-card", () => {
     /**
      * `contentChild()` defaults to `descendants: true`, and `#header` / `#title` / `#footer` are also
      * `ui-data-table`'s slot names. With the default, a card containing a table steals the table's
-     * header row and renders `<tr><th>` into card-header, orphaned outside any `<table>` — while the
+     * header row and renders `<tr><th>` into card-header, orphaned outside any `<table>` - while the
      * build, the lint and every other test stay green.
      */
     it("does NOT steal a #header belonging to a NESTED component (descendants: false)", async () => {
@@ -200,7 +200,7 @@ describe("ui-card", () => {
       expect(cls).toContain("shadow-[var(--ui-card-shadow)]");
     });
 
-    it("lets a call-site class BEAT it — twMerge drops ours, it does not merely outrank it", () => {
+    it("lets a call-site class BEAT it - twMerge drops ours, it does not merely outrank it", () => {
       const f = TestBed.createComponent(HostCardClass);
       f.detectChanges();
       const cls = (f.nativeElement.querySelector("ui-card") as HTMLElement).className;

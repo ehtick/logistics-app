@@ -33,7 +33,7 @@ internal static class StripeCapabilities
                     new AccountCapabilitiesBacsDebitPaymentsOptions { Requested = true };
                 return capabilities;
 
-            // Inside geographic Europe but outside the SEPA Direct Debit zone — keep
+            // Inside geographic Europe but outside the SEPA Direct Debit zone - keep
             // card-only to avoid requesting capabilities Stripe will reject.
             case "CH":
             case "NO":

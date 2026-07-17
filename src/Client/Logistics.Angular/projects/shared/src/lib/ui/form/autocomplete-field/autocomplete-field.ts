@@ -21,7 +21,7 @@ import { HlmAutocompleteImports } from "../../primitives/autocomplete";
 import { DetachedControl } from "../detached-control";
 import { focusFirstControl } from "../focus-control";
 
-/** The payload of `completeMethod` — the current search query. */
+/** The payload of `completeMethod` - the current search query. */
 export interface UiAutocompleteCompleteEvent {
   query: string;
 }
@@ -34,7 +34,7 @@ export interface UiAutocompleteOptionContext<T = unknown> {
 /**
  * Type-ahead autocomplete.
  *
- * Implements `FormValueControl` only, never a legacy `ControlValueAccessor` — see `text-field.ts`
+ * Implements `FormValueControl` only, never a legacy `ControlValueAccessor` - see `text-field.ts`
  * for the bridge contract. The inner `hlm-autocomplete` is driven with plain `[value]` /
  * `(valueChange)` and `(searchChange)`; `uiDetachedControl` severs the ambient `NgControl` so
  * brain's `BrnFieldControl` does not track our Signal Forms control. The panel portals via

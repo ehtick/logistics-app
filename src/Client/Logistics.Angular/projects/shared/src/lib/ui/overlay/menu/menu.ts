@@ -10,7 +10,7 @@ import {
 import type { UiMenuItem } from "./menu-item";
 
 /**
- * The popup menu — the same row-kebab pattern at every call site, and the only consumer of the Helm
+ * The popup menu - the same row-kebab pattern at every call site, and the only consumer of the Helm
  * dropdown-menu primitive.
  *
  * THE TRIGGER CONTRACT:
@@ -25,7 +25,7 @@ import type { UiMenuItem } from "./menu-item";
  *
  * WHY THE CLOSE PATHS ARE OURS
  * `CdkMenu` sets `isInline = !this._parentTrigger`. With no `CdkMenuTrigger` above it there is no
- * `MENU_TRIGGER`, so it considers itself "inline" — and an inline menu NEVER PUSHES ITSELF ONTO THE
+ * `MENU_TRIGGER`, so it considers itself "inline" - and an inline menu NEVER PUSHES ITSELF ONTO THE
  * MENU STACK (`ngAfterContentInit`: `if (!this.isInline) this.menuStack.push(this)`). Its Escape
  * handler then calls `menuStack.close(this)`, whose first act is an `indexOf(this) >= 0` test that is
  * false, so it is a SILENT NO-OP: trusting CDK's stack here gives a menu that opens and never closes on
@@ -33,7 +33,7 @@ import type { UiMenuItem } from "./menu-item";
  * scroll-away; this class adds the two menu-specific ones (item activation, tab-out).
  *
  * What `CdkMenu` still gives us is the genuinely hard part: roving-tabindex arrow keys, type-ahead and
- * Home/End. Focusing the menu container on open is enough to start it — `CdkMenuBase._handleFocus()`
+ * Home/End. Focusing the menu container on open is enough to start it - `CdkMenuBase._handleFocus()`
  * calls `focusFirstItem()` for any non-mouse focus origin.
  */
 @Component({
@@ -78,7 +78,7 @@ export class UiMenu {
   /**
    * Tabbing past the last item moves focus out of the overlay, and the menu should not linger.
    *
-   * `focusout`, not `blur` — blur does not bubble, so a listener on the container would
+   * `focusout`, not `blur` - blur does not bubble, so a listener on the container would
    * never see focus leaving a child item. The null check matters just as much: clicking dead space
    * inside the menu fires `focusout` with a null `relatedTarget`, and closing on that would make the
    * menu shut whenever the user clicked its own padding.

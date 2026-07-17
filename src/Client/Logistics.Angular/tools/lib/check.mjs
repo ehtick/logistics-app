@@ -1,9 +1,9 @@
 /**
- * check.mjs — the shared harness behind every gate in tools/checks/.
+ * check.mjs - the shared harness behind every gate in tools/checks/.
  *
  * A gate is a SCOPE (dirs + extensions), a DETECTOR (`src` -> `[{ token, offset }]`) and a SELF-TEST
- * table. The rest — walking the tree, offsets to line numbers, the OK/FAIL report, `--self-test`, the
- * CLI guard — is the same for all of them and lives here. The first gate hand-rolled it and the second
+ * table. The rest - walking the tree, offsets to line numbers, the OK/FAIL report, `--self-test`, the
+ * CLI guard - is the same for all of them and lives here. The first gate hand-rolled it and the second
  * copied it verbatim; a new gate is now a declaration.
  */
 
@@ -38,11 +38,11 @@ export function defineCheck({ title, dirs, ext, exempt, clean, violation, hint, 
     }
 
     if (violations.length === 0) {
-      console.log(`  OK — ${files.length} files, ${clean}.`);
+      console.log(`  OK - ${files.length} files, ${clean}.`);
       return { ok: true };
     }
 
-    console.error(`\n  FAIL — ${violations.length} ${violation}. ${hint}`);
+    console.error(`\n  FAIL - ${violations.length} ${violation}. ${hint}`);
     for (const v of violations) console.error(`    ${v.file}:${v.line}  ${v.token}`);
     return { ok: false };
   }
@@ -67,7 +67,7 @@ export function defineCheck({ title, dirs, ext, exempt, clean, violation, hint, 
  * Gate when the module is the entry point; stay quiet when the runner imports it.
  *
  * pathToFileURL, not string concat: on Windows `process.argv[1]` is `C:\...`, which never equals
- * `file://C:/...` — a hand-rolled comparison makes every gate a silent no-op that exits 0.
+ * `file://C:/...` - a hand-rolled comparison makes every gate a silent no-op that exits 0.
  */
 export function cli(moduleUrl, check) {
   if (moduleUrl !== pathToFileURL(process.argv[1]).href) return;

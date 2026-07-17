@@ -1,16 +1,16 @@
-# EU/US Regional Support — Handoff Plan Index
+# EU/US Regional Support - Handoff Plan Index
 
 > **Created 2026-05-01.** The codebase already has region scaffolding (`Region`/`CurrencyCode`/`DistanceUnit`/`WeightUnit`/`DateFormatType` enums, `TenantSettings`, US/EU `RegionProfile`s, EUR currency in Stripe payment intents, ISO 6346 containers, UN/LOCODE terminals, and a frontend `LocalizationService` that already maps currency/units/dates). The plans below close the remaining gaps so the platform is genuinely usable in both markets.
 >
 > Work them one plan per session. Each plan is self-contained: backend (domain → application → infrastructure → migration), frontend (shared lib → tms / customer / admin / website portals), and mobile (KMP driver app) where relevant.
 
-## Already done — do NOT redo
+## Already done - do NOT redo
 
-- `Tenant.DotNumber` exists ([Tenant.cs:22](../../src/Core/Logistics.Domain/Entities/Tenant.cs#L22)) — only **MC number** and **VAT ID** are missing
-- `LocalizationService` ([localization.service.ts](../../src/Client/Logistics.Angular/projects/shared/src/lib/services/localization.service.ts)) handles currency, distance, weight, date format, timezone — extend it, don't rewrite
-- Mobile `Settings.kt` already declares a `Language` enum (en/ru/uz) — wire translations to it instead of adding a parallel system
-- US/EU `RegionProfile` seed real data including ports, terminals, addresses — extend, don't replace
-- Stripe `PaymentIntent` already passes `payment.Amount.Currency.ToLower()` — multi-currency works for one-off charges; subscriptions and Connect onboarding still need fixes
+- `Tenant.DotNumber` exists ([Tenant.cs:22](../../src/Core/Logistics.Domain/Entities/Tenant.cs#L22)) - only **MC number** and **VAT ID** are missing
+- `LocalizationService` ([localization.service.ts](../../src/Client/Logistics.Angular/projects/shared/src/lib/services/localization.service.ts)) handles currency, distance, weight, date format, timezone - extend it, don't rewrite
+- Mobile `Settings.kt` already declares a `Language` enum (en/ru/uz) - wire translations to it instead of adding a parallel system
+- US/EU `RegionProfile` seed real data including ports, terminals, addresses - extend, don't replace
+- Stripe `PaymentIntent` already passes `payment.Amount.Currency.ToLower()` - multi-currency works for one-off charges; subscriptions and Connect onboarding still need fixes
 
 ## High priority (legal / billing blockers for EU launch)
 
@@ -22,7 +22,7 @@
 | 4   | Done              | [EU tachograph & EC 561/2006 HOS rules](handoff-eu-tachograph-hos.md)       | XL     | All ELD providers are US FMCSA. EU drivers need different rules and providers.                     |
 | 5   |                   | [EU load board integrations (Timocom, Trans.eu)](handoff-eu-load-boards.md) | L      | DAT/Truckstop/123Loadboard are US-only.                                                            |
 
-> Plan #2 ships everything except multi-currency subscription pricing — that piece was intentionally deferred (subscriptions remain card-only / single-currency for now). EU tenants accept SEPA/iDEAL/etc. on their own customer invoices via Stripe Checkout, and pay our SaaS by card. See the plan's Status section for the deferred follow-up.
+> Plan #2 ships everything except multi-currency subscription pricing - that piece was intentionally deferred (subscriptions remain card-only / single-currency for now). EU tenants accept SEPA/iDEAL/etc. on their own customer invoices via Stripe Checkout, and pay our SaaS by card. See the plan's Status section for the deferred follow-up.
 
 ## Medium priority (regional usability)
 
@@ -38,7 +38,7 @@
 
 | #   | Status | Plan                                                                         | Effort | Why                                                                                 |
 | --- | ------ | ---------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------- |
-| 11  |        | [IFTA fuel-tax reporting (US/Canada)](handoff-ifta-fuel-tax.md)              | L      | Quarterly fuel-by-jurisdiction reporting, US-only — but blocking some US customers. |
+| 11  |        | [IFTA fuel-tax reporting (US/Canada)](handoff-ifta-fuel-tax.md)              | L      | Quarterly fuel-by-jurisdiction reporting, US-only - but blocking some US customers. |
 | 12  | Done   | [Region-aware routing & geocoding defaults](handoff-region-aware-routing.md) | S      | Mapbox biasing, country code in geocoding, optional Google fallback.                |
 
 ## Suggested order

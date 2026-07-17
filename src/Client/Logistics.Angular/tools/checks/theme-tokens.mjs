@@ -3,25 +3,25 @@
  * CI gate: no hardcoded palette colours in the app portals or the shared UI library.
  *
  * `.claude/rules/frontend/angular-conventions.md` has said "never use hardcoded color values" for a
- * long time, and 88 violations shipped anyway — because nothing checked. A hardcoded colour does not
+ * long time, and 88 violations shipped anyway - because nothing checked. A hardcoded colour does not
  * follow the theme, so it survives every build, test and lint run and then renders a white sidebar on
  * a dark page. That is exactly how admin/customer dark mode broke.
  *
- * Use a semantic token instead — they flip themselves:
+ * Use a semantic token instead - they flip themselves:
  *   bg-white / bg-gray-50   -> bg-card / bg-background / bg-sidebar
  *   text-gray-600           -> text-muted-foreground
  *   border-gray-200         -> border-border
  *   text-green-600          -> text-success   (also: warning / danger / info)
  *   bg-green-100 (a tint)   -> bg-success/15
  *
- * SCOPE — admin + customer only, for now.
+ * SCOPE - admin + customer only, for now.
  *
  * These two are the portals that broke, and the reason is specific: they carried hardcoded colours
  * with NO `dark:` counterpart at all, so nothing flipped. They are clean now, and this gate keeps them
  * that way.
  *
  * `tms-portal` and `shared/ui` still hold ~325 palette classes, but nearly all are explicit
- * `text-gray-600 dark:text-gray-400` PAIRS — off-token, yet they do flip, so they are a tidy-up and not
+ * `text-gray-600 dark:text-gray-400` PAIRS - off-token, yet they do flip, so they are a tidy-up and not
  * a bug. Converting them would repaint TMS, which is deliberately being kept pixel-identical. Widen the
  * scope when that repaint is in scope; do not widen it silently, or this gate gets disabled instead.
  *

@@ -9,7 +9,7 @@ import { uiBadgeClass, type UiBadgeSize } from "./badge-variants";
  * The tag / chip. For status-driven badges that resolve their own severity from a domain value, use
  * `<ui-status-badge>`; it wraps this one.
  *
- * The `severity` default of `"info"` is part of the contract — repointing it would repaint every
+ * The `severity` default of `"info"` is part of the contract - repointing it would repaint every
  * defaulted badge without touching a call site or failing a test. The host IS the chip (no inner
  * element): `classes()` writes onto the host and twMerges the call site's `class` last, so a call
  * site's `text-xs` beats the size cell rather than racing it in stylesheet order.
@@ -40,7 +40,7 @@ export class Badge {
   public readonly rounded = input(false, { transform: booleanAttribute });
 
   /**
-   * Typed against the generated `IconName` union — an unknown icon is a compile error, not a blank.
+   * Typed against the generated `IconName` union - an unknown icon is a compile error, not a blank.
    * `undefined` is accepted alongside `null` so producers that spell absence as `icon?: IconName` or
    * `computed<IconName | undefined>` need no `?? null`; the template treats both the same.
    */

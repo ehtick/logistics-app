@@ -130,7 +130,7 @@ jobs:
 
             echo "$GHCR_PAT" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Pull before stopping anything, then recreate in place — no down/up cycle
+            # Pull before stopping anything, then recreate in place - no down/up cycle
             docker compose pull
             docker compose up -d --force-recreate --remove-orphans
             docker image prune -f
@@ -138,7 +138,7 @@ jobs:
             echo "=== Containers ==="
             docker compose ps --format "table {{.Name}}\t{{.Status}}"
 
-      # Polls until the API answers or the budget runs out, and FAILS the job if it never does —
+      # Polls until the API answers or the budget runs out, and FAILS the job if it never does -
       # the previous `curl || echo` reported success even when every container was crash-looping.
       - name: Health check
         uses: appleboy/ssh-action@v1.2.4

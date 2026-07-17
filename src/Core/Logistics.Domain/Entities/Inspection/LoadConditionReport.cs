@@ -5,7 +5,7 @@ namespace Logistics.Domain.Entities;
 
 /// <summary>
 /// Cargo condition report captured at pickup or delivery for a load. Covers
-/// vehicle cargo (auto-haul), intermodal containers, and generic freight —
+/// vehicle cargo (auto-haul), intermodal containers, and generic freight -
 /// VIN-related fields are populated only when the load's <see cref="LoadType"/>
 /// is <see cref="LoadType.Vehicle"/>; <see cref="ContainerNumber"/> and
 /// <see cref="SealNumber"/> are populated only for container loads. Defects

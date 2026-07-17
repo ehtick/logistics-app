@@ -198,7 +198,7 @@ export class TenantTaxRatesCard implements OnInit {
   protected formatRate(rate: TenantTaxRateDto): string {
     const j = rate.jurisdiction;
     const where = j?.region ? `${j.countryCode}-${j.region}` : (j?.countryCode ?? "?");
-    return `${rate.ratePercent ?? 0}% — ${where}`;
+    return `${rate.ratePercent ?? 0}% - ${where}`;
   }
 
   private async delete(id: string): Promise<void> {

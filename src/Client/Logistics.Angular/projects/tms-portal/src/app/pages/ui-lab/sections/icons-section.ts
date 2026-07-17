@@ -9,11 +9,11 @@ import {
 } from "@logistics/shared/ui";
 
 /**
- * Every icon the app can render, straight off `UI_ICONS` — never a hand-typed list, so an icon added
+ * Every icon the app can render, straight off `UI_ICONS` - never a hand-typed list, so an icon added
  * to `icons.ts` shows up here for free.
  *
  * Each cell is bordered on purpose: an icon that fails to resolve renders the error glyph (or nothing),
- * and a bordered box makes either impossible to miss — a blank in an unbordered grid is invisible.
+ * and a bordered box makes either impossible to miss - a blank in an unbordered grid is invisible.
  */
 @Component({
   selector: "app-ui-lab-icons",

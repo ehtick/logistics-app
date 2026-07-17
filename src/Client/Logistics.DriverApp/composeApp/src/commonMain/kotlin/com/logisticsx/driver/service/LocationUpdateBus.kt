@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 data class LocationFix(val latitude: Double, val longitude: Double)
 
 object LocationUpdateBus {
-    // No replay — a watcher started after a duty cycle should wait for a real
+    // No replay - a watcher started after a duty cycle should wait for a real
     // GPS fix, never see a stale coordinate from the previous shift.
     private val _updates = MutableSharedFlow<LocationFix>(
         replay = 0,

@@ -13,7 +13,7 @@ export class Values {
       icon: "lightbulb",
       title: "Innovation",
       description:
-        "We try new things and ship them. AI dispatch, the MCP server — we'd rather build it and see what works than wait until someone else does.",
+        "We try new things and ship them. AI dispatch, the MCP server - we'd rather build it and see what works than wait until someone else does.",
     },
     {
       icon: "shield",

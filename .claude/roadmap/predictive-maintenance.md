@@ -1,7 +1,7 @@
 # Predictive Maintenance
 
 - **Status**: Planned
-- **Priority**: P2 — competitors log maintenance; nobody closes the loop with dispatch
+- **Priority**: P2 - competitors log maintenance; nobody closes the loop with dispatch
 - **Effort**: L
 - **Category**: Wedge product
 
@@ -9,7 +9,7 @@
 
 We uniquely hold DVIR defects (`DvirReport`/`DvirDefect`), ELD telematics (odometer, engine data from
 Samsara/Motive/Geotab), maintenance history (`Entities/Maintenance/`), and truck expenses in one schema.
-"This truck's defect pattern precedes a breakdown — service it before assigning that 800-mile load"
+"This truck's defect pattern precedes a breakdown - service it before assigning that 800-mile load"
 prevents stranded loads, which is the expensive outcome.
 
 ## What to build
@@ -22,7 +22,7 @@ prevents stranded loads, which is the expensive outcome.
 
 ## Acceptance
 
-A truck with three consecutive brake-related DVIR defects shows elevated risk, appears with a warning in agent tool output, and triggers a maintenance notification — before a breakdown, not after.
+A truck with three consecutive brake-related DVIR defects shows elevated risk, appears with a warning in agent tool output, and triggers a maintenance notification - before a breakdown, not after.
 
 ## Notes
 

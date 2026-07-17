@@ -16,7 +16,7 @@ import {
  *
  *   1. WIDTH LANDS ON THE PORTALLED PANEL. CDK portals the panel out of <ui-dialog>, so a width on
  *      the host is a no-op and every dialog renders at Helm's default 28rem. The 450 / 650 / 80vw
- *      rows are here to be MEASURED, not admired — a 650px dialog that comes out 448px wide is the
+ *      rows are here to be MEASURED, not admired - a 650px dialog that comes out 448px wide is the
  *      single most likely silent failure in this step.
  *
  *   2. THE BACKDROP MUST NOT CLOSE. No dialog in this app opts into closing on a mask click, but
@@ -24,7 +24,7 @@ import {
  *      whatever you typed still in it.
  *
  *   3. (closed) MUST NOT FIRE ON OPEN. 16 call sites reset their form in it. The event log row makes
- *      the ordering visible; the "prefilled" row makes the consequence visible — get it backwards and
+ *      the ordering visible; the "prefilled" row makes the consequence visible - get it backwards and
  *      the edit dialog blanks itself as it appears.
  *
  *   4. A DIALOG MUST NOT STEAL A NESTED COMPONENT'S SLOTS. `#header` / `#content` inside a dialog in
@@ -34,7 +34,7 @@ import {
  *
  *   5. ESCAPE BELONGS TO THE INNERMOST OVERLAY. A select opened inside a dialog is a SECOND CDK
  *      overlay stacked on the dialog's. Helm's select does not stop Escape from propagating, so one
- *      Escape could dismiss the dropdown AND discard the dialog behind it — with the half-filled
+ *      Escape could dismiss the dropdown AND discard the dialog behind it - with the half-filled
  *      form in it. The "select inside dialog" row reproduces the trip wizard's "Create a new load"
  *      shape. Type in the text box, open the select, press Escape ONCE: the dropdown closes, the
  *      dialog and your text stay.

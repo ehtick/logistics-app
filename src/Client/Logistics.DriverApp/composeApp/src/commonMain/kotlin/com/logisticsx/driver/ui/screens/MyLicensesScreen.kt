@@ -107,7 +107,7 @@ private fun LicenseCard(license: DriverLicenseDto) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = license.licenseClass?.value ?: "—",
+                    text = license.licenseClass?.value ?: "",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Chip(text = chipText, color = chipColor)
@@ -115,13 +115,13 @@ private fun LicenseCard(license: DriverLicenseDto) {
 
             DetailRow(
                 label = "Number",
-                value = license.licenseNumber ?: "—"
+                value = license.licenseNumber ?: ""
             )
             DetailRow(
                 label = "Country",
                 value = listOfNotNull(license.issuingCountry, license.issuingRegion)
                     .joinToString(" / ")
-                    .ifEmpty { "—" }
+                    .ifEmpty { "" }
             )
             license.expiresAt?.let {
                 DetailRow(label = "Expires", value = it.formatShort())

@@ -10,7 +10,7 @@
     @for (action of actions; track action.route) {
       <ui-grid [size]="{ xs: 12, md: 4 }">
         <!-- Deliberately NOT a ui-button. ui-button is filled by `label` + `icon`, and this is a
-             clickable CARD: an icon medallion, a title and a description, laid out by itself — free-
+             clickable CARD: an icon medallion, a title and a description, laid out by itself - free-
              form content ui-button's slots cannot express. The classes below are the
              secondary/outlined cell of ui-button's own cva, so it still looks like a button. -->
         <button

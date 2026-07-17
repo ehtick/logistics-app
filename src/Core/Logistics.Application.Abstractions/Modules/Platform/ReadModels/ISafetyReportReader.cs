@@ -46,7 +46,7 @@ public sealed record SafetyFacts(
 /// </summary>
 public sealed record DvirGroupRow(DvirStatus Status, int Year, int Month, bool HasDefects, int Count);
 
-/// <summary>Per-truck defect total over the date window — total count of <c>DvirDefect</c> rows whose parent DVIR is flagged with defects.</summary>
+/// <summary>Per-truck defect total over the date window - total count of <c>DvirDefect</c> rows whose parent DVIR is flagged with defects.</summary>
 public sealed record TruckDefectRow(Guid TruckId, int DefectCount);
 
 /// <summary>

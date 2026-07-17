@@ -5,7 +5,7 @@ import { DashboardSettingsService } from "@/core/services";
 /**
  * Layout-mirroring skeleton shown while initial home data is loading. Reads
  * the visible panel grid coordinates so the skeleton shapes match where the
- * real panels will land — replaces the blank-then-pop loading window.
+ * real panels will land - replaces the blank-then-pop loading window.
  */
 @Component({
   selector: "app-home-skeleton",

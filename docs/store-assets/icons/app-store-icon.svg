@@ -10,7 +10,7 @@
     </linearGradient>
   </defs>
 
-  <!-- App Store requires a fully opaque square (no alpha, no rounded corners — iOS applies its own mask) -->
+  <!-- App Store requires a fully opaque square (no alpha, no rounded corners - iOS applies its own mask) -->
   <rect width="1024" height="1024" fill="url(#bg)"/>
 
   <g transform="translate(512, 512)">

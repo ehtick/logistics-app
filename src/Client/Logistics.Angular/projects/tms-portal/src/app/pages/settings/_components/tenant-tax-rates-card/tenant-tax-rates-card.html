@@ -43,7 +43,7 @@
               }}{{ rate.jurisdiction?.region ? "-" + rate.jurisdiction?.region : "" }}
             </td>
             <td class="text-right">{{ rate.ratePercent }}%</td>
-            <td>{{ rate.description || "—" }}</td>
+            <td>{{ rate.description || "-" }}</td>
             <td class="text-xs">
               {{ rate.effectiveFrom | dateFormat: "mediumDate" }}
               @if (rate.effectiveTo) {

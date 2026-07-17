@@ -14,7 +14,7 @@ import {
 import { FUEL_CARD_PROVIDER_OPTIONS } from "../fuel-cards.constants";
 
 // `providerType` is nullable because `ui-select-field` is a `FormValueControl<T | null>` and
-// `[formField]` value types are invariant — a non-nullable `FuelCardProviderType` would not bind.
+// `[formField]` value types are invariant - a non-nullable `FuelCardProviderType` would not bind.
 const EMPTY = {
   providerType: "demo" as FuelCardProviderType | null,
   apiKey: "",

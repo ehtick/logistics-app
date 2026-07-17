@@ -14,7 +14,7 @@ import { firstFocusableIn, isFocusable } from "./focusable";
  * the whole point of this class.
  *
  * Close paths, all explicit: Escape (`keydownEvents()`), outside pointer (`outsidePointerEvents()`,
- * ignoring the trigger — see below), navigation (`disposeOnNavigation`) and scrolled-away (the
+ * ignoring the trigger - see below), navigation (`disposeOnNavigation`) and scrolled-away (the
  * reposition strategy's `autoClose`). `opened` is derived from `detachments()`, so it cannot go stale
  * whichever path fired.
  */
@@ -58,7 +58,7 @@ export class AnchoredOverlay {
   }
 
   public show(event: Event): void {
-    // `currentTarget` is the element the listener is bound to — the trigger. `target` may be an inner
+    // `currentTarget` is the element the listener is bound to - the trigger. `target` may be an inner
     // <span> or the icon's <svg>, and anchoring to that would hang the panel off the glyph.
     const origin = (event.currentTarget ?? event.target) as HTMLElement | null;
     if (!origin) return;
@@ -73,12 +73,12 @@ export class AnchoredOverlay {
   }
 
   /**
-   * Put focus back on the trigger after Escape — otherwise it falls to <body> and the user's tab
+   * Put focus back on the trigger after Escape - otherwise it falls to <body> and the user's tab
    * position resets.
    *
    * The anchor is usually `<ui-button>`, a wrapper around the real `<button>` (the click listener is
    * bound to the component element, so that is what `currentTarget` hands us). A custom element has no
-   * tabindex, so `.focus()` on it is a silent no-op — hence: the anchor only if it is genuinely
+   * tabindex, so `.focus()` on it is a silent no-op - hence: the anchor only if it is genuinely
    * focusable, else its first focusable child.
    *
    * Takes the anchor as an argument because `hide()` clears `origin` synchronously.
@@ -122,7 +122,7 @@ export class AnchoredOverlay {
     overlayRef.keydownEvents().subscribe((event) => {
       if (event.keyCode !== ESCAPE) return;
       event.preventDefault();
-      const anchor = this.origin; // hide() clears it, synchronously — read it first.
+      const anchor = this.origin; // hide() clears it, synchronously - read it first.
       this.hide();
       AnchoredOverlay.refocusTrigger(anchor);
     });

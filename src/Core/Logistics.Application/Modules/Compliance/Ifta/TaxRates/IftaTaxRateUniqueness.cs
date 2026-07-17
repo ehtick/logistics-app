@@ -7,7 +7,7 @@ namespace Logistics.Application.Modules.Compliance.Ifta.TaxRates;
 /// <summary>
 /// (Year, Quarter, Jurisdiction) uniqueness for IFTA tax rates. It lives here rather than in a DB
 /// unique index because complex-type members cannot participate in one (see
-/// IftaTaxRateEntityConfiguration), which makes this the only thing protecting the invariant —
+/// IftaTaxRateEntityConfiguration), which makes this the only thing protecting the invariant -
 /// every write path must go through it. A duplicate would silently change computed tax due:
 /// IftaReportService resolves rates with GroupBy(...).First().
 /// </summary>

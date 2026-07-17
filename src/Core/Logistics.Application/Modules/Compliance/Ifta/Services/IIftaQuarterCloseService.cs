@@ -3,7 +3,7 @@ using Logistics.Application.Abstractions;
 namespace Logistics.Application.Modules.Compliance.Ifta.Services;
 
 /// <summary>
-/// Writes the immutable snapshot for the most recently ended quarter (once — snapshots are
+/// Writes the immutable snapshot for the most recently ended quarter (once - snapshots are
 /// never updated) and purges location breadcrumbs past the 4-year IFTA audit window.
 /// Operates on the current tenant; the Hangfire job iterates tenants.
 /// </summary>

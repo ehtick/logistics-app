@@ -4,7 +4,7 @@ import { classes } from "../../primitives/utils";
 export type UiAvatarSize = "normal" | "large" | "xlarge";
 
 /**
- * The initials avatar: an initials-only circle, never an image or an icon. `shape` is not an input —
+ * The initials avatar: an initials-only circle, never an image or an icon. `shape` is not an input -
  * a non-circular avatar has no caller.
  *
  * The HOST is the circle, so a call site can tint it per user with

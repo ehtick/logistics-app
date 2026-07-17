@@ -268,7 +268,7 @@ public class StripeTaxCalculatorTests
         Assert.Equal(19m, line.TaxAmount);
         Assert.Equal("DE", line.Jurisdiction.CountryCode);
         Assert.Null(line.Jurisdiction.Region);
-        Assert.Contains("VAT 19% — DE", line.Description);
+        Assert.Contains("VAT 19% - DE", line.Description);
     }
 
     [Fact]

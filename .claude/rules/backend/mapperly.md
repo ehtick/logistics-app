@@ -6,7 +6,7 @@ paths:
 
 # Entity-to-DTO Mapping (Mapperly)
 
-- All mapping via Riok.Mapperly mappers in `src/Core/Logistics.Mappings/` — no manual mapping in handlers
+- All mapping via Riok.Mapperly mappers in `src/Core/Logistics.Mappings/` - no manual mapping in handlers
 - Extension method pattern: `entity.ToDto()`
 - `[MapperIgnoreSource]` for navigation properties, internal fields
 - `[MapperIgnoreTarget]` for computed fields set manually after mapping
@@ -30,7 +30,7 @@ public static EntityDto ToDto(this Entity entity, int computed)
 ## Never flatten a navigation property
 
 Lazy loading is on, so letting Mapperly flatten `Truck.Number` into `TruckNumber` costs one SELECT
-**per row** — an N+1 that is invisible in the mapper. `[MapperIgnoreTarget]` it, batch the lookup
+**per row** - an N+1 that is invisible in the mapper. `[MapperIgnoreTarget]` it, batch the lookup
 in the handler, pass the value in:
 
 ```csharp

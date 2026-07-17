@@ -24,7 +24,7 @@ internal sealed class TruckJurisdictionMileageEntityConfiguration : IEntityTypeC
         builder.Property(i => i.Miles).HasPrecision(12, 2);
 
         // Row identity (truck, date, jurisdiction) is enforced by TruckLocationRecorder's
-        // upsert — complex-type members can't participate in a unique index.
+        // upsert - complex-type members can't participate in a unique index.
         builder.HasIndex(i => new { i.TruckId, i.Date });
         builder.HasIndex(i => i.Date);
     }

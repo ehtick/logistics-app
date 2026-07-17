@@ -9,12 +9,12 @@ import {
 } from "./button-variants";
 
 /**
- * The button. A wrapper element around a real `<button>`, not a directive on a native one — call
+ * The button. A wrapper element around a real `<button>`, not a directive on a native one - call
  * sites lay out against the wrapper node, so collapsing the DOM would reflow their parents.
  *
  * There must NEVER be a `routerLink` input. `RouterLink`'s selector is `[routerLink]`, so it already
  * matches the HOST and already navigates on host click. Declaring our own input of that name and
- * forwarding it to an inner `<a>` would bind both — one click, two navigations. Same for
+ * forwarding it to an inner `<a>` would bind both - one click, two navigations. Same for
  * `queryParams`. The attribute stays on the host and this component does not know it exists.
  *
  * There is no `<ng-content>` (`label` / `icon` are the only way to fill a button) and no output:
@@ -31,7 +31,7 @@ import {
   host: {
     class: "inline-flex",
     // The inner <button>'s own [disabled] blocks its clicks; this kills the HOST's. Load-bearing
-    // because RouterLink listens on the host — without it a disabled `<ui-button routerLink=…>`
+    // because RouterLink listens on the host - without it a disabled `<ui-button routerLink=…>`
     // would still navigate, and a `loading` button would still be double-submittable.
     "[class.pointer-events-none]": "disabled() || loading()",
     "[class.w-full]": "block()",
@@ -40,10 +40,10 @@ import {
 export class UiButton {
   public readonly label = input<string>();
 
-  /** Typed against the generated `IconName` union — an unknown icon is a compile error, not a blank. */
+  /** Typed against the generated `IconName` union - an unknown icon is a compile error, not a blank. */
   public readonly icon = input<IconName>();
 
-  /** Trailing glyph. There is no `iconPos` input — use this instead. */
+  /** Trailing glyph. There is no `iconPos` input - use this instead. */
   public readonly iconEnd = input<IconName>();
 
   public readonly intent = input<UiButtonIntent>("primary");
@@ -58,14 +58,14 @@ export class UiButton {
 
   public readonly disabled = input(false, { transform: booleanAttribute });
 
-  /** Swaps the icon for a spinner, disables the button and sets aria-busy — all three. */
+  /** Swaps the icon for a spinner, disables the button and sets aria-busy - all three. */
   public readonly loading = input(false, { transform: booleanAttribute });
 
   public readonly rounded = input(false, { transform: booleanAttribute });
   public readonly block = input(false, { transform: booleanAttribute });
 
   /**
-   * The accessible name. MANDATORY when the button is icon-only — there is no text to name it.
+   * The accessible name. MANDATORY when the button is icon-only - there is no text to name it.
    * `check-buttons.mjs` enforces that statically.
    */
   public readonly ariaLabel = input<string>();

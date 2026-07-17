@@ -13,7 +13,7 @@ deploy/
   nginx/logisticsx.conf         # host nginx reverse proxy (subdomains -> 127.0.0.1:port)
 ```
 
-The main stack contains `identity-server`, `api`, `admin-portal`, `tms-portal`, `customer-portal`, and `website`. PostgreSQL is **external** (installed on the host or a managed instance) — it is not part of the compose file.
+The main stack contains `identity-server`, `api`, `admin-portal`, `tms-portal`, `customer-portal`, and `website`. PostgreSQL is **external** (installed on the host or a managed instance) - it is not part of the compose file.
 
 ## Automated deployment (recommended)
 
@@ -90,7 +90,7 @@ docker compose pull && docker compose up -d   # update images
 
 ## Portainer
 
-Portainer runs as its own compose project so a main-stack redeploy (`--remove-orphans`) never removes it. It is deployed once, manually — see [VPS Setup](vps-setup.md). Access is via `https://portainer.logisticsx.app` (nginx → `127.0.0.1:9000`); the port is never exposed publicly.
+Portainer runs as its own compose project so a main-stack redeploy (`--remove-orphans`) never removes it. It is deployed once, manually - see [VPS Setup](vps-setup.md). Access is via `https://portainer.logisticsx.app` (nginx → `127.0.0.1:9000`); the port is never exposed publicly.
 
 ## Troubleshooting
 
@@ -103,5 +103,5 @@ sudo nginx -t && sudo tail -f /var/log/nginx/error.log
 
 ## Next Steps
 
-- [VPS Setup](vps-setup.md) — initial server configuration
-- [Environment Variables](../configuration/environment-variables.md) — full configuration reference
+- [VPS Setup](vps-setup.md) - initial server configuration
+- [Environment Variables](../configuration/environment-variables.md) - full configuration reference

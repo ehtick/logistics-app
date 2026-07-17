@@ -12,10 +12,10 @@ import type { FormValueControl, ValidationError } from "@angular/forms/signals";
 import { focusFirstControl } from "../focus-control";
 
 /**
- * Boolean on/off switch — a native `<input type="checkbox">` (visually hidden, `peer sr-only`)
+ * Boolean on/off switch - a native `<input type="checkbox">` (visually hidden, `peer sr-only`)
  * behind a styled track + thumb.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  * The inner control is a real native checkbox driven by plain `[checked]` / `(change)`.
  *
  * @example

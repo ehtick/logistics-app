@@ -1,6 +1,6 @@
 # Application Module Layout
 
-`Logistics.Application` is organised into six modules. Each module owns the features inside one bounded context — pick a module by context, not by entity.
+`Logistics.Application` is organised into six modules. Each module owns the features inside one bounded context - pick a module by context, not by entity.
 
 ## The six modules
 
@@ -51,17 +51,17 @@ See `src/Core/Logistics.Application/Modules/Compliance/Accidents/Commands/Create
 Use bounded context, not entity affinity:
 
 - A _driver licence_ is owned by an Employee, but checking expiry is **Compliance** behaviour → `Modules/Compliance/...`. If the licence record itself lives next to the employee, that part stays in `Modules/IdentityAccess/Employees/...`.
-- A _Stripe webhook_ could feel like Financial, but webhook plumbing is **Integrations** → `Modules/Integrations/Webhooks/`. The downstream effect (issuing an invoice) is Financial — split the command from the side effect.
+- A _Stripe webhook_ could feel like Financial, but webhook plumbing is **Integrations** → `Modules/Integrations/Webhooks/`. The downstream effect (issuing an invoice) is Financial - split the command from the side effect.
 - _Blog posts_ power the marketing site, so they're **Platform**, not IdentityAccess, even though they have an Author.
 
 When two modules both look right, pick the one whose other features the new command will mostly call.
 
 ## Module registrar
 
-Every module ships a `{Module}ModuleRegistrar.cs` that exposes a single `Add{Module}Module(IServiceCollection)` extension. Most are empty today — MediatR handlers, FluentValidation validators, and `IApplicationService` implementations are registered assembly-wide by the private `AddApplicationCommon` / `AddApplicationServices` scans in `Logistics.Application/Registrar.cs`. Only put a service in a module registrar when the global scan can't cover it (decorators, named instances, keyed services, factories).
+Every module ships a `{Module}ModuleRegistrar.cs` that exposes a single `Add{Module}Module(IServiceCollection)` extension. Most are empty today - MediatR handlers, FluentValidation validators, and `IApplicationService` implementations are registered assembly-wide by the private `AddApplicationCommon` / `AddApplicationServices` scans in `Logistics.Application/Registrar.cs`. Only put a service in a module registrar when the global scan can't cover it (decorators, named instances, keyed services, factories).
 
-The whole layer is wired by the single aggregate `services.AddApplicationLayer()`, which runs `AddApplicationCommon`, `AddApplicationServices`, then all six `Add{Module}Module()` calls internally. The **API** is the only host that calls it — from `Logistics.API/Setup.cs` (`ConfigureServices`), reached through the thin `LogisticsHost.Run` shell in `Program.cs`. IdentityServer and DbMigrator do **not** wire the module registrars; DbMigrator pulls in only the narrow slices it needs for seeding (`AddApplicationTaxServices`, `AddApplicationFuelCardServices`).
+The whole layer is wired by the single aggregate `services.AddApplicationLayer()`, which runs `AddApplicationCommon`, `AddApplicationServices`, then all six `Add{Module}Module()` calls internally. The **API** is the only host that calls it - from `Logistics.API/Setup.cs` (`ConfigureServices`), reached through the thin `LogisticsHost.Run` shell in `Program.cs`. IdentityServer and DbMigrator do **not** wire the module registrars; DbMigrator pulls in only the narrow slices it needs for seeding (`AddApplicationTaxServices`, `AddApplicationFuelCardServices`).
 
 ## Scaffolding a new feature
 
-Use the [scaffold-feature](../../.claude/skills/scaffold-feature/SKILL.md) skill — it writes files to the correct module path, names everything consistently, and updates `.claude/feature-map.md` for you.
+Use the [scaffold-feature](../../.claude/skills/scaffold-feature/SKILL.md) skill - it writes files to the correct module path, names everything consistently, and updates `.claude/feature-map.md` for you.

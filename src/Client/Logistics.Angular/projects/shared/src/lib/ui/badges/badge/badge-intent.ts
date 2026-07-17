@@ -1,5 +1,5 @@
 /**
- * The badge/tag colour vocabulary — one definition for the whole workspace. Every `severity`-producing
+ * The badge/tag colour vocabulary - one definition for the whole workspace. Every `severity`-producing
  * helper in every app returns this type.
  *
  * There is deliberately no `neutral`: the grey chip is `secondary`.
@@ -13,7 +13,7 @@ export type UiBadgeIntent =
   | "danger"
   | "contrast";
 
-/** Runtime list of the vocabulary — for exhaustive `Record<UiBadgeIntent, T>` variant tables. */
+/** Runtime list of the vocabulary - for exhaustive `Record<UiBadgeIntent, T>` variant tables. */
 export const UI_BADGE_INTENTS = [
   "primary",
   "secondary",

@@ -101,20 +101,20 @@
     </ui-form-field>
 
     <!--
-      ui-search-field is NOT a FormValueControl — it is a debounced input that emits a query. It
+      ui-search-field is NOT a FormValueControl - it is a debounced input that emits a query. It
       lives inside the form only so all the field controls are visible side by side.
     -->
     <ui-form-field label="Search (not form-bound)" hint="Emits (searchChange) after a debounce">
       <ui-search-field placeholder="Search shipments" (searchChange)="lastSearch.set($event)" />
       <p class="text-muted-foreground mt-1 text-xs" [attr.data-lab]="'search-echo-' + variant()">
         last query:
-        <code>{{ lastSearch() || "—" }}</code>
+        <code>{{ lastSearch() || "-" }}</code>
       </p>
     </ui-form-field>
 
     <div class="flex items-center gap-3">
       <!--
-        Never `[disabled]="form().invalid()"` — the button must stay clickable so ValidatedForm can
+        Never `[disabled]="form().invalid()"` - the button must stay clickable so ValidatedForm can
         reveal what is missing. Guard on submitting() only.
       -->
       <button
@@ -129,7 +129,7 @@
         `disabled` is read off a FIELD, not the root: the schema disables each field individually,
         so `form().disabled()` (the root's own flag) is false even when every control is disabled.
         Printing the root here would say "disabled: false" on the disabled card.
-        Note the disabled card also reads `valid: true` — Signal Forms skips validation on disabled
+        Note the disabled card also reads `valid: true` - Signal Forms skips validation on disabled
         fields. That is correct, and worth being able to see.
       -->
       <span class="text-muted-foreground text-xs" [attr.data-lab]="'state-' + variant()">

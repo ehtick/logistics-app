@@ -1,12 +1,12 @@
 /**
- * `ui-overlay-badge` exists for ONE call site — the notification bell — and for one behaviour that
+ * `ui-overlay-badge` exists for ONE call site - the notification bell - and for one behaviour that
  * the call site cannot tell you about:
  *
  *     [value]="unreadCount() > 0 ? (… ) : null"        notification-bell.html
  *
- * The bell says "no unread messages" by handing over `null`, and trusts the badge to vanish — there
+ * The bell says "no unread messages" by handing over `null`, and trusts the badge to vanish - there
  * is no `@if`, no class and no comment at the call site recording the dependency. Get it wrong and
- * the bell shows a red dot forever, on every page, for every user — with a green build and a green
+ * the bell shows a red dot forever, on every page, for every user - with a green build and a green
  * test suite.
  *
  * That is what this file is for. The rest of the component is 10 lines of positioning.
@@ -48,7 +48,7 @@ describe("ui-overlay-badge", () => {
     expect(fixture.nativeElement.querySelector('[data-test="content"]')).toBeTruthy();
   });
 
-  describe("a value of nothing HIDES the badge — the notification bell depends on it", () => {
+  describe("a value of nothing HIDES the badge - the notification bell depends on it", () => {
     it("renders no badge for null", () => {
       host.value.set(null);
       fixture.detectChanges();
@@ -61,7 +61,7 @@ describe("ui-overlay-badge", () => {
       expect(badge()).toBeNull();
     });
 
-    it("renders no badge for a zero count — 0 unread is not a notification", () => {
+    it("renders no badge for a zero count - 0 unread is not a notification", () => {
       host.value.set(0);
       fixture.detectChanges();
       expect(badge()).toBeNull();
@@ -75,7 +75,7 @@ describe("ui-overlay-badge", () => {
   });
 
   describe("a real value SHOWS the badge", () => {
-    it('renders the count — including the bell\'s "9+"', () => {
+    it('renders the count - including the bell\'s "9+"', () => {
       host.value.set("9+");
       fixture.detectChanges();
       expect(badge()?.textContent?.trim()).toBe("9+");

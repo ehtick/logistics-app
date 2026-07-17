@@ -1,4 +1,4 @@
-// Loads chart configs — sourced from `chart-palette.ts`
+// Loads chart configs - sourced from `chart-palette.ts`
 import { CHART_CATEGORICAL, getChartPalette } from "./chart-palette";
 
 /**

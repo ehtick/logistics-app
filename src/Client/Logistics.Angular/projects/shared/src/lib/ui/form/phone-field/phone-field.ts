@@ -21,13 +21,13 @@ import { MaskedInput } from "./masked-input";
 /**
  * Phone number input with a country dial-code selector.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  *
  * The public `value` is an E.164 string (`+[dialCode][digits]`). It is split into the
  * `selectedCountry` + `phoneNumber` presentation signals when set from OUTSIDE, and
  * recomposed from them on user edits. The recompose is idempotent (parsing what we just
  * emitted yields the same country/number), and an internal guard prevents the
- * emit -> parse round trip from clobbering local state — see `lastEmitted`.
+ * emit -> parse round trip from clobbering local state - see `lastEmitted`.
  */
 @Component({
   selector: "ui-phone-field",
@@ -76,7 +76,7 @@ export class PhoneField implements FormValueControl<string | null> {
 
   /**
    * The last value we emitted from a user edit. When `value()` matches it, the change
-   * originated here, so the parse effect skips re-deriving country/number — this keeps a
+   * originated here, so the parse effect skips re-deriving country/number - this keeps a
    * user-selected country even when the composed value is `null` (empty number).
    */
   private lastEmitted: string | null | undefined = undefined;

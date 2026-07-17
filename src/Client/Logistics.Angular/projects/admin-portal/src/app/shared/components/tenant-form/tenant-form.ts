@@ -25,7 +25,7 @@ export interface TenantFormValue {
   region: Region;
 }
 
-/** Editable model shape — `companyAddress` is null until the address editor is fully filled. */
+/** Editable model shape - `companyAddress` is null until the address editor is fully filled. */
 interface TenantFormModel {
   name: string;
   companyName: string;

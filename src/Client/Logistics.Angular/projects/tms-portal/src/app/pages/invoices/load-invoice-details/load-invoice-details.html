@@ -85,7 +85,7 @@
                   <td class="text-right">{{ item.total | currencyFormat }}</td>
                   @if (hasTax()) {
                     <td class="text-right">
-                      {{ (item.taxRatePercent ?? 0) > 0 ? item.taxRatePercent + "%" : "—" }}
+                      {{ (item.taxRatePercent ?? 0) > 0 ? item.taxRatePercent + "%" : "-" }}
                     </td>
                     <td class="text-right">{{ item.taxAmount ?? 0 | currencyFormat }}</td>
                     <td class="text-right">
@@ -119,7 +119,7 @@
                 <tr>
                   <td>{{ line.description ?? line.jurisdiction?.countryCode }}</td>
                   <td class="text-right">
-                    {{ (line.ratePercent ?? 0) > 0 ? line.ratePercent + "%" : "—" }}
+                    {{ (line.ratePercent ?? 0) > 0 ? line.ratePercent + "%" : "-" }}
                   </td>
                   <td class="text-right">{{ line.baseAmount | currencyFormat }}</td>
                   <td class="text-right">{{ line.taxAmount | currencyFormat }}</td>

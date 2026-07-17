@@ -1,13 +1,13 @@
 /**
  * The icon runtime's contract. Every failure mode here is INVISIBLE to the build, to lint and to every
- * other spec — it shows up as a 0x0 <svg> on a page nobody opened. So it is pinned:
+ * other spec - it shows up as a 0x0 <svg> on a page nobody opened. So it is pinned:
  *
- *   1. svg binding      — a known name binds its raw SVG straight to `<ng-icon [svg]>`; a renamed
+ *   1. svg binding      - a known name binds its raw SVG straight to `<ng-icon [svg]>`; a renamed
  *                          legacy name (`cog`) is now a compile error, not a runtime alias.
- *   2. size="inherit"   — emits NO `text-*` class, so `[&_ng-icon:not([class*='text-'])]:size-4`
+ *   2. size="inherit"   - emits NO `text-*` class, so `[&_ng-icon:not([class*='text-'])]:size-4`
  *                          (how Helm's button sizes its icons) still matches.
- *   3. spin             — `animate-spin`, replacing primeicons' spin class (a CSS keyframe, not a glyph).
- *   4. unknown name     — console.error + a VISIBLE error glyph, and NOT a throw: a throw during
+ *   3. spin             - `animate-spin`, replacing primeicons' spin class (a CSS keyframe, not a glyph).
+ *   4. unknown name     - console.error + a VISIBLE error glyph, and NOT a throw: a throw during
  *                          render tears down the view in a zoneless app, and every intermediate state
  *                          of an icon-name rename must stay drivable in a browser.
  */
@@ -16,7 +16,7 @@ import { TestBed, type ComponentFixture } from "@angular/core/testing";
 import { ERROR_ICON_SVG, UI_ICONS, type IconName } from "../../icons/icons";
 import { Icon, type IconSize } from "./icon";
 
-/** A host with a DYNAMIC [name] — the only way an unknown name can reach the runtime. */
+/** A host with a DYNAMIC [name] - the only way an unknown name can reach the runtime. */
 @Component({
   selector: "ui-host-icon",
   imports: [Icon],
@@ -77,7 +77,7 @@ describe("ui-icon", () => {
   });
 
   describe("size", () => {
-    it("emits a text-* class by default (md) — 246 call sites depend on it", async () => {
+    it("emits a text-* class by default (md) - 246 call sites depend on it", async () => {
       const fixture = await render("check");
       expect(ngIcon(fixture).className).toContain("text-base");
     });
@@ -101,7 +101,7 @@ describe("ui-icon", () => {
       expect(ngIcon(fixture).className).toContain("animate-spin");
     });
 
-    it("is hosted on an inline-flex element — transform is a no-op on an inline box", async () => {
+    it("is hosted on an inline-flex element - transform is a no-op on an inline box", async () => {
       const fixture = await render("loader-circle", { spin: true });
       const host = fixture.nativeElement.querySelector("ui-icon") as HTMLElement;
       expect(host.className).toContain("inline-flex");

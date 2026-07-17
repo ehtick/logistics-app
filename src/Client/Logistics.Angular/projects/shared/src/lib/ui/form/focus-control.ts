@@ -4,7 +4,7 @@
  * Signal Forms' `FieldState.focusBoundControl()` (used by `ValidatedForm` to jump to the first
  * invalid field on submit) delegates to the bound control's optional `focus()` method. When a
  * control does NOT implement `focus()`, Angular falls back to calling `.focus()` on the
- * `[formField]` host element — which for a custom element like `<ui-text-field>` is a silent no-op,
+ * `[formField]` host element - which for a custom element like `<ui-text-field>` is a silent no-op,
  * because the host carries no `tabindex`.
  *
  * So every `ui-*-field` wrapper implements `focus()` and delegates here.

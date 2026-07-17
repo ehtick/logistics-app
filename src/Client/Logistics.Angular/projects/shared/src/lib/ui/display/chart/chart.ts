@@ -73,12 +73,12 @@ async function loadChartJs(): Promise<typeof import("chart.js")> {
  *   - teardown -> `destroy()`, which is mandatory: in responsive mode chart.js attaches a
  *     `ResizeObserver` to the canvas's parent that otherwise keeps the chart and its data alive.
  *
- * Resize needs no code here — `responsive: true` makes chart.js own that `ResizeObserver` itself.
+ * Resize needs no code here - `responsive: true` makes chart.js own that `ResizeObserver` itself.
  */
 @Component({
   selector: "ui-chart",
   templateUrl: "./chart.html",
-  // chart.js sizes a responsive canvas from its parent, so the host IS the sizing container — call
+  // chart.js sizes a responsive canvas from its parent, so the host IS the sizing container - call
   // sites give it a height via `style="height: 300px"` or `class="h-full w-full"`.
   host: { class: "block relative" },
 })
@@ -99,14 +99,14 @@ export class UiChart {
   private readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>("canvas");
 
   private chart: Chart | null = null;
-  /** The type/options the live chart was BUILT with — a change in either forces a recreate. */
+  /** The type/options the live chart was BUILT with - a change in either forces a recreate. */
   private builtType: UiChartType | null = null;
   private builtOptions: unknown = null;
 
   /**
    * Guards the window in which `import("chart.js")` is in flight. `destroy()` and every `create()`
    * bump it; a `create()` whose token is stale when its await resolves has been superseded or
-   * orphaned and must NOT touch the canvas — `viewChild.required` throws once the view is gone, and
+   * orphaned and must NOT touch the canvas - `viewChild.required` throws once the view is gone, and
    * a chart built after teardown leaks its ResizeObserver forever.
    */
   private generation = 0;
@@ -128,7 +128,7 @@ export class UiChart {
 
   /**
    * Reconcile the live chart with the current inputs. A no-op before `afterNextRender` has built the
-   * chart — the effect's first run happens during change detection, when the canvas is not laid out
+   * chart - the effect's first run happens during change detection, when the canvas is not laid out
    * yet, and `create()` reads the same signals anyway.
    */
   private sync(type: UiChartType, data: unknown, options: unknown, responsive: boolean): void {
@@ -159,7 +159,7 @@ export class UiChart {
       return;
     }
 
-    // Re-read the inputs AFTER the await — they may have moved on while chart.js was loading, and
+    // Re-read the inputs AFTER the await - they may have moved on while chart.js was loading, and
     // `sync()` no-ops until `this.chart` exists, so this is the only place reconciliation lands.
     const type = this.type();
     const options = this.options();
@@ -175,7 +175,7 @@ export class UiChart {
   }
 
   private destroy(): void {
-    // Invalidates any in-flight create() — see `generation`.
+    // Invalidates any in-flight create() - see `generation`.
     this.generation++;
     this.chart?.destroy();
     this.chart = null;
@@ -184,7 +184,7 @@ export class UiChart {
   }
 
   /**
-   * Copy — never mutate. The options objects handed in are shared module-level constants (the
+   * Copy - never mutate. The options objects handed in are shared module-level constants (the
    * `*-chart.options.ts` files), so assigning `responsive` onto them would write into state other
    * charts read.
    */

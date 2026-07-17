@@ -34,7 +34,7 @@ internal sealed class GetConditionReportsHandler(ITenantUnitOfWork tenantUow)
         foreach (var report in reports)
         {
             // Photos are stored as DeliveryDocument rows linked by LoadId + inspection
-            // timestamp proximity (legacy pattern — out of scope to refactor here).
+            // timestamp proximity (legacy pattern - out of scope to refactor here).
             var photos = await tenantUow.Repository<DeliveryDocument>().Query()
                 .Where(d => d.LoadId == report.LoadId &&
                     (d.Type == DocumentType.PickupInspection || d.Type == DocumentType.DeliveryInspection) &&

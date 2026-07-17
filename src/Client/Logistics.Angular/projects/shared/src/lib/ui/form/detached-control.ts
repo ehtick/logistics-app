@@ -6,7 +6,7 @@ import { NgControl } from "@angular/forms";
  *
  * Our `ui-*-field` wrappers implement `FormValueControl` and are bound with `[formField]` /
  * `formControlName` on their host, which provides an `NgControl` (Signal Forms' `InteropNgControl`)
- * in the element injector. Brain's `BrnFieldControl` — host-directed by `BrnSelect` and friends —
+ * in the element injector. Brain's `BrnFieldControl` - host-directed by `BrnSelect` and friends -
  * resolves that ancestor `NgControl` hierarchically and hands it to `createStateTracker`, which
  * subscribes to `control.events` / `statusChanges`. `InteropNgControl` exposes neither, so it
  * crashes at init (the same shape as the `pTextarea` + `[formField]` crash).

@@ -46,7 +46,7 @@ public class AccountingController(IMediator mediator, IOptions<AccountingOptions
     }
 
     /// <summary>
-    ///     OAuth2 redirect target for QuickBooks. Intuit redirects the browser here (anonymous —
+    ///     OAuth2 redirect target for QuickBooks. Intuit redirects the browser here (anonymous -
     ///     no app auth cookie/JWT), so the tenant is recovered from the signed <paramref name="state"/>.
     ///     Completes the connection and 302-redirects back to the TMS portal settings page.
     /// </summary>

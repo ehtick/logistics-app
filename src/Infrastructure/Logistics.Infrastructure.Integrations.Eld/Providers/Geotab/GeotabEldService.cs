@@ -12,7 +12,7 @@ namespace Logistics.Infrastructure.Integrations.Eld.Providers.Geotab;
 
 /// <summary>
 ///     Geotab MyGeotab provider implementation. Serves both US (FMCSA) and EU
-///     (561/2006 tachograph) fleets — the active rule set is inferred from
+///     (561/2006 tachograph) fleets - the active rule set is inferred from
 ///     the tenant's region for violation mapping. HOS counters and violations
 ///     themselves are always provider-sourced; we never compute them locally.
 ///     API reference: https://geotab.github.io/sdk/.

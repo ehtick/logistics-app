@@ -1,7 +1,7 @@
 # Graduated Autonomy (per-action trust ladder)
 
 - **Status**: Planned
-- **Priority**: P1 — turns the HumanInTheLoop → Autonomous leap into a ramp; honest answer to agentic-AI trust
+- **Priority**: P1 - turns the HumanInTheLoop → Autonomous leap into a ramp; honest answer to agentic-AI trust
 - **Effort**: M
 - **Category**: AI differentiation
 
@@ -9,7 +9,7 @@
 
 `AiDispatchMode` is binary. Dispatchers who'd happily auto-approve routine load assignments still
 want a human gate on spending money (booking load-board freight). Per-action-type trust converts
-approval history into earned autonomy — and differentiates against competitors overselling full autonomy.
+approval history into earned autonomy - and differentiates against competitors overselling full autonomy.
 
 ## What to build
 

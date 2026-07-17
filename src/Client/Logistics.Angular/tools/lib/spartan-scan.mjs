@@ -4,16 +4,16 @@
  * boundary rules, so the two could disagree about the same file.
  *
  * WHY IT MATTERS: the Spartan CLI leaves a few tokens un-inlined (`spartan-invalid`,
- * `spartan-menu-target`, `spartan-logical-sides`). Those class names are UNDEFINED here — we
- * deliberately do not ship `@spartan-ng/brain/hlm-tailwind-preset.css` — so a component that emits one
+ * `spartan-menu-target`, `spartan-logical-sides`). Those class names are UNDEFINED here - we
+ * deliberately do not ship `@spartan-ng/brain/hlm-tailwind-preset.css` - so a component that emits one
  * renders UNSTYLED, silently.
  *
  * Three things look like hits but are NOT, and must never be flagged:
- *   1. `@spartan-ng/brain/...`                       — the real package import specifier
- *   2. `data-[matches-spartan-invalid=true]:...`     — a Tailwind arbitrary-variant on brain's invalid
+ *   1. `@spartan-ng/brain/...`                       - the real package import specifier
+ *   2. `data-[matches-spartan-invalid=true]:...`     - a Tailwind arbitrary-variant on brain's invalid
  *                                                      state attribute. Load-bearing: removing it kills
  *                                                      every error style on every form control.
- *   3. `--spartan-*`                                 — CSS custom properties
+ *   3. `--spartan-*`                                 - CSS custom properties
  * A checker that fires on those gets disabled within a day, which is worse than no checker.
  */
 
@@ -59,7 +59,7 @@ function stringLiterals(src) {
   return out;
 }
 
-/** The three legitimate contexts (1/2/3 above), as ONE alternation — so scrubbing is a single pass. */
+/** The three legitimate contexts (1/2/3 above), as ONE alternation - so scrubbing is a single pass. */
 const LEGITIMATE = /@spartan-ng[\w/-]*|data-\[[^\]]*\]|--spartan-[a-z-]*/g;
 
 /** A bare class: `spartan-x` not glued to a preceding word char, '-' or '@'. */

@@ -19,7 +19,7 @@ public sealed record CheckoutSessionRequest
     public string? CustomerEmail { get; init; }
 
     /// <summary>
-    /// Metadata copied verbatim onto the Stripe Session — used by the webhook to resolve
+    /// Metadata copied verbatim onto the Stripe Session - used by the webhook to resolve
     /// the local entities (tenant, invoice) when the session completes.
     /// </summary>
     public IDictionary<string, string>? Metadata { get; init; }

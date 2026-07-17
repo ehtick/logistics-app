@@ -1,4 +1,4 @@
-// Financials chart configs — sourced from `chart-palette.ts`
+// Financials chart configs - sourced from `chart-palette.ts`
 import {
   getChartPalette,
   INVOICE_STATUS_COLORS,

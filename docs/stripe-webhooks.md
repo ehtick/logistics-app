@@ -9,7 +9,7 @@ The API exposes a single Stripe webhook receiver. It covers three payment surfac
 | Production  | `https://api.yourdomain.com/webhooks/stripe` |
 | Local       | `https://localhost:7000/webhooks/stripe`     |
 
-The route is `POST /webhooks/stripe` and is `[AllowAnonymous]` — authentication comes from the `Stripe-Signature` header, verified against the webhook signing secret before any payload is parsed.
+The route is `POST /webhooks/stripe` and is `[AllowAnonymous]` - authentication comes from the `Stripe-Signature` header, verified against the webhook signing secret before any payload is parsed.
 
 ## Events to Subscribe To
 
@@ -27,7 +27,7 @@ Subscribe to exactly these nine events. Anything else is accepted and ignored (r
 | `payment_intent.payment_failed` | Moves the payment to `Failed` and appends the Stripe error to the description        |
 | `account.updated`               | Syncs the tenant's `ConnectStatus`, `ChargesEnabled`, `PayoutsEnabled` (**Connect**) |
 
-Every handler is keyed off `tenant_id` in Stripe object metadata. Objects without it are ignored rather than treated as errors — employee payout accounts, for example, carry no `tenant_id`.
+Every handler is keyed off `tenant_id` in Stripe object metadata. Objects without it are ignored rather than treated as errors - employee payout accounts, for example, carry no `tenant_id`.
 
 ## Two Endpoints Are Required
 
@@ -35,8 +35,8 @@ Every handler is keyed off `tenant_id` in Stripe object metadata. Objects withou
 
 So in the Stripe Dashboard you need two destinations, both pointing at the same URL:
 
-1. **Platform events** — `invoice.paid`, `customer.subscription.*`, `checkout.session.completed`, `payment_intent.*`
-2. **Connected account events** — `account.updated`
+1. **Platform events** - `invoice.paid`, `customer.subscription.*`, `checkout.session.completed`, `payment_intent.*`
+2. **Connected account events** - `account.updated`
 
 > **Known limitation.** `StripeOptions` exposes a single `WebhookSecret`, and `ProcessStripEventHandler` passes that one secret to `EventUtility.ConstructEvent`. Only one of the two endpoints can verify. The other returns `400`, and Stripe retries it for up to three days before giving up. Until `StripeOptions` grows a second secret (`ConnectWebhookSecret`) and the handler tries both, Connect status must be refreshed by polling `GET /stripe/connect/status` rather than by webhook.
 
@@ -74,7 +74,7 @@ Triggered events carry no `tenant_id` metadata, so handlers will short-circuit. 
 - **Retries.** A handler failure returns `400`, which Stripe treats as a failed delivery and retries with exponential backoff for up to three days.
 - **Idempotency.** Stripe delivers at least once. `checkout.session.completed` bails if a `Payment` already exists for the session's payment intent, and the `payment_intent.*` handlers refuse to downgrade a terminal status (`Paid`, `Failed`, `Cancelled`, `Refunded`) back to `Pending`.
 - **Ordering is not guaranteed.** `payment_intent.succeeded` can arrive before `checkout.session.completed`. Both paths converge on the same `Payment` row keyed by `StripePaymentIntentId`.
-- **API version mismatches** are tolerated — `ConstructEvent` is called with `throwOnApiVersionMismatch: false`, so an account on a newer Stripe API version won't break delivery.
+- **API version mismatches** are tolerated - `ConstructEvent` is called with `throwOnApiVersionMismatch: false`, so an account on a newer Stripe API version won't break delivery.
 
 ## Related Files
 

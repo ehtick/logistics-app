@@ -26,11 +26,11 @@ export interface UiSelectOptionContext<T = unknown> {
 /**
  * Single-select dropdown.
  *
- * Implements `FormValueControl` only, never a legacy `ControlValueAccessor` — see `text-field.ts`
+ * Implements `FormValueControl` only, never a legacy `ControlValueAccessor` - see `text-field.ts`
  * for the bridge contract. The inner `hlm-select` is driven with plain `[value]` / `(valueChange)`,
  * never `[formField]`; `uiDetachedControl` severs the ambient `NgControl` so brain's
  * `BrnFieldControl` does not track our Signal Forms control, and invalid styling is owned by
- * `[forceInvalid]="showInvalid()"` on the trigger. The panel portals via `*hlmSelectPortal` —
+ * `[forceInvalid]="showInvalid()"` on the trigger. The panel portals via `*hlmSelectPortal` -
  * without it the overlay never opens.
  *
  * @example
@@ -126,7 +126,7 @@ export class UiSelectField<T = unknown> implements FormValueControl<T | null> {
     return current !== null && current !== undefined;
   });
 
-  /** The full option object behind the current value — the context for `#selectedItem`. */
+  /** The full option object behind the current value - the context for `#selectedItem`. */
   protected readonly selectedOption = computed(() => {
     if (!this.hasValue()) return undefined;
     return this.options().find((opt) => this.resolveValue(opt) === this.value());

@@ -1,7 +1,7 @@
 /**
  * Proves the wrapper contract that the whole `ui-*-field` layer rests on.
  *
- * `UiToggleField` implements ONLY `FormValueControl` — no value-accessor glue of any kind. It must work:
+ * `UiToggleField` implements ONLY `FormValueControl` - no value-accessor glue of any kind. It must work:
  *   1. under Signal Forms `[formField]`,
  *   2. inside `<ui-form-field>`, whose `contentChild(NgControl)` must still resolve and
  *      render validation errors.
@@ -28,14 +28,14 @@ import { UiToggleField } from "./toggle-field";
   `,
 })
 class HostSignalToggle {
-  /** Flips the schema's disabled rule — proves the wrapper REACTS, not just reads once. */
+  /** Flips the schema's disabled rule - proves the wrapper REACTS, not just reads once. */
   readonly lock = signal(false);
   readonly model = signal({ accept: true });
   readonly f = form(this.model, (p) => {
     validate(p.accept, (ctx) =>
       ctx.value() ? null : requiredError({ message: "This field is required." }),
     );
-    // Reactive disabled rule — the shape every real form uses:
+    // Reactive disabled rule - the shape every real form uses:
     //   disabled(p.truckId, { when: () => this.mode() === "edit" })
     disabled(p.accept, { when: () => this.lock() });
   });
@@ -52,12 +52,12 @@ function input(fixture: ComponentFixture<unknown>): HTMLInputElement {
   return fixture.nativeElement.querySelector("input") as HTMLInputElement;
 }
 
-/** Toggles the switch the way a user would — the click handler lives on the host element. */
+/** Toggles the switch the way a user would - the click handler lives on the host element. */
 function toggle(fixture: ComponentFixture<unknown>): void {
   input(fixture).click();
 }
 
-describe("UiToggleField — a FormValueControl-only wrapper", () => {
+describe("UiToggleField - a FormValueControl-only wrapper", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
   });
@@ -89,7 +89,7 @@ describe("UiToggleField — a FormValueControl-only wrapper", () => {
       expect(fixture.componentInstance.model().accept).toBe(false);
     });
 
-    it("ui-form-field renders the required error once touched — with NO transitional code", async () => {
+    it("ui-form-field renders the required error once touched - with NO transitional code", async () => {
       const fixture = TestBed.createComponent(HostSignalToggle);
       await settle(fixture);
 
@@ -107,10 +107,10 @@ describe("UiToggleField — a FormValueControl-only wrapper", () => {
      * `disabled(p.truckId, ...)` in the expense forms, tax-rates, timesheets, ...).
      *
      * It used to be covered ONLY by the legacy Reactive-Forms host ("propagates disabled state from
-     * the control"). That host was deleted, and the assertion went with it — leaving the
+     * the control"). That host was deleted, and the assertion went with it - leaving the
      * whole `disabled` dimension of all 10 wrappers untested. This is its Signal Forms twin.
      */
-    it("propagates the schema's disabled rule to the control — and reacts when it flips", async () => {
+    it("propagates the schema's disabled rule to the control - and reacts when it flips", async () => {
       const fixture = TestBed.createComponent(HostSignalToggle);
       await settle(fixture);
 

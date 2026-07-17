@@ -28,10 +28,10 @@ type Density = "compact" | "cosy";
  * blind to:
  *
  *   1. THE CHART RENDERS AT ALL. `chart.js` is registered piecemeal here (no `chart.js/auto`), so a
- *      missing controller/element/scale is not a compile error — it is an empty canvas, or a thrown
+ *      missing controller/element/scale is not a compile error - it is an empty canvas, or a thrown
  *      "…is not a registered controller" at runtime. All four types are drawn.
  *   2. THE FILLED LINE. `fill: true` needs the `Filler` plugin. Without it the line still draws and
- *      nothing errors — the AREA UNDER IT just silently disappears. That is why the line row below
+ *      nothing errors - the AREA UNDER IT just silently disappears. That is why the line row below
  *      is filled: a bare stroke means Filler got dropped from the registration list.
  *   3. `[type]` SWITCHING RECREATES THE CHART. A chart.js Chart is built around its controller and
  *      cannot be mutated into another type. Two real pages (maintenance-report, safety-report) flip
@@ -73,7 +73,7 @@ export class UiLabDatavizSection {
     datasets: [{ label: "Loads", data: [12, 19, 7, 15, 9], backgroundColor: "#3b82f6" }],
   };
 
-  /** `fill: true` — the Filler-plugin canary. A bare stroke here means Filler was not registered. */
+  /** `fill: true` - the Filler-plugin canary. A bare stroke here means Filler was not registered. */
   protected readonly lineData = {
     labels: this.labels,
     datasets: [
@@ -99,10 +99,10 @@ export class UiLabDatavizSection {
   };
 
   /**
-   * The REAL production options, from `loads-chart.options.ts` — the same functions the loads report
+   * The REAL production options, from `loads-chart.options.ts` - the same functions the loads report
    * calls. This is the whole dark-mode contract: a theme flip produces a NEW options object, and
    * `ui-chart` rebuilds on an options-identity change. Hand-rolled static options here would have
-   * tested nothing — the axes would keep whatever colour they were built with, and this row would
+   * tested nothing - the axes would keep whatever colour they were built with, and this row would
    * look fine while production went grey-on-grey.
    */
   protected readonly chartOptions = computed(() => getLoadsTypeChartOptions(this.theme.isDark()));
@@ -149,7 +149,7 @@ export class UiLabDatavizSection {
     { label: "Cosy", value: "cosy", icon: "table" },
   ];
 
-  /** Icon-only variant — the map layer switcher's shape (label moves to tooltip + aria-label). */
+  /** Icon-only variant - the map layer switcher's shape (label moves to tooltip + aria-label). */
   protected readonly iconOnlyOptions: UiToggleOption<Density>[] = [
     { label: "Compact", value: "compact", icon: "list" },
     { label: "Cosy", value: "cosy", icon: "table" },
@@ -160,7 +160,7 @@ export class UiLabDatavizSection {
   protected readonly galleryOpen = signal(false);
   protected readonly galleryIndex = signal(0);
 
-  /** Inline SVG data URIs — the lab makes no network requests. */
+  /** Inline SVG data URIs - the lab makes no network requests. */
   protected readonly photos: UiLightboxImage[] = [1, 2, 3, 4].map((n) => ({
     src: this.swatch(n),
     thumbnailSrc: this.swatch(n),
@@ -198,7 +198,7 @@ export class UiLabDatavizSection {
   // ---- editor + phone --------------------------------------------------------------------------
 
   protected readonly content = signal(
-    "<p>Rich text — <strong>bold</strong> and <em>italic</em>.</p>",
+    "<p>Rich text - <strong>bold</strong> and <em>italic</em>.</p>",
   );
   protected readonly phone = signal<string | null>("+15551234567");
 

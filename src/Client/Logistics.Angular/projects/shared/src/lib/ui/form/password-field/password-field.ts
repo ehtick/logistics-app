@@ -17,7 +17,7 @@ import { focusFirstControl } from "../focus-control";
 /**
  * Masked password input with a reveal toggle, built on the native `<input>` + `hlmInput`.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  * The inner control is a native element driven by plain value/event bindings, so nothing collides
  * with the `pattern` state input Signal Forms binds onto `[formField]`.
  *

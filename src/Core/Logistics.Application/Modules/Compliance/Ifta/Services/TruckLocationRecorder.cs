@@ -74,7 +74,7 @@ internal sealed class TruckLocationRecorder(
         }
 
         // Teleport guard: an implausible implied speed means a GPS glitch, not real miles.
-        // Long gaps still accrue — dropping miles understates tax liability, which is worse
+        // Long gaps still accrue - dropping miles understates tax liability, which is worse
         // in an IFTA audit than GPS drift.
         var hours = (timestampUtc - previous.Timestamp).TotalHours;
         if (hours > 0 && (double)miles / hours > MaxPlausibleSpeedMph)

@@ -144,7 +144,7 @@ internal sealed class AiDispatchToolRegistry : IAiDispatchToolRegistry
                 ["type"] = "object",
                 ["properties"] = new JsonObject
                 {
-                    ["customer_id"] = Prop("string", "The customer ID (GUID) — drives jurisdiction + reverse-charge"),
+                    ["customer_id"] = Prop("string", "The customer ID (GUID) - drives jurisdiction + reverse-charge"),
                     ["currency"] = Prop("string", "ISO-4217 currency code, e.g. 'USD' or 'EUR'"),
                     ["line_items"] = new JsonObject
                     {

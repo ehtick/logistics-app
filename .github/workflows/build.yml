@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v6
 
       # The Angular CLI runs under Node, not Bun, and v22 requires
-      # ^22.22.3 || ^24.15.0 || >=26.0.0 — it refuses to start otherwise.
+      # ^22.22.3 || ^24.15.0 || >=26.0.0 - it refuses to start otherwise.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -67,9 +67,9 @@ jobs:
         working-directory: ${{ env.CLIENT_PROJECTS_DIR }}/Logistics.Angular
         run: bun run ng test shared --watch=false
 
-      # Every gate in tools/checks/, discovered — a new gate is a new file there, not a new step here.
+      # Every gate in tools/checks/, discovered - a new gate is a new file there, not a new step here.
       # They catch what build/test/lint cannot: a bare spartan-* class (renders the component
-      # unstyled) and a hardcoded colour (does not follow the theme — how admin/customer dark mode broke).
+      # unstyled) and a hardcoded colour (does not follow the theme - how admin/customer dark mode broke).
       - name: UI gates
         working-directory: ${{ env.CLIENT_PROJECTS_DIR }}/Logistics.Angular
         run: bun run check

@@ -12,7 +12,7 @@ namespace Logistics.Infrastructure.Tax.Manual;
 /// Tenant-managed-rate calculator. Authority order:
 ///   1) Active <c>TenantTaxRate</c> row matching customer jurisdiction (master DB)
 ///   2) EU VAT default for buyer country (when seller is EU member)
-///   3) US state base rate (when seller is US — no county/city layer)
+///   3) US state base rate (when seller is US - no county/city layer)
 ///   4) Other-country VAT/GST default (UK/AU/CA/NZ/JP/IN/MX/BR/ZA)
 ///   5) Zero rate as last resort
 ///
@@ -32,7 +32,7 @@ internal sealed class ManualTaxCalculator(
         if (IsEuReverseCharge(request))
         {
             return ZeroResult(request, TaxBehavior.ReverseCharge,
-                $"Reverse charge — VAT to be accounted by recipient ({request.CustomerAddress.Country})");
+                $"Reverse charge - VAT to be accounted by recipient ({request.CustomerAddress.Country})");
         }
 
         var resolution = await ResolveRateAsync(request, ct);
@@ -67,7 +67,7 @@ internal sealed class ManualTaxCalculator(
             EuVatRates.GetStandardRate(request.CustomerAddress.Country) is { } euRate)
         {
             return new RateResolution(euRate, null,
-                $"VAT {euRate:0.##}% — {request.CustomerAddress.Country} (default)");
+                $"VAT {euRate:0.##}% - {request.CustomerAddress.Country} (default)");
         }
 
         if (request.TenantRegion == Region.US &&
@@ -75,14 +75,14 @@ internal sealed class ManualTaxCalculator(
             UsSalesTaxRates.GetStateBaseRate(request.CustomerAddress.State) is { } usRate)
         {
             return new RateResolution(usRate, null,
-                $"State sales tax {usRate:0.##}% — {request.CustomerAddress.State}",
-                Warning: "State sales tax only — local taxes not included; use Stripe Tax for full destination-based calculation");
+                $"State sales tax {usRate:0.##}% - {request.CustomerAddress.State}",
+                Warning: "State sales tax only - local taxes not included; use Stripe Tax for full destination-based calculation");
         }
 
         if (OtherCountryRates.GetRate(request.CustomerAddress.Country) is { } otherRate)
         {
             return new RateResolution(otherRate, null,
-                $"Tax {otherRate:0.##}% — {request.CustomerAddress.Country} (default)");
+                $"Tax {otherRate:0.##}% - {request.CustomerAddress.Country} (default)");
         }
 
         logger.LogWarning(

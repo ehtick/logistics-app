@@ -1,7 +1,7 @@
 /**
  * Proves the wrapper contract the whole `ui-*-field` layer rests on.
  *
- * `UiTextField` implements ONLY `FormValueControl` — it has no value-accessor glue of any kind.
+ * `UiTextField` implements ONLY `FormValueControl` - it has no value-accessor glue of any kind.
  * It must therefore work:
  *   1. under Signal Forms `[formField]`,
  *   2. inside `<ui-form-field>`, whose `contentChild(NgControl)` must still resolve and
@@ -30,19 +30,19 @@ import { UiTextField } from "./text-field";
   `,
 })
 class HostSignalText {
-  /** Flips the schema's disabled rule — proves the wrapper REACTS, not just reads once. */
+  /** Flips the schema's disabled rule - proves the wrapper REACTS, not just reads once. */
   readonly lock = signal(false);
   readonly model = signal({ name: "initial" });
   readonly f = form(this.model, (p) => {
     required(p.name, { message: "This field is required." });
-    // Reactive disabled rule — the shape every real form uses:
+    // Reactive disabled rule - the shape every real form uses:
     //   disabled(p.truckId, { when: () => this.mode() === "edit" })
     disabled(p.name, { when: () => this.lock() });
   });
   readonly field = viewChild.required(UiTextField);
 }
 
-/** Signal Forms host whose required field starts EMPTY — so it is invalid while still pristine. */
+/** Signal Forms host whose required field starts EMPTY - so it is invalid while still pristine. */
 @Component({
   selector: "ui-host-signal-required-empty",
   imports: [UiTextField, UiFormField, FormField],
@@ -76,7 +76,7 @@ function type(fixture: ComponentFixture<unknown>, text: string): void {
   el.dispatchEvent(new Event("input"));
 }
 
-describe("UiTextField — a FormValueControl-only wrapper", () => {
+describe("UiTextField - a FormValueControl-only wrapper", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
   });
@@ -108,7 +108,7 @@ describe("UiTextField — a FormValueControl-only wrapper", () => {
       expect(fixture.componentInstance.model().name).toBe("typed");
     });
 
-    it("ui-form-field renders the required error once touched — with NO transitional code", async () => {
+    it("ui-form-field renders the required error once touched - with NO transitional code", async () => {
       const fixture = TestBed.createComponent(HostSignalText);
       await settle(fixture);
 
@@ -125,7 +125,7 @@ describe("UiTextField — a FormValueControl-only wrapper", () => {
       const fixture = TestBed.createComponent(HostSignalRequiredEmpty);
       await settle(fixture);
 
-      // The field is required and empty, so Signal Forms already reports it invalid — but while
+      // The field is required and empty, so Signal Forms already reports it invalid - but while
       // pristine the wrapper must NOT surface that on the inner input.
       expect(fixture.componentInstance.f.name().invalid()).toBe(true);
       expect(input(fixture).getAttribute("aria-invalid")).not.toBe("true");
@@ -141,10 +141,10 @@ describe("UiTextField — a FormValueControl-only wrapper", () => {
      * `disabled(p.truckId, ...)` in the expense forms, tax-rates, timesheets, ...).
      *
      * It used to be covered ONLY by the legacy Reactive-Forms host ("propagates disabled state from
-     * the control"). That host was deleted, and the assertion went with it — leaving the
+     * the control"). That host was deleted, and the assertion went with it - leaving the
      * whole `disabled` dimension of all 10 wrappers untested. This is its Signal Forms twin.
      */
-    it("propagates the schema's disabled rule to the control — and reacts when it flips", async () => {
+    it("propagates the schema's disabled rule to the control - and reacts when it flips", async () => {
       const fixture = TestBed.createComponent(HostSignalText);
       await settle(fixture);
 

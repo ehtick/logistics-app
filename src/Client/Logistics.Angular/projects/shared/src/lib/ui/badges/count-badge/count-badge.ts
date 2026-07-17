@@ -10,7 +10,7 @@ export type UiCountBadgeSize = "small" | "normal";
  *
  * Deliberately NOT `ui-badge`, which grows with its text: the fixed height and min-width here are the
  * point, since they make a single-digit count render as a circle and a double-digit one as a pill.
- * It does share `ui-badge`'s `TONE_CLASSES` — same seven colours, different shape.
+ * It does share `ui-badge`'s `TONE_CLASSES` - same seven colours, different shape.
  */
 @Component({
   selector: "ui-count-badge",

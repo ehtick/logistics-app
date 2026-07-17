@@ -192,7 +192,7 @@ internal sealed class StripeTaxCalculator(
                 BaseAmount = decimal.Round(request.LineItems.Sum(l => l.NetAmount), 2),
                 TaxAmount = 0m,
                 Jurisdiction = new DomainTaxJurisdiction { CountryCode = request.CustomerAddress.Country },
-                Description = "Reverse charge — VAT to be accounted by recipient"
+                Description = "Reverse charge - VAT to be accounted by recipient"
             });
         }
 
@@ -208,8 +208,8 @@ internal sealed class StripeTaxCalculator(
         var taxType = details?.TaxType ?? "tax";
 
         var description = string.IsNullOrEmpty(state)
-            ? $"{taxType.ToUpperInvariant()} {rate:0.##}% — {country}"
-            : $"{taxType.ToUpperInvariant()} {rate:0.##}% — {country}-{state}";
+            ? $"{taxType.ToUpperInvariant()} {rate:0.##}% - {country}"
+            : $"{taxType.ToUpperInvariant()} {rate:0.##}% - {country}-{state}";
 
         return new InvoiceTaxLine
         {

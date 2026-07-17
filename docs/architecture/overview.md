@@ -99,7 +99,7 @@ flowchart TB
     I --> D
 ```
 
-Application is wired to infrastructure implementations only at the **composition root**. Each module ships its own DI registrar inside `Logistics.Application/Modules/{Module}/` (all six invoked by the aggregate `AddApplicationLayer()`), and each infrastructure project ships a registrar (`AddPersistenceInfrastructure`, `AddPaymentsInfrastructure`, …). The composition root is the API's `Setup.cs` (`ConfigureServices`), reached through a thin `LogisticsHost.Run` shell in `Program.cs` — `Program.cs` no longer holds wiring. See [Hosts and cross-cutting concerns](#hosts-and-cross-cutting-concerns).
+Application is wired to infrastructure implementations only at the **composition root**. Each module ships its own DI registrar inside `Logistics.Application/Modules/{Module}/` (all six invoked by the aggregate `AddApplicationLayer()`), and each infrastructure project ships a registrar (`AddPersistenceInfrastructure`, `AddPaymentsInfrastructure`, …). The composition root is the API's `Setup.cs` (`ConfigureServices`), reached through a thin `LogisticsHost.Run` shell in `Program.cs` - `Program.cs` no longer holds wiring. See [Hosts and cross-cutting concerns](#hosts-and-cross-cutting-concerns).
 
 ### Architecture enforcement
 
@@ -184,7 +184,7 @@ The repository follows the layer split above. Each project name is `Logistics.{L
 
 ### CQRS
 
-Commands and queries are separated and dispatched through MediatR. Both extend `IRequest<TResponse>` via the `ICommand<T>` / `IQuery<T>` markers in `Logistics.Application.Abstractions.Common`. A command targets the master or tenant DB purely by which unit of work its handler injects (`IMasterUnitOfWork` vs `ITenantUnitOfWork`) — there is no separate marker interface. Handlers own their own `SaveChangesAsync` calls — there is no auto-transaction wrapper.
+Commands and queries are separated and dispatched through MediatR. Both extend `IRequest<TResponse>` via the `ICommand<T>` / `IQuery<T>` markers in `Logistics.Application.Abstractions.Common`. A command targets the master or tenant DB purely by which unit of work its handler injects (`IMasterUnitOfWork` vs `ITenantUnitOfWork`) - there is no separate marker interface. Handlers own their own `SaveChangesAsync` calls - there is no auto-transaction wrapper.
 
 Commands and queries live under `Logistics.Application/Modules/{Module}/{Feature}/{Commands|Queries}/`. See [module-layout.md](module-layout.md) for the six modules and the feature-folder convention.
 
@@ -209,7 +209,7 @@ flowchart LR
 
 `FeatureCheckBehaviour` reads the optional `[RequiresFeature]` attribute on the request type and short-circuits with a `Result.Fail` when the tenant's plan or admin lock disables the feature; the lookup is cached per closed generic instantiation.
 
-Hangfire jobs do not go through the MediatR pipeline, so `[RequiresFeature]` never applies to them — a job must gate features itself. CLAUDE.md holds the canonical rule.
+Hangfire jobs do not go through the MediatR pipeline, so `[RequiresFeature]` never applies to them - a job must gate features itself. CLAUDE.md holds the canonical rule.
 
 ### Repository + Specification
 
@@ -293,14 +293,14 @@ See [AI Dispatch](../ai-dispatch.md).
 
 ### Logistics.Infrastructure.Integrations.Common
 
-The shared kernel for the third-party integration providers — do not hand-roll a fourth copy of any of it:
+The shared kernel for the third-party integration providers - do not hand-roll a fourth copy of any of it:
 
-- `HttpClientJsonExtensions.TryGetFromJsonAsync<T>` — "send + status check + JSON deserialise + log on failure" for reads; and `HttpClientWriteExtensions` / `HttpJsonResult<T>` for writes that need to report success or failure back to the caller
-- `IntegrationJsonOptions` — the shared `JsonSerializerOptions` for provider payloads
-- `WebhookSignature.VerifyHmacSha256` — constant-time HMAC-SHA256 verification for inbound webhooks (see [Webhook conventions](#webhook-conventions))
-- `ProviderFactoryBase` + `AddProviderIntegration` (`ProviderRegistrationExtensions`) — the provider-selection factory base and its DI registration helper, shared by the ELD, load board, fuel card, and accounting factories
+- `HttpClientJsonExtensions.TryGetFromJsonAsync<T>` - "send + status check + JSON deserialise + log on failure" for reads; and `HttpClientWriteExtensions` / `HttpJsonResult<T>` for writes that need to report success or failure back to the caller
+- `IntegrationJsonOptions` - the shared `JsonSerializerOptions` for provider payloads
+- `WebhookSignature.VerifyHmacSha256` - constant-time HMAC-SHA256 verification for inbound webhooks (see [Webhook conventions](#webhook-conventions))
+- `ProviderFactoryBase` + `AddProviderIntegration` (`ProviderRegistrationExtensions`) - the provider-selection factory base and its DI registration helper, shared by the ELD, load board, fuel card, and accounting factories
 
-The read helper's contract is that it **never throws** — a failure is logged and returns `default`. That is why the QuickBooks helpers in `Integrations.Accounting` are deliberately not folded in here: they throw `QboApiException` so a push error surfaces to the sync job instead of being swallowed. Keep push paths that must report failure out of the read helper.
+The read helper's contract is that it **never throws** - a failure is logged and returns `default`. That is why the QuickBooks helpers in `Integrations.Accounting` are deliberately not folded in here: they throw `QboApiException` so a push error surfaces to the sync job instead of being swallowed. Keep push paths that must report failure out of the read helper.
 
 It is a leaf helper library: it references no other project in the repo.
 
@@ -412,9 +412,9 @@ The dashboard is mounted at `/hangfire` and gated by `HangfireDashboardAuthoriza
 
 ### Webhook conventions
 
-Inbound third-party webhooks land on `WebhookController` (mounted at `/webhooks/*`, `[AllowAnonymous]` — the signature is the auth) and follow two invariants:
+Inbound third-party webhooks land on `WebhookController` (mounted at `/webhooks/*`, `[AllowAnonymous]` - the signature is the auth) and follow two invariants:
 
-- **Signature first, fail closed.** The raw request body is verified before it is parsed — `WebhookSignature.VerifyHmacSha256` (constant-time, in `Integrations.Common`) for the ELD / load-board providers, `EventUtility.ConstructEvent` for Stripe. A configured-but-missing or incorrect signature returns `400`. Stripe specifics live in [stripe-webhooks.md](../stripe-webhooks.md).
+- **Signature first, fail closed.** The raw request body is verified before it is parsed - `WebhookSignature.VerifyHmacSha256` (constant-time, in `Integrations.Common`) for the ELD / load-board providers, `EventUtility.ConstructEvent` for Stripe. A configured-but-missing or incorrect signature returns `400`. Stripe specifics live in [stripe-webhooks.md](../stripe-webhooks.md).
 - **Idempotency.** Providers retry, so each processed delivery is recorded in the master-DB `ProcessedWebhookEvent` ledger, unique on `(Provider, EventKey)`. `EventKey` is the provider's event id when present, else a SHA-256 hash of the raw body. A duplicate is a no-op returning `200`. `WebhookEventCleanupJob` prunes old rows daily.
 
 ## Multi-Tenancy

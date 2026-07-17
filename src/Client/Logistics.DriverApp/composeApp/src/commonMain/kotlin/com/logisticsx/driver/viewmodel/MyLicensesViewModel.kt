@@ -28,7 +28,7 @@ class MyLicensesViewModel(
             if (userId.isNullOrEmpty()) {
                 throw IllegalStateException("User ID not available")
             }
-            // Show revoked entries on the driver app too — drivers see their own
+            // Show revoked entries on the driver app too  drivers see their own
             // history. Sorting: soonest expiry first so warnings surface up top.
             val licenses = employeeApi
                 .getDriverLicenses(userId, includeRevoked = true)

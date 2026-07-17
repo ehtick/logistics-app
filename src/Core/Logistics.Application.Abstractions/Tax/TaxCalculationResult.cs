@@ -16,7 +16,7 @@ public sealed record TaxCalculationResult
 
     /// <summary>
     /// Optional warning surfaced when Stripe returned <c>taxability_reason = not_collecting</c>
-    /// for one or more jurisdictions — the tenant isn't registered there.
+    /// for one or more jurisdictions - the tenant isn't registered there.
     /// </summary>
     public string? Warning { get; init; }
 

@@ -20,7 +20,7 @@ public class TenantTaxRate : AuditableEntity, IMasterEntity
     public required decimal RatePercent { get; set; }
 
     /// <summary>
-    /// Stripe Tax product code (txcd_*) — optional. When set, narrows the rate to a specific
+    /// Stripe Tax product code (txcd_*) - optional. When set, narrows the rate to a specific
     /// product/service category. When null the rate applies to any line item in the jurisdiction.
     /// </summary>
     public string? TaxCode { get; set; }

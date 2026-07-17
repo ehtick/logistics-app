@@ -16,7 +16,7 @@ import { classes } from "../../primitives/utils";
  * Hosts brain's `BrnAccordion` rather than `HlmAccordion`, because a Helm host directive would drag
  * the private primitive into the public API (NG3001); Helm's classes come across as a const instead.
  * Panels resolve the root through DI, and brain's own `contentChildren` query feeds only the
- * `openAll()`/`closeAll()` helpers we do not expose — which is why the FAQ's panels still work
+ * `openAll()`/`closeAll()` helpers we do not expose - which is why the FAQ's panels still work
  * despite sitting inside an `@for` (an embedded view a `descendants: false` query cannot reach).
  */
 @Component({

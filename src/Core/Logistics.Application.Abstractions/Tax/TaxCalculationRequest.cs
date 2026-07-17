@@ -15,13 +15,13 @@ public sealed record TaxCalculationRequest
     /// <summary>Tenant id, used by <c>ManualTaxCalculator</c> to look up <c>TenantTaxRate</c> rows.</summary>
     public required Guid TenantId { get; init; }
 
-    /// <summary>Operating region of the tenant — drives reverse-charge eligibility.</summary>
+    /// <summary>Operating region of the tenant - drives reverse-charge eligibility.</summary>
     public required Region TenantRegion { get; init; }
 
     /// <summary>Tenant billing address (used as origin for jurisdiction routing).</summary>
     public required Address TenantAddress { get; init; }
 
-    /// <summary>Tenant VAT/EIN/etc. — required by Stripe Tax for EU outbound invoices.</summary>
+    /// <summary>Tenant VAT/EIN/etc. - required by Stripe Tax for EU outbound invoices.</summary>
     public string? TenantTaxId { get; init; }
 
     /// <summary>ISO-2 country where the tenant is tax-resident; falls back to <c>TenantAddress.Country</c>.</summary>
@@ -30,7 +30,7 @@ public sealed record TaxCalculationRequest
     /// <summary>Customer billing address (drives destination-based VAT/sales tax).</summary>
     public required Address CustomerAddress { get; init; }
 
-    /// <summary>Customer VAT ID — presence on EU cross-border B2B triggers reverse charge.</summary>
+    /// <summary>Customer VAT ID - presence on EU cross-border B2B triggers reverse charge.</summary>
     public string? CustomerTaxId { get; init; }
 
     /// <summary>Skip tax for charity/government/exempt customers.</summary>

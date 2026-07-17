@@ -27,24 +27,24 @@ Platform-specific: `androidMain/`, `iosMain/` for expect/actual implementations.
 
 ## Tech Stack
 
-| Category | Library |
-|----------|---------|
-| UI | Compose Multiplatform (Material3) |
-| Navigation | Navigation 3 (type-safe, `@Serializable` routes) |
-| DI | Koin (`singleOf`, `viewModelOf`, `koinViewModel()`, `koinInject()`) |
-| Networking | Ktor Client |
-| Serialization | kotlinx.serialization |
-| State | StateFlow + collectAsState() |
-| ViewModel | JetBrains Lifecycle ViewModel |
-| Storage | DataStore Preferences |
-| API | OpenAPI Generator (auto-generated from swagger.json) |
+| Category      | Library                                                             |
+| ------------- | ------------------------------------------------------------------- |
+| UI            | Compose Multiplatform (Material3)                                   |
+| Navigation    | Navigation 3 (type-safe, `@Serializable` routes)                    |
+| DI            | Koin (`singleOf`, `viewModelOf`, `koinViewModel()`, `koinInject()`) |
+| Networking    | Ktor Client                                                         |
+| Serialization | kotlinx.serialization                                               |
+| State         | StateFlow + collectAsState()                                        |
+| ViewModel     | JetBrains Lifecycle ViewModel                                       |
+| Storage       | DataStore Preferences                                               |
+| API           | OpenAPI Generator (auto-generated from swagger.json)                |
 
 ## API Layer
 
 - Generated from backend swagger.json: `./gradlew openApiGenerate`
 - Package: `com.logisticsx.driver.api` (clients), `com.logisticsx.driver.api.models` (DTOs)
 - APIs accessed via `ApiFactory` (registered in Koin as singletons)
-- APIs return `Response<T>` — use `.body()` to get data
+- APIs return `Response<T>` - use `.body()` to get data
 - Include `X-Tenant` header via PreferencesManager
 - Handle 401 via AuthEventBus for automatic logout
 - OrderBy: `-PropertyName` for descending, `PropertyName` for ascending

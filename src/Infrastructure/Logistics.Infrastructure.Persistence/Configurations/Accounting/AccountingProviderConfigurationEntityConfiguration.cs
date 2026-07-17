@@ -27,6 +27,6 @@ internal sealed class AccountingProviderConfigurationEntityConfiguration
             .HasMaxLength(100);
 
         // AccessToken / RefreshToken are encrypted at rest (EncryptedStringConverter) and stored
-        // as unbounded text — ciphertext is larger than the plaintext token.
+        // as unbounded text - ciphertext is larger than the plaintext token.
     }
 }

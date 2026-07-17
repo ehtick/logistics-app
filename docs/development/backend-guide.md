@@ -84,7 +84,7 @@ src/Infrastructure/
 
 ### Step 1: Create Command/Query
 
-Commands and queries are the request contract — they are bound **directly** as the request body (flat
+Commands and queries are the request contract - they are bound **directly** as the request body (flat
 properties, no `*Dto` wrapper). Add a dedicated `*Request` record only when the wire shape must differ
 from the command; see [api-design.md](../../.claude/rules/backend/api-design.md).
 
@@ -113,10 +113,10 @@ internal sealed class CreateLoadHandler(ITenantUnitOfWork unitOfWork)
 }
 ```
 
-Trivial `Delete`/`GetById`/`Update` slices don't need a hand-written handler — subclass the generic base
+Trivial `Delete`/`GetById`/`Update` slices don't need a hand-written handler - subclass the generic base
 handlers in `Logistics.Application/Handlers/` (`DeleteTenantEntityHandler`, `GetTenantEntityByIdHandler`,
 `UpdateTenantEntityHandler`; master variants exist too). A command targets the master or tenant DB purely
-by which unit of work its handler injects (`IMasterUnitOfWork` vs `ITenantUnitOfWork`) — there is no
+by which unit of work its handler injects (`IMasterUnitOfWork` vs `ITenantUnitOfWork`) - there is no
 separate marker interface.
 
 ### Step 2: Add Validation
@@ -161,7 +161,7 @@ public class LoadController(IMediator mediator) : ControllerBase
 
 ### Step 4: Define DTO
 
-DTOs are the **read** shape, returned by queries and produced by Mapperly mappers (never mapped by hand —
+DTOs are the **read** shape, returned by queries and produced by Mapperly mappers (never mapped by hand -
 see [mapperly.md](../../.claude/rules/backend/mapperly.md)). Entity ids are `Guid`.
 
 ```csharp
@@ -279,7 +279,7 @@ public class LoadCompletedHandler : INotificationHandler<LoadCompletedEvent>
 
 ## Background Jobs
 
-Recurring Hangfire jobs live in `src/Presentation/Logistics.API/Jobs/`. The canonical rule is in CLAUDE.md: fan out with `TenantJobRunner.ForEachTenantAsync` (never hand-roll the loop), and because jobs bypass the MediatR pipeline the body must gate features itself with `IFeatureService` (`[RequiresFeature]` is inert). Keep the feature check inside the body — a job may still do some work for every tenant regardless of the flag, as `IftaQuarterCloseJob` does when it purges breadcrumbs for tenants without IFTA enabled. The worked pattern:
+Recurring Hangfire jobs live in `src/Presentation/Logistics.API/Jobs/`. The canonical rule is in CLAUDE.md: fan out with `TenantJobRunner.ForEachTenantAsync` (never hand-roll the loop), and because jobs bypass the MediatR pipeline the body must gate features itself with `IFeatureService` (`[RequiresFeature]` is inert). Keep the feature check inside the body - a job may still do some work for every tenant regardless of the flag, as `IftaQuarterCloseJob` does when it purges breadcrumbs for tenants without IFTA enabled. The worked pattern:
 
 ```csharp
 [AutomaticRetry(Attempts = 2)]

@@ -10,8 +10,8 @@ paths:
 
 For step-by-step recipes, use the skills:
 
-- `add-dispatch-tool` — add a new tool the agent can call
-- `add-llm-provider` — add a new model or LLM provider
+- `add-dispatch-tool` - add a new tool the agent can call
+- `add-llm-provider` - add a new model or LLM provider
 
 This file is conventions only.
 
@@ -19,19 +19,19 @@ This file is conventions only.
 
 All AI agent code lives in `src/Infrastructure/Logistics.Infrastructure.AI/`:
 
-- `Providers/` — `ILlmProvider` interface, `LlmTypes`, `AnthropicLlmProvider`, `OpenAiLlmProvider`, `LlmProviderFactory`
-- `Services/` — Agent loop (`AiDispatchService`), `AiDispatchToolExecutor`, `AiDispatchToolRegistry`, `AiDispatchDecisionProcessor`, `AiDispatchConversationBuilder`, `LlmPricing`
-- `Tools/` — Individual tool implementations (one per file, each implementing `IAiDispatchTool`)
-- `Prompts/` — System prompt builders
-- `Options/` — Configuration (`LlmOptions`, `LlmProviderOptions`)
+- `Providers/` - `ILlmProvider` interface, `LlmTypes`, `AnthropicLlmProvider`, `OpenAiLlmProvider`, `LlmProviderFactory`
+- `Services/` - Agent loop (`AiDispatchService`), `AiDispatchToolExecutor`, `AiDispatchToolRegistry`, `AiDispatchDecisionProcessor`, `AiDispatchConversationBuilder`, `LlmPricing`
+- `Tools/` - Individual tool implementations (one per file, each implementing `IAiDispatchTool`)
+- `Prompts/` - System prompt builders
+- `Options/` - Configuration (`LlmOptions`, `LlmProviderOptions`)
 
 ## Multi-provider architecture
 
 Provider-agnostic via the `ILlmProvider` adapter pattern:
 
-- `AnthropicLlmProvider` — Claude API via `Anthropic.SDK` (prompt caching, extended thinking)
-- `OpenAiLlmProvider` — OpenAI-compatible APIs via `OpenAI` SDK (OpenAI, DeepSeek, GLM via configurable `BaseUrl`)
-- `LlmProviderFactory` — resolves provider from `LlmOptions.DefaultProvider`
+- `AnthropicLlmProvider` - Claude API via `Anthropic.SDK` (prompt caching, extended thinking)
+- `OpenAiLlmProvider` - OpenAI-compatible APIs via `OpenAI` SDK (OpenAI, DeepSeek, GLM via configurable `BaseUrl`)
+- `LlmProviderFactory` - resolves provider from `LlmOptions.DefaultProvider`
 
 **Provider-specific SDK types must not leak outside the provider classes.** The agent loop, tools, and decision processor use `LlmTypes` (`LlmRequest`, `LlmResponse`, `LlmToolUseBlock`) only.
 
@@ -53,8 +53,8 @@ Tool names use **snake_case**. Schemas follow JSON Schema (compatible with both 
 
 ## Tool classification
 
-- **Read tools** — pure queries. Always execute immediately in both modes.
-- **Write tools** — mutate state. In `HumanInTheLoop` → create `Suggested` decisions for approval. In `Autonomous` → execute immediately.
+- **Read tools** - pure queries. Always execute immediately in both modes.
+- **Write tools** - mutate state. In `HumanInTheLoop` → create `Suggested` decisions for approval. In `Autonomous` → execute immediately.
 
 A write tool's name **must** be added to `AiDispatchDecisionProcessor.WriteTools` HashSet. Missing this entry silently breaks HumanInTheLoop approvals.
 
@@ -89,7 +89,7 @@ API keys via env vars: `Llm__Providers__{Provider}__ApiKey`.
 
 ## Global model (admin-managed)
 
-The dispatch model is **global**, set by an admin in the admin portal — tenants do not pick a model and
+The dispatch model is **global**, set by an admin in the admin portal - tenants do not pick a model and
 never see model names. Plans differ by **quota only**, not by model tier (there is no per-plan model
 gating / `AllowedModelTier`).
 
@@ -108,9 +108,9 @@ by the same ids:
 
 Weekly AI request quotas use multiplier-based counting (not flat session counts):
 
-- `SubscriptionPlan.WeeklyAiRequestQuota` — weekly limit in request units (null = unlimited). Admin-editable
+- `SubscriptionPlan.WeeklyAiRequestQuota` - weekly limit in request units (null = unlimited). Admin-editable
   live from the admin portal AI Settings page.
-- `AiDispatchSession.RequestCost` — multiplier (1, 5, or 10) set from `LlmPricing.GetMultiplier()`
+- `AiDispatchSession.RequestCost` - multiplier (1, 5, or 10) set from `LlmPricing.GetMultiplier()`
 - `AiQuotaService` sums `RequestCost` across completed sessions for the week
 - Tenant-facing API returns usage as a percentage (no raw numbers, no model/tier names)
 - Overage billing via Stripe: `LlmPricing.GetOverageBillingUnits()` returns 1 / 2 / 4 at $0.20/unit
@@ -121,9 +121,9 @@ Weekly AI request quotas use multiplier-based counting (not flat session counts)
 
 Resolution order in `AiDispatchConversationBuilder` (no tenant override):
 
-1. **Global system setting** — `SystemSettings["Ai.Model"]` / `["Ai.Provider"]` (keys in `AiSettingsKeys`),
+1. **Global system setting** - `SystemSettings["Ai.Model"]` / `["Ai.Provider"]` (keys in `AiSettingsKeys`),
    set via the admin `UpdateAiSettingsCommand`.
-2. **System default** — `LlmOptions.DefaultProvider` + `LlmProviderOptions.Model` from appsettings.
+2. **System default** - `LlmOptions.DefaultProvider` + `LlmProviderOptions.Model` from appsettings.
 
 Extended thinking is likewise global: `SystemSettings["Ai.ExtendedThinking"]` → `LlmOptions.EnableExtendedThinking`.
 Only honored by providers that support it.

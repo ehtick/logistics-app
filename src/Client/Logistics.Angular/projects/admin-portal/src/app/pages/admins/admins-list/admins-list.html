@@ -99,8 +99,8 @@
       <ng-template #body let-invitation>
         <tr>
           <td>{{ invitation.email }}</td>
-          <td>{{ invitation.invitedByName || "—" }}</td>
-          <td>{{ invitation.lastSentAt ? (invitation.lastSentAt | date: "mediumDate") : "—" }}</td>
+          <td>{{ invitation.invitedByName || "-" }}</td>
+          <td>{{ invitation.lastSentAt ? (invitation.lastSentAt | date: "mediumDate") : "-" }}</td>
           <td>
             @if (invitation.isExpired) {
               <ui-badge value="Expired" severity="danger" />

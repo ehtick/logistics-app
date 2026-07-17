@@ -1,5 +1,5 @@
 /**
- * "Am I the overlay that owns this Escape?" — internal, used by `ui-dialog` / `ui-confirm-dialog`.
+ * "Am I the overlay that owns this Escape?" - internal, used by `ui-dialog` / `ui-confirm-dialog`.
  *
  * Both listen for Escape on the document, because their panel is portalled into the CDK overlay
  * container where a host-scoped listener would never see the key. But a select / date-picker / menu
@@ -13,7 +13,7 @@
 export function isTopmostOverlay(element: Element | null | undefined): boolean {
   const pane = element?.closest(".cdk-overlay-pane");
 
-  // Not portalled into an overlay (yet) — nothing can be stacked above us.
+  // Not portalled into an overlay (yet) - nothing can be stacked above us.
   if (!pane) return true;
 
   const panes = Array.from(pane.ownerDocument.querySelectorAll(".cdk-overlay-pane"));

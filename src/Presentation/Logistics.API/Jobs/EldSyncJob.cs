@@ -167,7 +167,7 @@ public class EldSyncJob(
             }
 
             var truck = mapping.Truck;
-            // GeoPoint takes (longitude, latitude) — the previous direct write passed them
+            // GeoPoint takes (longitude, latitude) - the previous direct write passed them
             // swapped, which threw for US longitudes and silently broke GPS sync.
             var point = new GeoPoint(location.Longitude, location.Latitude);
             var timestamp = location.Timestamp == default ? DateTime.UtcNow : location.Timestamp;

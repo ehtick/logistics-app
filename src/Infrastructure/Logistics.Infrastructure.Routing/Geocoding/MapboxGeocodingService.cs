@@ -124,7 +124,7 @@ public sealed class MapboxGeocodingService(
         }
         catch (InvalidOperationException)
         {
-            // No tenant in scope (background job, test, etc.) — skip the bias.
+            // No tenant in scope (background job, test, etc.) - skip the bias.
             return (string.Empty, string.Empty);
         }
     }

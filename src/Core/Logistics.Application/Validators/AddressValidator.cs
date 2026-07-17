@@ -6,7 +6,7 @@ namespace Logistics.Application.Validators;
 
 /// <summary>
 /// Reusable validator for the <see cref="Address"/> value object.
-/// State is required across all countries — the field doubles as
+/// State is required across all countries - the field doubles as
 /// "State / Region / Province" with a country-aware label on the client.
 /// </summary>
 internal sealed class AddressValidator : AbstractValidator<Address>

@@ -7,7 +7,7 @@ export type UiDrawerPosition = "left" | "right" | "top" | "bottom";
  * A side panel. Replaces `<p-drawer>` at 3 call sites: the TMS and admin mobile navigation drawers
  * (`position="left"`) and the TMS conversation-details panel (`position="right"`).
  *
- * SHEET, NOT DRAWER — the two Helm primitives with those names are not interchangeable.
+ * SHEET, NOT DRAWER - the two Helm primitives with those names are not interchangeable.
  * `hlm-drawer` is the vaul-style one: it is built for a *draggable* bottom sheet, ships a drag handle,
  * takes a `closeThreshold`, and positions itself off `data-vaul-drawer-direction`. `hlm-sheet` is a
  * plain edge-anchored panel on `BrnDialog`, with a `side` input and a global position strategy. All
@@ -15,7 +15,7 @@ export type UiDrawerPosition = "left" | "right" | "top" | "bottom";
  * match; `hlm-drawer` would have added a grab handle nobody asked for.
  *
  * `*hlmSheetPortal` in the template is LOAD-BEARING: it portals the content into the overlay, and
- * without it the sheet never opens and never closes — and nothing throws.
+ * without it the sheet never opens and never closes - and nothing throws.
  *
  * The `[modal]`, `[dismissible]` and `[closeOnEscape]` inputs are gone because `BrnDialog`
  * already does all three by default: `hasBackdrop: true`, backdrop-click dismisses, and Escape
@@ -28,7 +28,7 @@ export type UiDrawerPosition = "left" | "right" | "top" | "bottom";
   imports: [HlmSheet, HlmSheetContent, HlmSheetPortal, HlmSheetTitle],
 })
 export class UiDrawer {
-  /** `model`, so both `[(visible)]` and `[visible]` + `(visibleChange)` bind — the call sites use both. */
+  /** `model`, so both `[(visible)]` and `[visible]` + `(visibleChange)` bind - the call sites use both. */
   public readonly visible = model(false);
 
   public readonly position = input<UiDrawerPosition>("left");

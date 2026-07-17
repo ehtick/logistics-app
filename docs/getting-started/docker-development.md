@@ -70,5 +70,5 @@ docker compose -f deploy/docker-compose.dev.yml down -v     # stop + drop the DB
 
 ## Next Steps
 
-- [Test Credentials](test-credentials.md) — login credentials for testing
-- [Local Development](local-development.md) — running everything on the host without Docker
+- [Test Credentials](test-credentials.md) - login credentials for testing
+- [Local Development](local-development.md) - running everything on the host without Docker

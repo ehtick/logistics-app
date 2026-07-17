@@ -41,7 +41,7 @@ internal static class IftaJurisdictionTableSection
                 BodyCell(table.Cell(), row.PurchasedGallons.ToString("N1"));
                 BodyCell(table.Cell(), row.NetTaxableGallons.ToString("N1"));
                 BodyCell(table.Cell(), FormatRate(row));
-                BodyCell(table.Cell(), row.TaxDue?.ToString("N2") ?? "—");
+                BodyCell(table.Cell(), row.TaxDue?.ToString("N2") ?? "-");
             }
         });
     }

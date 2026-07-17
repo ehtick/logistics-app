@@ -3,13 +3,13 @@ import { TestBed } from "@angular/core/testing";
 import { UiDialog } from "./dialog";
 
 /**
- * These pin the four things about ui-dialog that fail silently — no error, no type failure, a green
+ * These pin the four things about ui-dialog that fail silently - no error, no type failure, a green
  * build and a green suite:
  *
  *   1. the panel is portalled out of the component, so a width that lands on the host is a no-op;
  *   2. `#header` / `#content` / `#footer` must not be matched through a nested component;
  *   3. a backdrop click must not close the dialog (brain's default is the opposite);
- *   4. `(closed)` must not fire on open — call sites reset their form in it.
+ *   4. `(closed)` must not fire on open - call sites reset their form in it.
  */
 
 /** The overlay is portalled to the CDK container in <body>, not into the fixture's host element. */
@@ -20,7 +20,7 @@ const backdrop = () => document.querySelector<HTMLElement>(".cdk-overlay-backdro
   selector: "ui-nested-slots",
   imports: [],
   // Stands in for the accordion / data-table that really sit inside these dialogs. Its own slots are
-  // also called #header and #content — which is the entire point.
+  // also called #header and #content - which is the entire point.
   template: `<ng-content />`,
 })
 class NestedSlots {}
@@ -90,7 +90,7 @@ describe("UiDialog", () => {
   });
 
   /**
-   * jsdom does no layout — `getBoundingClientRect()` returns zeroes — so a pixel assertion would test
+   * jsdom does no layout - `getBoundingClientRect()` returns zeroes - so a pixel assertion would test
    * nothing. What it can prove is the part that actually breaks: the width is applied to the element
    * inside the CDK overlay, not to the host the content was portalled out of. Real geometry is checked
    * in a browser on /ui-lab.
@@ -214,7 +214,7 @@ describe("UiDialog", () => {
     const { events } = fixture.componentInstance;
 
     await openIt();
-    // If `closed` also fired here, every close handler — most of which reset the form — would run as
+    // If `closed` also fired here, every close handler - most of which reset the form - would run as
     // the dialog appeared, and prefilled edit dialogs would blank themselves.
     expect(events).toEqual(["opened"]);
 

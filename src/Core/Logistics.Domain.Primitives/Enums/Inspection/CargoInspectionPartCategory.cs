@@ -5,7 +5,7 @@ namespace Logistics.Domain.Primitives.Enums;
 /// <summary>
 /// Standardized cargo-inspection part categories used when documenting damage
 /// found during pickup/delivery inspections. The valid subset is determined by
-/// the <see cref="LoadType"/> of the load being inspected — see
+/// the <see cref="LoadType"/> of the load being inspected - see
 /// <c>CargoInspectionPartCategoryExtensions.GetCatalogFor</c>.
 /// </summary>
 public enum CargoInspectionPartCategory

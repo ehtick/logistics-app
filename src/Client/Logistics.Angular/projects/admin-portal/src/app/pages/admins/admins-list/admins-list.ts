@@ -62,7 +62,7 @@ export class AdminsList {
   }
 
   protected getFullName(user: UserDto): string {
-    return `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || "—";
+    return `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || "-";
   }
 
   protected getRoleSeverity(role?: string | null): UiBadgeIntent {

@@ -20,10 +20,10 @@ interface LabEvent {
 }
 
 /**
- * S9 — the behavioural tail: menu, tabs, accordion, popover, drawer, stepper, timeline.
+ * S9 - the behavioural tail: menu, tabs, accordion, popover, drawer, stepper, timeline.
  *
  * These are the seven components whose bugs are INVISIBLE to every other gate. A menu that opens and
- * never closes, a tab strip where no tab is selected, an overlay that never portals — all of them
+ * never closes, a tab strip where no tab is selected, an overlay that never portals - all of them
  * compile, lint and test green. Each block below is here to be CLICKED.
  *
  * The menu row deliberately reproduces the exact call-site shape from the 19 real ones: a kebab that
@@ -50,7 +50,7 @@ interface LabEvent {
 export class UiLabBehaviourSection {
   protected readonly rows = ["LOAD-1001", "LOAD-1002", "LOAD-1003"];
   protected readonly selectedRow = signal<string | null>(null);
-  protected readonly lastCommand = signal("—");
+  protected readonly lastCommand = signal("-");
 
   /** Mirrors the real row-kebab menus: separator, a hidden item, a disabled item, a destructive one. */
   protected readonly actionMenuItems = signal<UiMenuItem[]>([]);

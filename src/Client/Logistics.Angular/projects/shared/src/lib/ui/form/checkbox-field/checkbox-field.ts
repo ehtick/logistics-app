@@ -13,10 +13,10 @@ import { Icon } from "../../icons/icon/icon";
 import { focusFirstControl } from "../focus-control";
 
 /**
- * Binary checkbox — a native `<input type="checkbox">` (visually hidden, `peer sr-only`) behind a
+ * Binary checkbox - a native `<input type="checkbox">` (visually hidden, `peer sr-only`) behind a
  * styled box with a lucide check.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  * The inner control is a real native checkbox driven by plain `[checked]` / `(change)`.
  *
  * @example

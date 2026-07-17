@@ -10,7 +10,7 @@ namespace Logistics.Infrastructure.Integrations.Common;
 /// repeating try/catch + IsSuccessStatusCode boilerplate in every operation.
 ///
 /// The read side lives in <see cref="HttpClientJsonExtensions"/>. Like it, these helpers never
-/// throw — a failure is logged and surfaced as a failed <see cref="HttpJsonResult{T}"/> or
+/// throw - a failure is logged and surfaced as a failed <see cref="HttpJsonResult{T}"/> or
 /// <c>false</c>. Push paths that must surface an error to the caller (e.g. the QuickBooks helpers
 /// in Integrations.Accounting) deliberately do NOT belong here.
 /// </summary>

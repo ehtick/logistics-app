@@ -8,7 +8,7 @@ namespace Logistics.Application.Modules.IdentityAccess.Employees.Commands;
 
 /// <summary>
 /// Soft-deletes a driver license by transitioning its status to <see cref="DriverLicenseStatus.Revoked"/>.
-/// Hard delete is intentionally not supported — license history must be retained for audits.
+/// Hard delete is intentionally not supported - license history must be retained for audits.
 /// </summary>
 internal sealed class DeleteDriverLicenseHandler(ITenantUnitOfWork tenantUow)
     : IAppRequestHandler<DeleteDriverLicenseCommand, Result>

@@ -68,7 +68,7 @@ internal sealed class CreateConditionReportHandler(
                 req.Latitude,
                 req.Longitude);
 
-            // Identifier fields — populated only for the matching cargo type
+            // Identifier fields - populated only for the matching cargo type
             if (load.Type == LoadType.Vehicle && !string.IsNullOrWhiteSpace(req.Vin))
             {
                 report.Vin = req.Vin.ToUpperInvariant();

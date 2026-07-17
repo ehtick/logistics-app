@@ -20,7 +20,7 @@ internal sealed class DemoTenantsSeeder(
     public override int Order => 40;
 
     /// <summary>
-    /// Demo threshold for the broker credit booking gate — the Demo load-board provider
+    /// Demo threshold for the broker credit booking gate - the Demo load-board provider
     /// generates scores 30-100, so ~half its brokers trip the gate for demo purposes.
     /// </summary>
     private const int DemoMinBrokerCreditScore = 70;

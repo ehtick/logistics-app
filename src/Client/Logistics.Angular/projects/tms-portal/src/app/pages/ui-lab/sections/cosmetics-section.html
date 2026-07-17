@@ -11,7 +11,7 @@
       <p class="text-sm">
         The
         <code>header</code>
-        STRING input — 43 call sites. It renders in card-title, inside the body, not in card-header.
+        STRING input - 43 call sites. It renders in card-title, inside the body, not in card-header.
       </p>
     </ui-card>
 
@@ -26,13 +26,13 @@
 
     <ui-card data-lab="card-title-subtitle">
       <ng-template #title>#title template</ng-template>
-      <ng-template #subtitle>#subtitle template — 4 call sites</ng-template>
+      <ng-template #subtitle>#subtitle template - 4 call sites</ng-template>
       <p class="text-sm">Title and subtitle both come from templates here.</p>
     </ui-card>
 
     <ui-card data-lab="card-footer">
       <ng-template #footer>
-        <div class="text-muted-foreground text-sm">#footer template — 3 call sites</div>
+        <div class="text-muted-foreground text-sm">#footer template - 3 call sites</div>
       </ng-template>
       <p class="text-sm">Footer sits inside the body, after the content.</p>
     </ui-card>
@@ -64,7 +64,7 @@
       </div>
     }
     <ui-typography variant="body-sm" color="muted">
-      100px is the default — it is p-progress-spinner's, and 50 of 63 call sites pass nothing.
+      100px is the default - it is p-progress-spinner's, and 50 of 63 call sites pass nothing.
     </ui-typography>
   </div>
 
@@ -144,7 +144,7 @@
         data-lab="toggle-unread"
         (click)="toggleUnread()"
       >
-        unread = {{ unread() ?? "null" }} — toggle
+        unread = {{ unread() ?? "null" }} - toggle
       </button>
       <ui-typography variant="body-sm" color="muted">
         A null value MUST hide the badge. The notification bell relies on it.

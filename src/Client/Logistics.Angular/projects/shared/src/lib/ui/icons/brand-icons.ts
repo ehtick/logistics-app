@@ -2,12 +2,12 @@
  * Hand-vendored brand glyphs. **Lucide ships no brand icons**, so these three are entries in
  * `UI_ICONS` (see `./icons`) under the keys `brand-facebook` / `brand-linkedin` / `brand-x`.
  *
- * Each is a raw SVG string — exactly what `@ng-icons/lucide`'s exports are
- * (`export const lucideCheck = "<svg …>…</svg>"`) — so `<ui-icon>` binds them through the same `svg`
+ * Each is a raw SVG string - exactly what `@ng-icons/lucide`'s exports are
+ * (`export const lucideCheck = "<svg …>…</svg>"`) - so `<ui-icon>` binds them through the same `svg`
  * input with no extra dependency.
  *
  * Paths are the official simple-icons glyphs. Unlike lucide (stroke-based, `fill="none"`), brand marks
- * are solid shapes — hence `fill="currentColor"` and no stroke.
+ * are solid shapes - hence `fill="currentColor"` and no stroke.
  */
 
 const brandSvg = (path: string): string =>

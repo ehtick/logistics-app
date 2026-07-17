@@ -78,7 +78,7 @@ export class BodyShopExpenseForm implements OnInit {
       min(p.amount, 0.01, { message: "Amount must be greater than 0." });
       required(p.expenseDate, { message: "Expense date is required." });
       required(p.truckId, { message: "Truck is required." });
-      // Truck is fixed once the expense exists — disable it when editing.
+      // Truck is fixed once the expense exists - disable it when editing.
       disabled(p.truckId, { when: () => this.mode() === "edit" });
     },
     {

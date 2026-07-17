@@ -18,7 +18,7 @@ import { focusFirstControl } from "../focus-control";
 /**
  * Multi-select dropdown.
  *
- * Implements `FormValueControl` only — see `text-field.ts` for the FormValueControl bridge contract.
+ * Implements `FormValueControl` only - see `text-field.ts` for the FormValueControl bridge contract.
  *
  * The inner spartan `hlm-select-multiple` (brain `BrnSelectMultiple` + `BrnPopover`) is driven with
  * plain `[value]` / `(valueChange)`. `uiDetachedControl` severs the ambient `NgControl` so brain's

@@ -2,7 +2,7 @@
  * `ui-form-field` renders inline validation errors for a projected `[formField]`.
  *
  * It resolves the field through the public `FORM_FIELD` token and reads `FieldState.errors()`,
- * which is a `ValidationError[]` — each error carrying its own `message` when the validator
+ * which is a `ValidationError[]` - each error carrying its own `message` when the validator
  * supplied one.
  *
  * The trap this guards: Signal Forms' built-in error `kind`s are camelCase (`minLength`) with a
@@ -29,7 +29,7 @@ import {
 } from "@angular/forms/signals";
 import { UiFormField } from "./form-field";
 
-/** A bare FormValueControl — binds under `[formField]` and `formControlName` alike. */
+/** A bare FormValueControl - binds under `[formField]` and `formControlName` alike. */
 @Component({
   selector: "ui-probe-input",
   template: `<input [value]="value()" (input)="onInput($event)" />`,
@@ -60,7 +60,7 @@ class HostSignal {
   });
 }
 
-/** A signal form whose validator supplies NO message — exercises the generic fallback copy. */
+/** A signal form whose validator supplies NO message - exercises the generic fallback copy. */
 @Component({
   selector: "ui-host-signal-nomsg",
   imports: [UiFormField, ProbeInput, FormField],
@@ -129,7 +129,7 @@ describe("UiFormField", () => {
     fixture.componentInstance.f.name().markAsTouched();
     await settle(fixture);
 
-    // There is no per-`kind` message table — a message-less error renders one generic sentence,
+    // There is no per-`kind` message table - a message-less error renders one generic sentence,
     // regardless of its `kind`.
     expect(errorText(fixture)).toContain("This field is invalid.");
   });

@@ -27,7 +27,7 @@ const OPTIONS: LabOption[] = [
  *
  * These are the ones that break in ways nothing else catches: a dropped `<ng-template>` or a
  * missing `*hlmSelectPortal` compiles, passes every unit test, renders a perfectly normal-looking
- * trigger — and then the panel never closes. The only way to know is to click it, so each card is
+ * trigger - and then the panel never closes. The only way to know is to click it, so each card is
  * a click target with a stable id and its live value printed underneath.
  */
 @Component({

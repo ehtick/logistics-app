@@ -1,6 +1,6 @@
 <!--
   `*hlmDialogPortal` is required: BrnDialog.open() early-returns unless a BrnDialogContent has
-  registered a template with it, so without it the dialog never opens — silently, with no error.
+  registered a template with it, so without it the dialog never opens - silently, with no error.
 
   Everything below the portal renders into the CDK overlay container, NOT into <ui-dialog>. Hence the
   inline width here rather than on the host, and the document-level Escape handler.

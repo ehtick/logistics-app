@@ -49,7 +49,7 @@
     <ui-card>
       <ng-template #title>Pending account deletions</ng-template>
       <ng-template #subtitle>
-        Deletion requests still in the 30-day grace period — anonymization runs once
+        Deletion requests still in the 30-day grace period - anonymization runs once
         <code>scheduledFor</code>
         elapses.
       </ng-template>
@@ -71,7 +71,7 @@
               <td>{{ row.userId }}</td>
               <td>{{ row.requestedAt | date: "medium" }}</td>
               <td>{{ row.scheduledFor | date: "mediumDate" }}</td>
-              <td class="max-w-md truncate">{{ row.reason || "—" }}</td>
+              <td class="max-w-md truncate">{{ row.reason || "-" }}</td>
             </tr>
           </ng-template>
         </ui-data-table>

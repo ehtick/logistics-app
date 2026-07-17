@@ -52,7 +52,7 @@ public static class CargoInspectionPartCategoryExtensions
 
     /// <summary>
     /// Returns the subset of part categories valid for the given <paramref name="loadType"/>.
-    /// Returned arrays are shared singletons — callers should treat them as read-only.
+    /// Returned arrays are shared singletons - callers should treat them as read-only.
     /// </summary>
     public static CargoInspectionPartCategory[] GetCatalogFor(LoadType loadType) =>
         loadType switch

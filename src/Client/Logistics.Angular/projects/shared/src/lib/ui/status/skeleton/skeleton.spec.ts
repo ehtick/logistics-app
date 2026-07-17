@@ -1,11 +1,11 @@
 /**
- * `ui-skeleton` / `ui-spinner` / `ui-avatar` / `ui-progress` / `ui-divider` — the small ones.
+ * `ui-skeleton` / `ui-spinner` / `ui-avatar` / `ui-progress` / `ui-divider` - the small ones.
  * Grouped in one file because each has exactly one or two things worth pinning, and all of them are
  * of the same kind: a silent default, or a call-site class that has to win a merge.
  *
  * EVERY CLASS-MERGE TEST USES A STATIC `class=`, and that is the point rather than a shortcut.
  * `classes()` harvests the class attribute through `HostAttributeToken` at construction and twMerges
- * it, so a static class genuinely wins — the component's own conflicting utility is DROPPED. A
+ * it, so a static class genuinely wins - the component's own conflicting utility is DROPPED. A
  * `[class]` binding whose value changes after first render is appended by the MutationObserver
  * without re-merging, so a test driven off a mutable signal asserts a shape no call site has and
  * "fails" on a merge bug that does not exist in the app. Not one p-skeleton / p-divider /
@@ -58,7 +58,7 @@ describe("ui-skeleton", () => {
     fixture.detectChanges();
   });
 
-  it("applies width/height as CSS lengths, not classes — call sites pass '3rem' and '120px'", () => {
+  it("applies width/height as CSS lengths, not classes - call sites pass '3rem' and '120px'", () => {
     host.width.set("120px");
     host.height.set("3rem");
     fixture.detectChanges();
@@ -66,7 +66,7 @@ describe("ui-skeleton", () => {
     expect(el().style.height).toBe("3rem");
   });
 
-  it("`size` drives BOTH axes — a circle whose axes disagree is an ellipse", () => {
+  it("`size` drives BOTH axes - a circle whose axes disagree is an ellipse", () => {
     host.size.set("3rem");
     host.shape.set("circle");
     fixture.detectChanges();
@@ -75,7 +75,7 @@ describe("ui-skeleton", () => {
     expect(el().className).toContain("rounded-full");
   });
 
-  it("lets a call site repaint the background — 4 sites pass bg-purple-500/20", () => {
+  it("lets a call site repaint the background - 4 sites pass bg-purple-500/20", () => {
     const f = TestBed.createComponent(HostClass);
     f.detectChanges();
     const cls = (f.nativeElement.querySelector("ui-skeleton") as HTMLElement).className;
@@ -128,7 +128,7 @@ describe("ui-spinner", () => {
     expect(el().style.fontSize).toBe("24px");
   });
 
-  it("announces itself — role=status plus a name", () => {
+  it("announces itself - role=status plus a name", () => {
     expect(el().getAttribute("role")).toBe("status");
     expect(el().getAttribute("aria-label")).toBe("Loading");
   });
@@ -180,7 +180,7 @@ describe("ui-avatar", () => {
   });
 
   /** app-user-avatar tints its circle per user by binding `[style]`. The host IS the circle, so it works. */
-  it("lets the call site paint the circle through [style] — app-user-avatar does exactly this", () => {
+  it("lets the call site paint the circle through [style] - app-user-avatar does exactly this", () => {
     host.style.set({ "background-color": "rgb(1, 2, 3)", color: "rgb(4, 5, 6)" });
     fixture.detectChanges();
     expect(el().style.backgroundColor).toBe("rgb(1, 2, 3)");
@@ -289,9 +289,9 @@ describe("ui-divider", () => {
 
   /**
    * 15 of the 58 incoming `<p-divider>`s are `class="m-0"`. The margin has to be ON THE HOST for
-   * that to mean anything — it used to sit on an inner div, where `m-0` cancelled nothing at all.
+   * that to mean anything - it used to sit on an inner div, where `m-0` cancelled nothing at all.
    */
-  it('lets `class="m-0"` cancel it — 15 call sites do exactly that', () => {
+  it('lets `class="m-0"` cancel it - 15 call sites do exactly that', () => {
     const f = TestBed.createComponent(HostM0);
     f.detectChanges();
     const cls = (f.nativeElement.querySelector("ui-divider") as HTMLElement).className;

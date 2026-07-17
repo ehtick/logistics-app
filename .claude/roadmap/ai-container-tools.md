@@ -1,7 +1,7 @@
 # Container & Terminal AI Tools
 
 - **Status**: Planned
-- **Priority**: P1 — quick win; the system prompt currently apologizes that these tools "are not yet exposed" while intermodal is one of our differentiators
+- **Priority**: P1 - quick win; the system prompt currently apologizes that these tools "are not yet exposed" while intermodal is one of our differentiators
 - **Effort**: S
 - **Category**: AI differentiation / intermodal
 

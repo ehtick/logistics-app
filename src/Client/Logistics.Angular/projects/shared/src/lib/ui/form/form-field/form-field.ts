@@ -4,7 +4,7 @@ import { FORM_FIELD, type ReadonlyFieldState } from "@angular/forms/signals";
 /**
  * A single validation error.
  *
- * Deliberately has NO index signature — Signal Forms' `ValidationError` has none either, and adding
+ * Deliberately has NO index signature - Signal Forms' `ValidationError` has none either, and adding
  * one here would make every error un-assignable. Payload props are read via `payloadOf()`.
  */
 export interface FieldError {
@@ -18,7 +18,7 @@ export interface FieldError {
  *
  * Every validator in this codebase passes `{ message: '...' }`, so the field's message is used
  * verbatim. The generic sentence only covers the rare rule declared without one (e.g. a test
- * fixture or a third-party schema error) — there is deliberately no per-`kind` message table.
+ * fixture or a third-party schema error) - there is deliberately no per-`kind` message table.
  */
 function describeError(error: FieldError): string {
   const message = error.message;
@@ -39,7 +39,7 @@ export class UiFormField {
    * Optional explicit field. When omitted, the field auto-resolves from the projected `[formField]`
    * directive, so inline validation errors render without any per-field wiring.
    *
-   * Bind it only when the control cannot carry `[formField]` itself — e.g. a control that is
+   * Bind it only when the control cannot carry `[formField]` itself - e.g. a control that is
    * driven by a plain `[(value)]` two-way binding because it needs a projected `<ng-template>`.
    *
    * Typed as a read-only field accessor rather than `Field<unknown>` so any `FieldTree<T>` is
