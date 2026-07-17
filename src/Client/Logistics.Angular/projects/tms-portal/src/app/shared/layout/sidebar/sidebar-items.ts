@@ -248,6 +248,24 @@ export const sidebarSections: NavSection[] = [
         ],
       },
       {
+        id: "fuel-cards",
+        label: "Fuel Cards",
+        icon: "fuel",
+        feature: "fuel_cards",
+        children: [
+          {
+            id: "fuel-cards-transactions",
+            label: "Transactions",
+            route: "/fuel-cards",
+          },
+          {
+            id: "fuel-cards-providers",
+            label: "Providers",
+            route: "/fuel-cards/providers",
+          },
+        ],
+      },
+      {
         id: "reports",
         label: "Reports",
         icon: "trending-up",
@@ -287,6 +305,12 @@ export const sidebarSections: NavSection[] = [
             id: "reports-maintenance",
             label: "Maintenance Report",
             route: "/reports/maintenance",
+          },
+          {
+            id: "reports-ifta",
+            label: "IFTA Report",
+            route: "/reports/ifta",
+            feature: "ifta",
           },
           {
             id: "reports-revenue",

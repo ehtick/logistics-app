@@ -50,6 +50,8 @@ const featureLabels: Record<TenantFeature, string> = {
   telegram_bot: "Telegram Bot",
   mcp_server: "MCP Server",
   accounting: "Accounting (QuickBooks)",
+  fuel_cards: "Fuel Cards",
+  ifta: "IFTA Reporting",
 };
 
 /** All features in display order */
@@ -78,6 +80,8 @@ const allFeatures: TenantFeature[] = [
   "telegram_bot",
   "mcp_server",
   "accounting",
+  "fuel_cards",
+  "ifta",
 ];
 
 @Component({

@@ -54,31 +54,35 @@ The dispatcher and manager web interface for managing all fleet operations.
 
 ### Load Board Integration
 
-| Feature                   | Description                                                                                                                                                       |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Multi-Provider Search** | Search for available freight across DAT, Truckstop.com, and 123Loadboard from a single interface. Filter by origin, destination, dates, equipment type, and rate. |
-| **Book Loads**            | Book loads directly from search results. Automatically creates a new load in the TMS with all details pre-filled from the listing.                                |
-| **Post Trucks**           | Advertise available capacity to load boards. Specify truck location, destination preferences, equipment type, and availability window with auto-refresh.          |
+| Feature                   | Description                                                                                                                                                                                                                              |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Multi-Provider Search** | Search for available freight across DAT, Truckstop.com, and 123Loadboard from a single interface. Filter by origin, destination, dates, equipment type, and rate.                                                                        |
+| **Book Loads**            | Book loads directly from search results. Automatically creates a new load in the TMS with all details pre-filled from the listing.                                                                                                       |
+| **Broker Credit Check**   | Vet brokers before booking: credit score, days-to-pay, and FMCSA authority status on every listing. Bookings below your minimum score are blocked unless a dispatcher overrides, and the AI dispatcher refuses to book unvetted brokers. |
+| **Post Trucks**           | Advertise available capacity to load boards. Specify truck location, destination preferences, equipment type, and availability window with auto-refresh.                                                                                 |
 
 ### Financial
 
-| Feature                | Description                                                                                                                                                                                     |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Invoicing**          | Automated invoice generation for completed loads. Itemized charges with base rate, fuel surcharge, detention, accessorial fees, and more. Three invoice types: Load, Payroll, and Subscription. |
-| **Payment Processing** | Stripe integration for credit card and ACH payments. Shareable payment links with expiration. Supports partial payments with balance tracking.                                                  |
-| **Stripe Connect**     | Direct bank deposits for trucking companies via Stripe Connect destination charges. Express account onboarding for simplified setup.                                                            |
-| **Payroll Management** | Calculate driver pay by miles, percentage, or flat rate. Generate payroll invoices with PDF stubs. Track payment history per employee.                                                          |
-| **Timesheets**         | Track employee work hours and overtime. Link timesheets to payroll calculations for accurate compensation.                                                                                      |
-| **Expense Tracking**   | Record and categorize fleet expenses - fuel, tolls, repairs, insurance, and more. Monitor spending with breakdowns by category, truck, or time period.                                          |
+| Feature                | Description                                                                                                                                                                                                                |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Invoicing**          | Automated invoice generation for completed loads. Itemized charges with base rate, fuel surcharge, detention, accessorial fees, and more. Three invoice types: Load, Payroll, and Subscription.                            |
+| **Payment Processing** | Stripe integration for credit card and ACH payments. Shareable payment links with expiration. Supports partial payments with balance tracking.                                                                             |
+| **Stripe Connect**     | Direct bank deposits for trucking companies via Stripe Connect destination charges. Express account onboarding for simplified setup.                                                                                       |
+| **Payroll Management** | Calculate driver pay by miles, percentage, or flat rate. Generate payroll invoices with PDF stubs. Track payment history per employee.                                                                                     |
+| **Timesheets**         | Track employee work hours and overtime. Link timesheets to payroll calculations for accurate compensation.                                                                                                                 |
+| **Expense Tracking**   | Record and categorize fleet expenses - fuel, tolls, repairs, insurance, and more. Monitor spending with breakdowns by category, truck, or time period.                                                                     |
+| **QuickBooks Sync**    | Push customers, invoices, payments, and expenses to QuickBooks Online automatically. OAuth connection with nightly background sync.                                                                                        |
+| **Fuel Card Sync**     | Import WEX and EFS card transactions nightly as paid fuel expenses, matched to trucks by card or unit number with gallons, price, and purchase state. Unmatched transactions land in a review queue for manual assignment. |
 
 ### Compliance & Safety
 
-| Feature                        | Description                                                                                                                                                                                                 |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ELD / HOS**                  | Integration with ELD providers (Samsara, Motive) for Hours of Service tracking. Real-time duty status, driving hours, and violation alerts. Webhook-based status sync.                                      |
-| **Vehicle Inspections (DVIR)** | Digital pre-trip and post-trip Driver Vehicle Inspection Reports. Interactive damage marking on vehicle diagrams, defect categorization by severity, and photo attachments. Inspection history per vehicle. |
-| **Safety & Incidents**         | Track safety incidents, violations, and corrective actions. Maintain compliance records for audits.                                                                                                         |
-| **Document Management**        | Centralized storage for load paperwork (POD, POL, BOL), employee records, and compliance documents. Azure Blob Storage backend with secure access.                                                          |
+| Feature                        | Description                                                                                                                                                                                                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **ELD / HOS**                  | Integration with ELD providers (Samsara, Motive, TT ELD, Geotab) for Hours of Service tracking. Real-time duty status, driving hours, and violation alerts. Webhook-based status sync.                                                                                                           |
+| **IFTA Fuel Tax Reporting**    | Quarterly per-jurisdiction miles (derived from ELD GPS via offline boundary matching) and gallons (from fuel card imports and expenses) with tax due per the published rate matrix. Closed quarters are snapshotted immutably for audits; filing-deadline reminders and PDF/CSV export included. |
+| **Vehicle Inspections (DVIR)** | Digital pre-trip and post-trip Driver Vehicle Inspection Reports. Interactive damage marking on vehicle diagrams, defect categorization by severity, and photo attachments. Inspection history per vehicle.                                                                                      |
+| **Safety & Incidents**         | Track safety incidents, violations, and corrective actions. Maintain compliance records for audits.                                                                                                                                                                                              |
+| **Document Management**        | Centralized storage for load paperwork (POD, POL, BOL), employee records, and compliance documents. Azure Blob Storage backend with secure access.                                                                                                                                               |
 
 ### Reports & Analytics
 
@@ -104,7 +108,7 @@ The dispatcher and manager web interface for managing all fleet operations.
 
 | Feature                       | Description                                                                                                                    |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **Role-Based Access Control** | Six roles with granular permissions: Owner, Manager, Dispatcher, Driver, Customer, and Super Admin.                            |
+| **Role-Based Access Control** | Seven roles with granular permissions: Super Admin, Admin, Owner, Manager, Dispatcher, Driver, and Customer.                   |
 | **Company Settings**          | Configure company profile, billing address, notification preferences, and feature toggles.                                     |
 | **Subscription Management**   | Three tiers (Starter, Professional, Enterprise) with plan-based feature gating. Stripe-powered billing with per-truck pricing. |
 

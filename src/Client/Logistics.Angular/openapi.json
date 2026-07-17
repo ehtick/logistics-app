@@ -5904,6 +5904,569 @@
         }
       }
     },
+    "/fuelcards/providers": {
+      "get": {
+        "tags": [
+          "FuelCards"
+        ],
+        "operationId": "GetFuelCardProviders",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FuelCardProviderConfigurationDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "FuelCards"
+        ],
+        "operationId": "CreateFuelCardProvider",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFuelCardProviderConfigurationCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFuelCardProviderConfigurationCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFuelCardProviderConfigurationCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fuelcards/providers/{providerId}": {
+      "delete": {
+        "tags": [
+          "FuelCards"
+        ],
+        "operationId": "DeleteFuelCardProvider",
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fuelcards/sync": {
+      "post": {
+        "tags": [
+          "FuelCards"
+        ],
+        "operationId": "SyncFuelCardTransactions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncFuelCardTransactionsCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncFuelCardTransactionsCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncFuelCardTransactionsCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FuelCardSyncResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fuelcards/transactions": {
+      "get": {
+        "tags": [
+          "FuelCards"
+        ],
+        "operationId": "GetFuelCardTransactions",
+        "parameters": [
+          {
+            "name": "Status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/FuelCardTransactionStatus"
+            }
+          },
+          {
+            "name": "ProviderType",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/FuelCardProviderType"
+            }
+          },
+          {
+            "name": "TruckId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "FromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ToDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "OrderBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FuelCardTransactionDtoPagedResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fuelcards/transactions/{transactionId}/assign": {
+      "post": {
+        "tags": [
+          "FuelCards"
+        ],
+        "operationId": "AssignFuelCardTransactionTruck",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignFuelCardTransactionTruckCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignFuelCardTransactionTruckCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignFuelCardTransactionTruckCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fuelcards/transactions/{transactionId}/ignore": {
+      "post": {
+        "tags": [
+          "FuelCards"
+        ],
+        "operationId": "IgnoreFuelCardTransaction",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ifta/rates": {
+      "get": {
+        "tags": [
+          "IftaTaxRate"
+        ],
+        "operationId": "GetIftaTaxRates",
+        "parameters": [
+          {
+            "name": "Year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Quarter",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "CountryCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OrderBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IftaTaxRateDtoPagedResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IftaTaxRate"
+        ],
+        "operationId": "CreateIftaTaxRate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIftaTaxRateCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIftaTaxRateCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIftaTaxRateCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ifta/rates/{id}": {
+      "get": {
+        "tags": [
+          "IftaTaxRate"
+        ],
+        "operationId": "GetIftaTaxRateById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IftaTaxRateDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IftaTaxRate"
+        ],
+        "operationId": "UpdateIftaTaxRate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIftaTaxRateCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIftaTaxRateCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIftaTaxRateCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IftaTaxRate"
+        ],
+        "operationId": "DeleteIftaTaxRate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/impersonation": {
       "post": {
         "tags": [
@@ -8789,6 +9352,54 @@
         }
       }
     },
+    "/loadboard/brokers/{mcNumber}/credit": {
+      "get": {
+        "tags": [
+          "LoadBoard"
+        ],
+        "operationId": "GetBrokerCredit",
+        "parameters": [
+          {
+            "name": "mcNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "listingId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrokerCreditDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/loadboard/listings/{listingId}/book": {
       "post": {
         "tags": [
@@ -10879,6 +11490,103 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DriverReportDtoPagedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/ifta": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "GetIftaReport",
+        "parameters": [
+          {
+            "name": "Year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Quarter",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IftaReportDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/ifta/pdf": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "ExportIftaReportPdf",
+        "parameters": [
+          {
+            "name": "Year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Quarter",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -15902,6 +16610,23 @@
         },
         "additionalProperties": false
       },
+      "AssignFuelCardTransactionTruckCommand": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "truckId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rememberMapping": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "AssignLoadRequest": {
         "type": "object",
         "properties": {
@@ -16102,6 +16827,49 @@
           "draft",
           "published",
           "archived"
+        ],
+        "type": "string"
+      },
+      "BrokerCreditDto": {
+        "required": [
+          "mcNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "mcNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "creditScore": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "daysToPay": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "authorityActive": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "source": {
+            "$ref": "#/components/schemas/BrokerCreditSource"
+          },
+          "checkedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BrokerCreditSource": {
+        "enum": [
+          "dat",
+          "truckstop",
+          "fmcsa",
+          "demo"
         ],
         "type": "string"
       },
@@ -17430,6 +18198,61 @@
           },
           "salaryType": {
             "$ref": "#/components/schemas/SalaryType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateFuelCardProviderConfigurationCommand": {
+        "required": [
+          "apiKey"
+        ],
+        "type": "object",
+        "properties": {
+          "providerType": {
+            "$ref": "#/components/schemas/FuelCardProviderType"
+          },
+          "apiKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "apiSecret": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalAccountId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateIftaTaxRateCommand": {
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quarter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ratePerGallon": {
+            "type": "number",
+            "format": "double"
+          },
+          "surchargeRatePerGallon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -19929,6 +20752,17 @@
           "quantityUnit": {
             "$ref": "#/components/schemas/VolumeUnit"
           },
+          "purchaseJurisdiction": {
+            "$ref": "#/components/schemas/TaxJurisdiction"
+          },
+          "fuelCardProvider": {
+            "$ref": "#/components/schemas/FuelCardProviderType"
+          },
+          "pricePerUnit": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "vendorAddress": {
             "type": "string",
             "nullable": true
@@ -20328,6 +21162,215 @@
         },
         "additionalProperties": false
       },
+      "FuelCardProviderConfigurationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "providerType": {
+            "$ref": "#/components/schemas/FuelCardProviderType"
+          },
+          "providerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "isConnected": {
+            "type": "boolean"
+          },
+          "lastSyncedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "externalAccountId": {
+            "type": "string",
+            "nullable": true
+          },
+          "pendingTransactionsCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FuelCardProviderType": {
+        "enum": [
+          "wex",
+          "efs",
+          "comdata",
+          "demo"
+        ],
+        "type": "string"
+      },
+      "FuelCardSyncResultDto": {
+        "type": "object",
+        "properties": {
+          "imported": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "matched": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pending": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "object",
+            "properties": {
+              "wex": {
+                "type": "string"
+              },
+              "efs": {
+                "type": "string"
+              },
+              "comdata": {
+                "type": "string"
+              },
+              "demo": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FuelCardTransactionDto": {
+        "required": [
+          "amount",
+          "externalTransactionId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "providerType": {
+            "$ref": "#/components/schemas/FuelCardProviderType"
+          },
+          "externalTransactionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "transactionDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "quantityUnit": {
+            "$ref": "#/components/schemas/VolumeUnit"
+          },
+          "pricePerUnit": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "productCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "merchantName": {
+            "type": "string",
+            "nullable": true
+          },
+          "merchantCity": {
+            "type": "string",
+            "nullable": true
+          },
+          "purchaseJurisdiction": {
+            "$ref": "#/components/schemas/TaxJurisdiction"
+          },
+          "cardNumberMasked": {
+            "type": "string",
+            "nullable": true
+          },
+          "unitNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "driverName": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/FuelCardTransactionStatus"
+          },
+          "truckId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "truckNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "expenseId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FuelCardTransactionDtoPagedResult": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "errorCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isSuccess": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FuelCardTransactionDto"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FuelCardTransactionStatus": {
+        "enum": [
+          "pending",
+          "matched",
+          "ignored"
+        ],
+        "type": "string"
+      },
       "GeoPoint": {
         "type": "object",
         "properties": {
@@ -20505,6 +21548,156 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HosLogDto"
+            },
+            "nullable": true
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IftaJurisdictionRowDto": {
+        "required": [
+          "countryCode",
+          "region"
+        ],
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          },
+          "miles": {
+            "type": "number",
+            "format": "double"
+          },
+          "purchasedGallons": {
+            "type": "number",
+            "format": "double"
+          },
+          "taxableGallons": {
+            "type": "number",
+            "format": "double"
+          },
+          "netTaxableGallons": {
+            "type": "number",
+            "format": "double"
+          },
+          "ratePerGallon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "surchargeRatePerGallon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "taxDue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "rateMissing": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IftaReportDto": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quarter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isClosed": {
+            "type": "boolean"
+          },
+          "closedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "totalMiles": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalGallons": {
+            "type": "number",
+            "format": "double"
+          },
+          "averageMpg": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalTaxDue": {
+            "type": "number",
+            "format": "double"
+          },
+          "hasMissingRates": {
+            "type": "boolean"
+          },
+          "jurisdictions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IftaJurisdictionRowDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IftaTaxRateDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "jurisdiction": {
+            "$ref": "#/components/schemas/TaxJurisdictionDto"
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quarter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ratePerGallon": {
+            "type": "number",
+            "format": "double"
+          },
+          "surchargeRatePerGallon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IftaTaxRateDtoPagedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IftaTaxRateDto"
             },
             "nullable": true
           },
@@ -21172,6 +22365,9 @@
           "notes": {
             "type": "string",
             "nullable": true
+          },
+          "overrideCreditCheck": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -21356,6 +22552,21 @@
           },
           "brokerMcNumber": {
             "type": "string",
+            "nullable": true
+          },
+          "brokerCreditScore": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "brokerDaysToPay": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "brokerCreditCheckedAt": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           },
           "status": {
@@ -24523,6 +25734,15 @@
         ],
         "type": "string"
       },
+      "SyncFuelCardTransactionsCommand": {
+        "type": "object",
+        "properties": {
+          "providerType": {
+            "$ref": "#/components/schemas/FuelCardProviderType"
+          }
+        },
+        "additionalProperties": false
+      },
       "TaxBehavior": {
         "enum": [
           "exclusive",
@@ -24530,6 +25750,23 @@
           "reverse_charge"
         ],
         "type": "string"
+      },
+      "TaxJurisdiction": {
+        "required": [
+          "countryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "TaxJurisdictionDto": {
         "type": "object",
@@ -24708,7 +25945,9 @@
           "api_access",
           "telegram_bot",
           "mcp_server",
-          "accounting"
+          "accounting",
+          "fuel_cards",
+          "ifta"
         ],
         "type": "string"
       },
@@ -24820,6 +26059,11 @@
           },
           "llmEnabled": {
             "type": "boolean",
+            "nullable": true
+          },
+          "minBrokerCreditScore": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
@@ -26158,6 +27402,41 @@
         },
         "additionalProperties": false
       },
+      "UpdateIftaTaxRateCommand": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quarter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ratePerGallon": {
+            "type": "number",
+            "format": "double"
+          },
+          "surchargeRatePerGallon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateInvoiceCommand": {
         "type": "object",
         "properties": {
@@ -27069,6 +28348,12 @@
     },
     {
       "name": "Features"
+    },
+    {
+      "name": "FuelCards"
+    },
+    {
+      "name": "IftaTaxRate"
     },
     {
       "name": "Impersonation"

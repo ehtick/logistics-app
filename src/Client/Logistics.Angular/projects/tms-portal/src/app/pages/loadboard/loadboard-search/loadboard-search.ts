@@ -1,4 +1,5 @@
 import { Component, inject, signal, type OnInit } from "@angular/core";
+import { ErrorCodes } from "@logistics/shared";
 import {
   Api,
   bookLoadBoardListing,
@@ -67,26 +68,61 @@ export class LoadBoardSearchComponent implements OnInit {
 
   protected async onBook(body: LoadBoardBookingRequest): Promise<void> {
     const listing = this.selectedListing();
-    if (!listing?.externalListingId) {
+    if (!listing?.id) {
       return;
     }
 
+    await this.bookListing(listing, body);
+  }
+
+  private async bookListing(
+    listing: LoadBoardListingDto,
+    body: LoadBoardBookingRequest,
+  ): Promise<void> {
     this.booking.set(true);
     try {
-      await this.api.invoke(bookLoadBoardListing, {
-        listingId: listing.externalListingId,
-        body,
-      });
+      await this.api.invoke(bookLoadBoardListing, { listingId: listing.id!, body });
       this.showBookDialog.set(false);
       this.toast.showSuccess("Load booked successfully! A new load has been created in your TMS.");
       this.listings.update((cur) =>
         cur.filter((l) => l.externalListingId !== listing.externalListingId),
       );
     } catch (err) {
+      const apiError = this.extractApiError(err);
+      if (apiError?.errorCode === ErrorCodes.BrokerCreditBelowThreshold) {
+        this.confirmCreditOverride(listing, body, apiError.message);
+        return;
+      }
       console.error("Error booking load:", err);
       this.toast.showError("Failed to book load");
     } finally {
       this.booking.set(false);
     }
+  }
+
+  private confirmCreditOverride(
+    listing: LoadBoardListingDto,
+    body: LoadBoardBookingRequest,
+    reason: string,
+  ): void {
+    this.toast.confirm({
+      header: "Broker Credit Warning",
+      message: `${reason} Book anyway?`,
+      icon: "warning",
+      severity: "danger",
+      acceptLabel: "Book Anyway",
+      accept: () => void this.bookListing(listing, { ...body, overrideCreditCheck: true }),
+    });
+  }
+
+  private extractApiError(err: unknown): { message: string; errorCode?: string } | undefined {
+    const body = (err as { error?: { error?: unknown; errorCode?: unknown } })?.error;
+    if (typeof body?.error !== "string") {
+      return undefined;
+    }
+    return {
+      message: body.error,
+      errorCode: typeof body.errorCode === "string" ? body.errorCode : undefined,
+    };
   }
 }

@@ -50,6 +50,9 @@ export class Pricing {
       features: [
         "Everything in Starter",
         "Load board integrations",
+        "Broker credit checks",
+        "Fuel card sync (WEX, EFS)",
+        "IFTA fuel tax reporting",
         "Payroll management",
         "Timesheets tracking",
         "Safety & compliance",

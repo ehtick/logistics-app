@@ -47,6 +47,12 @@ export class Features {
         "Search DAT, Truckstop, and 123Loadboard from one place. Book loads. Post trucks.",
     },
     {
+      icon: "shield-check",
+      title: "Broker Credit Check",
+      description:
+        "Credit score, days-to-pay, and FMCSA authority on every listing. Low-credit bookings are blocked before you haul for a broker who won't pay.",
+    },
+    {
       icon: "globe",
       title: "US and Europe",
       description:
@@ -84,6 +90,18 @@ export class Features {
       title: "QuickBooks Sync",
       description:
         "Push customers, invoices, payments, and expenses to QuickBooks Online so your accountant's books stay current without re-entry.",
+    },
+    {
+      icon: "fuel",
+      title: "Fuel Card Sync",
+      description:
+        "WEX and EFS transactions import nightly as paid fuel expenses - gallons, price, and purchase state included. No manual entry, and IFTA data builds itself.",
+    },
+    {
+      icon: "map",
+      title: "IFTA Reporting",
+      description:
+        "Per-jurisdiction miles from ELD GPS and gallons from fuel cards roll into a quarterly IFTA report with tax due - snapshot-frozen for audits, exportable as PDF or CSV.",
     },
     {
       icon: "clock",

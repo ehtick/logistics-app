@@ -80,6 +80,10 @@ export const Permission = {
     Post: "Permission.LoadBoard.Post",
     Manage: "Permission.LoadBoard.Manage",
   },
+  FuelCard: {
+    View: "Permission.FuelCard.View",
+    Manage: "Permission.FuelCard.Manage",
+  },
   Dispatch: {
     View: "Permission.Dispatch.View",
     Manage: "Permission.Dispatch.Manage",
@@ -87,6 +91,10 @@ export const Permission = {
   BlogPost: {
     View: "Permission.BlogPost.View",
     Manage: "Permission.BlogPost.Manage",
+  },
+  IftaRate: {
+    View: "Permission.IftaRate.View",
+    Manage: "Permission.IftaRate.Manage",
   },
   Dvir: {
     View: "Permission.Dvir.View",
