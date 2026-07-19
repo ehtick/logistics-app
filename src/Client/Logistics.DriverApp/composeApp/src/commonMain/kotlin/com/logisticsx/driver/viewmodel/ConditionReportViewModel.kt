@@ -25,7 +25,7 @@ import kotlinx.serialization.json.Json
 
 /**
  * A single defect captured during cargo inspection. Mirrors the server-side
- * `ConditionDefect` value object  category drawn from the cargo-type-specific
+ * `ConditionDefect` value object - category drawn from the cargo-type-specific
  * catalog ([CargoInspectionPartCategory]).
  */
 @Serializable

@@ -11,7 +11,7 @@ fun Address?.toAddressDto(): AddressDto = AddressDto(
     city = this?.locality ?: "",
     zipCode = this?.postalCode ?: "",
     state = this?.adminArea ?: "",
-    // ISO-3166-1 alpha-2 code (e.g. "US"), not the display name  the backend
+    // ISO-3166-1 alpha-2 code (e.g. "US"), not the display name - the backend
     // requires a 2-letter country code.
     country = this?.countryCode ?: "",
 )

@@ -117,7 +117,7 @@ fun PrivacyScreen(
                 Text(
                     "Account deletion is irreversible after a 30-day grace period. Operational " +
                         "and financial records (loads, invoices, payments) stay intact for legal " +
-                        "compliance  only your name, email, and phone are replaced with " +
+                        "compliance - only your name, email, and phone are replaced with " +
                         "placeholders.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -127,7 +127,7 @@ fun PrivacyScreen(
                 if (pendingDeletion != null) {
                     DetailRow(
                         label = "Scheduled for",
-                        value = pendingDeletion.scheduledFor?.toString() ?: "",
+                        value = pendingDeletion.scheduledFor?.toString() ?: "-",
                     )
                     Spacer(Modifier.height(12.dp))
                     if (pendingDeletion.isCancellable == true) {
@@ -198,7 +198,7 @@ private fun ExportRow(row: DataExportRequestDto) {
     Column(modifier = Modifier.padding(vertical = 6.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                row.requestedAt?.toString() ?: "",
+                row.requestedAt?.toString() ?: "-",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f),
             )

@@ -65,7 +65,7 @@ class DutyStatusManager(
 
     /**
      * If the persisted state says on-duty, resume tracking. Used at app boot.
-     * Fires and forgets  failure to resume is logged but non-fatal.
+     * Fires and forgets - failure to resume is logged but non-fatal.
      */
     fun resumeIfPersisted() {
         scope.launch {

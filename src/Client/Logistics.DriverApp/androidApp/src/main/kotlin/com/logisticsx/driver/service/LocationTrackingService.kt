@@ -75,7 +75,7 @@ class LocationTrackingService : Service() {
     }
 
     private fun startForegroundWithTruckNumber() {
-        // Synchronous placeholder first  Service must call startForeground()
+        // Synchronous placeholder first - Service must call startForeground()
         // within 5s of startForegroundService() or the system kills it
         // (ForegroundServiceDidNotStartInTimelyException, API 26+). Then enrich
         // with the truck number once DataStore resolves, via NotificationManager

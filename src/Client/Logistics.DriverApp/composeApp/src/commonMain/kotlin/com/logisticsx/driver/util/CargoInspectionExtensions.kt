@@ -5,7 +5,7 @@ import com.logisticsx.driver.api.models.LoadType
 
 /**
  * Driver-side display name for each [CargoInspectionPartCategory]. Backed
- * server-side by `[Description]` attributes on the enum  duplicated here so
+ * server-side by `[Description]` attributes on the enum - duplicated here so
  * the driver UI can render display names without an extra round-trip.
  */
 val CargoInspectionPartCategory.displayName: String

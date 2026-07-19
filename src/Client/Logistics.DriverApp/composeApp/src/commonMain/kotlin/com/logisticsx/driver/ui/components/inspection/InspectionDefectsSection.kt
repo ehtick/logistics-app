@@ -54,7 +54,7 @@ fun InspectionDefectView(
 }
 
 /**
- * Generalized defects section  used by both the DVIR form and the cargo
+ * Generalized defects section - used by both the DVIR form and the cargo
  * Condition Report. The owner screen passes in already-adapted defects, an
  * optional [sectionTitle], and the empty-state hint.
  */
