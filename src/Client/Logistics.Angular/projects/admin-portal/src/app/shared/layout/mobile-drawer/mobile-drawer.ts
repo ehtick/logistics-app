@@ -1,10 +1,9 @@
 import { Component, computed, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { Converters } from "@logistics/shared";
-import { PermissionService } from "@logistics/shared/services";
+import { LayoutService, PermissionService } from "@logistics/shared/services";
 import { Avatar, Divider, Icon, UiButton, UiDrawer } from "@logistics/shared/ui";
 import { AuthService } from "@/core/auth";
-import { LayoutService } from "@/core/services/layout.service";
 import { sidebarSections, type AdminNavSection } from "../sidebar/sidebar-items";
 
 @Component({
@@ -19,7 +18,7 @@ export class MobileDrawer {
   private readonly permissionService = inject(PermissionService);
 
   protected readonly visible = this.layoutService.mobileMenuOpen;
-  protected readonly userName = this.authService.userName;
+  protected readonly userName = computed(() => this.authService.userName() ?? "Admin");
   protected readonly userInitials = computed(() => Converters.getInitials(this.userName()));
 
   protected readonly sections = computed<AdminNavSection[]>(() => {
