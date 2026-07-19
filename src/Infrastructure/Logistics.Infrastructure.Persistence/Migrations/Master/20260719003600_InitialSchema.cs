@@ -106,6 +106,27 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                 });
 
             migrationBuilder.CreateTable(
+                name: "ifta_tax_rates",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    year = table.Column<int>(type: "integer", nullable: false),
+                    quarter = table.Column<int>(type: "integer", nullable: false),
+                    rate_per_gallon = table.Column<decimal>(type: "numeric(8,4)", precision: 8, scale: 4, nullable: false),
+                    surcharge_rate_per_gallon = table.Column<decimal>(type: "numeric(8,4)", precision: 8, scale: 4, nullable: true),
+                    jurisdiction_country_code = table.Column<string>(type: "character varying(2)", maxLength: 2, nullable: false),
+                    jurisdiction_region = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_ifta_tax_rates", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "impersonation_audit_logs",
                 columns: table => new
                 {
@@ -144,6 +165,20 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                 });
 
             migrationBuilder.CreateTable(
+                name: "processed_webhook_events",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    provider = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    event_key = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    received_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_processed_webhook_events", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "roles",
                 columns: table => new
                 {
@@ -171,7 +206,6 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                     stripe_per_truck_price_id = table.Column<string>(type: "text", nullable: true),
                     stripe_ai_overage_price_id = table.Column<string>(type: "text", nullable: true),
                     weekly_ai_request_quota = table.Column<int>(type: "integer", nullable: true),
-                    allowed_model_tier = table.Column<string>(type: "text", nullable: false),
                     max_trucks = table.Column<int>(type: "integer", nullable: true),
                     interval = table.Column<string>(type: "text", nullable: false),
                     interval_count = table.Column<int>(type: "integer", nullable: false),
@@ -260,9 +294,7 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                     settings_distance_unit = table.Column<string>(type: "text", nullable: false),
                     settings_language = table.Column<string>(type: "text", nullable: false),
                     settings_llm_enabled = table.Column<bool>(type: "boolean", nullable: true),
-                    settings_llm_extended_thinking = table.Column<bool>(type: "boolean", nullable: true),
-                    settings_llm_model = table.Column<string>(type: "text", nullable: true),
-                    settings_llm_provider = table.Column<string>(type: "text", nullable: true),
+                    settings_min_broker_credit_score = table.Column<int>(type: "integer", nullable: true),
                     settings_region = table.Column<string>(type: "text", nullable: false),
                     settings_temperature_unit = table.Column<string>(type: "text", nullable: false),
                     settings_timezone = table.Column<string>(type: "text", nullable: false),
@@ -517,9 +549,10 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     token = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    tenant_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tenant_id = table.Column<Guid>(type: "uuid", nullable: true),
                     type = table.Column<string>(type: "text", nullable: false),
-                    tenant_role = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    tenant_role = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
+                    app_role = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
                     customer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     status = table.Column<string>(type: "text", nullable: false),
@@ -542,7 +575,7 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                         column: x => x.tenant_id,
                         principalTable: "tenants",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "fk_invitations_users_accepted_by_user_id",
                         column: x => x.accepted_by_user_id,
@@ -867,6 +900,11 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                 column: "email");
 
             migrationBuilder.CreateIndex(
+                name: "ix_ifta_tax_rates_year_quarter",
+                table: "ifta_tax_rates",
+                columns: new[] { "year", "quarter" });
+
+            migrationBuilder.CreateIndex(
                 name: "ix_impersonation_audit_logs_admin_user_id",
                 table: "impersonation_audit_logs",
                 column: "admin_user_id");
@@ -954,6 +992,17 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                 table: "plan_features",
                 columns: new[] { "plan_id", "feature" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_processed_webhook_events_provider_event_key",
+                table: "processed_webhook_events",
+                columns: new[] { "provider", "event_key" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_processed_webhook_events_received_at",
+                table: "processed_webhook_events",
+                column: "received_at");
 
             migrationBuilder.CreateIndex(
                 name: "ix_role_claims_role_id",
@@ -1082,6 +1131,9 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                 name: "demo_requests");
 
             migrationBuilder.DropTable(
+                name: "ifta_tax_rates");
+
+            migrationBuilder.DropTable(
                 name: "impersonation_audit_logs");
 
             migrationBuilder.DropTable(
@@ -1095,6 +1147,9 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
 
             migrationBuilder.DropTable(
                 name: "plan_features");
+
+            migrationBuilder.DropTable(
+                name: "processed_webhook_events");
 
             migrationBuilder.DropTable(
                 name: "role_claims");

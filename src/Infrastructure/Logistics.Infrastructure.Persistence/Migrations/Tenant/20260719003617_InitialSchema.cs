@@ -13,6 +13,28 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "accounting_provider_configurations",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    provider_type = table.Column<string>(type: "text", nullable: false),
+                    realm_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    company_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    access_token = table.Column<string>(type: "text", nullable: true),
+                    refresh_token = table.Column<string>(type: "text", nullable: true),
+                    token_expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    refresh_token_expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    default_payment_account_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    default_expense_account_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    last_synced_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_accounting_provider_configurations", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ai_dispatch_sessions",
                 columns: table => new
                 {
@@ -63,6 +85,27 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 });
 
             migrationBuilder.CreateTable(
+                name: "broker_credit_records",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    mc_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    credit_score = table.Column<int>(type: "integer", nullable: true),
+                    days_to_pay = table.Column<int>(type: "integer", nullable: true),
+                    authority_active = table.Column<bool>(type: "boolean", nullable: true),
+                    source = table.Column<string>(type: "text", nullable: false),
+                    checked_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_broker_credit_records", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "customers",
                 columns: table => new
                 {
@@ -96,12 +139,12 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     provider_type = table.Column<string>(type: "text", nullable: false),
-                    api_key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    api_secret = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    access_token = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    refresh_token = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    api_key = table.Column<string>(type: "text", nullable: false),
+                    api_secret = table.Column<string>(type: "text", nullable: true),
+                    access_token = table.Column<string>(type: "text", nullable: true),
+                    refresh_token = table.Column<string>(type: "text", nullable: true),
                     token_expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    webhook_secret = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    webhook_secret = table.Column<string>(type: "text", nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     last_synced_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     external_account_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
@@ -112,17 +155,56 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 });
 
             migrationBuilder.CreateTable(
+                name: "fuel_card_provider_configurations",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    provider_type = table.Column<string>(type: "text", nullable: false),
+                    api_key = table.Column<string>(type: "text", nullable: false),
+                    api_secret = table.Column<string>(type: "text", nullable: true),
+                    access_token = table.Column<string>(type: "text", nullable: true),
+                    refresh_token = table.Column<string>(type: "text", nullable: true),
+                    token_expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    last_synced_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    external_account_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_fuel_card_provider_configurations", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ifta_quarter_snapshots",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    year = table.Column<int>(type: "integer", nullable: false),
+                    quarter = table.Column<int>(type: "integer", nullable: false),
+                    closed_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    report_json = table.Column<string>(type: "jsonb", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_ifta_quarter_snapshots", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "load_board_configurations",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     provider_type = table.Column<string>(type: "text", nullable: false),
-                    api_key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    api_secret = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    access_token = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    refresh_token = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    api_key = table.Column<string>(type: "text", nullable: false),
+                    api_secret = table.Column<string>(type: "text", nullable: true),
+                    access_token = table.Column<string>(type: "text", nullable: true),
+                    refresh_token = table.Column<string>(type: "text", nullable: true),
                     token_expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    webhook_secret = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    webhook_secret = table.Column<string>(type: "text", nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     last_synced_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     external_account_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
@@ -147,6 +229,29 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_notifications", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "qbo_entity_mappings",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    local_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    local_entity_type = table.Column<string>(type: "text", nullable: false),
+                    qbo_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qbo_sync_token = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    last_synced_hash = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    last_synced_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    sync_status = table.Column<string>(type: "text", nullable: false),
+                    last_error = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_qbo_entity_mappings", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -614,6 +719,11 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                     odometer_reading = table.Column<int>(type: "integer", nullable: true),
                     quantity = table.Column<decimal>(type: "numeric", nullable: true),
                     quantity_unit = table.Column<string>(type: "text", nullable: true),
+                    fuel_card_provider = table.Column<string>(type: "text", nullable: true),
+                    external_transaction_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    price_per_unit = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: true),
+                    purchase_jurisdiction_country_code = table.Column<string>(type: "text", nullable: true),
+                    purchase_jurisdiction_region = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -634,6 +744,74 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                         principalTable: "trucks",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "fuel_card_transactions",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    provider_type = table.Column<string>(type: "text", nullable: false),
+                    external_transaction_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    transaction_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    quantity = table.Column<decimal>(type: "numeric(18,3)", precision: 18, scale: 3, nullable: true),
+                    quantity_unit = table.Column<string>(type: "text", nullable: true),
+                    price_per_unit = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: true),
+                    product_category = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    merchant_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    merchant_city = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    card_number_masked = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
+                    external_card_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    unit_number = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    driver_name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    status = table.Column<string>(type: "text", nullable: false),
+                    truck_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    expense_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    raw_payload_json = table.Column<string>(type: "jsonb", nullable: true),
+                    amount_amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    amount_currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
+                    purchase_jurisdiction_country_code = table.Column<string>(type: "text", nullable: true),
+                    purchase_jurisdiction_region = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_fuel_card_transactions", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_fuel_card_transactions_truck_truck_id",
+                        column: x => x.truck_id,
+                        principalTable: "trucks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "fuel_cards",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    provider_type = table.Column<string>(type: "text", nullable: false),
+                    external_card_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    unit_number = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    truck_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_fuel_cards", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_fuel_cards_truck_truck_id",
+                        column: x => x.truck_id,
+                        principalTable: "trucks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -843,6 +1021,51 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 });
 
             migrationBuilder.CreateTable(
+                name: "truck_jurisdiction_mileage",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    truck_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    date = table.Column<DateOnly>(type: "date", nullable: false),
+                    miles = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
+                    jurisdiction_country_code = table.Column<string>(type: "character varying(2)", maxLength: 2, nullable: false),
+                    jurisdiction_region = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_truck_jurisdiction_mileage", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_truck_jurisdiction_mileage_trucks_truck_id",
+                        column: x => x.truck_id,
+                        principalTable: "trucks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "truck_location_history",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    truck_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    source = table.Column<string>(type: "text", nullable: true),
+                    odometer_reading = table.Column<int>(type: "integer", nullable: true),
+                    location_latitude = table.Column<double>(type: "double precision", nullable: false),
+                    location_longitude = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_truck_location_history", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_truck_location_history_trucks_truck_id",
+                        column: x => x.truck_id,
+                        principalTable: "trucks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "conversations",
                 columns: table => new
                 {
@@ -949,6 +1172,9 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                     broker_phone = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     broker_email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     broker_mc_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    broker_credit_score = table.Column<int>(type: "integer", nullable: true),
+                    broker_days_to_pay = table.Column<int>(type: "integer", nullable: true),
+                    broker_credit_checked_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     status = table.Column<string>(type: "text", nullable: false),
                     booked_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     load_id = table.Column<Guid>(type: "uuid", nullable: true),
@@ -987,6 +1213,48 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                         principalTable: "loads",
                         principalColumn: "id",
                         onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "load_condition_reports",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    load_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    type = table.Column<string>(type: "text", nullable: false),
+                    vin = table.Column<string>(type: "character varying(17)", maxLength: 17, nullable: true),
+                    vehicle_year = table.Column<int>(type: "integer", nullable: true),
+                    vehicle_make = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    vehicle_model = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    vehicle_body_class = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    container_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    seal_number = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    notes = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    inspector_signature = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
+                    latitude = table.Column<double>(type: "double precision", nullable: true),
+                    longitude = table.Column<double>(type: "double precision", nullable: true),
+                    inspected_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    inspected_by_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_load_condition_reports", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_load_condition_reports_employees_inspected_by_id",
+                        column: x => x.inspected_by_id,
+                        principalTable: "employees",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_load_condition_reports_load_load_id",
+                        column: x => x.load_id,
+                        principalTable: "loads",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1040,47 +1308,6 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                     table.PrimaryKey("pk_tracking_links", x => x.id);
                     table.ForeignKey(
                         name: "fk_tracking_links_loads_load_id",
-                        column: x => x.load_id,
-                        principalTable: "loads",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "vehicle_condition_reports",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    load_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    vin = table.Column<string>(type: "character varying(17)", maxLength: 17, nullable: false),
-                    type = table.Column<string>(type: "text", nullable: false),
-                    vehicle_year = table.Column<int>(type: "integer", nullable: true),
-                    vehicle_make = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    vehicle_model = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    vehicle_body_class = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    damage_markers_json = table.Column<string>(type: "jsonb", nullable: true),
-                    notes = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    inspector_signature = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
-                    latitude = table.Column<double>(type: "double precision", nullable: true),
-                    longitude = table.Column<double>(type: "double precision", nullable: true),
-                    inspected_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    inspected_by_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_vehicle_condition_reports", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_vehicle_condition_reports_employees_inspected_by_id",
-                        column: x => x.inspected_by_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_vehicle_condition_reports_loads_load_id",
                         column: x => x.load_id,
                         principalTable: "loads",
                         principalColumn: "id",
@@ -1486,6 +1713,27 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 });
 
             migrationBuilder.CreateTable(
+                name: "condition_defects",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    load_condition_report_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    part_category = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    severity = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_condition_defects", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_condition_defects_load_condition_report_load_condition_repo",
+                        column: x => x.load_condition_report_id,
+                        principalTable: "load_condition_reports",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "maintenance_parts",
                 columns: table => new
                 {
@@ -1611,7 +1859,7 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                     uploaded_by_id = table.Column<Guid>(type: "uuid", nullable: false),
                     employee_id = table.Column<Guid>(type: "uuid", nullable: true),
                     load_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    vehicle_condition_report_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    load_condition_report_id = table.Column<Guid>(type: "uuid", nullable: true),
                     recipient_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     recipient_signature = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
                     capture_latitude = table.Column<double>(type: "double precision", nullable: true),
@@ -1654,6 +1902,11 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "fk_documents_load_condition_reports_load_condition_report_id",
+                        column: x => x.load_condition_report_id,
+                        principalTable: "load_condition_reports",
+                        principalColumn: "id");
+                    table.ForeignKey(
                         name: "fk_documents_loads_load_id",
                         column: x => x.load_id,
                         principalTable: "loads",
@@ -1676,11 +1929,6 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                         principalTable: "trucks",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_documents_vehicle_condition_reports_vehicle_condition_repor",
-                        column: x => x.vehicle_condition_report_id,
-                        principalTable: "vehicle_condition_reports",
-                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1790,6 +2038,12 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 column: "accident_report_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_accounting_provider_configurations_provider_type",
+                table: "accounting_provider_configurations",
+                column: "provider_type",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_ai_dispatch_decisions_session_id",
                 table: "ai_dispatch_decisions",
                 column: "session_id");
@@ -1810,6 +2064,22 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 table: "api_keys",
                 column: "key_hash",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_broker_credit_records_mc_number",
+                table: "broker_credit_records",
+                column: "mc_number",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_condition_defects_load_condition_report_id",
+                table: "condition_defects",
+                column: "load_condition_report_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_condition_defects_part_category",
+                table: "condition_defects",
+                column: "part_category");
 
             migrationBuilder.CreateIndex(
                 name: "ix_containers_current_terminal_id",
@@ -1875,6 +2145,11 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 column: "employee_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_documents_load_condition_report_id",
+                table: "documents",
+                column: "load_condition_report_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_documents_load_id",
                 table: "documents",
                 column: "load_id");
@@ -1898,11 +2173,6 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 name: "ix_documents_uploaded_by_id",
                 table: "documents",
                 column: "uploaded_by_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_documents_vehicle_condition_report_id",
-                table: "documents",
-                column: "vehicle_condition_report_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_driver_behavior_events_employee_id_occurred_at",
@@ -2042,6 +2312,13 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 column: "expense_date");
 
             migrationBuilder.CreateIndex(
+                name: "ix_expenses_fuel_card_provider_external_transaction_id",
+                table: "expenses",
+                columns: new[] { "fuel_card_provider", "external_transaction_id" },
+                unique: true,
+                filter: "external_transaction_id IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_expenses_number",
                 table: "expenses",
                 column: "number",
@@ -2068,6 +2345,39 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 column: "type");
 
             migrationBuilder.CreateIndex(
+                name: "ix_fuel_card_provider_configurations_provider_type",
+                table: "fuel_card_provider_configurations",
+                column: "provider_type",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_fuel_card_transactions_provider_type_external_transaction_id",
+                table: "fuel_card_transactions",
+                columns: new[] { "provider_type", "external_transaction_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_fuel_card_transactions_status",
+                table: "fuel_card_transactions",
+                column: "status");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_fuel_card_transactions_truck_id_transaction_date",
+                table: "fuel_card_transactions",
+                columns: new[] { "truck_id", "transaction_date" });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_fuel_cards_provider_type_external_card_id",
+                table: "fuel_cards",
+                columns: new[] { "provider_type", "external_card_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_fuel_cards_truck_id",
+                table: "fuel_cards",
+                column: "truck_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_hos_logs_employee_id_log_date",
                 table: "hos_logs",
                 columns: new[] { "employee_id", "log_date" });
@@ -2086,6 +2396,12 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 name: "ix_hos_violations_external_violation_id",
                 table: "hos_violations",
                 column: "external_violation_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_ifta_quarter_snapshots_year_quarter",
+                table: "ifta_quarter_snapshots",
+                columns: new[] { "year", "quarter" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_invoice_line_items_invoice_id",
@@ -2140,6 +2456,31 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 name: "ix_load_board_listings_status",
                 table: "load_board_listings",
                 column: "status");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_load_condition_reports_container_number",
+                table: "load_condition_reports",
+                column: "container_number");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_load_condition_reports_inspected_at",
+                table: "load_condition_reports",
+                column: "inspected_at");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_load_condition_reports_inspected_by_id",
+                table: "load_condition_reports",
+                column: "inspected_by_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_load_condition_reports_load_id",
+                table: "load_condition_reports",
+                column: "load_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_load_condition_reports_vin",
+                table: "load_condition_reports",
+                column: "vin");
 
             migrationBuilder.CreateIndex(
                 name: "ix_load_exceptions_load_id",
@@ -2291,6 +2632,17 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "ix_qbo_entity_mappings_local_entity_type_local_id",
+                table: "qbo_entity_mappings",
+                columns: new[] { "local_entity_type", "local_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_qbo_entity_mappings_sync_status",
+                table: "qbo_entity_mappings",
+                column: "sync_status");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_telegram_chats_chat_id",
                 table: "telegram_chats",
                 column: "chat_id",
@@ -2360,6 +2712,27 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 column: "truck_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_truck_jurisdiction_mileage_date",
+                table: "truck_jurisdiction_mileage",
+                column: "date");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_truck_jurisdiction_mileage_truck_id_date",
+                table: "truck_jurisdiction_mileage",
+                columns: new[] { "truck_id", "date" });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_truck_location_history_timestamp",
+                table: "truck_location_history",
+                column: "timestamp")
+                .Annotation("Npgsql:IndexMethod", "brin");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_truck_location_history_truck_id_timestamp",
+                table: "truck_location_history",
+                columns: new[] { "truck_id", "timestamp" });
+
+            migrationBuilder.CreateIndex(
                 name: "ix_trucks_main_driver_id",
                 table: "trucks",
                 column: "main_driver_id");
@@ -2374,26 +2747,6 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 name: "ix_trucks_secondary_driver_id",
                 table: "trucks",
                 column: "secondary_driver_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_vehicle_condition_reports_inspected_at",
-                table: "vehicle_condition_reports",
-                column: "inspected_at");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_vehicle_condition_reports_inspected_by_id",
-                table: "vehicle_condition_reports",
-                column: "inspected_by_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_vehicle_condition_reports_load_id",
-                table: "vehicle_condition_reports",
-                column: "load_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_vehicle_condition_reports_vin",
-                table: "vehicle_condition_reports",
-                column: "vin");
         }
 
         /// <inheritdoc />
@@ -2406,10 +2759,19 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 name: "accident_witnesses");
 
             migrationBuilder.DropTable(
+                name: "accounting_provider_configurations");
+
+            migrationBuilder.DropTable(
                 name: "ai_dispatch_decisions");
 
             migrationBuilder.DropTable(
                 name: "api_keys");
+
+            migrationBuilder.DropTable(
+                name: "broker_credit_records");
+
+            migrationBuilder.DropTable(
+                name: "condition_defects");
 
             migrationBuilder.DropTable(
                 name: "conversation_participants");
@@ -2442,10 +2804,22 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 name: "expenses");
 
             migrationBuilder.DropTable(
+                name: "fuel_card_provider_configurations");
+
+            migrationBuilder.DropTable(
+                name: "fuel_card_transactions");
+
+            migrationBuilder.DropTable(
+                name: "fuel_cards");
+
+            migrationBuilder.DropTable(
                 name: "hos_logs");
 
             migrationBuilder.DropTable(
                 name: "hos_violations");
+
+            migrationBuilder.DropTable(
+                name: "ifta_quarter_snapshots");
 
             migrationBuilder.DropTable(
                 name: "invoice_line_items");
@@ -2478,6 +2852,9 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 name: "posted_trucks");
 
             migrationBuilder.DropTable(
+                name: "qbo_entity_mappings");
+
+            migrationBuilder.DropTable(
                 name: "telegram_chats");
 
             migrationBuilder.DropTable(
@@ -2488,6 +2865,12 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
 
             migrationBuilder.DropTable(
                 name: "tracking_links");
+
+            migrationBuilder.DropTable(
+                name: "truck_jurisdiction_mileage");
+
+            migrationBuilder.DropTable(
+                name: "truck_location_history");
 
             migrationBuilder.DropTable(
                 name: "ai_dispatch_sessions");
@@ -2508,13 +2891,13 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Tenant
                 name: "dvir_reports");
 
             migrationBuilder.DropTable(
+                name: "load_condition_reports");
+
+            migrationBuilder.DropTable(
                 name: "maintenance_records");
 
             migrationBuilder.DropTable(
                 name: "trip_stops");
-
-            migrationBuilder.DropTable(
-                name: "vehicle_condition_reports");
 
             migrationBuilder.DropTable(
                 name: "conversations");

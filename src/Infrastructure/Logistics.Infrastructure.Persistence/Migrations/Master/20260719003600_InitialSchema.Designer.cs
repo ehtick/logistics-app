@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Logistics.Infrastructure.Persistence.Migrations.Master
 {
     [DbContext(typeof(MasterDbContext))]
-    [Migration("20260613174412_AddAppUserInvitationSupport")]
-    partial class AddAppUserInvitationSupport
+    [Migration("20260719003600_InitialSchema")]
+    partial class InitialSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -518,6 +518,76 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                         .HasDatabaseName("ix_demo_requests_email");
 
                     b.ToTable("demo_requests", (string)null);
+                });
+
+            modelBuilder.Entity("Logistics.Domain.Entities.IftaTaxRate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("CreatedBy");
+
+                    b.Property<int>("Quarter")
+                        .HasColumnType("integer")
+                        .HasColumnName("quarter");
+
+                    b.Property<decimal>("RatePerGallon")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("rate_per_gallon");
+
+                    b.Property<decimal?>("SurchargeRatePerGallon")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("surcharge_rate_per_gallon");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("LastModifiedAt");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("LastModifiedBy");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer")
+                        .HasColumnName("year");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Jurisdiction", "Logistics.Domain.Entities.IftaTaxRate.Jurisdiction#TaxJurisdiction", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("CountryCode")
+                                .IsRequired()
+                                .HasMaxLength(2)
+                                .HasColumnType("character varying(2)")
+                                .HasColumnName("jurisdiction_country_code");
+
+                            b1.Property<string>("Region")
+                                .HasMaxLength(10)
+                                .HasColumnType("character varying(10)")
+                                .HasColumnName("jurisdiction_region");
+                        });
+
+                    b.HasKey("Id")
+                        .HasName("pk_ifta_tax_rates");
+
+                    b.HasIndex("Year", "Quarter")
+                        .HasDatabaseName("ix_ifta_tax_rates_year_quarter");
+
+                    b.ToTable("ifta_tax_rates", (string)null);
                 });
 
             modelBuilder.Entity("Logistics.Domain.Entities.ImpersonationAuditLog", b =>
@@ -1050,6 +1120,42 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                     b.ToTable("plan_features", (string)null);
                 });
 
+            modelBuilder.Entity("Logistics.Domain.Entities.ProcessedWebhookEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("EventKey")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("event_key");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("provider");
+
+                    b.Property<DateTime>("ReceivedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("received_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_processed_webhook_events");
+
+                    b.HasIndex("ReceivedAt")
+                        .HasDatabaseName("ix_processed_webhook_events_received_at");
+
+                    b.HasIndex("Provider", "EventKey")
+                        .IsUnique()
+                        .HasDatabaseName("ix_processed_webhook_events_provider_event_key");
+
+                    b.ToTable("processed_webhook_events", (string)null);
+                });
+
             modelBuilder.Entity("Logistics.Domain.Entities.Subscription", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1464,6 +1570,10 @@ namespace Logistics.Infrastructure.Persistence.Migrations.Master
                             b1.Property<bool?>("LlmEnabled")
                                 .HasColumnType("boolean")
                                 .HasColumnName("settings_llm_enabled");
+
+                            b1.Property<int?>("MinBrokerCreditScore")
+                                .HasColumnType("integer")
+                                .HasColumnName("settings_min_broker_credit_score");
 
                             b1.Property<string>("Region")
                                 .IsRequired()
