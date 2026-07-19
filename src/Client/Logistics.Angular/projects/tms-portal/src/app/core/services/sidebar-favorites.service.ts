@@ -9,7 +9,7 @@ const ROLE_DEFAULTS: Record<string, string[]> = {
   [UserRole.Driver]: ["home", "messages"],
   [UserRole.Dispatcher]: ["loads", "trips", "messages"],
   [UserRole.Manager]: ["home", "loads", "reports"],
-  [UserRole.Owner]: ["dashboard", "loads", "reports", "expenses"],
+  [UserRole.Owner]: ["home", "loads", "reports", "expenses"],
 };
 
 /**

@@ -90,7 +90,13 @@ export class IftaReportComponent implements OnInit {
     return { deadline, days, overdue: days < 0 };
   });
 
-  protected readonly jurisdictionLabel = jurisdictionLabel;
+  /** Jurisdiction rows with the display label precomputed, so the table doesn't format per change-detection tick. */
+  protected readonly jurisdictionRows = computed(() =>
+    (this.report()?.jurisdictions ?? []).map((row) => ({
+      ...row,
+      label: jurisdictionLabel(row.countryCode, row.region),
+    })),
+  );
 
   ngOnInit(): void {
     void this.fetch();

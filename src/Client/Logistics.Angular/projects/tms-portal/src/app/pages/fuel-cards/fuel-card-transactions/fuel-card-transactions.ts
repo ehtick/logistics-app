@@ -1,5 +1,5 @@
 import { DecimalPipe } from "@angular/common";
-import { Component, inject, signal, type OnInit } from "@angular/core";
+import { Component, computed, inject, signal, type OnInit } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { type FuelCardTransactionDto } from "@logistics/shared/api";
 import { CurrencyFormatPipe, DateFormatPipe } from "@logistics/shared/pipes";
@@ -62,9 +62,13 @@ export class FuelCardTransactionsComponent implements OnInit {
 
   protected readonly saving = signal(false);
   protected readonly showAssignDialog = signal(false);
-  protected readonly assignSummary = signal("");
-  protected readonly assignSuggestedTruckId = signal<string | null>(null);
   private readonly assignTargets = signal<FuelCardTransactionDto[]>([]);
+  protected readonly assignSummary = computed(() =>
+    this.store.buildAssignSummary(this.assignTargets()),
+  );
+  protected readonly assignSuggestedTruckId = computed(() =>
+    this.store.suggestTruckId(this.assignTargets()),
+  );
 
   protected readonly providerOptions = [
     { label: "All providers", value: null },
@@ -90,8 +94,6 @@ export class FuelCardTransactionsComponent implements OnInit {
       return;
     }
     this.assignTargets.set(targets);
-    this.assignSummary.set(this.store.buildAssignSummary(targets));
-    this.assignSuggestedTruckId.set(this.store.suggestTruckId(targets));
     this.showAssignDialog.set(true);
   }
 

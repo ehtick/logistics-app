@@ -112,7 +112,16 @@ export const reportsRoutes: Routes = [
           permission: Permission.Stat.View,
         },
       },
-      { path: "", redirectTo: "loads", pathMatch: "full" },
+      {
+        path: "",
+        loadComponent: () => import("./reports-hub/reports-hub").then((m) => m.ReportsHubComponent),
+        canActivate: [authGuard],
+        data: {
+          // Parent `reports` route already contributes the "Reports" crumb; empty avoids duplication.
+          breadcrumb: "",
+          permission: Permission.Stat.View,
+        },
+      },
     ],
   },
 ];

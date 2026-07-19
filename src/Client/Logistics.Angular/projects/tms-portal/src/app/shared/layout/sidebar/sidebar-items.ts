@@ -17,7 +17,79 @@ export const sidebarSections: NavSection[] = [
         icon: "messages-square",
         route: "/messages",
         feature: "messages",
-        // badge wired in sidebar.ts via ChatService
+        // badge wired in sidebar-nav.service.ts via ChatService
+      },
+      {
+        id: "reports",
+        label: "Reports",
+        icon: "trending-up",
+        route: "/reports",
+        feature: "reports",
+        // Children stay in the data for the command palette + stored favorites, but each is
+        // `menuHidden` so the rendered menu shows Reports as a single link to the hub page.
+        children: [
+          {
+            id: "reports-loads",
+            label: "Loads",
+            route: "/reports/loads",
+            menuHidden: true,
+          },
+          {
+            id: "reports-drivers",
+            label: "Drivers",
+            route: "/reports/drivers",
+            menuHidden: true,
+          },
+          {
+            id: "reports-drivers-detailed",
+            label: "Drivers Detailed",
+            route: "/reports/drivers/detailed",
+            menuHidden: true,
+          },
+          {
+            id: "reports-financial",
+            label: "Financial Report",
+            route: "/reports/financials",
+            menuHidden: true,
+          },
+          {
+            id: "reports-payroll",
+            label: "Payroll Report",
+            route: "/reports/payroll",
+            menuHidden: true,
+          },
+          {
+            id: "reports-safety",
+            label: "Safety Report",
+            route: "/reports/safety",
+            menuHidden: true,
+          },
+          {
+            id: "reports-maintenance",
+            label: "Maintenance Report",
+            route: "/reports/maintenance",
+            menuHidden: true,
+          },
+          {
+            id: "reports-ifta",
+            label: "IFTA Report",
+            route: "/reports/ifta",
+            feature: "ifta",
+            menuHidden: true,
+          },
+          {
+            id: "reports-revenue",
+            label: "Revenue Overview",
+            route: "/reports/revenue",
+            menuHidden: true,
+          },
+          {
+            id: "reports-team",
+            label: "Team Overview",
+            route: "/reports/team",
+            menuHidden: true,
+          },
+        ],
       },
     ],
   },
@@ -165,23 +237,9 @@ export const sidebarSections: NavSection[] = [
     ],
   },
   {
-    id: "business",
-    label: "Business",
+    id: "finance",
+    label: "Finance",
     items: [
-      {
-        id: "employees",
-        label: "Employees",
-        icon: "users",
-        route: "/employees",
-        feature: "employees",
-      },
-      {
-        id: "customers",
-        label: "Customers",
-        icon: "building-2",
-        route: "/customers",
-        feature: "customers",
-      },
       {
         id: "payroll",
         label: "Payroll",
@@ -236,11 +294,6 @@ export const sidebarSections: NavSection[] = [
             route: "/expenses",
           },
           {
-            id: "expenses-add",
-            label: "Add Expense",
-            route: "/expenses/add",
-          },
-          {
             id: "expenses-analytics",
             label: "Analytics",
             route: "/expenses/analytics",
@@ -265,64 +318,25 @@ export const sidebarSections: NavSection[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    id: "people",
+    label: "People & Partners",
+    items: [
       {
-        id: "reports",
-        label: "Reports",
-        icon: "trending-up",
-        feature: "reports",
-        children: [
-          {
-            id: "reports-loads",
-            label: "Loads",
-            route: "/reports/loads",
-          },
-          {
-            id: "reports-drivers",
-            label: "Drivers",
-            route: "/reports/drivers",
-          },
-          {
-            id: "reports-drivers-detailed",
-            label: "Drivers Detailed",
-            route: "/reports/drivers/detailed",
-          },
-          {
-            id: "reports-financial",
-            label: "Financial Report",
-            route: "/reports/financials",
-          },
-          {
-            id: "reports-payroll",
-            label: "Payroll Report",
-            route: "/reports/payroll",
-          },
-          {
-            id: "reports-safety",
-            label: "Safety Report",
-            route: "/reports/safety",
-          },
-          {
-            id: "reports-maintenance",
-            label: "Maintenance Report",
-            route: "/reports/maintenance",
-          },
-          {
-            id: "reports-ifta",
-            label: "IFTA Report",
-            route: "/reports/ifta",
-            feature: "ifta",
-          },
-          {
-            id: "reports-revenue",
-            label: "Revenue Overview",
-            route: "/reports/revenue",
-          },
-          {
-            id: "reports-team",
-            label: "Team Overview",
-            route: "/reports/team",
-          },
-        ],
+        id: "employees",
+        label: "Employees",
+        icon: "users",
+        route: "/employees",
+        feature: "employees",
+      },
+      {
+        id: "customers",
+        label: "Customers",
+        icon: "building-2",
+        route: "/customers",
+        feature: "customers",
       },
     ],
   },
@@ -335,43 +349,53 @@ export const sidebarSections: NavSection[] = [
         id: "settings",
         label: "Settings",
         icon: "settings",
+        route: "/settings",
+        // Children stay in the data for the command palette + stored favorites, but each is
+        // `menuHidden` so the rendered menu shows Settings as a single link to the tabbed layout.
         children: [
           {
             id: "settings-company",
             label: "Company",
             route: "/settings/company",
+            menuHidden: true,
           },
           {
             id: "settings-payments",
             label: "Payments",
             route: "/settings/payments",
+            menuHidden: true,
           },
           {
             id: "settings-subscription",
             label: "Plan & Billing",
             route: "/subscription/manage",
+            menuHidden: true,
           },
           {
             id: "settings-features",
             label: "Features",
             route: "/settings/features",
+            menuHidden: true,
           },
           {
             id: "settings-api-keys",
             label: "API Keys",
             route: "/settings/api-keys",
             feature: "mcp_server",
+            menuHidden: true,
           },
           {
             id: "settings-accounting",
             label: "Accounting",
             route: "/settings/accounting",
             feature: "accounting",
+            menuHidden: true,
           },
           {
             id: "settings-privacy",
             label: "Privacy",
             route: "/settings/privacy",
+            menuHidden: true,
           },
         ],
       },

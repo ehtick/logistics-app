@@ -88,7 +88,7 @@
 
   @if (hasData()) {
     <ui-dashboard-card title="Per-Jurisdiction Breakdown" icon="map">
-      <ui-data-table [value]="r.jurisdictions ?? []" [paginator]="true" [rows]="60">
+      <ui-data-table [value]="jurisdictionRows()" [paginator]="true" [rows]="60">
         <ng-template #header>
           <tr>
             <th uiSortHeader="region">Jurisdiction</th>
@@ -103,7 +103,7 @@
         <ng-template #body let-row>
           <tr>
             <td>
-              <span class="font-medium">{{ jurisdictionLabel(row.countryCode, row.region) }}</span>
+              <span class="font-medium">{{ row.label }}</span>
             </td>
             <td>{{ row.miles | number: "1.0-1" }}</td>
             <td>{{ row.taxableGallons | number: "1.0-1" }}</td>

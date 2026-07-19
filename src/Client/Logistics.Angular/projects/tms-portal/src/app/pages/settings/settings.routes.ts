@@ -4,54 +4,61 @@ import { authGuard } from "@/core/auth";
 export const settingsRoutes: Routes = [
   {
     path: "",
-    redirectTo: "company",
-    pathMatch: "full",
-  },
-  {
-    path: "tax-rates",
-    redirectTo: "payments",
-    pathMatch: "full",
-  },
-  {
-    path: "company",
     loadComponent: () =>
-      import("./company-settings/company-settings").then((m) => m.CompanySettingsComponent),
-    canActivate: [authGuard],
-    data: { breadcrumb: "Company" },
-  },
-  {
-    path: "payments",
-    loadComponent: () =>
-      import("./payment-settings/payment-settings").then((m) => m.PaymentSettingsComponent),
-    canActivate: [authGuard],
-    data: { breadcrumb: "Payments" },
-  },
-  {
-    path: "features",
-    loadComponent: () =>
-      import("./feature-settings/feature-settings").then((m) => m.FeatureSettingsComponent),
-    canActivate: [authGuard],
-    data: { breadcrumb: "Features" },
-  },
-  {
-    path: "api-keys",
-    loadComponent: () =>
-      import("./api-keys-settings/api-keys-settings").then((m) => m.ApiKeysSettings),
-    canActivate: [authGuard],
-    data: { breadcrumb: "API Keys" },
-  },
-  {
-    path: "accounting",
-    loadComponent: () =>
-      import("./accounting-settings/accounting-settings").then((m) => m.AccountingSettings),
-    canActivate: [authGuard],
-    data: { breadcrumb: "Accounting" },
-  },
-  {
-    path: "privacy",
-    loadComponent: () =>
-      import("./privacy-settings/privacy-settings").then((m) => m.PrivacySettings),
-    canActivate: [authGuard],
-    data: { breadcrumb: "Privacy" },
+      import("./settings-layout/settings-layout").then((m) => m.SettingsLayoutComponent),
+    children: [
+      {
+        path: "",
+        redirectTo: "company",
+        pathMatch: "full",
+      },
+      {
+        path: "tax-rates",
+        redirectTo: "payments",
+        pathMatch: "full",
+      },
+      {
+        path: "company",
+        loadComponent: () =>
+          import("./company-settings/company-settings").then((m) => m.CompanySettingsComponent),
+        canActivate: [authGuard],
+        data: { breadcrumb: "Company" },
+      },
+      {
+        path: "payments",
+        loadComponent: () =>
+          import("./payment-settings/payment-settings").then((m) => m.PaymentSettingsComponent),
+        canActivate: [authGuard],
+        data: { breadcrumb: "Payments" },
+      },
+      {
+        path: "features",
+        loadComponent: () =>
+          import("./feature-settings/feature-settings").then((m) => m.FeatureSettingsComponent),
+        canActivate: [authGuard],
+        data: { breadcrumb: "Features" },
+      },
+      {
+        path: "api-keys",
+        loadComponent: () =>
+          import("./api-keys-settings/api-keys-settings").then((m) => m.ApiKeysSettings),
+        canActivate: [authGuard],
+        data: { breadcrumb: "API Keys" },
+      },
+      {
+        path: "accounting",
+        loadComponent: () =>
+          import("./accounting-settings/accounting-settings").then((m) => m.AccountingSettings),
+        canActivate: [authGuard],
+        data: { breadcrumb: "Accounting" },
+      },
+      {
+        path: "privacy",
+        loadComponent: () =>
+          import("./privacy-settings/privacy-settings").then((m) => m.PrivacySettings),
+        canActivate: [authGuard],
+        data: { breadcrumb: "Privacy" },
+      },
+    ],
   },
 ];

@@ -17,4 +17,9 @@ export interface NavItem {
   feature?: TenantFeature;
   children?: NavItem[];
   badge?: () => number | null;
+  /**
+   * Kept in the data (so it stays resolvable for the command palette and stored favorites) but
+   * hidden from the rendered menus. Stripped from `menuSections`, retained in `fullSections`.
+   */
+  menuHidden?: boolean;
 }

@@ -19,19 +19,24 @@
     <!-- Search trigger -->
     <button class="mobile-search-trigger" (click)="openSearch()" type="button">
       <ui-icon name="search" />
-      <span>Search...</span>
+      <span class="flex-1 text-left">Search...</span>
+      <kbd
+        class="bg-surface border-subtle text-muted-foreground inline-flex items-center rounded-sm border px-1.5 py-0.5 text-[0.625rem]"
+      >
+        Ctrl+K
+      </kbd>
     </button>
 
     <!-- Favorites -->
     <app-favorites-bar
-      [sections]="filteredSections()"
+      [sections]="fullSections()"
       [collapsed]="false"
       (navigate)="onFavoriteNavigate()"
     />
 
     <!-- Navigation -->
     <app-nav-menu
-      [sections]="filteredSections()"
+      [sections]="menuSections()"
       [collapsed]="false"
       (itemClick)="onNavItemClick()"
     />

@@ -35,11 +35,11 @@
   </button>
 
   <!-- Favorites -->
-  <app-favorites-bar [sections]="filteredSections()" [collapsed]="!isOpened()" />
+  <app-favorites-bar [sections]="fullSections()" [collapsed]="!isOpened()" />
 
   <!-- Navigation -->
   <app-nav-menu
-    [sections]="filteredSections()"
+    [sections]="menuSections()"
     [collapsed]="!isOpened()"
     (itemContextMenu)="onNavContextMenu($event)"
   />

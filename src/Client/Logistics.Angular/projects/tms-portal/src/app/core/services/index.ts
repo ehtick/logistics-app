@@ -10,6 +10,7 @@ export * from "./map-style.service";
 export * from "./dashboard-settings.service";
 export * from "./feature.provider";
 export * from "./sidebar-favorites.service";
+export * from "./sidebar-nav.service";
 export * from "./recent-pages.service";
 export * from "./command-palette.service";
 export * from "./upgrade-prompt.service";
