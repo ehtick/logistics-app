@@ -32,15 +32,24 @@
       </td>
       <td>
         @if (provider.pendingTransactionsCount) {
-          <ui-badge [value]="provider.pendingTransactionsCount" severity="warn" />
+          <a
+            routerLink="/fuel-cards"
+            [queryParams]="{ status: 'pending' }"
+            uiTooltip="View pending transactions"
+          >
+            <ui-badge [value]="provider.pendingTransactionsCount" severity="warn" />
+          </a>
         } @else {
           <span class="text-muted-foreground text-sm">0</span>
         }
       </td>
       <td>
         @if (provider.lastSyncedAt) {
-          <span class="text-muted-foreground text-sm">
-            {{ provider.lastSyncedAt | date: "short" }}
+          <span
+            class="text-muted-foreground text-sm"
+            [uiTooltip]="(provider.lastSyncedAt | date: 'medium') ?? ''"
+          >
+            {{ provider.lastSyncedAt | relativeTime }}
           </span>
         } @else {
           <span class="text-muted-foreground text-sm">Never</span>
@@ -52,6 +61,8 @@
             appearance="text"
             icon="refresh-cw"
             [rounded]="true"
+            [loading]="syncingId() === provider.id"
+            [disabled]="syncingId() === provider.id"
             uiTooltip="Sync Now"
             ariaLabel="Sync transactions now"
             (click)="sync.emit(provider)"

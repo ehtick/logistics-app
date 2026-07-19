@@ -1,7 +1,6 @@
 import { Component, ElementRef, input, model, output, signal, viewChild } from "@angular/core";
 import { form, FormField, FormRoot, required } from "@angular/forms/signals";
-import { type FuelCardTransactionDto, type TruckDto } from "@logistics/shared/api";
-import { CurrencyFormatPipe, DateFormatPipe } from "@logistics/shared/pipes";
+import { type TruckDto } from "@logistics/shared/api";
 import {
   Stack,
   Surface,
@@ -15,7 +14,6 @@ import {
 import { UiFormField } from "@/shared/components";
 
 export interface AssignTruckRequest {
-  transactionId: string;
   truckId: string;
   rememberMapping: boolean;
 }
@@ -25,12 +23,15 @@ const EMPTY = {
   rememberMapping: true,
 };
 
+/**
+ * Truck picker used for both a single transaction and a bulk selection. The caller owns which
+ * transaction(s) are being assigned; this dialog only collects the truck + remember-mapping choice
+ * and emits it. `summary` describes what's being assigned; `suggestedTruckId` pre-selects a match.
+ */
 @Component({
   selector: "app-assign-truck-dialog",
   templateUrl: "./assign-truck-dialog.html",
   imports: [
-    CurrencyFormatPipe,
-    DateFormatPipe,
     FormField,
     FormRoot,
     Stack,
@@ -46,9 +47,12 @@ const EMPTY = {
 })
 export class AssignTruckDialog {
   public readonly visible = model.required<boolean>();
-  public readonly transaction = input<FuelCardTransactionDto | null>(null);
   public readonly trucks = input.required<TruckDto[]>();
   public readonly saving = input(false);
+  /** What's being assigned - a single transaction's detail line, or "12 transactions selected". */
+  public readonly summary = input<string>("");
+  /** Truck to pre-select on open (e.g. matched by unit number). Null leaves the field empty. */
+  public readonly suggestedTruckId = input<string | null>(null);
   public readonly save = output<AssignTruckRequest>();
 
   private readonly formEl = viewChild.required("formEl", { read: ElementRef });
@@ -63,14 +67,9 @@ export class AssignTruckDialog {
     {
       submission: {
         action: async () => {
-          const transaction = this.transaction();
           const v = this.model();
-          if (transaction?.id && v.truckId) {
-            this.save.emit({
-              transactionId: transaction.id,
-              truckId: v.truckId,
-              rememberMapping: v.rememberMapping,
-            });
+          if (v.truckId) {
+            this.save.emit({ truckId: v.truckId, rememberMapping: v.rememberMapping });
           }
           return undefined;
         },
@@ -79,7 +78,7 @@ export class AssignTruckDialog {
   );
 
   protected onShow(): void {
-    this.form().reset({ ...EMPTY });
+    this.form().reset({ ...EMPTY, truckId: this.suggestedTruckId() });
   }
 
   protected requestSubmit(): void {

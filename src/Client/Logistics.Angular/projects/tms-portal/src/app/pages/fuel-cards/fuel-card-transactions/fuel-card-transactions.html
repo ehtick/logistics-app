@@ -11,30 +11,76 @@
   />
 </ui-page-header>
 
-<ui-stack direction="row" class="mb-4">
+<ui-stack direction="row" align="center" gap="2" wrap class="mb-4">
   <ui-toggle-group
-    [options]="statusOptions"
-    [value]="statusFilter()"
-    (valueChange)="onStatusFilterChange($any($event))"
+    [options]="store.statusOptions()"
+    [value]="store.statusFilter()"
+    (valueChange)="store.setStatus($any($event))"
+  />
+  <ui-select-field
+    class="w-44"
+    [options]="providerOptions"
+    optionLabel="label"
+    optionValue="value"
+    [value]="store.providerFilter()"
+    (valueChange)="store.setProvider($any($event))"
+    placeholder="All providers"
+  />
+  <ui-date-range-picker
+    [dates]="store.dateRange()"
+    (datesChange)="store.setDateRange($event)"
+    [showClear]="true"
+  />
+  <ui-search-field
+    class="w-56"
+    placeholder="Search merchant / unit / truck"
+    (searchChange)="store.setSearch($event)"
   />
 </ui-stack>
 
-@if (loading()) {
+@if (store.showSelection() && store.selection().length) {
+  <ui-stack direction="row" align="center" gap="2" class="bg-subtle mb-3 block rounded-md p-2">
+    <span class="text-sm font-medium">{{ store.selection().length }} selected</span>
+    <ui-button size="sm" icon="truck" label="Assign to truck" (click)="openBulkAssign()" />
+    <ui-button
+      size="sm"
+      appearance="outlined"
+      intent="danger"
+      icon="x"
+      label="Ignore"
+      (click)="bulkIgnore()"
+    />
+  </ui-stack>
+}
+
+@if (store.loading()) {
   <ui-stack align="center" justify="center" class="p-5">
     <ui-spinner />
   </ui-stack>
-} @else if (error()) {
-  <ui-error-state [message]="error()!" (retry)="loadTransactions()" />
-} @else if (transactions().length === 0) {
+} @else if (store.error()) {
+  <ui-error-state [message]="store.error()!" (retry)="store.loadTransactions()" />
+} @else if (store.visibleTransactions().length === 0) {
   <ui-empty-state
     title="No transactions"
-    message="No fuel card transactions match this filter. Connect a provider or run a sync from the Providers page."
+    message="No fuel card transactions match these filters. Connect a provider or run a sync from the Providers page."
     icon="credit-card"
   />
 } @else {
-  <ui-data-table [value]="transactions()" [paginator]="true" [rows]="25" [rowsPerPageOptions]="[25, 50, 100]">
+  <ui-data-table
+    [value]="store.visibleTransactions()"
+    dataKey="id"
+    [selectionMode]="store.showSelection() ? 'multiple' : undefined"
+    [selection]="store.selection()"
+    (selectionChange)="store.setSelection($any($event))"
+    [paginator]="true"
+    [rows]="25"
+    [rowsPerPageOptions]="[25, 50, 100]"
+  >
     <ng-template #header>
       <tr>
+        @if (store.showSelection()) {
+          <th style="width: 3rem"><ui-table-header-checkbox /></th>
+        }
         <th>Date</th>
         <th>Provider</th>
         <th>Merchant</th>
@@ -48,6 +94,9 @@
     </ng-template>
     <ng-template #body let-txn>
       <tr>
+        @if (store.showSelection()) {
+          <td><ui-table-checkbox [value]="txn" /></td>
+        }
         <td>
           <span class="text-sm">{{ txn.transactionDate | dateFormat: "shortDate" }}</span>
         </td>
@@ -78,7 +127,7 @@
           }
         </td>
         <td>
-          <span class="text-success font-medium">{{ txn.amount.amount | currencyFormat }}</span>
+          <span class="font-medium">{{ txn.amount.amount | currencyFormat }}</span>
         </td>
         <td>
           <span class="text-sm">{{ txn.unitNumber || "-" }}</span>
@@ -120,8 +169,9 @@
 
 <app-assign-truck-dialog
   [(visible)]="showAssignDialog"
-  [transaction]="selectedTransaction()"
-  [trucks]="trucks()"
+  [trucks]="store.trucks()"
+  [summary]="assignSummary()"
+  [suggestedTruckId]="assignSuggestedTruckId()"
   [saving]="saving()"
   (save)="onAssign($event)"
 />

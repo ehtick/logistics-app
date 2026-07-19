@@ -1,30 +1,15 @@
 <ui-dialog
-  header="Assign Transaction to Truck"
+  header="Assign to Truck"
   [(open)]="visible"
   [modal]="true"
   width="480px"
   [draggable]="false"
   (opened)="onShow()"
 >
-  @if (transaction(); as txn) {
+  @if (summary()) {
     <ui-surface variant="subtle" [border]="true" class="mb-4 block">
       <ui-stack gap="1" class="p-3">
-        <ui-typography variant="body">
-          <span class="font-medium">{{ txn.merchantName || "Unknown merchant" }}</span>
-          @if (txn.merchantCity) {
-            <span class="text-muted-foreground">- {{ txn.merchantCity }}</span>
-          }
-        </ui-typography>
-        <ui-typography variant="body" color="secondary">
-          {{ txn.transactionDate | dateFormat: "shortDate" }} ·
-          {{ txn.amount.amount | currencyFormat }}
-          @if (txn.quantity) {
-            · {{ txn.quantity }} {{ txn.quantityUnit === "liters" ? "L" : "gal" }}
-          }
-          @if (txn.unitNumber) {
-            · Unit "{{ txn.unitNumber }}"
-          }
-        </ui-typography>
+        <ui-typography variant="body">{{ summary() }}</ui-typography>
       </ui-stack>
     </ui-surface>
   }

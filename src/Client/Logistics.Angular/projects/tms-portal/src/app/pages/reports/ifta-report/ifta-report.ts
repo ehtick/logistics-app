@@ -1,6 +1,8 @@
 import { DecimalPipe, SlicePipe } from "@angular/common";
 import { Component, computed, inject, signal, type OnInit } from "@angular/core";
+import { jurisdictionLabel } from "@logistics/shared";
 import { Api, exportIftaReportPdf, getIftaReport, type IftaReportDto } from "@logistics/shared/api";
+import { DateFormatPipe } from "@logistics/shared/pipes";
 import {
   Alert,
   Badge,
@@ -11,6 +13,7 @@ import {
   UiButton,
   UiDataTable,
   UiSelectField,
+  UiSortHeader,
   UiTooltip,
 } from "@logistics/shared/ui";
 import { downloadBlobFile } from "@logistics/shared/utils";
@@ -31,6 +34,7 @@ interface QuarterOption {
     Alert,
     Badge,
     DashboardCard,
+    DateFormatPipe,
     DecimalPipe,
     EmptyState,
     PageHeader,
@@ -41,6 +45,7 @@ interface QuarterOption {
     UiButton,
     UiDataTable,
     UiSelectField,
+    UiSortHeader,
     UiTooltip,
   ],
 })
@@ -59,6 +64,33 @@ export class IftaReportComponent implements OnInit {
     const r = this.report();
     return !!r && ((r.jurisdictions?.length ?? 0) > 0 || r.totalMiles! > 0);
   });
+
+  /** A net credit (negative tax due) is money back - show it as success; anything owed stays a warning. */
+  protected readonly netTaxColor = computed<"green" | "orange">(() =>
+    (this.report()?.totalTaxDue ?? 0) < 0 ? "green" : "orange",
+  );
+
+  /**
+   * Filing deadline for the selected quarter, shown only once the quarter is over (fileable).
+   * The current in-progress quarter and any future quarter get no banner.
+   */
+  protected readonly filingInfo = computed(() => {
+    const opt = this.currentOption();
+    const now = new Date();
+    const curYear = now.getUTCFullYear();
+    const curQuarter = Math.floor(now.getUTCMonth() / 3) + 1;
+    const isCurrentOrFuture =
+      opt.year > curYear || (opt.year === curYear && opt.quarter >= curQuarter);
+    if (isCurrentOrFuture) {
+      return null;
+    }
+
+    const deadline = iftaFilingDeadline(opt.year, opt.quarter);
+    const days = Math.ceil((deadline.getTime() - now.getTime()) / 86_400_000);
+    return { deadline, days, overdue: days < 0 };
+  });
+
+  protected readonly jurisdictionLabel = jurisdictionLabel;
 
   ngOnInit(): void {
     void this.fetch();
@@ -125,7 +157,7 @@ export class IftaReportComponent implements OnInit {
       "Tax Due",
     ];
     const rows = report.jurisdictions.map((row) => [
-      `${row.countryCode}-${row.region}`,
+      jurisdictionLabel(row.countryCode, row.region),
       row.miles ?? "",
       row.taxableGallons ?? "",
       row.purchasedGallons ?? "",
@@ -149,6 +181,23 @@ export class IftaReportComponent implements OnInit {
       this.quarterOptions.find((o) => o.value === this.selectedQuarter()) ?? this.quarterOptions[0]
     );
   }
+}
+
+/**
+ * IFTA filing deadline: the last day of the month following quarter-end
+ * (Q1 -> Apr 30, Q2 -> Jul 31, Q3 -> Oct 31, Q4 -> Jan 31 of the next year).
+ * Mirrors the backend `IftaQuarters.FilingDeadline`. Day 0 of the next month is the last
+ * day of the target month.
+ */
+function iftaFilingDeadline(year: number, quarter: number): Date {
+  const target: Record<number, { y: number; m: number }> = {
+    1: { y: year, m: 4 }, // May(4) day 0 = Apr 30
+    2: { y: year, m: 7 }, // Aug(7) day 0 = Jul 31
+    3: { y: year, m: 10 }, // Nov(10) day 0 = Oct 31
+    4: { y: year + 1, m: 1 }, // Feb(1) day 0 = Jan 31
+  };
+  const { y, m } = target[quarter] ?? target[4];
+  return new Date(Date.UTC(y, m, 0));
 }
 
 /** Current quarter first, then the 7 before it. */

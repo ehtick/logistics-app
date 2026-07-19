@@ -7,6 +7,7 @@ import {
   syncFuelCardTransactions,
   type CreateFuelCardProviderConfigurationCommand,
   type FuelCardProviderConfigurationDto,
+  type FuelCardSyncResultDto,
 } from "@logistics/shared/api";
 import {
   Alert,
@@ -43,7 +44,8 @@ export class FuelCardProvidersComponent implements OnInit {
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
-  protected readonly syncing = signal(false);
+  protected readonly syncingAll = signal(false);
+  protected readonly syncingId = signal<string | null>(null);
   protected readonly error = signal<string | null>(null);
   protected readonly providers = signal<FuelCardProviderConfigurationDto[]>([]);
   protected readonly showAddDialog = signal(false);
@@ -83,22 +85,41 @@ export class FuelCardProvidersComponent implements OnInit {
   }
 
   protected async onSync(provider: FuelCardProviderConfigurationDto): Promise<void> {
-    this.syncing.set(true);
+    this.syncingId.set(provider.id ?? null);
     try {
       const result = await this.api.invoke(syncFuelCardTransactions, {
         body: { providerType: provider.providerType },
       });
-      this.toast.showSuccess(
-        `Imported ${result?.imported ?? 0} transaction(s): ${result?.matched ?? 0} matched, ${result?.pending ?? 0} pending review.`,
-        "Sync Complete",
-      );
+      this.showSyncResult(result);
       await this.loadProviders();
     } catch (err) {
       console.error("Error syncing transactions:", err);
       this.toast.showError("Failed to sync transactions");
     } finally {
-      this.syncing.set(false);
+      this.syncingId.set(null);
     }
+  }
+
+  /** Syncs every connected provider in one call (no provider type = all). */
+  protected async syncAll(): Promise<void> {
+    this.syncingAll.set(true);
+    try {
+      const result = await this.api.invoke(syncFuelCardTransactions, { body: {} });
+      this.showSyncResult(result);
+      await this.loadProviders();
+    } catch (err) {
+      console.error("Error syncing transactions:", err);
+      this.toast.showError("Failed to sync transactions");
+    } finally {
+      this.syncingAll.set(false);
+    }
+  }
+
+  private showSyncResult(result: FuelCardSyncResultDto | null): void {
+    this.toast.showSuccess(
+      `Imported ${result?.imported ?? 0} transaction(s): ${result?.matched ?? 0} matched, ${result?.pending ?? 0} pending review.`,
+      "Sync Complete",
+    );
   }
 
   protected async deleteProvider(providerId: string): Promise<void> {

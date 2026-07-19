@@ -3,12 +3,25 @@
   subtitle="Connect your fleet fuel cards to import transactions as truck expenses"
   backLink="/fuel-cards"
 >
-  <ui-button
-    buttonClass="whitespace-nowrap"
-    label="Add Provider"
-    icon="plus"
-    (click)="showAddDialog.set(true)"
-  />
+  <ui-stack direction="row" gap="2">
+    @if (providers().length) {
+      <ui-button
+        buttonClass="whitespace-nowrap"
+        label="Sync All"
+        icon="refresh-cw"
+        appearance="outlined"
+        [loading]="syncingAll()"
+        [disabled]="!!syncingId()"
+        (click)="syncAll()"
+      />
+    }
+    <ui-button
+      buttonClass="whitespace-nowrap"
+      label="Add Provider"
+      icon="plus"
+      (click)="showAddDialog.set(true)"
+    />
+  </ui-stack>
 </ui-page-header>
 
 <ui-alert intent="info" title="How Fuel Card Integration Works" class="mb-6 block">
@@ -36,6 +49,7 @@
   } @else {
     <app-fuel-card-providers-table
       [providers]="providers()"
+      [syncingId]="syncingId()"
       (sync)="onSync($event)"
       (delete)="deleteProvider($event)"
     />
